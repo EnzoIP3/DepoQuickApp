@@ -1,0 +1,5 @@
+# Ensure C# files have LF line endings
+* text=auto
+
+# Ensure C# files have LF line endings
+*.cs eol=crlf

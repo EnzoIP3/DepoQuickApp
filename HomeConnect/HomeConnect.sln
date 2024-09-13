@@ -5,6 +5,8 @@ VisualStudioVersion = 17.0.31903.59
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "HomeConnect.WebApi", "HomeConnect.WebApi\HomeConnect.WebApi.csproj", "{F2FE434A-F794-4318-A0A6-0A3210ABEF6C}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "HomeConnect.BusinessLogic", "HomeConnect.BusinessLogic\HomeConnect.BusinessLogic.csproj", "{47831FAE-94B8-4769-82B7-9AD6925C7DEE}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -18,5 +20,9 @@ Global
 		{F2FE434A-F794-4318-A0A6-0A3210ABEF6C}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{F2FE434A-F794-4318-A0A6-0A3210ABEF6C}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{F2FE434A-F794-4318-A0A6-0A3210ABEF6C}.Release|Any CPU.Build.0 = Release|Any CPU
+		{47831FAE-94B8-4769-82B7-9AD6925C7DEE}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{47831FAE-94B8-4769-82B7-9AD6925C7DEE}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{47831FAE-94B8-4769-82B7-9AD6925C7DEE}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{47831FAE-94B8-4769-82B7-9AD6925C7DEE}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 EndGlobal

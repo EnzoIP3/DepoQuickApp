@@ -1,0 +1,6 @@
+@HomeConnect.WebApi_HostAddress = http://localhost:5166
+
+GET {{HomeConnect.WebApi_HostAddress}}/weatherforecast/
+Accept: application/json
+
+###

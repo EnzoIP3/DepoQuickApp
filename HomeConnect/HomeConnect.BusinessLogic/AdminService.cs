@@ -19,4 +19,9 @@ public class AdminService
 
         AdminRepository.Add(admin);
     }
+
+    public object Delete(string args)
+    {
+        throw new NotImplementedException();
+    }
 }

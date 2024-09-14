@@ -65,4 +65,22 @@ public sealed class AdminServiceTests
     #endregion
     #endregion
     #endregion
+
+    #region Delete
+    #region Error
+    [TestMethod]
+    public void Delete_WhenDoesNotExist_ThrowsException()
+    {
+        // Arrange
+        var args = "email";
+        _adminRepository.Setup(x => x.Exists(It.IsAny<string>())).Returns(false);
+
+        // Act
+        var act = () => _adminService.Delete(args);
+
+        // Assert
+        act.Should().Throw<Exception>().WithMessage("Admin does not exist.");
+    }
+    #endregion
+    #endregion
 }

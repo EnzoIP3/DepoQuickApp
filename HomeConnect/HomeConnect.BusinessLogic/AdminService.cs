@@ -26,5 +26,7 @@ public class AdminService
         {
             throw new Exception("Admin does not exist.");
         }
+
+        AdminRepository.Delete(args);
     }
 }

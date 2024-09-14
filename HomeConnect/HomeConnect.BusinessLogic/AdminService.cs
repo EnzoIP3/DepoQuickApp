@@ -20,8 +20,11 @@ public class AdminService
         AdminRepository.Add(admin);
     }
 
-    public object Delete(string args)
+    public void Delete(string args)
     {
-        throw new NotImplementedException();
+        if (!AdminRepository.Exists(args))
+        {
+            throw new Exception("Admin does not exist.");
+        }
     }
 }

@@ -2,13 +2,17 @@ namespace BusinessLogic;
 
 public class AdminService
 {
-    public AdminService(IAdminRepository adminRepositoryObject)
+    private IAdminRepository AdminRepository { get; init; }
+    public AdminService(IAdminRepository adminRepository)
     {
-        throw new NotImplementedException();
+        AdminRepository = adminRepository;
     }
 
     public void Create(AdminModel model)
     {
-        throw new NotImplementedException();
+        if (AdminRepository.Exists(model.Username))
+        {
+            throw new Exception("Username already exists.");
+        }
     }
 }

@@ -7,6 +7,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "HomeConnect.WebApi", "HomeC
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "HomeConnect.BusinessLogic", "HomeConnect.BusinessLogic\HomeConnect.BusinessLogic.csproj", "{47831FAE-94B8-4769-82B7-9AD6925C7DEE}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "HomeConnect.BusinessLogic.Test", "HomeConnect.BusinessLogic.Test\HomeConnect.BusinessLogic.Test.csproj", "{E0C05616-1575-445A-A0EB-81157B156F14}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -24,5 +26,9 @@ Global
 		{47831FAE-94B8-4769-82B7-9AD6925C7DEE}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{47831FAE-94B8-4769-82B7-9AD6925C7DEE}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{47831FAE-94B8-4769-82B7-9AD6925C7DEE}.Release|Any CPU.Build.0 = Release|Any CPU
+		{E0C05616-1575-445A-A0EB-81157B156F14}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{E0C05616-1575-445A-A0EB-81157B156F14}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{E0C05616-1575-445A-A0EB-81157B156F14}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{E0C05616-1575-445A-A0EB-81157B156F14}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 EndGlobal

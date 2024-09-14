@@ -14,5 +14,9 @@ public class AdminService
         {
             throw new Exception("Username already exists.");
         }
+
+        var admin = new Admin(model.Username, model.Surname, model.Email, model.Password);
+
+        AdminRepository.Add(admin);
     }
 }

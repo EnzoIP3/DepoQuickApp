@@ -7,8 +7,11 @@ public class Admin
     public string Email { get; set; }
     public string Password { get; set; }
 
-    public Admin()
+    public Admin(string username, string surname, string email, string password)
     {
-        throw new NotImplementedException();
+        Username = username;
+        Surname = surname;
+        Email = email;
+        Password = password;
     }
 }

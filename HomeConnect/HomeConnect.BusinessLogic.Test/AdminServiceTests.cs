@@ -37,6 +37,26 @@ public sealed class AdminServiceTests
         act.Should().Throw<Exception>().WithMessage("Username already exists.");
     }
 
+    [TestMethod]
+    public void Create_WhenArgumentsHaveEmptyFields_ThrowsException()
+    {
+        // Arrange
+        var args = new AdminModel
+        {
+            Username = string.Empty,
+            Surname = string.Empty,
+            Email = string.Empty,
+            Password = string.Empty
+        };
+
+        _adminRepository.Setup(x => x.Exists(It.IsAny<string>())).Returns(false);
+
+        // Act
+        var act = () => _adminService.Create(args);
+
+        // Assert
+        act.Should().Throw<ArgumentException>().WithMessage("Invalid input data.");
+    }
     #region Success
     [TestMethod]
     public void Create_WhenArgumentsAreValid_CreatesAdmin()

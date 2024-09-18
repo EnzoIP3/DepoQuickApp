@@ -3,6 +3,7 @@ namespace BusinessLogic;
 public class AdminService
 {
     private IAdminRepository AdminRepository { get; init; }
+
     public AdminService(IAdminRepository adminRepository)
     {
         AdminRepository = adminRepository;
@@ -11,23 +12,19 @@ public class AdminService
     public void Create(AdminModel model)
     {
         ValidateAdminModel(model);
-		EnsureAdminUsernameIsUnique(model.Username);
+        EnsureAdminUsernameIsUnique(model.Username);
 
         var admin = new Admin(model.Username, model.Surname, model.Email, model.Password);
         AdminRepository.Add(admin);
     }
 
-    public void Delete(string args)
+    public void Delete(string username)
     {
-        if (!AdminRepository.Exists(args))
-        {
-            throw new Exception("Admin does not exist.");
-        }
-
-        AdminRepository.Delete(args);
+        EnsureAdminExists(username);
+        AdminRepository.Delete(username);
     }
 
-	private void ValidateAdminModel(AdminModel model)
+    private void ValidateAdminModel(AdminModel model)
     {
         if (string.IsNullOrWhiteSpace(model.Username) ||
             string.IsNullOrWhiteSpace(model.Surname) ||
@@ -37,11 +34,20 @@ public class AdminService
             throw new ArgumentException("Invalid input data.");
         }
     }
-	private void EnsureAdminUsernameIsUnique(string username)
+
+    private void EnsureAdminUsernameIsUnique(string username)
     {
         if (AdminRepository.Exists(username))
         {
             throw new Exception("Username already exists.");
+        }
+    }
+
+    private void EnsureAdminExists(string username)
+    {
+        if (!AdminRepository.Exists(username))
+        {
+            throw new Exception("Admin does not exist.");
         }
     }
 }

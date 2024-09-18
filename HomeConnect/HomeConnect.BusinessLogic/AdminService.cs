@@ -10,13 +10,7 @@ public class AdminService
 
     public void Create(AdminModel model)
     {
-        if (string.IsNullOrWhiteSpace(model.Username) ||
-            string.IsNullOrWhiteSpace(model.Surname) ||
-            string.IsNullOrWhiteSpace(model.Email) ||
-            string.IsNullOrWhiteSpace(model.Password))
-        {
-            throw new ArgumentException("Invalid input data.");
-        }
+        ValidateAdminModel(model);
 
         if (AdminRepository.Exists(model.Username))
         {
@@ -35,5 +29,16 @@ public class AdminService
         }
 
         AdminRepository.Delete(args);
+    }
+
+private void ValidateAdminModel(AdminModel model)
+    {
+        if (string.IsNullOrWhiteSpace(model.Username) ||
+            string.IsNullOrWhiteSpace(model.Surname) ||
+            string.IsNullOrWhiteSpace(model.Email) ||
+            string.IsNullOrWhiteSpace(model.Password))
+        {
+            throw new ArgumentException("Invalid input data.");
+        }
     }
 }

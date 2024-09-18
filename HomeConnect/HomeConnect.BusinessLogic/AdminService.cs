@@ -11,11 +11,7 @@ public class AdminService
     public void Create(AdminModel model)
     {
         ValidateAdminModel(model);
-
-        if (AdminRepository.Exists(model.Username))
-        {
-            throw new Exception("Username already exists.");
-        }
+		EnsureAdminUsernameIsUnique(model.Username);
 
         var admin = new Admin(model.Username, model.Surname, model.Email, model.Password);
         AdminRepository.Add(admin);
@@ -31,7 +27,7 @@ public class AdminService
         AdminRepository.Delete(args);
     }
 
-private void ValidateAdminModel(AdminModel model)
+	private void ValidateAdminModel(AdminModel model)
     {
         if (string.IsNullOrWhiteSpace(model.Username) ||
             string.IsNullOrWhiteSpace(model.Surname) ||
@@ -39,6 +35,13 @@ private void ValidateAdminModel(AdminModel model)
             string.IsNullOrWhiteSpace(model.Password))
         {
             throw new ArgumentException("Invalid input data.");
+        }
+    }
+	private void EnsureAdminUsernameIsUnique(string username)
+    {
+        if (AdminRepository.Exists(username))
+        {
+            throw new Exception("Username already exists.");
         }
     }
 }

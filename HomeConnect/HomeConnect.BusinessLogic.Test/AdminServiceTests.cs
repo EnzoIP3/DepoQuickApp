@@ -117,4 +117,28 @@ public sealed class AdminServiceTests
     }
     #endregion
     #endregion
+
+    #region CreateBusinessOwner
+    #region Error
+    [TestMethod]
+    public void CreateBusinessOwner_WhenAlreadyExists_ThrowsException()
+    {
+        // Arrange
+        var args = new BusinessOwnerModel
+        {
+            Username = "username",
+            Surname = "surname",
+            Email = "email",
+            Password = "password"
+        };
+        _adminRepository.Setup(x => x.Exists(It.IsAny<string>())).Returns(true);
+
+        // Act
+        var act = () => _adminService.CreateBusinessOwner(args);
+
+        // Assert
+        act.Should().Throw<Exception>().WithMessage("Username already exists.");
+    }
+    #endregion
+    #endregion
 }

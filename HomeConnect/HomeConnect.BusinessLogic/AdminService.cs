@@ -50,4 +50,9 @@ public class AdminService
             throw new Exception("Admin does not exist.");
         }
     }
+
+    public object CreateBusinessOwner(BusinessOwnerModel args)
+    {
+        throw new NotImplementedException();
+    }
 }

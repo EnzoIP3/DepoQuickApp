@@ -49,8 +49,6 @@ public sealed class AdminServiceTests
             Password = string.Empty
         };
 
-        _adminRepository.Setup(x => x.Exists(It.IsAny<string>())).Returns(false);
-
         // Act
         var act = () => _adminService.Create(args);
 

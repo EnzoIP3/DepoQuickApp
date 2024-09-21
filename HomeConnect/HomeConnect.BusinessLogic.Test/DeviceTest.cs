@@ -21,7 +21,7 @@ public class DeviceTest
         const string mainPhoto = "https://www.example.com/photo1.jpg";
         const string type = "Camera";
         var secondaryPhotos =
-            new string[] { "https://www.example.com/photo2.jpg", "https://www.example.com/photo3.jpg" };
+            new List<string> { "https://www.example.com/photo2.jpg", "https://www.example.com/photo3.jpg" };
 
         // Act
         var act = () => new Device(name, modelNumber, description, mainPhoto, secondaryPhotos, type);
@@ -35,15 +35,15 @@ public class DeviceTest
     #region Error
 
     [TestMethod]
-    [DataRow("", 123, "Description", "https://www.example.com/photo1.jpg", new string[] { }, "Camera")]
-    [DataRow("", 0, "", "https://www.example.com/photo1.jpg", new string[] { }, "Camera")]
-    [DataRow("", 0, "", "", new string[] { }, "Camera")]
-    [DataRow("", 0, "", "", new string[] { }, "")]
+    [DataRow("", 123, "Description", "https://www.example.com/photo1.jpg", "Camera")]
+    [DataRow("Name", 0, "", "https://www.example.com/photo1.jpg", "Camera")]
+    [DataRow("Name", 0, "Description", "", "Camera")]
+    [DataRow("Name", 0, "Description", "https://www.example.com/photo1.jpg", "")]
     public void Constructor_WhenArgumentsAreBlank_ThrowsException(string name, int modelNumber, string description,
-        string mainPhoto, string[] secondaryPhotos, string type)
+        string mainPhoto, string type)
     {
         // Act
-        var act = () => new Device(name, modelNumber, description, mainPhoto, secondaryPhotos, type);
+        var act = () => new Device(name, modelNumber, description, mainPhoto, new List<string>(), type);
 
         // Assert
         act.Should().Throw<ArgumentException>();
@@ -59,7 +59,7 @@ public class DeviceTest
         const string mainPhoto = "photo1.jpg";
         const string type = "Camera";
         var secondaryPhotos =
-            new string[] { "https://www.example.com/photo2.jpg", "https://www.example.com/photo3.jpg" };
+            new List<string> { "https://www.example.com/photo2.jpg", "https://www.example.com/photo3.jpg" };
 
         // Act
         var act = () => new Device(name, modelNumber, description, mainPhoto, secondaryPhotos, type);
@@ -77,8 +77,7 @@ public class DeviceTest
         const string description = "Description";
         const string mainPhoto = "https://www.example.com/photo1.jpg";
         const string type = "Camera";
-        var secondaryPhotos =
-            new string[] { "photo2.jpg", "https://www.example.com/photo3.jpg" };
+        var secondaryPhotos = new List<string> { "photo2.jpg", "https://www.example.com/photo3.jpg" };
 
         // Act
         var act = () => new Device(name, modelNumber, description, mainPhoto, secondaryPhotos, type);

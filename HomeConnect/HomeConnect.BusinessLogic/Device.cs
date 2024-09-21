@@ -79,14 +79,14 @@ public class Device
         }
     }
 
-    public Device(string name, int modelNumber, string description, string mainPhoto, string[] secondaryPhotos,
+    public Device(string name, int modelNumber, string description, string mainPhoto, List<string> secondaryPhotos,
         string type)
     {
         Name = name;
         ModelNumber = modelNumber;
         Description = description;
         MainPhoto = mainPhoto;
-        SecondaryPhotos = secondaryPhotos.ToList();
+        SecondaryPhotos = secondaryPhotos;
         Type = type;
     }
 

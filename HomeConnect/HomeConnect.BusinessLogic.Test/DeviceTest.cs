@@ -49,6 +49,25 @@ public class DeviceTest
         act.Should().Throw<ArgumentException>();
     }
 
+    [TestMethod]
+    public void Constructor_WhenMainPhotoFormatIsInvalid_ThrowsException()
+    {
+        // Arrange
+        const string name = "Name";
+        const int modelNumber = 123;
+        const string description = "Description";
+        const string mainPhoto = "photo1.jpg";
+        const string type = "Camera";
+        var secondaryPhotos =
+            new string[] { "https://www.example.com/photo2.jpg", "https://www.example.com/photo3.jpg" };
+
+        // Act
+        var act = () => new Device(name, modelNumber, description, mainPhoto, secondaryPhotos, type);
+
+        // Assert
+        act.Should().Throw<ArgumentException>();
+    }
+
     #endregion
 
     #endregion

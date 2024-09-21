@@ -49,6 +49,7 @@ public class Device
                 throw new ArgumentException("Main photo is missing.");
             }
 
+            EnsurePhotoUrlIsValid(value);
             _mainPhoto = value;
         }
     }
@@ -78,5 +79,13 @@ public class Device
         MainPhoto = mainPhoto;
         SecondaryPhotos = secondaryPhotos;
         Type = type;
+    }
+
+    public static void EnsurePhotoUrlIsValid(string photoUrl)
+    {
+        if (!Uri.IsWellFormedUriString(photoUrl, UriKind.Absolute))
+        {
+            throw new ArgumentException($"{photoUrl} is not a valid image URL");
+        }
     }
 }

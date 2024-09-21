@@ -32,5 +32,24 @@ public class DeviceTest
 
     #endregion
 
+    #region Error
+
+    [TestMethod]
+    [DataRow("", 123, "Description", "https://www.example.com/photo1.jpg", new string[] { }, "Camera")]
+    [DataRow("", 0, "", "https://www.example.com/photo1.jpg", new string[] { }, "Camera")]
+    [DataRow("", 0, "", "", new string[] { }, "Camera")]
+    [DataRow("", 0, "", "", new string[] { }, "")]
+    public void Constructor_WhenArgumentsAreBlank_ThrowsException(string name, int modelNumber, string description,
+        string mainPhoto, string[] secondaryPhotos, string type)
+    {
+        // Act
+        var act = () => new Device(name, modelNumber, description, mainPhoto, secondaryPhotos, type);
+
+        // Assert
+        act.Should().Throw<ArgumentException>();
+    }
+
+    #endregion
+
     #endregion
 }

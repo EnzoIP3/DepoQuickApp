@@ -1,4 +1,3 @@
-using System.Data;
 using BusinessLogic;
 using FluentAssertions;
 
@@ -39,6 +38,27 @@ public class AdminTests
         act.Should().Throw<Exception>().WithMessage("Email format invalid.");
     }
     #endregion
+    #region Success
 
+    [TestMethod]
+    public void Constructor_WhenArgumentsAreValid_SetsProperties()
+    {
+        // Arrange
+        var username = "username";
+        var surname = "surname";
+        var email = "email@email.com";
+        var password = "password";
+
+        // Act
+        var admin = new Admin(username, surname, email, password);
+
+        // Assert
+        admin.Username.Should().Be(username);
+        admin.Surname.Should().Be(surname);
+        admin.Email.Should().Be(email);
+        admin.Password.Should().Be(password);
+    }
+
+    #endregion
     #endregion
 }

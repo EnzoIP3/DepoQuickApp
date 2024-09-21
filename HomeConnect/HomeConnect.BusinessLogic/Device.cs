@@ -2,17 +2,72 @@ namespace BusinessLogic;
 
 public class Device
 {
-    public string Name { get; init; }
+    private string _name = string.Empty;
+    private string _description = string.Empty;
+    private string _mainPhoto = string.Empty;
+    private string _type = string.Empty;
+
+    public Guid Id { get; init; } = Guid.NewGuid();
+
+    public string Name
+    {
+        get => _name;
+        set
+        {
+            if (value == string.Empty)
+            {
+                throw new ArgumentException("Name is missing.");
+            }
+
+            _name = value;
+        }
+    }
 
     public int ModelNumber { get; init; }
 
-    public string Description { get; init; }
+    public string Description
+    {
+        get => _description;
+        set
+        {
+            if (value == string.Empty)
+            {
+                throw new ArgumentException("Description is missing.");
+            }
 
-    public string MainPhoto { get; init; }
+            _description = value;
+        }
+    }
 
-    public string[] SecondaryPhotos { get; init; }
+    public string MainPhoto
+    {
+        get => _mainPhoto;
+        set
+        {
+            if (value == string.Empty)
+            {
+                throw new ArgumentException("Main photo is missing.");
+            }
 
-    public string Type { get; init; }
+            _mainPhoto = value;
+        }
+    }
+
+    public string[] SecondaryPhotos { get; set; }
+
+    public string Type
+    {
+        get => _type;
+        set
+        {
+            if (value == string.Empty)
+            {
+                throw new ArgumentException("Type is missing.");
+            }
+
+            _type = value;
+        }
+    }
 
     public Device(string name, int modelNumber, string description, string mainPhoto, string[] secondaryPhotos,
         string type)

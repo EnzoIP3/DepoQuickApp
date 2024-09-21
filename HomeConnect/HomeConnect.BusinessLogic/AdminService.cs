@@ -51,8 +51,11 @@ public class AdminService
         }
     }
 
-    public object CreateBusinessOwner(BusinessOwnerModel args)
+    public void CreateBusinessOwner(BusinessOwnerModel args)
     {
-        throw new NotImplementedException();
+        if (AdminRepository.Exists(args.Email))
+        {
+            throw new Exception("Username already exists.");
+        }
     }
 }

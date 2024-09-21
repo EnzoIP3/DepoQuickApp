@@ -55,6 +55,7 @@ public sealed class AdminServiceTests
         // Assert
         act.Should().Throw<ArgumentException>().WithMessage("Invalid input data.");
     }
+    #endregion
     #region Success
     [TestMethod]
     public void Create_WhenArgumentsAreValid_CreatesAdmin()
@@ -82,7 +83,6 @@ public sealed class AdminServiceTests
     }
     #endregion
     #endregion
-    #endregion
 
     #region Delete
     #region Error
@@ -99,7 +99,7 @@ public sealed class AdminServiceTests
         // Assert
         act.Should().Throw<Exception>().WithMessage("Admin does not exist.");
     }
-
+    #endregion
     #region Success
     [TestMethod]
     public void Delete_WhenArgumentsAreValid_DeletesAdmin()
@@ -115,7 +115,6 @@ public sealed class AdminServiceTests
         // Assert
         _adminRepository.Verify(x => x.Delete(It.Is<string>(a => a == args)));
     }
-    #endregion
     #endregion
     #endregion
 }

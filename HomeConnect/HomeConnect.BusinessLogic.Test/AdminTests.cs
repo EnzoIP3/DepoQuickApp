@@ -1,3 +1,4 @@
+using System.Data;
 using BusinessLogic;
 using FluentAssertions;
 
@@ -9,19 +10,17 @@ public class AdminTests
     #region Constructor
     #region Error
     [TestMethod]
-    public void Constructor_WhenEmailIsBlank_ThrowsException()
+    [DataRow("", "surname", "email@email.com", "password")]
+    [DataRow("username", "", "email@email.com", "password")]
+    [DataRow("username", "surname", "", "password")]
+    [DataRow("username", "surname", "email@email.com", "")]
+    public void Constructor_WhenArgumentsAreBlank_ThrowsException(string username, string surname, string email, string password)
     {
-        // Arrange
-        var username = "username";
-        var surname = "surname";
-        var email = string.Empty;
-        var password = "password";
-
         // Act
         var act = () => new Admin(username, surname, email, password);
 
         // Assert
-        act.Should().Throw<Exception>().WithMessage("Email is invalid.");
+        act.Should().Throw<Exception>().WithMessage("Arguments cannot be blank.");
     }
 
     [TestMethod]
@@ -40,5 +39,6 @@ public class AdminTests
         act.Should().Throw<Exception>().WithMessage("Email format invalid.");
     }
     #endregion
+
     #endregion
 }

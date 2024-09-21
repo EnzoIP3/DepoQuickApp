@@ -1,3 +1,5 @@
+using System.Text.RegularExpressions;
+
 namespace BusinessLogic;
 
 public class Admin
@@ -14,6 +16,12 @@ public class Admin
             if (value == string.Empty)
             {
                 throw new Exception("Email is invalid.");
+            }
+
+            const string emailPattern = @"^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$";
+            if (!Regex.IsMatch(value, emailPattern))
+            {
+                throw new Exception("Email format invalid.");
             }
 
             _email = value;

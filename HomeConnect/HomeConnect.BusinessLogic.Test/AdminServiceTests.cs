@@ -64,7 +64,7 @@ public sealed class AdminServiceTests
         {
             Username = "username",
             Surname = "surname",
-            Email = "email",
+            Email = "email@email.com",
             Password = "password"
         };
         _adminRepository.Setup(x => x.Exists(It.IsAny<string>())).Returns(false);

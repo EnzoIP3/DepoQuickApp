@@ -90,7 +90,7 @@ public class Device
         Type = type;
     }
 
-    public static void EnsurePhotoUrlIsValid(string photoUrl)
+    private static void EnsurePhotoUrlIsValid(string photoUrl)
     {
         if (!Uri.IsWellFormedUriString(photoUrl, UriKind.Absolute))
         {

@@ -23,6 +23,22 @@ public class AdminTests
         // Assert
         act.Should().Throw<Exception>().WithMessage("Email is invalid.");
     }
+
+    [TestMethod]
+    public void Constructor_WhenEmailHasInvalidFormat_ThrowsException()
+    {
+        // Arrange
+        var username = "username";
+        var surname = "surname";
+        var email = "email.com";
+        var password = "password";
+
+        // Act
+        var act = () => new Admin(username, surname, email, password);
+
+        // Assert
+        act.Should().Throw<Exception>().WithMessage("Email format invalid.");
+    }
     #endregion
     #endregion
 }

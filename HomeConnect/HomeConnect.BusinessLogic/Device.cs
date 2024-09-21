@@ -5,6 +5,7 @@ public class Device
     private string _name = string.Empty;
     private string _description = string.Empty;
     private string _mainPhoto = string.Empty;
+    private List<string> _secondaryPhotos = [];
     private string _type = string.Empty;
 
     public Guid Id { get; init; } = Guid.NewGuid();
@@ -54,7 +55,15 @@ public class Device
         }
     }
 
-    public string[] SecondaryPhotos { get; set; }
+    public List<string> SecondaryPhotos
+    {
+        get => _secondaryPhotos;
+        set
+        {
+            value.ForEach(EnsurePhotoUrlIsValid);
+            _secondaryPhotos = value;
+        }
+    }
 
     public string Type
     {
@@ -77,7 +86,7 @@ public class Device
         ModelNumber = modelNumber;
         Description = description;
         MainPhoto = mainPhoto;
-        SecondaryPhotos = secondaryPhotos;
+        SecondaryPhotos = secondaryPhotos.ToList();
         Type = type;
     }
 

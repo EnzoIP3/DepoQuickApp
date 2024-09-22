@@ -143,5 +143,32 @@ public sealed class AdminServiceTests
         act.Should().Throw<Exception>().WithMessage("User already exists.");
     }
     #endregion
+
+    #region Success
+    [TestMethod]
+    public void CreateBusinessOwner_WhenArgumentsAreValid_CreatesBusinessOwner()
+    {
+        // Arrange
+        var args = new BusinessOwnerModel
+        {
+            Name = "name",
+            Surname = "surname",
+            Email = "email@email.com",
+            Password = "password"
+        };
+        _businessOwnerRepository.Setup(x => x.Exists(It.IsAny<string>())).Returns(false);
+        _businessOwnerRepository.Setup(x => x.Add(It.IsAny<BusinessOwner>()));
+
+        // Act
+        _adminService.CreateBusinessOwner(args);
+
+        // Assert
+        _businessOwnerRepository.Verify(x => x.Add(It.Is<BusinessOwner>(a =>
+            a.Name == args.Name &&
+            a.Surname == args.Surname &&
+            a.Email == args.Email &&
+            a.Password == args.Password)));
+    }
+    #endregion
     #endregion
 }

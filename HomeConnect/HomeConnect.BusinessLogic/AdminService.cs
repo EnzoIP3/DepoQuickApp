@@ -59,4 +59,9 @@ public class AdminService
         var user = new User(model.Name, model.Surname, model.Email, model.Password, model.Role);
         UserRepository.Add(user);
     }
+
+    public List<ListUserModel> GetUsers(int currentPage, int pageSize)
+    {
+        throw new NotImplementedException();
+    }
 }

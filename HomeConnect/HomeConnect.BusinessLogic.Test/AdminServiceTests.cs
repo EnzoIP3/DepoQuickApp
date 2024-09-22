@@ -177,4 +177,50 @@ public sealed class AdminServiceTests
     #endregion
     #endregion
 
+    #region GetUsers
+
+    #region Success
+    [TestMethod]
+    public void GetUsers_WhenCalled_ReturnsUserList()
+    {
+        // Arrange
+        var pageSize = 10;
+        var currentPage = 1;
+        var users = new List<User>
+        {
+            new User("name", "surname", "email", "password", "Admin"),
+            new User("name", "surname", "email", "password", "BusinessOwner")
+        };
+        var userList = new List<ListUserModel>
+        {
+            new ListUserModel
+            {
+                Name = "name",
+                Surname = "surname",
+                FullName = "name surname",
+                Role = "Admin",
+                CreatedAt = DateOnly.FromDateTime(DateTime.Now)
+            },
+            new ListUserModel
+            {
+                Name = "name2",
+                Surname = "surname2",
+                FullName = "name2 surname2",
+                Role = "BusinessOwner",
+                CreatedAt = DateOnly.FromDateTime(DateTime.Now)
+            }
+        };
+        _userRepository.Setup(x => x.GetUsers(currentPage, pageSize)).Returns(users);
+
+        // Act
+        var result = _adminService.GetUsers(currentPage, pageSize);
+
+        // Assert
+        result.Should().BeEquivalentTo(userList);
+        _userRepository.Verify(x => x.GetUsers(
+            It.Is<int>(a => a == currentPage),
+            It.Is<int>(a => a == pageSize)));
+    }
+    #endregion
+    #endregion
 }

@@ -212,7 +212,7 @@ public sealed class AdminServiceTests
                 CreatedAt = DateOnly.FromDateTime(DateTime.Now)
             }
         };
-        _userRepository.Setup(x => x.GetUsers(currentPage, pageSize)).Returns(users);
+        _userRepository.Setup(x => x.GetUsers(currentPage, pageSize, null)).Returns(users);
 
         // Act
         var result = _adminService.GetUsers(currentPage, pageSize);
@@ -221,7 +221,8 @@ public sealed class AdminServiceTests
         result.Should().BeEquivalentTo(userList);
         _userRepository.Verify(x => x.GetUsers(
             It.Is<int>(a => a == currentPage),
-            It.Is<int>(a => a == pageSize)));
+            It.Is<int>(a => a == pageSize),
+            It.Is<string>(a => true)));
     }
 
     [TestMethod]
@@ -252,7 +253,7 @@ public sealed class AdminServiceTests
                 CreatedAt = DateOnly.FromDateTime(DateTime.Now)
             }
         };
-        _userRepository.Setup(x => x.GetUsers(_defaultCurrentPage, _defaultPageSize)).Returns(users);
+        _userRepository.Setup(x => x.GetUsers(_defaultCurrentPage, _defaultPageSize, null)).Returns(users);
 
         // Act
         var result = _adminService.GetUsers();
@@ -261,8 +262,45 @@ public sealed class AdminServiceTests
         result.Should().BeEquivalentTo(userList);
         _userRepository.Verify(x => x.GetUsers(
             It.Is<int>(a => a == _defaultCurrentPage),
-            It.Is<int>(a => a == _defaultPageSize)));
+            It.Is<int>(a => a == _defaultPageSize),
+            It.Is<string>(a => true)));
     }
+
+    [TestMethod]
+    public void GetUsers_WhenCalledWithFullNameFilter_ReturnsFilteredUserList()
+    {
+        // Arrange
+        var users = new List<User>
+        {
+            new User("name", "surname", "admin@email.com", "password", "Admin"),
+            new User("name2", "surname2", "business@email.com", "password", "BusinessOwner")
+        };
+        var userList = new List<ListUserModel>
+        {
+            new ListUserModel
+            {
+                Name = "name",
+                Surname = "surname",
+                FullName = "name surname",
+                Role = "Admin",
+                CreatedAt = DateOnly.FromDateTime(DateTime.Now)
+            }
+        };
+        var filter = "name surname";
+        _userRepository.Setup(x => x.GetUsers(_defaultCurrentPage, _defaultPageSize, filter)).
+            Returns([users[0]]);
+
+        // Act
+        var result = _adminService.GetUsers(fullNameFilter: filter);
+
+        // Assert
+        result.Should().BeEquivalentTo(userList);
+        _userRepository.Verify(x => x.GetUsers(
+            It.Is<int>(a => a == _defaultCurrentPage),
+            It.Is<int>(a => a == _defaultPageSize),
+            It.Is<string>(a => a == filter)));
+    }
+
     #endregion
     #endregion
 }

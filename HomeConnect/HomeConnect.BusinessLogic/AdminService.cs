@@ -60,11 +60,11 @@ public class AdminService
         UserRepository.Add(user);
     }
 
-    public List<ListUserModel> GetUsers(int? currentPage = null, int? pageSize = null)
+    public List<ListUserModel> GetUsers(int? currentPage = null, int? pageSize = null, string? fullNameFilter = null)
     {
         currentPage ??= 1;
         pageSize ??= 10;
-        var users = UserRepository.GetUsers((int)currentPage, (int)pageSize);
+        var users = UserRepository.GetUsers((int)currentPage, (int)pageSize, fullNameFilter);
         return users.Select(x => new ListUserModel
         {
             Name = x.Name,

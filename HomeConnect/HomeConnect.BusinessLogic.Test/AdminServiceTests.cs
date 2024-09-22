@@ -9,6 +9,8 @@ public sealed class AdminServiceTests
 {
     private Mock<IUserRepository> _userRepository = null!;
     private AdminService _adminService = null!;
+    private int _defaultPageSize = 10;
+    private int _defaultCurrentPage = 1;
 
     [TestInitialize]
     public void Initialize()
@@ -220,6 +222,46 @@ public sealed class AdminServiceTests
         _userRepository.Verify(x => x.GetUsers(
             It.Is<int>(a => a == currentPage),
             It.Is<int>(a => a == pageSize)));
+    }
+
+    [TestMethod]
+    public void GetUsers_WhenCalledWithoutCurrentPageOrPageSize_ReturnsUserListWithDefaultValues()
+    {
+        // Arrange
+        var users = new List<User>
+        {
+            new User("name", "surname", "admin@email.com", "password", "Admin"),
+            new User("name2", "surname2", "business@email.com", "password", "BusinessOwner")
+        };
+        var userList = new List<ListUserModel>
+        {
+            new ListUserModel
+            {
+                Name = "name",
+                Surname = "surname",
+                FullName = "name surname",
+                Role = "Admin",
+                CreatedAt = DateOnly.FromDateTime(DateTime.Now)
+            },
+            new ListUserModel
+            {
+                Name = "name2",
+                Surname = "surname2",
+                FullName = "name2 surname2",
+                Role = "BusinessOwner",
+                CreatedAt = DateOnly.FromDateTime(DateTime.Now)
+            }
+        };
+        _userRepository.Setup(x => x.GetUsers(_defaultCurrentPage, _defaultPageSize)).Returns(users);
+
+        // Act
+        var result = _adminService.GetUsers();
+
+        // Assert
+        result.Should().BeEquivalentTo(userList);
+        _userRepository.Verify(x => x.GetUsers(
+            It.Is<int>(a => a == _defaultCurrentPage),
+            It.Is<int>(a => a == _defaultPageSize)));
     }
     #endregion
     #endregion

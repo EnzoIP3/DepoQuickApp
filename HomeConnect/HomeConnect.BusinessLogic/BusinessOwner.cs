@@ -9,6 +9,9 @@ public class BusinessOwner
 
     public BusinessOwner(string name, string surname, string email, string password)
     {
-        throw new NotImplementedException();
+        Name = name;
+        Surname = surname;
+        Email = email;
+        Password = password;
     }
 }

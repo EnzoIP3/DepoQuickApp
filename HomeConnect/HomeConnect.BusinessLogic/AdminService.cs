@@ -59,5 +59,8 @@ public class AdminService
         {
             throw new Exception("User already exists.");
         }
+
+        var businessOwner = new BusinessOwner(args.Name, args.Surname, args.Email, args.Password);
+        BusinessOwnerRepository.Add(businessOwner);
     }
 }

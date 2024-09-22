@@ -2,28 +2,26 @@ namespace BusinessLogic;
 
 public class AdminService
 {
-    private IAdminRepository AdminRepository { get; init; }
-    private IBusinessOwnerRepository BusinessOwnerRepository { get; init; }
+    private IUserRepository UserRepository { get; init; }
 
-    public AdminService(IAdminRepository adminRepository, IBusinessOwnerRepository businessOwnerRepository)
+    public AdminService(IUserRepository userRepository)
     {
-        AdminRepository = adminRepository;
-        BusinessOwnerRepository = businessOwnerRepository;
+        UserRepository = userRepository;
     }
 
     public void Create(UserModel model)
     {
         ValidateAdminModel(model);
-        EnsureAdminEmailIsUnique(model.Email);
+        EnsureUserEmailIsUnique(model.Email);
 
         var admin = new User(model.Name, model.Surname, model.Email, model.Password, model.Role);
-        AdminRepository.Add(admin);
+        UserRepository.Add(admin);
     }
 
     public void Delete(string email)
     {
         EnsureAdminExists(email);
-        AdminRepository.Delete(email);
+        UserRepository.Delete(email);
     }
 
     private void ValidateAdminModel(UserModel model)
@@ -38,9 +36,9 @@ public class AdminService
         }
     }
 
-    private void EnsureAdminEmailIsUnique(string email)
+    private void EnsureUserEmailIsUnique(string email)
     {
-        if (AdminRepository.Exists(email))
+        if (UserRepository.Exists(email))
         {
             throw new Exception("User already exists.");
         }
@@ -48,7 +46,7 @@ public class AdminService
 
     private void EnsureAdminExists(string email)
     {
-        if (!AdminRepository.Exists(email))
+        if (!UserRepository.Exists(email))
         {
             throw new Exception("Admin does not exist.");
         }
@@ -56,12 +54,9 @@ public class AdminService
 
     public void CreateBusinessOwner(UserModel model)
     {
-        if (BusinessOwnerRepository.Exists(model.Email))
-        {
-            throw new Exception("User already exists.");
-        }
+        EnsureUserEmailIsUnique(model.Email);
 
         var user = new User(model.Name, model.Surname, model.Email, model.Password, model.Role);
-        BusinessOwnerRepository.Add(user);
+        UserRepository.Add(user);
     }
 }

@@ -7,16 +7,14 @@ namespace HomeConnect.BusinessLogic.Test;
 [TestClass]
 public sealed class AdminServiceTests
 {
-    private Mock<IAdminRepository> _adminRepository = null!;
-    private Mock<IBusinessOwnerRepository> _businessOwnerRepository = null!;
+    private Mock<IUserRepository> _userRepository = null!;
     private AdminService _adminService = null!;
 
     [TestInitialize]
     public void Initialize()
     {
-        _adminRepository = new Mock<IAdminRepository>(MockBehavior.Strict);
-        _businessOwnerRepository = new Mock<IBusinessOwnerRepository>(MockBehavior.Strict);
-        _adminService = new AdminService(_adminRepository.Object, _businessOwnerRepository.Object);
+        _userRepository = new Mock<IUserRepository>(MockBehavior.Strict);
+        _adminService = new AdminService(_userRepository.Object);
     }
     #region Create
     #region Error
@@ -32,7 +30,7 @@ public sealed class AdminServiceTests
             Password = "password",
             Role = "Admin"
         };
-        _adminRepository.Setup(x => x.Exists(It.IsAny<string>())).Returns(true);
+        _userRepository.Setup(x => x.Exists(It.IsAny<string>())).Returns(true);
 
         // Act
         var act = () => _adminService.Create(args);
@@ -74,14 +72,14 @@ public sealed class AdminServiceTests
             Password = "password",
             Role = "Admin"
         };
-        _adminRepository.Setup(x => x.Exists(It.IsAny<string>())).Returns(false);
-        _adminRepository.Setup(x => x.Add(It.IsAny<User>()));
+        _userRepository.Setup(x => x.Exists(It.IsAny<string>())).Returns(false);
+        _userRepository.Setup(x => x.Add(It.IsAny<User>()));
 
         // Act
         _adminService.Create(args);
 
         // Assert
-        _adminRepository.Verify(x => x.Add(It.Is<User>(a =>
+        _userRepository.Verify(x => x.Add(It.Is<User>(a =>
             a.Name == args.Name &&
             a.Surname == args.Surname &&
             a.Email == args.Email &&
@@ -98,7 +96,7 @@ public sealed class AdminServiceTests
     {
         // Arrange
         var args = "email";
-        _adminRepository.Setup(x => x.Exists(It.IsAny<string>())).Returns(false);
+        _userRepository.Setup(x => x.Exists(It.IsAny<string>())).Returns(false);
 
         // Act
         var act = () => _adminService.Delete(args);
@@ -113,14 +111,14 @@ public sealed class AdminServiceTests
     {
         // Arrange
         var args = "email";
-        _adminRepository.Setup(x => x.Exists(It.IsAny<string>())).Returns(true);
-        _adminRepository.Setup(x => x.Delete(It.IsAny<string>()));
+        _userRepository.Setup(x => x.Exists(It.IsAny<string>())).Returns(true);
+        _userRepository.Setup(x => x.Delete(It.IsAny<string>()));
 
         // Act
         _adminService.Delete(args);
 
         // Assert
-        _adminRepository.Verify(x => x.Delete(It.Is<string>(a => a == args)));
+        _userRepository.Verify(x => x.Delete(It.Is<string>(a => a == args)));
     }
     #endregion
     #endregion
@@ -139,7 +137,7 @@ public sealed class AdminServiceTests
             Password = "password",
             Role = "BusinessOwner"
         };
-        _businessOwnerRepository.Setup(x => x.Exists(It.IsAny<string>())).Returns(true);
+        _userRepository.Setup(x => x.Exists(It.IsAny<string>())).Returns(true);
 
         // Act
         var act = () => _adminService.CreateBusinessOwner(args);
@@ -162,14 +160,14 @@ public sealed class AdminServiceTests
             Password = "password",
             Role = "BusinessOwner"
         };
-        _businessOwnerRepository.Setup(x => x.Exists(It.IsAny<string>())).Returns(false);
-        _businessOwnerRepository.Setup(x => x.Add(It.IsAny<User>()));
+        _userRepository.Setup(x => x.Exists(It.IsAny<string>())).Returns(false);
+        _userRepository.Setup(x => x.Add(It.IsAny<User>()));
 
         // Act
         _adminService.CreateBusinessOwner(args);
 
         // Assert
-        _businessOwnerRepository.Verify(x => x.Add(It.Is<User>(a =>
+        _userRepository.Verify(x => x.Add(It.Is<User>(a =>
             a.Name == args.Name &&
             a.Surname == args.Surname &&
             a.Email == args.Email &&
@@ -178,4 +176,5 @@ public sealed class AdminServiceTests
     }
     #endregion
     #endregion
+
 }

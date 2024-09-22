@@ -212,7 +212,7 @@ public sealed class AdminServiceTests
                 CreatedAt = DateOnly.FromDateTime(DateTime.Now)
             }
         };
-        _userRepository.Setup(x => x.GetUsers(currentPage, pageSize, null)).Returns(users);
+        _userRepository.Setup(x => x.GetUsers(currentPage, pageSize, null, null)).Returns(users);
 
         // Act
         var result = _adminService.GetUsers(currentPage, pageSize);
@@ -222,6 +222,7 @@ public sealed class AdminServiceTests
         _userRepository.Verify(x => x.GetUsers(
             It.Is<int>(a => a == currentPage),
             It.Is<int>(a => a == pageSize),
+            It.Is<string>(a => true),
             It.Is<string>(a => true)));
     }
 
@@ -253,7 +254,7 @@ public sealed class AdminServiceTests
                 CreatedAt = DateOnly.FromDateTime(DateTime.Now)
             }
         };
-        _userRepository.Setup(x => x.GetUsers(_defaultCurrentPage, _defaultPageSize, null)).Returns(users);
+        _userRepository.Setup(x => x.GetUsers(_defaultCurrentPage, _defaultPageSize, null, null)).Returns(users);
 
         // Act
         var result = _adminService.GetUsers();
@@ -263,6 +264,7 @@ public sealed class AdminServiceTests
         _userRepository.Verify(x => x.GetUsers(
             It.Is<int>(a => a == _defaultCurrentPage),
             It.Is<int>(a => a == _defaultPageSize),
+            It.Is<string>(a => true),
             It.Is<string>(a => true)));
     }
 
@@ -287,7 +289,7 @@ public sealed class AdminServiceTests
             }
         };
         var filter = "name surname";
-        _userRepository.Setup(x => x.GetUsers(_defaultCurrentPage, _defaultPageSize, filter)).
+        _userRepository.Setup(x => x.GetUsers(_defaultCurrentPage, _defaultPageSize, filter, null)).
             Returns([users[0]]);
 
         // Act
@@ -298,9 +300,45 @@ public sealed class AdminServiceTests
         _userRepository.Verify(x => x.GetUsers(
             It.Is<int>(a => a == _defaultCurrentPage),
             It.Is<int>(a => a == _defaultPageSize),
-            It.Is<string>(a => a == filter)));
+            It.Is<string>(a => a == filter),
+            It.Is<string>(a => true)));
     }
 
+    [TestMethod]
+    public void GetUsers_WhenCalledWithRoleFilter_ReturnsFilteredUserList()
+    {
+        // Arrange
+        var users = new List<User>
+        {
+            new User("name", "surname", "admin@email.com", "password", "Admin"),
+            new User("name2", "surname2", "business@email.com", "password", "BusinessOwner")
+        };
+        var userList = new List<ListUserModel>
+        {
+            new ListUserModel
+            {
+                Name = "name2",
+                Surname = "surname2",
+                FullName = "name2 surname2",
+                Role = "BusinessOwner",
+                CreatedAt = DateOnly.FromDateTime(DateTime.Now)
+            }
+        };
+        var filter = "BusinessOwner";
+        _userRepository.Setup(x => x.GetUsers(_defaultCurrentPage, _defaultPageSize, null, filter)).
+            Returns([users[1]]);
+
+        // Act
+        var result = _adminService.GetUsers(roleFilter: filter);
+
+        // Assert
+        result.Should().BeEquivalentTo(userList);
+        _userRepository.Verify(x => x.GetUsers(
+            It.Is<int>(a => a == _defaultCurrentPage),
+            It.Is<int>(a => a == _defaultPageSize),
+            It.Is<string>(a => true),
+            It.Is<string>(a => a == filter)));
+    }
     #endregion
     #endregion
 }

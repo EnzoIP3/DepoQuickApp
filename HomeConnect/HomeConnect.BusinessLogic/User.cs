@@ -72,12 +72,14 @@ public class User
     }
 
     public Role Role { get; private set; }
+    public DateOnly CreatedAt { get; private set; }
     public User(string name, string surname, string email, string password, string role)
     {
         Name = name;
         Surname = surname;
         Email = email;
         Password = password;
+        CreatedAt = DateOnly.FromDateTime(DateTime.Now);
 
         EnsureRoleIsValid(role);
         Role = Enum.Parse<Role>(role);

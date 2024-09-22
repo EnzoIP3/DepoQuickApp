@@ -62,6 +62,14 @@ public class AdminService
 
     public List<ListUserModel> GetUsers(int currentPage, int pageSize)
     {
-        throw new NotImplementedException();
+        var users = UserRepository.GetUsers(currentPage, pageSize);
+        return users.Select(x => new ListUserModel
+        {
+            Name = x.Name,
+            Surname = x.Surname,
+            FullName = $"{x.Name} {x.Surname}",
+            Role = x.Role.ToString(),
+            CreatedAt = x.CreatedAt
+        }).ToList();
     }
 }

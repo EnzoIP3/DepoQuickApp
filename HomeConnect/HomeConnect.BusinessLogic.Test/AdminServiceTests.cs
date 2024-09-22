@@ -188,8 +188,8 @@ public sealed class AdminServiceTests
         var currentPage = 1;
         var users = new List<User>
         {
-            new User("name", "surname", "email", "password", "Admin"),
-            new User("name", "surname", "email", "password", "BusinessOwner")
+            new User("name", "surname", "admin@email.com", "password", "Admin"),
+            new User("name2", "surname2", "business@email.com", "password", "BusinessOwner")
         };
         var userList = new List<ListUserModel>
         {

@@ -3,10 +3,12 @@ namespace BusinessLogic;
 public class AdminService
 {
     private IUserRepository UserRepository { get; init; }
+    private IBusinessRepository BusinessRepository { get; init; }
 
-    public AdminService(IUserRepository userRepository)
+    public AdminService(IUserRepository userRepository, IBusinessRepository businessRepository)
     {
         UserRepository = userRepository;
+        BusinessRepository = businessRepository;
     }
 
     public void Create(UserModel model)
@@ -73,5 +75,10 @@ public class AdminService
             Role = x.Role.ToString(),
             CreatedAt = x.CreatedAt
         }).ToList();
+    }
+
+    public object GetBusiness(int currentPage, int pageSize)
+    {
+        throw new NotImplementedException();
     }
 }

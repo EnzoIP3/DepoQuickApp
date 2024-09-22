@@ -8,6 +8,7 @@ namespace HomeConnect.BusinessLogic.Test;
 public sealed class AdminServiceTests
 {
     private Mock<IUserRepository> _userRepository = null!;
+    private Mock<IBusinessRepository> _businessRepository = null!;
     private AdminService _adminService = null!;
     private int _defaultPageSize = 10;
     private int _defaultCurrentPage = 1;
@@ -16,7 +17,8 @@ public sealed class AdminServiceTests
     public void Initialize()
     {
         _userRepository = new Mock<IUserRepository>(MockBehavior.Strict);
-        _adminService = new AdminService(_userRepository.Object);
+        _businessRepository = new Mock<IBusinessRepository>(MockBehavior.Strict);
+        _adminService = new AdminService(_userRepository.Object, _businessRepository.Object);
     }
     #region Create
     #region Error
@@ -340,5 +342,48 @@ public sealed class AdminServiceTests
             It.Is<string>(a => a == filter)));
     }
     #endregion
+    #endregion
+
+    #region GetBusiness
+    [TestMethod]
+    public void GetBusiness_WhenCalled_ReturnsBusinessList()
+    {
+        // Arrange
+        var owner = new User("name", "surname", "email@email.com", "password", "BusinessOwner");
+        var otherOwner = new User("name2", "surname2", "email2@email.com", "password2", "BusinessOwner");
+
+        var businesses = new List<Business>
+        {
+            new Business("123456789123", "name", owner),
+            new Business("123456789456", "name2", otherOwner)
+        };
+        var businessList = new List<ListBusinessModel>
+        {
+            new ListBusinessModel
+            {
+                Name = "name",
+                OwnerEmail = owner.Email,
+                OwnerFullName = $"{owner.Name} {owner.Surname}",
+                Rut = "123456789123"
+            },
+            new ListBusinessModel
+            {
+                Name = "name2",
+                OwnerEmail = otherOwner.Email,
+                OwnerFullName = $"{otherOwner.Name} {otherOwner.Surname}",
+                Rut = "123456789456"
+            }
+        };
+        _businessRepository.Setup(x => x.GetBusinesses(_defaultCurrentPage, _defaultPageSize)).Returns(businesses);
+
+        // Act
+        var result = _adminService.GetBusiness(_defaultCurrentPage, _defaultPageSize);
+
+        // Assert
+        result.Should().BeEquivalentTo(businessList);
+        _businessRepository.Verify(x => x.GetBusinesses(
+            It.Is<int>(a => a == _defaultCurrentPage),
+            It.Is<int>(a => a == _defaultPageSize)));
+    }
     #endregion
 }

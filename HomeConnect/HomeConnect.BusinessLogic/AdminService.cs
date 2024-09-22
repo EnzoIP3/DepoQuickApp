@@ -3,30 +3,32 @@ namespace BusinessLogic;
 public class AdminService
 {
     private IAdminRepository AdminRepository { get; init; }
+    private IBusinessOwnerRepository BusinessOwnerRepository { get; init; }
 
-    public AdminService(IAdminRepository adminRepository)
+    public AdminService(IAdminRepository adminRepository, IBusinessOwnerRepository businessOwnerRepository)
     {
         AdminRepository = adminRepository;
+        BusinessOwnerRepository = businessOwnerRepository;
     }
 
     public void Create(AdminModel model)
     {
         ValidateAdminModel(model);
-        EnsureAdminUsernameIsUnique(model.Username);
+        EnsureAdminEmailIsUnique(model.Email);
 
-        var admin = new Admin(model.Username, model.Surname, model.Email, model.Password);
+        var admin = new Admin(model.Name, model.Surname, model.Email, model.Password);
         AdminRepository.Add(admin);
     }
 
-    public void Delete(string username)
+    public void Delete(string email)
     {
-        EnsureAdminExists(username);
-        AdminRepository.Delete(username);
+        EnsureAdminExists(email);
+        AdminRepository.Delete(email);
     }
 
     private void ValidateAdminModel(AdminModel model)
     {
-        if (string.IsNullOrWhiteSpace(model.Username) ||
+        if (string.IsNullOrWhiteSpace(model.Name) ||
             string.IsNullOrWhiteSpace(model.Surname) ||
             string.IsNullOrWhiteSpace(model.Email) ||
             string.IsNullOrWhiteSpace(model.Password))
@@ -35,17 +37,17 @@ public class AdminService
         }
     }
 
-    private void EnsureAdminUsernameIsUnique(string username)
+    private void EnsureAdminEmailIsUnique(string email)
     {
-        if (AdminRepository.Exists(username))
+        if (AdminRepository.Exists(email))
         {
-            throw new Exception("Username already exists.");
+            throw new Exception("User already exists.");
         }
     }
 
-    private void EnsureAdminExists(string username)
+    private void EnsureAdminExists(string email)
     {
-        if (!AdminRepository.Exists(username))
+        if (!AdminRepository.Exists(email))
         {
             throw new Exception("Admin does not exist.");
         }
@@ -53,9 +55,9 @@ public class AdminService
 
     public void CreateBusinessOwner(BusinessOwnerModel args)
     {
-        if (AdminRepository.Exists(args.Email))
+        if (BusinessOwnerRepository.Exists(args.Email))
         {
-            throw new Exception("Username already exists.");
+            throw new Exception("User already exists.");
         }
     }
 }

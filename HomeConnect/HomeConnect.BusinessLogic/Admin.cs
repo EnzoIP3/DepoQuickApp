@@ -5,13 +5,13 @@ namespace BusinessLogic;
 public class Admin
 {
     private readonly string _email = string.Empty;
-    private readonly string _username = string.Empty;
+    private readonly string _name = string.Empty;
     private readonly string _surname = string.Empty;
     private readonly string _password = string.Empty;
 
-    public string Username
+    public string Name
     {
-        get => _username;
+        get => _name;
         private init
         {
             if (string.IsNullOrEmpty(value) || string.IsNullOrWhiteSpace(value))
@@ -19,7 +19,7 @@ public class Admin
                 throw new Exception("Arguments cannot be blank.");
             }
 
-            _username = value;
+            _name = value;
         }
     }
 
@@ -71,9 +71,9 @@ public class Admin
         }
     }
 
-    public Admin(string username, string surname, string email, string password)
+    public Admin(string name, string surname, string email, string password)
     {
-        Username = username;
+        Name = name;
         Surname = surname;
         Email = email;
         Password = password;

@@ -8,12 +8,15 @@ namespace HomeConnect.BusinessLogic.Test;
 public sealed class AdminServiceTests
 {
     private Mock<IAdminRepository> _adminRepository = null!;
+    private Mock<IBusinessOwnerRepository> _businessOwnerRepository = null!;
     private AdminService _adminService = null!;
+
     [TestInitialize]
     public void Initialize()
     {
         _adminRepository = new Mock<IAdminRepository>(MockBehavior.Strict);
-        _adminService = new AdminService(_adminRepository.Object);
+        _businessOwnerRepository = new Mock<IBusinessOwnerRepository>(MockBehavior.Strict);
+        _adminService = new AdminService(_adminRepository.Object, _businessOwnerRepository.Object);
     }
     #region Create
     #region Error
@@ -23,7 +26,7 @@ public sealed class AdminServiceTests
         // Arrange
         var args = new AdminModel
         {
-            Username = "username",
+            Name = "name",
             Surname = "surname",
             Email = "email",
             Password = "password"
@@ -34,7 +37,7 @@ public sealed class AdminServiceTests
         var act = () => _adminService.Create(args);
 
         // Assert
-        act.Should().Throw<Exception>().WithMessage("Username already exists.");
+        act.Should().Throw<Exception>().WithMessage("User already exists.");
     }
 
     [TestMethod]
@@ -43,7 +46,7 @@ public sealed class AdminServiceTests
         // Arrange
         var args = new AdminModel
         {
-            Username = string.Empty,
+            Name = string.Empty,
             Surname = string.Empty,
             Email = string.Empty,
             Password = string.Empty
@@ -63,7 +66,7 @@ public sealed class AdminServiceTests
         // Arrange
         var args = new AdminModel
         {
-            Username = "username",
+            Name = "name",
             Surname = "surname",
             Email = "email@email.com",
             Password = "password"
@@ -76,7 +79,7 @@ public sealed class AdminServiceTests
 
         // Assert
         _adminRepository.Verify(x => x.Add(It.Is<Admin>(a =>
-            a.Username == args.Username &&
+            a.Name == args.Name &&
             a.Surname == args.Surname &&
             a.Email == args.Email &&
             a.Password == args.Password)));
@@ -126,18 +129,18 @@ public sealed class AdminServiceTests
         // Arrange
         var args = new BusinessOwnerModel
         {
-            Username = "username",
+            Name = "name",
             Surname = "surname",
             Email = "email",
             Password = "password"
         };
-        _adminRepository.Setup(x => x.Exists(It.IsAny<string>())).Returns(true);
+        _businessOwnerRepository.Setup(x => x.Exists(It.IsAny<string>())).Returns(true);
 
         // Act
         var act = () => _adminService.CreateBusinessOwner(args);
 
         // Assert
-        act.Should().Throw<Exception>().WithMessage("Username already exists.");
+        act.Should().Throw<Exception>().WithMessage("User already exists.");
     }
     #endregion
     #endregion

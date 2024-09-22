@@ -10,13 +10,13 @@ public class AdminTests
     #region Error
     [TestMethod]
     [DataRow("", "surname", "email@email.com", "password")]
-    [DataRow("username", "", "email@email.com", "password")]
-    [DataRow("username", "surname", "", "password")]
-    [DataRow("username", "surname", "email@email.com", "")]
-    public void Constructor_WhenArgumentsAreBlank_ThrowsException(string username, string surname, string email, string password)
+    [DataRow("name", "", "email@email.com", "password")]
+    [DataRow("name", "surname", "", "password")]
+    [DataRow("name", "surname", "email@email.com", "")]
+    public void Constructor_WhenArgumentsAreBlank_ThrowsException(string name, string surname, string email, string password)
     {
         // Act
-        var act = () => new Admin(username, surname, email, password);
+        var act = () => new Admin(name, surname, email, password);
 
         // Assert
         act.Should().Throw<Exception>().WithMessage("Arguments cannot be blank.");
@@ -26,13 +26,13 @@ public class AdminTests
     public void Constructor_WhenEmailHasInvalidFormat_ThrowsException()
     {
         // Arrange
-        var username = "username";
+        var name = "name";
         var surname = "surname";
         var email = "email.com";
         var password = "password";
 
         // Act
-        var act = () => new Admin(username, surname, email, password);
+        var act = () => new Admin(name, surname, email, password);
 
         // Assert
         act.Should().Throw<Exception>().WithMessage("Email format invalid.");
@@ -44,16 +44,16 @@ public class AdminTests
     public void Constructor_WhenArgumentsAreValid_SetsProperties()
     {
         // Arrange
-        var username = "username";
+        var name = "name";
         var surname = "surname";
         var email = "email@email.com";
         var password = "password";
 
         // Act
-        var admin = new Admin(username, surname, email, password);
+        var admin = new Admin(name, surname, email, password);
 
         // Assert
-        admin.Username.Should().Be(username);
+        admin.Name.Should().Be(name);
         admin.Surname.Should().Be(surname);
         admin.Email.Should().Be(email);
         admin.Password.Should().Be(password);

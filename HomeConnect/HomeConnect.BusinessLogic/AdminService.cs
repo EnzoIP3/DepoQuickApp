@@ -77,8 +77,15 @@ public class AdminService
         }).ToList();
     }
 
-    public object GetBusiness(int currentPage, int pageSize)
+    public List<ListBusinessModel> GetBusiness(int currentPage, int pageSize)
     {
-        throw new NotImplementedException();
+        var businesses = BusinessRepository.GetBusinesses(currentPage, pageSize);
+        return businesses.Select(x => new ListBusinessModel
+        {
+            Rut = x.Rut,
+            Name = x.Name,
+            OwnerEmail = x.Owner.Email,
+            OwnerFullName = $"{x.Owner.Name} {x.Owner.Surname}"
+        }).ToList();
     }
 }

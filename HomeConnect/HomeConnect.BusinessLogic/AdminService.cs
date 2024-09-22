@@ -11,12 +11,12 @@ public class AdminService
         BusinessOwnerRepository = businessOwnerRepository;
     }
 
-    public void Create(AdminModel model)
+    public void Create(UserModel model)
     {
         ValidateAdminModel(model);
         EnsureAdminEmailIsUnique(model.Email);
 
-        var admin = new Admin(model.Name, model.Surname, model.Email, model.Password);
+        var admin = new User(model.Name, model.Surname, model.Email, model.Password, model.Role);
         AdminRepository.Add(admin);
     }
 
@@ -26,12 +26,13 @@ public class AdminService
         AdminRepository.Delete(email);
     }
 
-    private void ValidateAdminModel(AdminModel model)
+    private void ValidateAdminModel(UserModel model)
     {
         if (string.IsNullOrWhiteSpace(model.Name) ||
             string.IsNullOrWhiteSpace(model.Surname) ||
             string.IsNullOrWhiteSpace(model.Email) ||
-            string.IsNullOrWhiteSpace(model.Password))
+            string.IsNullOrWhiteSpace(model.Password) ||
+            string.IsNullOrWhiteSpace(model.Role))
         {
             throw new ArgumentException("Invalid input data.");
         }
@@ -53,14 +54,14 @@ public class AdminService
         }
     }
 
-    public void CreateBusinessOwner(BusinessOwnerModel args)
+    public void CreateBusinessOwner(UserModel model)
     {
-        if (BusinessOwnerRepository.Exists(args.Email))
+        if (BusinessOwnerRepository.Exists(model.Email))
         {
             throw new Exception("User already exists.");
         }
 
-        var businessOwner = new BusinessOwner(args.Name, args.Surname, args.Email, args.Password);
-        BusinessOwnerRepository.Add(businessOwner);
+        var user = new User(model.Name, model.Surname, model.Email, model.Password, model.Role);
+        BusinessOwnerRepository.Add(user);
     }
 }

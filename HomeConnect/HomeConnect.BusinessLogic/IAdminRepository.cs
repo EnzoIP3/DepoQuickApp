@@ -3,6 +3,6 @@ namespace BusinessLogic;
 public interface IAdminRepository
 {
     bool Exists(string email);
-    void Add(Admin admin);
+    void Add(User user);
     void Delete(string email);
 }

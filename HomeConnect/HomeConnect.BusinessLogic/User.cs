@@ -2,7 +2,7 @@ using System.Text.RegularExpressions;
 
 namespace BusinessLogic;
 
-public class Admin
+public class User
 {
     private readonly string _email = string.Empty;
     private readonly string _name = string.Empty;
@@ -71,11 +71,23 @@ public class Admin
         }
     }
 
-    public Admin(string name, string surname, string email, string password)
+    public Role Role { get; private set; }
+    public User(string name, string surname, string email, string password, string role)
     {
         Name = name;
         Surname = surname;
         Email = email;
         Password = password;
+
+        EnsureRoleIsValid(role);
+        Role = Enum.Parse<Role>(role);
+    }
+
+    private static void EnsureRoleIsValid(string role)
+    {
+        if (string.IsNullOrEmpty(role) || string.IsNullOrWhiteSpace(role))
+        {
+            throw new Exception("Arguments cannot be blank.");
+        }
     }
 }

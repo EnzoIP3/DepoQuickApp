@@ -24,12 +24,13 @@ public sealed class AdminServiceTests
     public void Create_WhenAlreadyExists_ThrowsException()
     {
         // Arrange
-        var args = new AdminModel
+        var args = new UserModel
         {
             Name = "name",
             Surname = "surname",
             Email = "email",
-            Password = "password"
+            Password = "password",
+            Role = "Admin"
         };
         _adminRepository.Setup(x => x.Exists(It.IsAny<string>())).Returns(true);
 
@@ -44,12 +45,13 @@ public sealed class AdminServiceTests
     public void Create_WhenArgumentsHaveEmptyFields_ThrowsException()
     {
         // Arrange
-        var args = new AdminModel
+        var args = new UserModel
         {
             Name = string.Empty,
             Surname = string.Empty,
             Email = string.Empty,
-            Password = string.Empty
+            Password = string.Empty,
+            Role = string.Empty
         };
 
         // Act
@@ -64,25 +66,27 @@ public sealed class AdminServiceTests
     public void Create_WhenArgumentsAreValid_CreatesAdmin()
     {
         // Arrange
-        var args = new AdminModel
+        var args = new UserModel
         {
             Name = "name",
             Surname = "surname",
             Email = "email@email.com",
-            Password = "password"
+            Password = "password",
+            Role = "Admin"
         };
         _adminRepository.Setup(x => x.Exists(It.IsAny<string>())).Returns(false);
-        _adminRepository.Setup(x => x.Add(It.IsAny<Admin>()));
+        _adminRepository.Setup(x => x.Add(It.IsAny<User>()));
 
         // Act
         _adminService.Create(args);
 
         // Assert
-        _adminRepository.Verify(x => x.Add(It.Is<Admin>(a =>
+        _adminRepository.Verify(x => x.Add(It.Is<User>(a =>
             a.Name == args.Name &&
             a.Surname == args.Surname &&
             a.Email == args.Email &&
-            a.Password == args.Password)));
+            a.Password == args.Password &&
+            a.Role.ToString() == args.Role)));
     }
     #endregion
     #endregion
@@ -127,12 +131,13 @@ public sealed class AdminServiceTests
     public void CreateBusinessOwner_WhenAlreadyExists_ThrowsException()
     {
         // Arrange
-        var args = new BusinessOwnerModel
+        var args = new UserModel
         {
             Name = "name",
             Surname = "surname",
             Email = "email",
-            Password = "password"
+            Password = "password",
+            Role = "BusinessOwner"
         };
         _businessOwnerRepository.Setup(x => x.Exists(It.IsAny<string>())).Returns(true);
 
@@ -149,25 +154,27 @@ public sealed class AdminServiceTests
     public void CreateBusinessOwner_WhenArgumentsAreValid_CreatesBusinessOwner()
     {
         // Arrange
-        var args = new BusinessOwnerModel
+        var args = new UserModel
         {
             Name = "name",
             Surname = "surname",
             Email = "email@email.com",
-            Password = "password"
+            Password = "password",
+            Role = "BusinessOwner"
         };
         _businessOwnerRepository.Setup(x => x.Exists(It.IsAny<string>())).Returns(false);
-        _businessOwnerRepository.Setup(x => x.Add(It.IsAny<BusinessOwner>()));
+        _businessOwnerRepository.Setup(x => x.Add(It.IsAny<User>()));
 
         // Act
         _adminService.CreateBusinessOwner(args);
 
         // Assert
-        _businessOwnerRepository.Verify(x => x.Add(It.Is<BusinessOwner>(a =>
+        _businessOwnerRepository.Verify(x => x.Add(It.Is<User>(a =>
             a.Name == args.Name &&
             a.Surname == args.Surname &&
             a.Email == args.Email &&
-            a.Password == args.Password)));
+            a.Password == args.Password &&
+            a.Role.ToString() == args.Role)));
     }
     #endregion
     #endregion

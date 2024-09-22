@@ -4,19 +4,20 @@ using FluentAssertions;
 namespace HomeConnect.BusinessLogic.Test;
 
 [TestClass]
-public class AdminTests
+public class UserTests
 {
     #region Constructor
     #region Error
     [TestMethod]
-    [DataRow("", "surname", "email@email.com", "password")]
-    [DataRow("name", "", "email@email.com", "password")]
-    [DataRow("name", "surname", "", "password")]
-    [DataRow("name", "surname", "email@email.com", "")]
-    public void Constructor_WhenArgumentsAreBlank_ThrowsException(string name, string surname, string email, string password)
+    [DataRow("", "surname", "email@email.com", "password", "Admin")]
+    [DataRow("name", "", "email@email.com", "password", "Admin")]
+    [DataRow("name", "surname", "", "password", "Admin")]
+    [DataRow("name", "surname", "email@email.com", "", "Admin")]
+    [DataRow("name", "surname", "email@email.com", "password", "")]
+    public void Constructor_WhenArgumentsAreBlank_ThrowsException(string name, string surname, string email, string password, string role)
     {
         // Act
-        var act = () => new Admin(name, surname, email, password);
+        var act = () => new User(name, surname, email, password, role);
 
         // Assert
         act.Should().Throw<Exception>().WithMessage("Arguments cannot be blank.");
@@ -30,9 +31,10 @@ public class AdminTests
         var surname = "surname";
         var email = "email.com";
         var password = "password";
+        var role = "Admin";
 
         // Act
-        var act = () => new Admin(name, surname, email, password);
+        var act = () => new User(name, surname, email, password, role);
 
         // Assert
         act.Should().Throw<Exception>().WithMessage("Email format invalid.");
@@ -48,15 +50,16 @@ public class AdminTests
         var surname = "surname";
         var email = "email@email.com";
         var password = "password";
+        var role = "Admin";
 
         // Act
-        var admin = new Admin(name, surname, email, password);
+        var Admin = new User(name, surname, email, password, role);
 
         // Assert
-        admin.Name.Should().Be(name);
-        admin.Surname.Should().Be(surname);
-        admin.Email.Should().Be(email);
-        admin.Password.Should().Be(password);
+        Admin.Name.Should().Be(name);
+        Admin.Surname.Should().Be(surname);
+        Admin.Email.Should().Be(email);
+        Admin.Password.Should().Be(password);
     }
 
     #endregion

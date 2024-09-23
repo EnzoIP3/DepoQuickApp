@@ -6,6 +6,10 @@ namespace HomeConnect.BusinessLogic.Test;
 [TestClass]
 public class CameraTest
 {
+    #region Create
+
+    #region Success
+
     [TestMethod]
     public void Constructor_WhenArgumentsAreValid_CreatesInstance()
     {
@@ -29,6 +33,10 @@ public class CameraTest
         act.Should().NotThrow();
     }
 
+    #endregion
+
+    #region Error
+
     [TestMethod]
     public void Constructor_WhenNotExteriorAndNotInterior_ThrowsArgumentException()
     {
@@ -51,4 +59,8 @@ public class CameraTest
         // Assert
         act.Should().Throw<ArgumentException>();
     }
+
+    #endregion
+
+    #endregion
 }

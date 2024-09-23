@@ -17,5 +17,14 @@ public class Camera : Device
         PersonDetection = personDetection;
         IsExterior = isExterior;
         IsInterior = isInterior;
+        EnsureExteriorOrInterior();
+    }
+
+    private void EnsureExteriorOrInterior()
+    {
+        if (!IsExterior && !IsInterior)
+        {
+            throw new ArgumentException("Camera must be either exterior or interior.");
+        }
     }
 }

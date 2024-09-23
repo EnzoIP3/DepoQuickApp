@@ -17,7 +17,7 @@ public sealed class AdminServiceTests
         Name = "name",
         Surname = "surname",
         Email = "email@email.com",
-        Password = "password",
+        Password = "Password#100",
         Role = "Admin"
     };
     private User _validUser = null!;
@@ -31,8 +31,8 @@ public sealed class AdminServiceTests
         _businessRepository = new Mock<IBusinessRepository>(MockBehavior.Strict);
         _adminService = new AdminService(_userRepository.Object, _businessRepository.Object);
         _validUser = new User(_validUserModel.Name, _validUserModel.Surname, _validUserModel.Email, _validUserModel.Password, _validUserModel.Role);
-        _owner = new User("name", "surname", "email@email.com", "password", "BusinessOwner");
-        _otherOwner = new User("name2", "surname2", "email2@email.com", "password2", "BusinessOwner");
+        _owner = new User("name", "surname", "email@email.com", "Password#100", "BusinessOwner");
+        _otherOwner = new User("name2", "surname2", "email2@email.com", "Password2#100", "BusinessOwner");
     }
 
     #region Create
@@ -160,7 +160,7 @@ public sealed class AdminServiceTests
             Name = "name",
             Surname = "surname",
             Email = "email@email.com",
-            Password = "password",
+            Password = "Password#100",
             Role = "BusinessOwner"
         };
         _userRepository.Setup(x => x.Exists(It.IsAny<string>())).Returns(false);

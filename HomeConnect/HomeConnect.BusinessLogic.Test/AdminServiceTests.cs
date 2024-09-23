@@ -374,7 +374,7 @@ public sealed class AdminServiceTests
                 Rut = "123456789456"
             }
         };
-        _businessRepository.Setup(x => x.GetBusinesses(_defaultCurrentPage, _defaultPageSize, null)).Returns(businesses);
+        _businessRepository.Setup(x => x.GetBusinesses(_defaultCurrentPage, _defaultPageSize, null, null)).Returns(businesses);
 
         // Act
         var result = _adminService.GetBusiness(_defaultCurrentPage, _defaultPageSize);
@@ -384,6 +384,7 @@ public sealed class AdminServiceTests
         _businessRepository.Verify(x => x.GetBusinesses(
             It.Is<int>(a => a == _defaultCurrentPage),
             It.Is<int>(a => a == _defaultPageSize),
+            It.Is<string>(a => true),
             It.Is<string>(a => true)));
     }
 
@@ -416,7 +417,7 @@ public sealed class AdminServiceTests
                 Rut = "123456789456"
             }
         };
-        _businessRepository.Setup(x => x.GetBusinesses(_defaultCurrentPage, _defaultPageSize, null)).Returns(businesses);
+        _businessRepository.Setup(x => x.GetBusinesses(_defaultCurrentPage, _defaultPageSize, null, null)).Returns(businesses);
 
         // Act
         var result = _adminService.GetBusiness();
@@ -426,6 +427,7 @@ public sealed class AdminServiceTests
         _businessRepository.Verify(x => x.GetBusinesses(
             It.Is<int>(a => a == _defaultCurrentPage),
             It.Is<int>(a => a == _defaultPageSize),
+            It.Is<string>(a => true),
             It.Is<string>(a => true)));
     }
 
@@ -452,7 +454,7 @@ public sealed class AdminServiceTests
             }
         };
         var filter = $"{owner.Name} {owner.Surname}";
-        _businessRepository.Setup(x => x.GetBusinesses(_defaultCurrentPage, _defaultPageSize, filter)).Returns([businesses[0]]);
+        _businessRepository.Setup(x => x.GetBusinesses(_defaultCurrentPage, _defaultPageSize, filter, null)).Returns([businesses[0]]);
 
         // Act
         var result = _adminService.GetBusiness(fullNameFilter: filter);
@@ -462,6 +464,44 @@ public sealed class AdminServiceTests
         _businessRepository.Verify(x => x.GetBusinesses(
             It.Is<int>(a => a == _defaultCurrentPage),
             It.Is<int>(a => a == _defaultPageSize),
+            It.Is<string>(a => a == filter),
+            It.Is<string>(a => true)));
+    }
+
+    [TestMethod]
+    public void GetBusiness_WhenCalledWithNameFilter_ReturnsFilteredBusinessList()
+    {
+        // Arrange
+        var owner = new User("name", "surname", "email@email.com", "password", "BusinessOwner");
+        var otherOwner = new User("name2", "surname2", "email2@email.com", "password2", "BusinessOwner");
+
+        var businesses = new List<Business>
+        {
+            new Business("123456789123", "name", owner),
+            new Business("123456789456", "name2", otherOwner)
+        };
+        var businessList = new List<ListBusinessModel>
+        {
+            new ListBusinessModel
+            {
+                Name = "name2",
+                OwnerEmail = otherOwner.Email,
+                OwnerFullName = $"{otherOwner.Name} {otherOwner.Surname}",
+                Rut = "123456789456"
+            }
+        };
+        var filter = "name2";
+        _businessRepository.Setup(x => x.GetBusinesses(_defaultCurrentPage, _defaultPageSize, null, filter)).Returns([businesses[1]]);
+
+        // Act
+        var result = _adminService.GetBusiness(nameFilter: filter);
+
+        // Assert
+        result.Should().BeEquivalentTo(businessList);
+        _businessRepository.Verify(x => x.GetBusinesses(
+            It.Is<int>(a => a == _defaultCurrentPage),
+            It.Is<int>(a => a == _defaultPageSize),
+            It.Is<string>(a => true),
             It.Is<string>(a => a == filter)));
     }
     #endregion

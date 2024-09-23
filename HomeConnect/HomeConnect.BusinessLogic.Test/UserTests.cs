@@ -78,6 +78,16 @@ public class UserTests
         // Assert
         act.Should().Throw<Exception>().WithMessage("Password must contain at least one special character.");
     }
+
+    [TestMethod]
+    public void Constructor_WhenPasswordIsTooShort_ThrowsException()
+    {
+        // Act
+        var act = () => new User(_name, _surname, _email, "Pwd1!", _role);
+
+        // Assert
+        act.Should().Throw<Exception>().WithMessage("Password must be at least 8 characters long.");
+    }
     #endregion
     #region Success
 

@@ -48,6 +48,16 @@ public class UserTests
         // Assert
         act.Should().Throw<Exception>().WithMessage("Email format invalid.");
     }
+
+    [TestMethod]
+    public void Constructor_WhenPasswordHasNoCapitalLetter_ThrowsException()
+    {
+        // Act
+        var act = () => new User(_name, _surname, _email, "password1!", _role);
+
+        // Assert
+        act.Should().Throw<Exception>().WithMessage("Password must contain at least one capital letter.");
+    }
     #endregion
     #region Success
 
@@ -63,7 +73,6 @@ public class UserTests
         admin.Email.Should().Be(_email);
         admin.Password.Should().Be(_password);
     }
-
     #endregion
     #endregion
 }

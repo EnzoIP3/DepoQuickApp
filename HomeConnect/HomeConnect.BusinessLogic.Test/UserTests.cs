@@ -18,18 +18,18 @@ public class UserTests
         _name = "name";
         _surname = "surname";
         _email = "email@email.com";
-        _password = "password";
+        _password = "Password#100";
         _role = "Admin";
     }
 
     #region Constructor
     #region Error
     [TestMethod]
-    [DataRow("", "surname", "email@email.com", "password", "Admin")]
-    [DataRow("name", "", "email@email.com", "password", "Admin")]
-    [DataRow("name", "surname", "", "password", "Admin")]
+    [DataRow("", "surname", "email@email.com", "Password#100", "Admin")]
+    [DataRow("name", "", "email@email.com", "Password#100", "Admin")]
+    [DataRow("name", "surname", "", "Password#100", "Admin")]
     [DataRow("name", "surname", "email@email.com", "", "Admin")]
-    [DataRow("name", "surname", "email@email.com", "password", "")]
+    [DataRow("name", "surname", "email@email.com", "Password#100", "")]
     public void Constructor_WhenArgumentsAreBlank_ThrowsException(string name, string surname, string email, string password, string role)
     {
         // Act
@@ -53,7 +53,7 @@ public class UserTests
     public void Constructor_WhenPasswordHasNoCapitalLetter_ThrowsException()
     {
         // Act
-        var act = () => new User(_name, _surname, _email, "password1!", _role);
+        var act = () => new User(_name, _surname, _email, "password100!", _role);
 
         // Assert
         act.Should().Throw<Exception>().WithMessage("Password must contain at least one capital letter.");

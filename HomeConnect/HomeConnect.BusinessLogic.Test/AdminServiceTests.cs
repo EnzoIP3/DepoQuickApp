@@ -12,6 +12,8 @@ public sealed class AdminServiceTests
     private AdminService _adminService = null!;
     private int _defaultPageSize = 10;
     private int _defaultCurrentPage = 1;
+    private UserModel _validUserModel = new UserModel();
+    private User _validUser = null!;
 
     [TestInitialize]
     public void Initialize()
@@ -19,25 +21,35 @@ public sealed class AdminServiceTests
         _userRepository = new Mock<IUserRepository>(MockBehavior.Strict);
         _businessRepository = new Mock<IBusinessRepository>(MockBehavior.Strict);
         _adminService = new AdminService(_userRepository.Object, _businessRepository.Object);
+
+        _validUserModel = new UserModel
+        {
+            Name = "name",
+            Surname = "surname",
+            Email = "email@email.com",
+            Password = "password",
+            Role = "Admin"
+        };
+
+        _validUser = new User(
+            _validUserModel.Name,
+            _validUserModel.Surname,
+            _validUserModel.Email,
+            _validUserModel.Password,
+            _validUserModel.Role
+        );
     }
+
     #region Create
     #region Error
     [TestMethod]
     public void Create_WhenAlreadyExists_ThrowsException()
     {
         // Arrange
-        var args = new UserModel
-        {
-            Name = "name",
-            Surname = "surname",
-            Email = "email",
-            Password = "password",
-            Role = "Admin"
-        };
         _userRepository.Setup(x => x.Exists(It.IsAny<string>())).Returns(true);
 
         // Act
-        var act = () => _adminService.Create(args);
+        var act = () => _adminService.Create(_validUserModel);
 
         // Assert
         act.Should().Throw<Exception>().WithMessage("User already exists.");
@@ -47,7 +59,7 @@ public sealed class AdminServiceTests
     public void Create_WhenArgumentsHaveEmptyFields_ThrowsException()
     {
         // Arrange
-        var args = new UserModel
+        var invalidUserModel = new UserModel
         {
             Name = string.Empty,
             Surname = string.Empty,
@@ -57,7 +69,7 @@ public sealed class AdminServiceTests
         };
 
         // Act
-        var act = () => _adminService.Create(args);
+        var act = () => _adminService.Create(invalidUserModel);
 
         // Assert
         act.Should().Throw<ArgumentException>().WithMessage("Invalid input data.");
@@ -68,27 +80,19 @@ public sealed class AdminServiceTests
     public void Create_WhenArgumentsAreValid_CreatesAdmin()
     {
         // Arrange
-        var args = new UserModel
-        {
-            Name = "name",
-            Surname = "surname",
-            Email = "email@email.com",
-            Password = "password",
-            Role = "Admin"
-        };
         _userRepository.Setup(x => x.Exists(It.IsAny<string>())).Returns(false);
         _userRepository.Setup(x => x.Add(It.IsAny<User>()));
 
         // Act
-        _adminService.Create(args);
+        _adminService.Create(_validUserModel);
 
         // Assert
         _userRepository.Verify(x => x.Add(It.Is<User>(a =>
-            a.Name == args.Name &&
-            a.Surname == args.Surname &&
-            a.Email == args.Email &&
-            a.Password == args.Password &&
-            a.Role.ToString() == args.Role)));
+            a.Name == _validUserModel.Name &&
+            a.Surname == _validUserModel.Surname &&
+            a.Email == _validUserModel.Email &&
+            a.Password == _validUserModel.Password &&
+            a.Role.ToString() == _validUserModel.Role)));
     }
     #endregion
     #endregion
@@ -99,11 +103,11 @@ public sealed class AdminServiceTests
     public void Delete_WhenDoesNotExist_ThrowsException()
     {
         // Arrange
-        var args = "email";
+        var email = "email";
         _userRepository.Setup(x => x.Exists(It.IsAny<string>())).Returns(false);
 
         // Act
-        var act = () => _adminService.Delete(args);
+        var act = () => _adminService.Delete(email);
 
         // Assert
         act.Should().Throw<Exception>().WithMessage("Admin does not exist.");
@@ -114,15 +118,15 @@ public sealed class AdminServiceTests
     public void Delete_WhenArgumentsAreValid_DeletesAdmin()
     {
         // Arrange
-        var args = "email";
+        var email = "email";
         _userRepository.Setup(x => x.Exists(It.IsAny<string>())).Returns(true);
         _userRepository.Setup(x => x.Delete(It.IsAny<string>()));
 
         // Act
-        _adminService.Delete(args);
+        _adminService.Delete(email);
 
         // Assert
-        _userRepository.Verify(x => x.Delete(It.Is<string>(a => a == args)));
+        _userRepository.Verify(x => x.Delete(It.Is<string>(a => a == email)));
     }
     #endregion
     #endregion
@@ -133,7 +137,7 @@ public sealed class AdminServiceTests
     public void CreateBusinessOwner_WhenAlreadyExists_ThrowsException()
     {
         // Arrange
-        var args = new UserModel
+        var businessOwnerModel = new UserModel
         {
             Name = "name",
             Surname = "surname",
@@ -144,7 +148,7 @@ public sealed class AdminServiceTests
         _userRepository.Setup(x => x.Exists(It.IsAny<string>())).Returns(true);
 
         // Act
-        var act = () => _adminService.CreateBusinessOwner(args);
+        var act = () => _adminService.CreateBusinessOwner(businessOwnerModel);
 
         // Assert
         act.Should().Throw<Exception>().WithMessage("User already exists.");
@@ -156,7 +160,7 @@ public sealed class AdminServiceTests
     public void CreateBusinessOwner_WhenArgumentsAreValid_CreatesBusinessOwner()
     {
         // Arrange
-        var args = new UserModel
+        var businessOwnerModel = new UserModel
         {
             Name = "name",
             Surname = "surname",
@@ -168,15 +172,15 @@ public sealed class AdminServiceTests
         _userRepository.Setup(x => x.Add(It.IsAny<User>()));
 
         // Act
-        _adminService.CreateBusinessOwner(args);
+        _adminService.CreateBusinessOwner(businessOwnerModel);
 
         // Assert
         _userRepository.Verify(x => x.Add(It.Is<User>(a =>
-            a.Name == args.Name &&
-            a.Surname == args.Surname &&
-            a.Email == args.Email &&
-            a.Password == args.Password &&
-            a.Role.ToString() == args.Role)));
+            a.Name == businessOwnerModel.Name &&
+            a.Surname == businessOwnerModel.Surname &&
+            a.Email == businessOwnerModel.Email &&
+            a.Password == businessOwnerModel.Password &&
+            a.Role.ToString() == businessOwnerModel.Role)));
     }
     #endregion
     #endregion
@@ -188,11 +192,9 @@ public sealed class AdminServiceTests
     public void GetUsers_WhenCalled_ReturnsUserList()
     {
         // Arrange
-        var pageSize = 10;
-        var currentPage = 1;
         var users = new List<User>
         {
-            new User("name", "surname", "admin@email.com", "password", "Admin"),
+            _validUser,
             new User("name2", "surname2", "business@email.com", "password", "BusinessOwner")
         };
         var userList = new List<ListUserModel>
@@ -214,16 +216,16 @@ public sealed class AdminServiceTests
                 CreatedAt = DateOnly.FromDateTime(DateTime.Now)
             }
         };
-        _userRepository.Setup(x => x.GetUsers(currentPage, pageSize, null, null)).Returns(users);
+        _userRepository.Setup(x => x.GetUsers(_defaultCurrentPage, _defaultPageSize, null, null)).Returns(users);
 
         // Act
-        var result = _adminService.GetUsers(currentPage, pageSize);
+        var result = _adminService.GetUsers(_defaultCurrentPage, _defaultPageSize);
 
         // Assert
         result.Should().BeEquivalentTo(userList);
         _userRepository.Verify(x => x.GetUsers(
-            It.Is<int>(a => a == currentPage),
-            It.Is<int>(a => a == pageSize),
+            It.Is<int>(a => a == _defaultCurrentPage),
+            It.Is<int>(a => a == _defaultPageSize),
             It.Is<string>(a => true),
             It.Is<string>(a => true)));
     }
@@ -234,7 +236,7 @@ public sealed class AdminServiceTests
         // Arrange
         var users = new List<User>
         {
-            new User("name", "surname", "admin@email.com", "password", "Admin"),
+            _validUser,
             new User("name2", "surname2", "business@email.com", "password", "BusinessOwner")
         };
         var userList = new List<ListUserModel>
@@ -276,7 +278,7 @@ public sealed class AdminServiceTests
         // Arrange
         var users = new List<User>
         {
-            new User("name", "surname", "admin@email.com", "password", "Admin"),
+            _validUser,
             new User("name2", "surname2", "business@email.com", "password", "BusinessOwner")
         };
         var userList = new List<ListUserModel>
@@ -292,7 +294,7 @@ public sealed class AdminServiceTests
         };
         var filter = "name surname";
         _userRepository.Setup(x => x.GetUsers(_defaultCurrentPage, _defaultPageSize, filter, null)).
-            Returns([users[0]]);
+            Returns(new List<User> { users[0] });
 
         // Act
         var result = _adminService.GetUsers(fullNameFilter: filter);
@@ -312,7 +314,7 @@ public sealed class AdminServiceTests
         // Arrange
         var users = new List<User>
         {
-            new User("name", "surname", "admin@email.com", "password", "Admin"),
+            _validUser,
             new User("name2", "surname2", "business@email.com", "password", "BusinessOwner")
         };
         var userList = new List<ListUserModel>
@@ -328,7 +330,7 @@ public sealed class AdminServiceTests
         };
         var filter = "BusinessOwner";
         _userRepository.Setup(x => x.GetUsers(_defaultCurrentPage, _defaultPageSize, null, filter)).
-            Returns([users[1]]);
+            Returns(new List<User> { users[1] });
 
         // Act
         var result = _adminService.GetUsers(roleFilter: filter);

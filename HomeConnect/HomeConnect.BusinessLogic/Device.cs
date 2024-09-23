@@ -15,11 +15,7 @@ public class Device
         get => _name;
         set
         {
-            if (value == string.Empty)
-            {
-                throw new ArgumentException("Name is missing.");
-            }
-
+            EnsureFieldIsNotEmpty("Name", value);
             _name = value;
         }
     }
@@ -31,11 +27,7 @@ public class Device
         get => _description;
         set
         {
-            if (value == string.Empty)
-            {
-                throw new ArgumentException("Description is missing.");
-            }
-
+            EnsureFieldIsNotEmpty("Description", value);
             _description = value;
         }
     }
@@ -45,11 +37,7 @@ public class Device
         get => _mainPhoto;
         set
         {
-            if (value == string.Empty)
-            {
-                throw new ArgumentException("Main photo is missing.");
-            }
-
+            EnsureFieldIsNotEmpty("MainPhoto", value);
             EnsurePhotoUrlIsValid(value);
             _mainPhoto = value;
         }
@@ -70,11 +58,7 @@ public class Device
         get => _type;
         set
         {
-            if (value == string.Empty)
-            {
-                throw new ArgumentException("Type is missing.");
-            }
-
+            EnsureFieldIsNotEmpty("Type", value);
             _type = value;
         }
     }
@@ -95,6 +79,14 @@ public class Device
         if (!Uri.IsWellFormedUriString(photoUrl, UriKind.Absolute))
         {
             throw new ArgumentException($"{photoUrl} is not a valid image URL");
+        }
+    }
+
+    private static void EnsureFieldIsNotEmpty(string field, string value)
+    {
+        if (value == string.Empty)
+        {
+            throw new ArgumentException($"{field} is missing");
         }
     }
 }

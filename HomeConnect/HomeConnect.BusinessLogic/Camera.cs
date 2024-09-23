@@ -24,7 +24,7 @@ public class Camera : Device
     {
         if (!IsExterior && !IsInterior)
         {
-            throw new ArgumentException("Camera must be either exterior or interior.");
+            throw new ArgumentException("Camera must be either exterior or interior");
         }
     }
 }

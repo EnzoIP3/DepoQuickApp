@@ -118,7 +118,7 @@ public sealed class AdminServiceTests
         act.Should().Throw<Exception>().WithMessage("Admin does not exist.");
     }
     #endregion
-    #region Success
+    #region Success 
     [TestMethod]
     public void Delete_WhenArgumentsAreValid_DeletesAdmin()
     {

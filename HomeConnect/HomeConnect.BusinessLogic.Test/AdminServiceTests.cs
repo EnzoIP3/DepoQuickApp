@@ -118,15 +118,15 @@ public sealed class AdminServiceTests
     public void Delete_WhenArgumentsAreValid_DeletesAdmin()
     {
         // Arrange
-        var email = "email";
+        var _email = "email";
         _userRepository.Setup(x => x.Exists(It.IsAny<string>())).Returns(true);
         _userRepository.Setup(x => x.Delete(It.IsAny<string>()));
 
         // Act
-        _adminService.Delete(email);
+        _adminService.Delete(_email);
 
         // Assert
-        _userRepository.Verify(x => x.Delete(It.Is<string>(a => a == email)));
+        _userRepository.Verify(x => x.Delete(It.Is<string>(a => a == _email)));
     }
     #endregion
     #endregion

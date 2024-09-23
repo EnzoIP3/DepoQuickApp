@@ -385,5 +385,46 @@ public sealed class AdminServiceTests
             It.Is<int>(a => a == _defaultCurrentPage),
             It.Is<int>(a => a == _defaultPageSize)));
     }
+
+    [TestMethod]
+    public void GetBusiness_WhenCalledWithoutCurrentPageOrPageSize_ReturnsBusinessListWithDefaultValues()
+    {
+        // Arrange
+        var owner = new User("name", "surname", "email@email.com", "password", "BusinessOwner");
+        var otherOwner = new User("name2", "surname2", "email2@email.com", "password2", "BusinessOwner");
+
+        var businesses = new List<Business>
+        {
+            new Business("123456789123", "name", owner),
+            new Business("123456789456", "name2", otherOwner)
+        };
+        var businessList = new List<ListBusinessModel>
+        {
+            new ListBusinessModel
+            {
+                Name = "name",
+                OwnerEmail = owner.Email,
+                OwnerFullName = $"{owner.Name} {owner.Surname}",
+                Rut = "123456789123"
+            },
+            new ListBusinessModel
+            {
+                Name = "name2",
+                OwnerEmail = otherOwner.Email,
+                OwnerFullName = $"{otherOwner.Name} {otherOwner.Surname}",
+                Rut = "123456789456"
+            }
+        };
+        _businessRepository.Setup(x => x.GetBusinesses(_defaultCurrentPage, _defaultPageSize)).Returns(businesses);
+
+        // Act
+        var result = _adminService.GetBusiness();
+
+        // Assert
+        result.Should().BeEquivalentTo(businessList);
+        _businessRepository.Verify(x => x.GetBusinesses(
+            It.Is<int>(a => a == _defaultCurrentPage),
+            It.Is<int>(a => a == _defaultPageSize)));
+    }
     #endregion
 }

@@ -36,7 +36,7 @@ public class UserTests
         var act = () => new User(name, surname, email, password, role);
 
         // Assert
-        act.Should().Throw<Exception>().WithMessage("Arguments cannot be blank.");
+        act.Should().Throw<Exception>().WithMessage("* cannot be blank.");
     }
 
     [TestMethod]
@@ -46,7 +46,7 @@ public class UserTests
         var act = () => new User(_name, _surname, "email.com", _password, _role);
 
         // Assert
-        act.Should().Throw<Exception>().WithMessage("Email format invalid.");
+        act.Should().Throw<ArgumentException>().WithMessage("Email format invalid.");
     }
 
     [TestMethod]

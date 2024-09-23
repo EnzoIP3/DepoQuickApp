@@ -14,11 +14,7 @@ public class User
         get => _name;
         private init
         {
-            if (string.IsNullOrEmpty(value) || string.IsNullOrWhiteSpace(value))
-            {
-                throw new Exception("Arguments cannot be blank.");
-            }
-
+            ValidateNotEmpty(value, nameof(Name));
             _name = value;
         }
     }
@@ -28,11 +24,7 @@ public class User
         get => _surname;
         private init
         {
-            if (string.IsNullOrEmpty(value) || string.IsNullOrWhiteSpace(value))
-            {
-                throw new Exception("Arguments cannot be blank.");
-            }
-
+            ValidateNotEmpty(value, nameof(Surname));
             _surname = value;
         }
     }
@@ -42,15 +34,11 @@ public class User
         get => _email;
         private init
         {
-            if (string.IsNullOrEmpty(value) || string.IsNullOrWhiteSpace(value))
-            {
-                throw new Exception("Arguments cannot be blank.");
-            }
-
+            ValidateNotEmpty(value, nameof(Email));
             const string emailPattern = @"^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$";
             if (!Regex.IsMatch(value, emailPattern))
             {
-                throw new Exception("Email format invalid.");
+                throw new ArgumentException("Email format invalid.");
             }
 
             _email = value;
@@ -62,6 +50,7 @@ public class User
         get => _password;
         private init
         {
+            ValidateNotEmpty(value, nameof(Password));
             ValidatePassword(value);
             _password = value;
         }
@@ -84,19 +73,19 @@ public class User
 
     private static void EnsureRoleIsValid(string role)
     {
-        if (string.IsNullOrEmpty(role) || string.IsNullOrWhiteSpace(role))
+        ValidateNotEmpty(role, nameof(Role));
+    }
+
+    private static void ValidateNotEmpty(string value, string propertyName)
+    {
+        if (string.IsNullOrEmpty(value) || string.IsNullOrWhiteSpace(value))
         {
-            throw new Exception("Arguments cannot be blank.");
+            throw new Exception($"{propertyName} cannot be blank.");
         }
     }
 
     private static void ValidatePassword(string password)
     {
-        if (string.IsNullOrEmpty(password) || string.IsNullOrWhiteSpace(password))
-        {
-            throw new Exception("Arguments cannot be blank.");
-        }
-
         if (!ContainsCapitalLetter(password))
         {
             throw new Exception("Password must contain at least one capital letter.");

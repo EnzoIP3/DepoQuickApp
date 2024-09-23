@@ -68,6 +68,16 @@ public class UserTests
         // Assert
         act.Should().Throw<Exception>().WithMessage("Password must contain at least one digit.");
     }
+
+    [TestMethod]
+    public void Constructor_WhenPasswordHasNoSpecialCharacter_ThrowsException()
+    {
+        // Act
+        var act = () => new User(_name, _surname, _email, "Password100", _role);
+
+        // Assert
+        act.Should().Throw<Exception>().WithMessage("Password must contain at least one special character.");
+    }
     #endregion
     #region Success
 

@@ -69,6 +69,7 @@ public class User
 
             const string capitalLetterPattern = @"[A-Z]";
             const string digitPattern = @"\d";
+            const string specialCharacterPattern = @"[\W_]";
 
             if (!Regex.IsMatch(value, capitalLetterPattern))
             {
@@ -78,6 +79,11 @@ public class User
             if (!Regex.IsMatch(value, digitPattern))
             {
                 throw new Exception("Password must contain at least one digit.");
+            }
+
+            if (!Regex.IsMatch(value, specialCharacterPattern))
+            {
+                throw new Exception("Password must contain at least one special character.");
             }
 
             _password = value;

@@ -14,11 +14,11 @@ public sealed class AdminServiceTests
     private int _defaultCurrentPage = 1;
     private UserModel _validUserModel = new UserModel
     {
-        Name = string.Empty,
-        Surname = string.Empty,
-        Email = string.Empty,
-        Password = string.Empty,
-        Role = string.Empty
+        Name = "name",
+        Surname = "surname",
+        Email = "email@email.com",
+        Password = "password",
+        Role = "Admin"
     };
     private User _validUser = null!;
     private User _owner = null!;
@@ -30,17 +30,7 @@ public sealed class AdminServiceTests
         _userRepository = new Mock<IUserRepository>(MockBehavior.Strict);
         _businessRepository = new Mock<IBusinessRepository>(MockBehavior.Strict);
         _adminService = new AdminService(_userRepository.Object, _businessRepository.Object);
-
-        _validUserModel = new UserModel
-        {
-            Name = "name",
-            Surname = "surname",
-            Email = "email@email.com",
-            Password = "password",
-            Role = "Admin"
-        };
         _validUser = new User(_validUserModel.Name, _validUserModel.Surname, _validUserModel.Email, _validUserModel.Password, _validUserModel.Role);
-
         _owner = new User("name", "surname", "email@email.com", "password", "BusinessOwner");
         _otherOwner = new User("name2", "surname2", "email2@email.com", "password2", "BusinessOwner");
     }
@@ -118,7 +108,7 @@ public sealed class AdminServiceTests
         act.Should().Throw<Exception>().WithMessage("Admin does not exist.");
     }
     #endregion
-    #region Success 
+    #region Success
     [TestMethod]
     public void Delete_WhenArgumentsAreValid_DeletesAdmin()
     {

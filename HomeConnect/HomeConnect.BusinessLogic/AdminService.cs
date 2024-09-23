@@ -77,11 +77,11 @@ public class AdminService
         }).ToList();
     }
 
-    public List<ListBusinessModel> GetBusiness(int? currentPage = null, int? pageSize = null)
+    public List<ListBusinessModel> GetBusiness(int? currentPage = null, int? pageSize = null, string? fullNameFilter = null)
     {
         currentPage ??= 1;
         pageSize ??= 10;
-        var businesses = BusinessRepository.GetBusinesses((int)currentPage, (int)pageSize);
+        var businesses = BusinessRepository.GetBusinesses((int)currentPage, (int)pageSize, fullNameFilter);
         return businesses.Select(x => new ListBusinessModel
         {
             Rut = x.Rut,

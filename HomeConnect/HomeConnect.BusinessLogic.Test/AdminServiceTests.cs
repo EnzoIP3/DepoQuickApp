@@ -12,8 +12,17 @@ public sealed class AdminServiceTests
     private AdminService _adminService = null!;
     private int _defaultPageSize = 10;
     private int _defaultCurrentPage = 1;
-    private UserModel _validUserModel = new UserModel();
+    private UserModel _validUserModel = new UserModel
+    {
+        Name = string.Empty,
+        Surname = string.Empty,
+        Email = string.Empty,
+        Password = string.Empty,
+        Role = string.Empty
+    };
     private User _validUser = null!;
+    private User _owner = null!;
+    private User _otherOwner = null!;
 
     [TestInitialize]
     public void Initialize()
@@ -30,14 +39,10 @@ public sealed class AdminServiceTests
             Password = "password",
             Role = "Admin"
         };
+        _validUser = new User(_validUserModel.Name, _validUserModel.Surname, _validUserModel.Email, _validUserModel.Password, _validUserModel.Role);
 
-        _validUser = new User(
-            _validUserModel.Name,
-            _validUserModel.Surname,
-            _validUserModel.Email,
-            _validUserModel.Password,
-            _validUserModel.Role
-        );
+        _owner = new User("name", "surname", "email@email.com", "password", "BusinessOwner");
+        _otherOwner = new User("name2", "surname2", "email2@email.com", "password2", "BusinessOwner");
     }
 
     #region Create
@@ -118,15 +123,15 @@ public sealed class AdminServiceTests
     public void Delete_WhenArgumentsAreValid_DeletesAdmin()
     {
         // Arrange
-        var _email = "email";
+        var email = "email";
         _userRepository.Setup(x => x.Exists(It.IsAny<string>())).Returns(true);
         _userRepository.Setup(x => x.Delete(It.IsAny<string>()));
 
         // Act
-        _adminService.Delete(_email);
+        _adminService.Delete(email);
 
         // Assert
-        _userRepository.Verify(x => x.Delete(It.Is<string>(a => a == _email)));
+        _userRepository.Verify(x => x.Delete(It.Is<string>(a => a == email)));
     }
     #endregion
     #endregion
@@ -195,7 +200,7 @@ public sealed class AdminServiceTests
         var users = new List<User>
         {
             _validUser,
-            new User("name2", "surname2", "business@email.com", "password", "BusinessOwner")
+            _otherOwner
         };
         var userList = new List<ListUserModel>
         {
@@ -237,7 +242,7 @@ public sealed class AdminServiceTests
         var users = new List<User>
         {
             _validUser,
-            new User("name2", "surname2", "business@email.com", "password", "BusinessOwner")
+            _otherOwner
         };
         var userList = new List<ListUserModel>
         {
@@ -279,7 +284,7 @@ public sealed class AdminServiceTests
         var users = new List<User>
         {
             _validUser,
-            new User("name2", "surname2", "business@email.com", "password", "BusinessOwner")
+            _otherOwner
         };
         var userList = new List<ListUserModel>
         {
@@ -315,7 +320,7 @@ public sealed class AdminServiceTests
         var users = new List<User>
         {
             _validUser,
-            new User("name2", "surname2", "business@email.com", "password", "BusinessOwner")
+            _otherOwner
         };
         var userList = new List<ListUserModel>
         {
@@ -351,28 +356,25 @@ public sealed class AdminServiceTests
     public void GetBusiness_WhenCalled_ReturnsBusinessList()
     {
         // Arrange
-        var owner = new User("name", "surname", "email@email.com", "password", "BusinessOwner");
-        var otherOwner = new User("name2", "surname2", "email2@email.com", "password2", "BusinessOwner");
-
         var businesses = new List<Business>
         {
-            new Business("123456789123", "name", owner),
-            new Business("123456789456", "name2", otherOwner)
+            new Business("123456789123", "name", _owner),
+            new Business("123456789456", "name2", _otherOwner)
         };
         var businessList = new List<ListBusinessModel>
         {
             new ListBusinessModel
             {
                 Name = "name",
-                OwnerEmail = owner.Email,
-                OwnerFullName = $"{owner.Name} {owner.Surname}",
+                OwnerEmail = _owner.Email,
+                OwnerFullName = $"{_owner.Name} {_owner.Surname}",
                 Rut = "123456789123"
             },
             new ListBusinessModel
             {
                 Name = "name2",
-                OwnerEmail = otherOwner.Email,
-                OwnerFullName = $"{otherOwner.Name} {otherOwner.Surname}",
+                OwnerEmail = _otherOwner.Email,
+                OwnerFullName = $"{_otherOwner.Name} {_otherOwner.Surname}",
                 Rut = "123456789456"
             }
         };
@@ -394,28 +396,25 @@ public sealed class AdminServiceTests
     public void GetBusiness_WhenCalledWithoutCurrentPageOrPageSize_ReturnsBusinessListWithDefaultValues()
     {
         // Arrange
-        var owner = new User("name", "surname", "email@email.com", "password", "BusinessOwner");
-        var otherOwner = new User("name2", "surname2", "email2@email.com", "password2", "BusinessOwner");
-
         var businesses = new List<Business>
         {
-            new Business("123456789123", "name", owner),
-            new Business("123456789456", "name2", otherOwner)
+            new Business("123456789123", "name", _owner),
+            new Business("123456789456", "name2", _otherOwner)
         };
         var businessList = new List<ListBusinessModel>
         {
             new ListBusinessModel
             {
                 Name = "name",
-                OwnerEmail = owner.Email,
-                OwnerFullName = $"{owner.Name} {owner.Surname}",
+                OwnerEmail = _owner.Email,
+                OwnerFullName = $"{_owner.Name} {_owner.Surname}",
                 Rut = "123456789123"
             },
             new ListBusinessModel
             {
                 Name = "name2",
-                OwnerEmail = otherOwner.Email,
-                OwnerFullName = $"{otherOwner.Name} {otherOwner.Surname}",
+                OwnerEmail = _otherOwner.Email,
+                OwnerFullName = $"{_otherOwner.Name} {_otherOwner.Surname}",
                 Rut = "123456789456"
             }
         };
@@ -437,26 +436,23 @@ public sealed class AdminServiceTests
     public void GetBusiness_WhenCalledWithFullNameFilter_ReturnsFilteredBusinessList()
     {
         // Arrange
-        var owner = new User("name", "surname", "email@email.com", "password", "BusinessOwner");
-        var otherOwner = new User("name2", "surname2", "email2@email.com", "password2", "BusinessOwner");
-
         var businesses = new List<Business>
         {
-            new Business("123456789123", "name", owner),
-            new Business("123456789456", "name2", otherOwner)
+            new Business("123456789123", "name", _owner),
+            new Business("123456789456", "name2", _otherOwner)
         };
         var businessList = new List<ListBusinessModel>
         {
             new ListBusinessModel
             {
                 Name = "name",
-                OwnerEmail = owner.Email,
-                OwnerFullName = $"{owner.Name} {owner.Surname}",
+                OwnerEmail = _owner.Email,
+                OwnerFullName = $"{_owner.Name} {_owner.Surname}",
                 Rut = "123456789123"
             }
         };
-        var filter = $"{owner.Name} {owner.Surname}";
-        _businessRepository.Setup(x => x.GetBusinesses(_defaultCurrentPage, _defaultPageSize, filter, null)).Returns([businesses[0]]);
+        var filter = $"{_owner.Name} {_owner.Surname}";
+        _businessRepository.Setup(x => x.GetBusinesses(_defaultCurrentPage, _defaultPageSize, filter, null)).Returns(new List<Business> { businesses[0] });
 
         // Act
         var result = _adminService.GetBusiness(fullNameFilter: filter);
@@ -474,26 +470,23 @@ public sealed class AdminServiceTests
     public void GetBusiness_WhenCalledWithNameFilter_ReturnsFilteredBusinessList()
     {
         // Arrange
-        var owner = new User("name", "surname", "email@email.com", "password", "BusinessOwner");
-        var otherOwner = new User("name2", "surname2", "email2@email.com", "password2", "BusinessOwner");
-
         var businesses = new List<Business>
         {
-            new Business("123456789123", "name", owner),
-            new Business("123456789456", "name2", otherOwner)
+            new Business("123456789123", "name", _owner),
+            new Business("123456789456", "name2", _otherOwner)
         };
         var businessList = new List<ListBusinessModel>
         {
             new ListBusinessModel
             {
                 Name = "name2",
-                OwnerEmail = otherOwner.Email,
-                OwnerFullName = $"{otherOwner.Name} {otherOwner.Surname}",
+                OwnerEmail = _otherOwner.Email,
+                OwnerFullName = $"{_otherOwner.Name} {_otherOwner.Surname}",
                 Rut = "123456789456"
             }
         };
         var filter = "name2";
-        _businessRepository.Setup(x => x.GetBusinesses(_defaultCurrentPage, _defaultPageSize, null, filter)).Returns([businesses[1]]);
+        _businessRepository.Setup(x => x.GetBusinesses(_defaultCurrentPage, _defaultPageSize, null, filter)).Returns(new List<Business> { businesses[1] });
 
         // Act
         var result = _adminService.GetBusiness(nameFilter: filter);

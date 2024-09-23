@@ -58,6 +58,16 @@ public class UserTests
         // Assert
         act.Should().Throw<Exception>().WithMessage("Password must contain at least one capital letter.");
     }
+
+    [TestMethod]
+    public void Constructor_WhenPasswordHasNoDigit_ThrowsException()
+    {
+        // Act
+        var act = () => new User(_name, _surname, _email, "Password!", _role);
+
+        // Assert
+        act.Should().Throw<Exception>().WithMessage("Password must contain at least one digit.");
+    }
     #endregion
     #region Success
 

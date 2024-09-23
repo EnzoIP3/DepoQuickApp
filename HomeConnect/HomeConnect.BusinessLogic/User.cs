@@ -70,6 +70,7 @@ public class User
             const string capitalLetterPattern = @"[A-Z]";
             const string digitPattern = @"\d";
             const string specialCharacterPattern = @"[\W_]";
+            const int minLength = 8;
 
             if (!Regex.IsMatch(value, capitalLetterPattern))
             {
@@ -84,6 +85,11 @@ public class User
             if (!Regex.IsMatch(value, specialCharacterPattern))
             {
                 throw new Exception("Password must contain at least one special character.");
+            }
+
+            if (value.Length < minLength)
+            {
+                throw new Exception("Password must be at least 8 characters long.");
             }
 
             _password = value;

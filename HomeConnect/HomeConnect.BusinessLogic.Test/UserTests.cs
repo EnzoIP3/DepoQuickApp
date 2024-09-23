@@ -6,6 +6,22 @@ namespace HomeConnect.BusinessLogic.Test;
 [TestClass]
 public class UserTests
 {
+    private string _name = null!;
+    private string _surname = null!;
+    private string _email = null!;
+    private string _password = null!;
+    private string _role = null!;
+
+    [TestInitialize]
+    public void Initialize()
+    {
+        _name = "name";
+        _surname = "surname";
+        _email = "email@email.com";
+        _password = "password";
+        _role = "Admin";
+    }
+
     #region Constructor
     #region Error
     [TestMethod]
@@ -26,15 +42,8 @@ public class UserTests
     [TestMethod]
     public void Constructor_WhenEmailHasInvalidFormat_ThrowsException()
     {
-        // Arrange
-        var name = "name";
-        var surname = "surname";
-        var email = "email.com";
-        var password = "password";
-        var role = "Admin";
-
         // Act
-        var act = () => new User(name, surname, email, password, role);
+        var act = () => new User(_name, _surname, "email.com", _password, _role);
 
         // Assert
         act.Should().Throw<Exception>().WithMessage("Email format invalid.");
@@ -45,21 +54,14 @@ public class UserTests
     [TestMethod]
     public void Constructor_WhenArgumentsAreValid_SetsProperties()
     {
-        // Arrange
-        var name = "name";
-        var surname = "surname";
-        var email = "email@email.com";
-        var password = "password";
-        var role = "Admin";
-
         // Act
-        var Admin = new User(name, surname, email, password, role);
+        var admin = new User(_name, _surname, _email, _password, _role);
 
         // Assert
-        Admin.Name.Should().Be(name);
-        Admin.Surname.Should().Be(surname);
-        Admin.Email.Should().Be(email);
-        Admin.Password.Should().Be(password);
+        admin.Name.Should().Be(_name);
+        admin.Surname.Should().Be(_surname);
+        admin.Email.Should().Be(_email);
+        admin.Password.Should().Be(_password);
     }
 
     #endregion

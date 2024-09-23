@@ -62,36 +62,7 @@ public class User
         get => _password;
         private init
         {
-            if (string.IsNullOrEmpty(value) || string.IsNullOrWhiteSpace(value))
-            {
-                throw new Exception("Arguments cannot be blank.");
-            }
-
-            const string capitalLetterPattern = @"[A-Z]";
-            const string digitPattern = @"\d";
-            const string specialCharacterPattern = @"[\W_]";
-            const int minLength = 8;
-
-            if (!Regex.IsMatch(value, capitalLetterPattern))
-            {
-                throw new Exception("Password must contain at least one capital letter.");
-            }
-
-            if (!Regex.IsMatch(value, digitPattern))
-            {
-                throw new Exception("Password must contain at least one digit.");
-            }
-
-            if (!Regex.IsMatch(value, specialCharacterPattern))
-            {
-                throw new Exception("Password must contain at least one special character.");
-            }
-
-            if (value.Length < minLength)
-            {
-                throw new Exception("Password must be at least 8 characters long.");
-            }
-
+            ValidatePassword(value);
             _password = value;
         }
     }
@@ -117,5 +88,51 @@ public class User
         {
             throw new Exception("Arguments cannot be blank.");
         }
+    }
+
+    private static void ValidatePassword(string password)
+    {
+        if (string.IsNullOrEmpty(password) || string.IsNullOrWhiteSpace(password))
+        {
+            throw new Exception("Arguments cannot be blank.");
+        }
+
+        if (!ContainsCapitalLetter(password))
+        {
+            throw new Exception("Password must contain at least one capital letter.");
+        }
+
+        if (!ContainsDigit(password))
+        {
+            throw new Exception("Password must contain at least one digit.");
+        }
+
+        if (!ContainsSpecialCharacter(password))
+        {
+            throw new Exception("Password must contain at least one special character.");
+        }
+
+        if (password.Length < 8)
+        {
+            throw new Exception("Password must be at least 8 characters long.");
+        }
+    }
+
+    private static bool ContainsCapitalLetter(string input)
+    {
+        const string capitalLetterPattern = @"[A-Z]";
+        return Regex.IsMatch(input, capitalLetterPattern);
+    }
+
+    private static bool ContainsDigit(string input)
+    {
+        const string digitPattern = @"\d";
+        return Regex.IsMatch(input, digitPattern);
+    }
+
+    private static bool ContainsSpecialCharacter(string input)
+    {
+        const string specialCharacterPattern = @"[\W_]";
+        return Regex.IsMatch(input, specialCharacterPattern);
     }
 }

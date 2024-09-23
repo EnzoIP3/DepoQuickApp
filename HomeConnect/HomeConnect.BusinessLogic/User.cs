@@ -68,9 +68,16 @@ public class User
             }
 
             const string capitalLetterPattern = @"[A-Z]";
+            const string digitPattern = @"\d";
+
             if (!Regex.IsMatch(value, capitalLetterPattern))
             {
                 throw new Exception("Password must contain at least one capital letter.");
+            }
+
+            if (!Regex.IsMatch(value, digitPattern))
+            {
+                throw new Exception("Password must contain at least one digit.");
             }
 
             _password = value;
@@ -79,6 +86,7 @@ public class User
 
     public Role Role { get; private set; }
     public DateOnly CreatedAt { get; private set; }
+
     public User(string name, string surname, string email, string password, string role)
     {
         Name = name;

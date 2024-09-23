@@ -67,6 +67,12 @@ public class User
                 throw new Exception("Arguments cannot be blank.");
             }
 
+            const string capitalLetterPattern = @"[A-Z]";
+            if (!Regex.IsMatch(value, capitalLetterPattern))
+            {
+                throw new Exception("Password must contain at least one capital letter.");
+            }
+
             _password = value;
         }
     }

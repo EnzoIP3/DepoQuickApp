@@ -1,4 +1,5 @@
 using BusinessLogic;
+using FluentAssertions;
 
 namespace HomeConnect.BusinessLogic.Test;
 

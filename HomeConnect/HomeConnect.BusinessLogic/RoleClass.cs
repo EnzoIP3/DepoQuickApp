@@ -13,13 +13,6 @@ public class RoleClass
 
     public object HasPermission(string permission)
     {
-        if (Permissions.Any(p => p.ToString() == permission))
-        {
-            return true;
-        }
-        else
-        {
-            return false;
-        }
+        return Permissions.Any(p => p.ToString() == permission);
     }
 }

@@ -9,6 +9,7 @@ public sealed class AdminServiceTests
 {
     private Mock<IUserRepository> _userRepository = null!;
     private Mock<IBusinessRepository> _businessRepository = null!;
+    private Mock<IRoleRepository> _roleRepository = null!;
     private AdminService _adminService = null!;
     private int _defaultPageSize = 10;
     private int _defaultCurrentPage = 1;
@@ -31,7 +32,8 @@ public sealed class AdminServiceTests
     {
         _userRepository = new Mock<IUserRepository>(MockBehavior.Strict);
         _businessRepository = new Mock<IBusinessRepository>(MockBehavior.Strict);
-        _adminService = new AdminService(_userRepository.Object, _businessRepository.Object);
+        _roleRepository = new Mock<IRoleRepository>(MockBehavior.Strict);
+        _adminService = new AdminService(_userRepository.Object, _businessRepository.Object, _roleRepository.Object);
         var adminRole = new Role("Admin", []);
         var businessOwnerRole = new Role("Business Owner", []);
         _validUser = new User(_validUserModel.Name, _validUserModel.Surname, _validUserModel.Email,
@@ -87,6 +89,7 @@ public sealed class AdminServiceTests
         // Arrange
         _userRepository.Setup(x => x.Exists(It.IsAny<string>())).Returns(false);
         _userRepository.Setup(x => x.Add(It.IsAny<User>()));
+        _roleRepository.Setup(x => x.GetRole(It.IsAny<string>())).Returns(new Role("Admin", []));
 
         // Act
         _adminService.Create(_validUserModel);
@@ -96,7 +99,8 @@ public sealed class AdminServiceTests
             a.Name == _validUserModel.Name &&
             a.Surname == _validUserModel.Surname &&
             a.Email == _validUserModel.Email &&
-            a.Password == _validUserModel.Password)));
+            a.Password == _validUserModel.Password &&
+            a.Role.Name == _validUserModel.Role)));
     }
 
     #endregion
@@ -187,6 +191,7 @@ public sealed class AdminServiceTests
         };
         _userRepository.Setup(x => x.Exists(It.IsAny<string>())).Returns(false);
         _userRepository.Setup(x => x.Add(It.IsAny<User>()));
+        _roleRepository.Setup(x => x.GetRole(It.IsAny<string>())).Returns(new Role(businessOwnerModel.Role, []));
 
         // Act
         _adminService.CreateBusinessOwner(businessOwnerModel);

@@ -4,20 +4,21 @@ public class AdminService
 {
     private IUserRepository UserRepository { get; init; }
     private IBusinessRepository BusinessRepository { get; init; }
+    private IRoleRepository RoleRepository { get; init; }
 
-    public AdminService(IUserRepository userRepository, IBusinessRepository businessRepository)
+    public AdminService(IUserRepository userRepository, IBusinessRepository businessRepository,
+        IRoleRepository roleRepository)
     {
         UserRepository = userRepository;
         BusinessRepository = businessRepository;
+        RoleRepository = roleRepository;
     }
 
     public void Create(UserModel model)
     {
         ValidateAdminModel(model);
         EnsureUserEmailIsUnique(model.Email);
-
-        var role = new Role(model.Role, []);
-
+        var role = RoleRepository.GetRole(model.Role);
         var admin = new User(model.Name, model.Surname, model.Email, model.Password, role);
         UserRepository.Add(admin);
     }
@@ -59,9 +60,7 @@ public class AdminService
     public void CreateBusinessOwner(UserModel model)
     {
         EnsureUserEmailIsUnique(model.Email);
-
-        var role = new Role(model.Role, []);
-
+        var role = RoleRepository.GetRole(model.Role);
         var user = new User(model.Name, model.Surname, model.Email, model.Password, role);
         UserRepository.Add(user);
     }

@@ -10,4 +10,9 @@ public class RoleClass
         Name = name;
         Permissions = permissions;
     }
+
+    public object HasPermission(string createAdmin)
+    {
+        throw new NotImplementedException();
+    }
 }

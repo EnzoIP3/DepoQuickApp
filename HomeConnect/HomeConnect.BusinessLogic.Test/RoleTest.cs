@@ -6,15 +6,11 @@ namespace HomeConnect.BusinessLogic.Test;
 [TestClass]
 public class RoleTest
 {
-    #region Create
-
-    #region Success
-
     [TestMethod]
     public void Constructor_WhenArgumentsAreValid_CreatesInstance()
     {
         // Arrange
-        var name = "Admin";
+        const string name = "Admin";
         var permissions = new List<SystemPermission> { new SystemPermission("create_admin") };
 
         // Act
@@ -24,7 +20,18 @@ public class RoleTest
         act.Should().NotThrow();
     }
 
-    #endregion
+    [TestMethod]
+    public void HasPermission_WhenCalledWithExistingPermission_ReturnsTrue()
+    {
+        // Arrange
+        const string permission = "create_admin";
+        var permissions = new List<SystemPermission> { new SystemPermission(permission) };
+        var role = new RoleClass("Admin", permissions);
 
-    #endregion
+        // Act
+        var result = role.HasPermission(permission);
+
+        // Assert
+        result.Should().Be(true);
+    }
 }

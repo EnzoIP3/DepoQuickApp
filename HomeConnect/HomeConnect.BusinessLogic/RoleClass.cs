@@ -19,7 +19,7 @@ public class RoleClass
         }
         else
         {
-            throw new NotImplementedException();
+            return false;
         }
     }
 }

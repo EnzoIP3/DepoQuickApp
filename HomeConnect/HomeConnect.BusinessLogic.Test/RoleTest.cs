@@ -34,4 +34,19 @@ public class RoleTest
         // Assert
         result.Should().Be(true);
     }
+
+    [TestMethod]
+    public void HasPermission_WhenCalledWithNotExistingPermission_ReturnsFalse()
+    {
+        // Arrange
+        const string permission = "create_admin";
+        var permissions = new List<SystemPermission>();
+        var role = new RoleClass("Admin", permissions);
+
+        // Act
+        var result = role.HasPermission(permission);
+
+        // Assert
+        result.Should().Be(false);
+    }
 }

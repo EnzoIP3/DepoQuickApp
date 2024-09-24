@@ -16,7 +16,9 @@ public class AdminService
         ValidateAdminModel(model);
         EnsureUserEmailIsUnique(model.Email);
 
-        var admin = new User(model.Name, model.Surname, model.Email, model.Password, model.Role);
+        var role = new Role(model.Role, []);
+
+        var admin = new User(model.Name, model.Surname, model.Email, model.Password, role);
         UserRepository.Add(admin);
     }
 
@@ -58,11 +60,14 @@ public class AdminService
     {
         EnsureUserEmailIsUnique(model.Email);
 
-        var user = new User(model.Name, model.Surname, model.Email, model.Password, model.Role);
+        var role = new Role(model.Role, []);
+
+        var user = new User(model.Name, model.Surname, model.Email, model.Password, role);
         UserRepository.Add(user);
     }
 
-    public List<ListUserModel> GetUsers(int? currentPage = null, int? pageSize = null, string? fullNameFilter = null, string? roleFilter = null)
+    public List<ListUserModel> GetUsers(int? currentPage = null, int? pageSize = null, string? fullNameFilter = null,
+        string? roleFilter = null)
     {
         currentPage ??= 1;
         pageSize ??= 10;
@@ -72,7 +77,7 @@ public class AdminService
             Name = x.Name,
             Surname = x.Surname,
             FullName = $"{x.Name} {x.Surname}",
-            Role = x.Role.ToString(),
+            Role = x.Role.Name,
             CreatedAt = x.CreatedAt
         }).ToList();
     }

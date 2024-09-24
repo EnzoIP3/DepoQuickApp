@@ -14,7 +14,7 @@ public class RoleTest
         var permissions = new List<SystemPermission> { new SystemPermission("create_admin") };
 
         // Act
-        var act = () => new RoleClass(name, permissions);
+        var act = () => new Role(name, permissions);
 
         // Assert
         act.Should().NotThrow();
@@ -26,7 +26,7 @@ public class RoleTest
         // Arrange
         const string permission = "create_admin";
         var permissions = new List<SystemPermission> { new SystemPermission(permission) };
-        var role = new RoleClass("Admin", permissions);
+        var role = new Role("Admin", permissions);
 
         // Act
         var result = role.HasPermission(permission);
@@ -41,7 +41,7 @@ public class RoleTest
         // Arrange
         const string permission = "create_admin";
         var permissions = new List<SystemPermission>();
-        var role = new RoleClass("Admin", permissions);
+        var role = new Role("Admin", permissions);
 
         // Act
         var result = role.HasPermission(permission);

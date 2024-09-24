@@ -1,3 +1,4 @@
+using System.ComponentModel.DataAnnotations;
 using System.Text.RegularExpressions;
 
 namespace BusinessLogic;
@@ -29,6 +30,7 @@ public class User
         }
     }
 
+    [Key]
     public string Email
     {
         get => _email;
@@ -56,24 +58,21 @@ public class User
         }
     }
 
-    public Role Role { get; private set; }
-    public DateOnly CreatedAt { get; private set; }
+    public Role Role { get; set; } = new Role();
+    public DateOnly CreatedAt { get; set; }
 
-    public User(string name, string surname, string email, string password, string role)
+    public User()
+    {
+    }
+
+    public User(string name, string surname, string email, string password, Role role)
     {
         Name = name;
         Surname = surname;
         Email = email;
         Password = password;
         CreatedAt = DateOnly.FromDateTime(DateTime.Now);
-
-        EnsureRoleIsValid(role);
-        Role = Enum.Parse<Role>(role);
-    }
-
-    private static void EnsureRoleIsValid(string role)
-    {
-        ValidateNotEmpty(role, nameof(Role));
+        Role = role;
     }
 
     private static void ValidateNotEmpty(string value, string propertyName)

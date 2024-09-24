@@ -10,7 +10,7 @@ public class UserTests
     private string _surname = null!;
     private string _email = null!;
     private string _password = null!;
-    private string _role = null!;
+    private Role _role = new Role("Admin", []);
 
     [TestInitialize]
     public void Initialize()
@@ -19,21 +19,22 @@ public class UserTests
         _surname = "surname";
         _email = "email@email.com";
         _password = "Password#100";
-        _role = "Admin";
     }
 
     #region Constructor
+
     #region Error
+
     [TestMethod]
-    [DataRow("", "surname", "email@email.com", "Password#100", "Admin")]
-    [DataRow("name", "", "email@email.com", "Password#100", "Admin")]
-    [DataRow("name", "surname", "", "Password#100", "Admin")]
-    [DataRow("name", "surname", "email@email.com", "", "Admin")]
-    [DataRow("name", "surname", "email@email.com", "Password#100", "")]
-    public void Constructor_WhenArgumentsAreBlank_ThrowsException(string name, string surname, string email, string password, string role)
+    [DataRow("", "surname", "email@email.com", "Password#100")]
+    [DataRow("name", "", "email@email.com", "Password#100")]
+    [DataRow("name", "surname", "", "Password#100")]
+    [DataRow("name", "surname", "email@email.com", "")]
+    public void Constructor_WhenArgumentsAreBlank_ThrowsException(string name, string surname, string email,
+        string password)
     {
         // Act
-        var act = () => new User(name, surname, email, password, role);
+        var act = () => new User(name, surname, email, password, _role);
 
         // Assert
         act.Should().Throw<Exception>().WithMessage("* cannot be blank.");
@@ -88,7 +89,9 @@ public class UserTests
         // Assert
         act.Should().Throw<Exception>().WithMessage("Password must be at least 8 characters long.");
     }
+
     #endregion
+
     #region Success
 
     [TestMethod]
@@ -103,6 +106,8 @@ public class UserTests
         admin.Email.Should().Be(_email);
         admin.Password.Should().Be(_password);
     }
+
     #endregion
+
     #endregion
 }

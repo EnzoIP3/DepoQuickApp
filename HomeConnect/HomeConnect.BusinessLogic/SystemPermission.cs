@@ -1,8 +1,10 @@
+using System.ComponentModel.DataAnnotations;
+
 namespace BusinessLogic;
 
 public record SystemPermission
 {
-    private string Value { get; init; }
+    [Key] public string Value { get; init; }
 
     public SystemPermission(string value)
     {

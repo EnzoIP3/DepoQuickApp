@@ -12,6 +12,7 @@ public sealed class AdminServiceTests
     private AdminService _adminService = null!;
     private int _defaultPageSize = 10;
     private int _defaultCurrentPage = 1;
+
     private UserModel _validUserModel = new UserModel
     {
         Name = "name",
@@ -20,6 +21,7 @@ public sealed class AdminServiceTests
         Password = "Password#100",
         Role = "Admin"
     };
+
     private User _validUser = null!;
     private User _owner = null!;
     private User _otherOwner = null!;
@@ -30,13 +32,18 @@ public sealed class AdminServiceTests
         _userRepository = new Mock<IUserRepository>(MockBehavior.Strict);
         _businessRepository = new Mock<IBusinessRepository>(MockBehavior.Strict);
         _adminService = new AdminService(_userRepository.Object, _businessRepository.Object);
-        _validUser = new User(_validUserModel.Name, _validUserModel.Surname, _validUserModel.Email, _validUserModel.Password, _validUserModel.Role);
-        _owner = new User("name", "surname", "email@email.com", "Password#100", "BusinessOwner");
-        _otherOwner = new User("name2", "surname2", "email2@email.com", "Password2#100", "BusinessOwner");
+        var adminRole = new Role("Admin", []);
+        var businessOwnerRole = new Role("Business Owner", []);
+        _validUser = new User(_validUserModel.Name, _validUserModel.Surname, _validUserModel.Email,
+            _validUserModel.Password, adminRole);
+        _owner = new User("name", "surname", "email@email.com", "Password#100", businessOwnerRole);
+        _otherOwner = new User("name2", "surname2", "email2@email.com", "Password2#100", businessOwnerRole);
     }
 
     #region Create
+
     #region Error
+
     [TestMethod]
     public void Create_WhenAlreadyExists_ThrowsException()
     {
@@ -69,8 +76,11 @@ public sealed class AdminServiceTests
         // Assert
         act.Should().Throw<ArgumentException>().WithMessage("Invalid input data.");
     }
+
     #endregion
+
     #region Success
+
     [TestMethod]
     public void Create_WhenArgumentsAreValid_CreatesAdmin()
     {
@@ -86,14 +96,17 @@ public sealed class AdminServiceTests
             a.Name == _validUserModel.Name &&
             a.Surname == _validUserModel.Surname &&
             a.Email == _validUserModel.Email &&
-            a.Password == _validUserModel.Password &&
-            a.Role.ToString() == _validUserModel.Role)));
+            a.Password == _validUserModel.Password)));
     }
+
     #endregion
+
     #endregion
 
     #region Delete
+
     #region Error
+
     [TestMethod]
     public void Delete_WhenDoesNotExist_ThrowsException()
     {
@@ -107,8 +120,11 @@ public sealed class AdminServiceTests
         // Assert
         act.Should().Throw<Exception>().WithMessage("Admin does not exist.");
     }
+
     #endregion
+
     #region Success
+
     [TestMethod]
     public void Delete_WhenArgumentsAreValid_DeletesAdmin()
     {
@@ -123,11 +139,15 @@ public sealed class AdminServiceTests
         // Assert
         _userRepository.Verify(x => x.Delete(It.Is<string>(a => a == email)));
     }
+
     #endregion
+
     #endregion
 
     #region CreateBusinessOwner
+
     #region Error
+
     [TestMethod]
     public void CreateBusinessOwner_WhenAlreadyExists_ThrowsException()
     {
@@ -148,9 +168,11 @@ public sealed class AdminServiceTests
         // Assert
         act.Should().Throw<Exception>().WithMessage("User already exists.");
     }
+
     #endregion
 
     #region Success
+
     [TestMethod]
     public void CreateBusinessOwner_WhenArgumentsAreValid_CreatesBusinessOwner()
     {
@@ -161,7 +183,7 @@ public sealed class AdminServiceTests
             Surname = "surname",
             Email = "email@email.com",
             Password = "Password#100",
-            Role = "BusinessOwner"
+            Role = "Business Owner"
         };
         _userRepository.Setup(x => x.Exists(It.IsAny<string>())).Returns(false);
         _userRepository.Setup(x => x.Add(It.IsAny<User>()));
@@ -175,23 +197,22 @@ public sealed class AdminServiceTests
             a.Surname == businessOwnerModel.Surname &&
             a.Email == businessOwnerModel.Email &&
             a.Password == businessOwnerModel.Password &&
-            a.Role.ToString() == businessOwnerModel.Role)));
+            a.Role.Name == businessOwnerModel.Role)));
     }
+
     #endregion
+
     #endregion
 
     #region GetUsers
 
     #region Success
+
     [TestMethod]
     public void GetUsers_WhenCalled_ReturnsUserList()
     {
         // Arrange
-        var users = new List<User>
-        {
-            _validUser,
-            _otherOwner
-        };
+        var users = new List<User> { _validUser, _otherOwner };
         var userList = new List<ListUserModel>
         {
             new ListUserModel
@@ -207,7 +228,7 @@ public sealed class AdminServiceTests
                 Name = "name2",
                 Surname = "surname2",
                 FullName = "name2 surname2",
-                Role = "BusinessOwner",
+                Role = "Business Owner",
                 CreatedAt = DateOnly.FromDateTime(DateTime.Now)
             }
         };
@@ -229,11 +250,7 @@ public sealed class AdminServiceTests
     public void GetUsers_WhenCalledWithoutCurrentPageOrPageSize_ReturnsUserListWithDefaultValues()
     {
         // Arrange
-        var users = new List<User>
-        {
-            _validUser,
-            _otherOwner
-        };
+        var users = new List<User> { _validUser, _otherOwner };
         var userList = new List<ListUserModel>
         {
             new ListUserModel
@@ -249,7 +266,7 @@ public sealed class AdminServiceTests
                 Name = "name2",
                 Surname = "surname2",
                 FullName = "name2 surname2",
-                Role = "BusinessOwner",
+                Role = "Business Owner",
                 CreatedAt = DateOnly.FromDateTime(DateTime.Now)
             }
         };
@@ -271,11 +288,7 @@ public sealed class AdminServiceTests
     public void GetUsers_WhenCalledWithFullNameFilter_ReturnsFilteredUserList()
     {
         // Arrange
-        var users = new List<User>
-        {
-            _validUser,
-            _otherOwner
-        };
+        var users = new List<User> { _validUser, _otherOwner };
         var userList = new List<ListUserModel>
         {
             new ListUserModel
@@ -288,8 +301,8 @@ public sealed class AdminServiceTests
             }
         };
         var filter = "name surname";
-        _userRepository.Setup(x => x.GetUsers(_defaultCurrentPage, _defaultPageSize, filter, null)).
-            Returns(new List<User> { users[0] });
+        _userRepository.Setup(x => x.GetUsers(_defaultCurrentPage, _defaultPageSize, filter, null))
+            .Returns(new List<User> { users[0] });
 
         // Act
         var result = _adminService.GetUsers(fullNameFilter: filter);
@@ -307,11 +320,7 @@ public sealed class AdminServiceTests
     public void GetUsers_WhenCalledWithRoleFilter_ReturnsFilteredUserList()
     {
         // Arrange
-        var users = new List<User>
-        {
-            _validUser,
-            _otherOwner
-        };
+        var users = new List<User> { _validUser, _otherOwner };
         var userList = new List<ListUserModel>
         {
             new ListUserModel
@@ -319,13 +328,13 @@ public sealed class AdminServiceTests
                 Name = "name2",
                 Surname = "surname2",
                 FullName = "name2 surname2",
-                Role = "BusinessOwner",
+                Role = "Business Owner",
                 CreatedAt = DateOnly.FromDateTime(DateTime.Now)
             }
         };
         var filter = "BusinessOwner";
-        _userRepository.Setup(x => x.GetUsers(_defaultCurrentPage, _defaultPageSize, null, filter)).
-            Returns(new List<User> { users[1] });
+        _userRepository.Setup(x => x.GetUsers(_defaultCurrentPage, _defaultPageSize, null, filter))
+            .Returns(new List<User> { users[1] });
 
         // Act
         var result = _adminService.GetUsers(roleFilter: filter);
@@ -338,18 +347,20 @@ public sealed class AdminServiceTests
             It.Is<string>(a => true),
             It.Is<string>(a => a == filter)));
     }
+
     #endregion
+
     #endregion
 
     #region GetBusiness
+
     [TestMethod]
     public void GetBusiness_WhenCalled_ReturnsBusinessList()
     {
         // Arrange
         var businesses = new List<Business>
         {
-            new Business("123456789123", "name", _owner),
-            new Business("123456789456", "name2", _otherOwner)
+            new Business("123456789123", "name", _owner), new Business("123456789456", "name2", _otherOwner)
         };
         var businessList = new List<ListBusinessModel>
         {
@@ -368,7 +379,8 @@ public sealed class AdminServiceTests
                 Rut = "123456789456"
             }
         };
-        _businessRepository.Setup(x => x.GetBusinesses(_defaultCurrentPage, _defaultPageSize, null, null)).Returns(businesses);
+        _businessRepository.Setup(x => x.GetBusinesses(_defaultCurrentPage, _defaultPageSize, null, null))
+            .Returns(businesses);
 
         // Act
         var result = _adminService.GetBusiness(_defaultCurrentPage, _defaultPageSize);
@@ -388,8 +400,7 @@ public sealed class AdminServiceTests
         // Arrange
         var businesses = new List<Business>
         {
-            new Business("123456789123", "name", _owner),
-            new Business("123456789456", "name2", _otherOwner)
+            new Business("123456789123", "name", _owner), new Business("123456789456", "name2", _otherOwner)
         };
         var businessList = new List<ListBusinessModel>
         {
@@ -408,7 +419,8 @@ public sealed class AdminServiceTests
                 Rut = "123456789456"
             }
         };
-        _businessRepository.Setup(x => x.GetBusinesses(_defaultCurrentPage, _defaultPageSize, null, null)).Returns(businesses);
+        _businessRepository.Setup(x => x.GetBusinesses(_defaultCurrentPage, _defaultPageSize, null, null))
+            .Returns(businesses);
 
         // Act
         var result = _adminService.GetBusiness();
@@ -428,8 +440,7 @@ public sealed class AdminServiceTests
         // Arrange
         var businesses = new List<Business>
         {
-            new Business("123456789123", "name", _owner),
-            new Business("123456789456", "name2", _otherOwner)
+            new Business("123456789123", "name", _owner), new Business("123456789456", "name2", _otherOwner)
         };
         var businessList = new List<ListBusinessModel>
         {
@@ -442,7 +453,8 @@ public sealed class AdminServiceTests
             }
         };
         var filter = $"{_owner.Name} {_owner.Surname}";
-        _businessRepository.Setup(x => x.GetBusinesses(_defaultCurrentPage, _defaultPageSize, filter, null)).Returns(new List<Business> { businesses[0] });
+        _businessRepository.Setup(x => x.GetBusinesses(_defaultCurrentPage, _defaultPageSize, filter, null))
+            .Returns(new List<Business> { businesses[0] });
 
         // Act
         var result = _adminService.GetBusiness(fullNameFilter: filter);
@@ -462,8 +474,7 @@ public sealed class AdminServiceTests
         // Arrange
         var businesses = new List<Business>
         {
-            new Business("123456789123", "name", _owner),
-            new Business("123456789456", "name2", _otherOwner)
+            new Business("123456789123", "name", _owner), new Business("123456789456", "name2", _otherOwner)
         };
         var businessList = new List<ListBusinessModel>
         {
@@ -476,7 +487,8 @@ public sealed class AdminServiceTests
             }
         };
         var filter = "name2";
-        _businessRepository.Setup(x => x.GetBusinesses(_defaultCurrentPage, _defaultPageSize, null, filter)).Returns(new List<Business> { businesses[1] });
+        _businessRepository.Setup(x => x.GetBusinesses(_defaultCurrentPage, _defaultPageSize, null, filter))
+            .Returns(new List<Business> { businesses[1] });
 
         // Act
         var result = _adminService.GetBusiness(nameFilter: filter);
@@ -489,5 +501,6 @@ public sealed class AdminServiceTests
             It.Is<string>(a => true),
             It.Is<string>(a => a == filter)));
     }
+
     #endregion
 }

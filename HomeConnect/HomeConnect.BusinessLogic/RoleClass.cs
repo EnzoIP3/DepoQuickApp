@@ -11,8 +11,15 @@ public class RoleClass
         Permissions = permissions;
     }
 
-    public object HasPermission(string createAdmin)
+    public object HasPermission(string permission)
     {
-        throw new NotImplementedException();
+        if (Permissions.Any(p => p.ToString() == permission))
+        {
+            return true;
+        }
+        else
+        {
+            throw new NotImplementedException();
+        }
     }
 }

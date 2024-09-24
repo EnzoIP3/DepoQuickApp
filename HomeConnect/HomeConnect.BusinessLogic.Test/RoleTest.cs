@@ -1,10 +1,9 @@
 using BusinessLogic;
-using FluentAssertions;
 
 namespace HomeConnect.BusinessLogic.Test;
 
 [TestClass]
-public class SystemPermissionTests
+public class RoleTest
 {
     #region Create
 
@@ -14,10 +13,11 @@ public class SystemPermissionTests
     public void Constructor_WhenArgumentsAreValid_CreatesInstance()
     {
         // Arrange
-        const string value = "create_admin";
+        var name = "Admin";
+        var permissions = new List<SystemPermission> { new SystemPermission("create_admin") };
 
         // Act
-        var act = () => new SystemPermission(value);
+        var act = () => new RoleClass(name, permissions);
 
         // Assert
         act.Should().NotThrow();

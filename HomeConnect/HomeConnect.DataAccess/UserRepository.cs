@@ -34,7 +34,12 @@ public class UserRepository : IUserRepository
 
     public void Delete(string email)
     {
-        throw new NotImplementedException();
+        var user = _context.Users.FirstOrDefault(u => u.Email == email);
+        if (user != null)
+        {
+            _context.Users.Remove(user);
+            _context.SaveChanges();
+        }
     }
 
     public List<User> GetUsers(int currentPage, int pageSize, string? fullNameFilter = null, string? roleFilter = null)

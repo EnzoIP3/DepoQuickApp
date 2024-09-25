@@ -15,11 +15,7 @@ public class BusinessRepository : IBusinessRepository
         string? nameFilter = null)
     {
         IQueryable<Business> query = _context.Businesses;
-
-        if (!string.IsNullOrWhiteSpace(fullNameFilter))
-        {
-            query = query.Where(b => (b.Owner.Name + " " + b.Owner.Surname).Contains(fullNameFilter));
-        }
+        query = FilterByOwnerFullName(fullNameFilter, query);
 
         if (!string.IsNullOrWhiteSpace(nameFilter))
         {
@@ -27,5 +23,15 @@ public class BusinessRepository : IBusinessRepository
         }
 
         return query.Skip((page - 1) * pageSize).Take(pageSize).ToList();
+    }
+
+    private static IQueryable<Business> FilterByOwnerFullName(string? fullNameFilter, IQueryable<Business> query)
+    {
+        if (!string.IsNullOrWhiteSpace(fullNameFilter))
+        {
+            query = query.Where(b => (b.Owner.Name + " " + b.Owner.Surname).Contains(fullNameFilter));
+        }
+
+        return query;
     }
 }

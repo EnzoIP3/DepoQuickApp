@@ -2,6 +2,7 @@ namespace BusinessLogic;
 
 public interface IUserRepository
 {
+    User? GetUser(string email);
     void Add(User user);
     bool Exists(string email);
     void Delete(string email);

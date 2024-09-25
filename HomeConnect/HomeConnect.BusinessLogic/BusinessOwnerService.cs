@@ -8,7 +8,21 @@
 
         public BusinessOwnerService(IUserRepository userRepository, IBusinessRepository businessRepository, IRoleRepository roleRepository)
         {
-            throw new Exception("Not implemented");
+            UserRepository = userRepository;
+            BusinessRepository = businessRepository;
+            RoleRepository = roleRepository;
+        }
+
+        public void CreateBusiness(string ownerEmail, string businessRut, string businessName)
+        {
+            var owner = UserRepository.GetUser(ownerEmail);
+            if (owner == null)
+            {
+                throw new ArgumentException("Owner does not exist");
+            }
+
+            var business = new Business(businessRut, businessName, owner);
+            BusinessRepository.Add(business);
         }
     }
 }

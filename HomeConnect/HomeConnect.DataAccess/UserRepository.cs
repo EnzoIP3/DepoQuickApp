@@ -55,6 +55,10 @@ public class UserRepository : IUserRepository
 
     public List<User> GetUsers(int currentPage, int pageSize, string? fullNameFilter = null, string? roleFilter = null)
     {
-        throw new NotImplementedException();
+        var query = _context.Users;
+        return query
+            .Skip((currentPage - 1) * pageSize)
+            .Take(pageSize)
+            .ToList();
     }
 }

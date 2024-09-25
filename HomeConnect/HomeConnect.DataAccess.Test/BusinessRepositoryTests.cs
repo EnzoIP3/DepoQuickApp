@@ -8,7 +8,11 @@ public class BusinessRepositoryTests
 {
     private readonly Context _context = DbContextBuilder.BuildTestDbContext();
     private BusinessRepository _businessRepository = null!;
-    private User _validUser = new User("Name", "LastName", "test@example.com", "password1M@", new Role());
+    private readonly User _validUser = new User("John", "Doe", "test@example.com", "password1M@", new Role("Role", []));
+
+    private readonly User _otherUser =
+        new User("Jane", "Doe", "test2@example.com", "password1M@", new Role("Role 2", []));
+
     private Business _validBusiness = null!;
     private Business _otherBusiness = null!;
 
@@ -18,7 +22,7 @@ public class BusinessRepositoryTests
         _context.Database.EnsureCreated();
         _businessRepository = new BusinessRepository(_context);
         _validBusiness = new Business("1", "Business", _validUser);
-        _otherBusiness = new Business("2", "Other Business", _validUser);
+        _otherBusiness = new Business("2", "Other Business", _otherUser);
         _context.Businesses.Add(_validBusiness);
         _context.Businesses.Add(_otherBusiness);
         _context.SaveChanges();
@@ -51,6 +55,19 @@ public class BusinessRepositoryTests
 
         // Act
         var result = _businessRepository.GetBusinesses(1, 1);
+
+        // Assert
+        result.Should().BeEquivalentTo(expected);
+    }
+
+    [TestMethod]
+    public void GetBusinesses_WithFullNameFilter_ReturnsFilteredBusinesses()
+    {
+        // Arrange
+        var expected = new List<Business> { _validBusiness };
+
+        // Act
+        var result = _businessRepository.GetBusinesses(1, 2, "John Doe");
 
         // Assert
         result.Should().BeEquivalentTo(expected);

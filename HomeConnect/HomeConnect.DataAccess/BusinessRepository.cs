@@ -13,6 +13,6 @@ public class BusinessRepository
 
     public List<Business> GetBusinesses(int page, int pageSize)
     {
-        return _context.Businesses.ToList();
+        return _context.Businesses.Skip((page - 1) * pageSize).Take(pageSize).ToList();
     }
 }

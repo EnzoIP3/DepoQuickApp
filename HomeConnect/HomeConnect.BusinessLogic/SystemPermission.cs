@@ -4,7 +4,8 @@ namespace BusinessLogic;
 
 public record SystemPermission
 {
-    [Key] public string Value { get; init; }
+    [Key]
+    public string Value { get; init; }
 
     public SystemPermission(string value)
     {

@@ -32,6 +32,10 @@ public class UserRepositoryTest
         _context.Database.EnsureDeleted();
     }
 
+    #region Exists
+
+    #region Success
+
     [TestMethod]
     public void Exists_WhenUserExists_ReturnsTrue()
     {
@@ -41,6 +45,14 @@ public class UserRepositoryTest
         // Assert
         result.Should().BeTrue();
     }
+
+    #endregion
+
+    #endregion
+
+    #region Add
+
+    #region Success
 
     [TestMethod]
     public void Add_WhenUserDoesNotExist_AddsUser()
@@ -56,6 +68,10 @@ public class UserRepositoryTest
         exists.Should().BeTrue();
     }
 
+    #endregion
+
+    #region Error
+
     [TestMethod]
     public void Add_WhenUserAlreadyExists_ThrowsException()
     {
@@ -69,6 +85,14 @@ public class UserRepositoryTest
         act.Should().Throw<ArgumentException>();
     }
 
+    #endregion
+
+    #endregion
+
+    #region Delete
+
+    #region Success
+
     [TestMethod]
     public void Delete_WhenUserExists_DeletesUser()
     {
@@ -79,6 +103,10 @@ public class UserRepositoryTest
         _userRepository.Exists(ValidUserEmail).Should().BeFalse();
     }
 
+    #endregion
+
+    #region Error
+
     [TestMethod]
     public void Delete_WhenUserDoesNotExist_ThrowsException()
     {
@@ -88,6 +116,14 @@ public class UserRepositoryTest
         // Assert
         act.Should().Throw<ArgumentException>();
     }
+
+    #endregion
+
+    #endregion
+
+    #region GetUsers
+
+    #region Success
 
     [TestMethod]
     public void GetUsers_WhenCalled_ReturnsPaginatedUsers()
@@ -121,4 +157,8 @@ public class UserRepositoryTest
         result.Should().HaveCount(1);
         result.First().Email.Should().Be(ValidUserEmail);
     }
+
+    #endregion
+
+    #endregion
 }

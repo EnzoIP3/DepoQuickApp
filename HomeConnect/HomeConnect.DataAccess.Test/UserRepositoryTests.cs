@@ -77,4 +77,14 @@ public class UserRepositoryTest
         // Assert
         _userRepository.Exists(ValidUserEmail).Should().BeFalse();
     }
+
+    [TestMethod]
+    public void Delete_WhenUserDoesNotExist_ThrowsException()
+    {
+        // Act
+        var act = () => _userRepository.Delete("nonexistent@example.com");
+
+        // Assert
+        act.Should().Throw<ArgumentException>();
+    }
 }

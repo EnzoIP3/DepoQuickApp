@@ -13,6 +13,6 @@ public class BusinessRepository
 
     public List<Business> GetBusinesses(int page, int pageSize)
     {
-        throw new NotImplementedException();
+        return _context.Businesses.ToList();
     }
 }

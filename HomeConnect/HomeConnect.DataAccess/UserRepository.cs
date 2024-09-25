@@ -56,20 +56,31 @@ public class UserRepository : IUserRepository
     public List<User> GetUsers(int currentPage, int pageSize, string? fullNameFilter = null, string? roleFilter = null)
     {
         IQueryable<User> query = _context.Users;
+        query = FilterByFullName(fullNameFilter, query);
+        query = FilterByRole(roleFilter, query);
+        return query
+            .Skip((currentPage - 1) * pageSize)
+            .Take(pageSize)
+            .ToList();
+    }
 
-        if (!string.IsNullOrEmpty(fullNameFilter))
-        {
-            query = query.Where(u => (u.Name + " " + u.Surname).Contains(fullNameFilter));
-        }
-
+    private static IQueryable<User> FilterByRole(string? roleFilter, IQueryable<User> query)
+    {
         if (!string.IsNullOrEmpty(roleFilter))
         {
             query = query.Where(u => u.Role.Name == roleFilter);
         }
 
-        return query
-            .Skip((currentPage - 1) * pageSize)
-            .Take(pageSize)
-            .ToList();
+        return query;
+    }
+
+    private static IQueryable<User> FilterByFullName(string? fullNameFilter, IQueryable<User> query)
+    {
+        if (!string.IsNullOrEmpty(fullNameFilter))
+        {
+            query = query.Where(u => (u.Name + " " + u.Surname).Contains(fullNameFilter));
+        }
+
+        return query;
     }
 }

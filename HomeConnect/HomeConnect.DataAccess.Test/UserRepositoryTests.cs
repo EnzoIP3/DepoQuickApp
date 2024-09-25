@@ -40,4 +40,18 @@ public class UserRepositoryTest
         // Assert
         result.Should().BeTrue();
     }
+
+    [TestMethod]
+    public void Add_WhenUserDoesNotExist_AddsUser()
+    {
+        // Arrange
+        var user = new User("Name", "Surname", "test@example.com", "12345678", new Role("Role", []));
+
+        // Act
+        _userRepository.Add(user);
+        var exists = _userRepository.Exists(user.Email);
+
+        // Assert
+        exists.Should().BeTrue();
+    }
 }

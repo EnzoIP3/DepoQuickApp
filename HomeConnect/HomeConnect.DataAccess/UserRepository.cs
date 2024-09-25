@@ -61,7 +61,8 @@ public class UserRepository : IUserRepository
         {
             query = query.Where(u => (u.Name + " " + u.Surname).Contains(fullNameFilter));
         }
-        else if (!string.IsNullOrEmpty(roleFilter))
+
+        if (!string.IsNullOrEmpty(roleFilter))
         {
             query = query.Where(u => u.Role.Name == roleFilter);
         }

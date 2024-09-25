@@ -16,8 +16,8 @@ public class UserRepositoryTest
     public void Initialize()
     {
         _context.Database.EnsureCreated();
-        var adminRole = _context.Set<Role>().First(r => r.Name == "Admin");
-        var businessOwnerRole = _context.Set<Role>().First(r => r.Name == "Business Owner");
+        var adminRole = _context.Roles.First(r => r.Name == "Admin");
+        var businessOwnerRole = _context.Roles.First(r => r.Name == "Business Owner");
         _userRepository = new UserRepository(_context);
         _validUser = new User("John", "Doe", ValidUserEmail, "Password#100", adminRole);
         _otherUser = new User("Jane", "Doe", "jane.doe@example.com", "Password#200", businessOwnerRole);

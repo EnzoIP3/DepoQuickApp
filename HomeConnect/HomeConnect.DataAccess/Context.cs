@@ -8,6 +8,7 @@ public class Context(DbContextOptions<Context> options) : DbContext(options)
     public DbSet<User> Users { get; set; }
     public DbSet<SystemPermission> Permissions { get; set; }
     public DbSet<Role> Roles { get; set; }
+    public DbSet<Business> Businesses { get; set; }
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {

@@ -1,0 +1,45 @@
+using BusinessLogic;
+using FluentAssertions;
+
+namespace HomeConnect.DataAccess.Test;
+
+[TestClass]
+public class BusinessRepositoryTests
+{
+    private readonly Context _context = DbContextBuilder.BuildTestDbContext();
+    private BusinessRepository _businessRepository = null!;
+    private User _validUser = new User("Name", "LastName", "test@example.com", "password1M@", new Role());
+    private Business _validBusiness = null!;
+    private Business _otherBusiness = null!;
+
+    [TestInitialize]
+    public void Initialize()
+    {
+        _context.Database.EnsureCreated();
+        _businessRepository = new BusinessRepository(_context);
+        _validBusiness = new Business("1", "Business", _validUser);
+        _otherBusiness = new Business("2", "Other Business", _validUser);
+        _context.Businesses.Add(_validBusiness);
+        _context.Businesses.Add(_otherBusiness);
+        _context.SaveChanges();
+    }
+
+    [TestCleanup]
+    public void Cleanup()
+    {
+        _context.Database.EnsureDeleted();
+    }
+
+    [TestMethod]
+    public void GetBusinesses_WithNoFilters_ReturnsAllBusinesses()
+    {
+        // Arrange
+        var expected = new List<Business> { _validBusiness, _otherBusiness };
+
+        // Act
+        var result = _businessRepository.GetBusinesses(1, 2);
+
+        // Assert
+        result.Should().BeEquivalentTo(expected);
+    }
+}

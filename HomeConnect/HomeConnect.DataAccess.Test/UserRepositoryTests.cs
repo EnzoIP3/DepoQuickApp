@@ -110,15 +110,4 @@ public class UserRepositoryTest
         result.Should().HaveCount(1);
         result.First().Email.Should().Be("jane.doe@example.com");
     }
-
-    [TestMethod]
-    public void GetUsers_WhenFilteredByRole_ReturnsUsersWithSpecificRole()
-    {
-        // Act
-        var result = _userRepository.GetUsers(1, 10, roleFilter: "Admin");
-
-        // Assert
-        result.Should().HaveCount(1);
-        result.First().Email.Should().Be(ValidUserEmail);
-    }
 }

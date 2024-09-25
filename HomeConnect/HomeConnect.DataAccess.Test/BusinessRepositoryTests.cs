@@ -34,6 +34,8 @@ public class BusinessRepositoryTests
         _context.Database.EnsureDeleted();
     }
 
+    #region GetBusinesses
+
     [TestMethod]
     public void GetBusinesses_WithNoFilters_ReturnsAllBusinesses()
     {
@@ -98,4 +100,6 @@ public class BusinessRepositoryTests
         // Assert
         result.Should().BeEquivalentTo(expected);
     }
+
+    #endregion
 }

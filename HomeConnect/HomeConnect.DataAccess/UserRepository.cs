@@ -34,13 +34,20 @@ public class UserRepository : IUserRepository
 
     public void Delete(string email)
     {
-        var user = _context.Users.FirstOrDefault(u => u.Email == email);
-        if (user != null)
-        {
-            _context.Users.Remove(user);
-            _context.SaveChanges();
-        }
-        else
+        var user = GetUser(email);
+        EnsureUserIsNotNull(user);
+        _context.Users.Remove(user!);
+        _context.SaveChanges();
+    }
+
+    private User? GetUser(string email)
+    {
+        return _context.Users.FirstOrDefault(u => u.Email == email);
+    }
+
+    private static void EnsureUserIsNotNull(User? user)
+    {
+        if (user == null)
         {
             throw new ArgumentException("User does not exist");
         }

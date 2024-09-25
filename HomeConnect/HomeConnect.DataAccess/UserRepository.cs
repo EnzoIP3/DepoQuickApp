@@ -40,6 +40,10 @@ public class UserRepository : IUserRepository
             _context.Users.Remove(user);
             _context.SaveChanges();
         }
+        else
+        {
+            throw new ArgumentException("User does not exist");
+        }
     }
 
     public List<User> GetUsers(int currentPage, int pageSize, string? fullNameFilter = null, string? roleFilter = null)

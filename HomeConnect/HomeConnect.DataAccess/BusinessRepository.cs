@@ -2,7 +2,7 @@ using BusinessLogic;
 
 namespace HomeConnect.DataAccess;
 
-public class BusinessRepository
+public class BusinessRepository : IBusinessRepository
 {
     private readonly Context _context;
 
@@ -11,8 +11,16 @@ public class BusinessRepository
         _context = context;
     }
 
-    public List<Business> GetBusinesses(int page, int pageSize)
+    public List<Business> GetBusinesses(int page, int pageSize, string? fullNameFilter = null,
+        string? nameFilter = null)
     {
-        return _context.Businesses.Skip((page - 1) * pageSize).Take(pageSize).ToList();
+        IQueryable<Business> query = _context.Businesses;
+
+        if (!string.IsNullOrWhiteSpace(fullNameFilter))
+        {
+            query = query.Where(b => (b.Owner.Name + " " + b.Owner.Surname).Contains(fullNameFilter));
+        }
+
+        return query.Skip((page - 1) * pageSize).Take(pageSize).ToList();
     }
 }

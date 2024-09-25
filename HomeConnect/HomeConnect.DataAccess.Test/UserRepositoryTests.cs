@@ -1,6 +1,5 @@
 using BusinessLogic;
 using FluentAssertions;
-using Microsoft.EntityFrameworkCore;
 
 namespace HomeConnect.DataAccess.Test;
 
@@ -67,5 +66,15 @@ public class UserRepositoryTest
 
         // Assert
         act.Should().Throw<ArgumentException>();
+    }
+
+    [TestMethod]
+    public void Delete_WhenUserExists_DeletesUser()
+    {
+        // Act
+        _userRepository.Delete(ValidUserEmail);
+
+        // Assert
+        _userRepository.Exists(ValidUserEmail).Should().BeFalse();
     }
 }

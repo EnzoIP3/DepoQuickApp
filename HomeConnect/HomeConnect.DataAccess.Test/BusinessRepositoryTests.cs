@@ -42,4 +42,17 @@ public class BusinessRepositoryTests
         // Assert
         result.Should().BeEquivalentTo(expected);
     }
+
+    [TestMethod]
+    public void GetBusinesses_WithPageAndPageSize_ReturnsBusinesses()
+    {
+        // Arrange
+        var expected = new List<Business> { _validBusiness };
+
+        // Act
+        var result = _businessRepository.GetBusinesses(1, 1);
+
+        // Assert
+        result.Should().BeEquivalentTo(expected);
+    }
 }

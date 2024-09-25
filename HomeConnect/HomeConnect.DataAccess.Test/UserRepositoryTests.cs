@@ -98,4 +98,15 @@ public class UserRepositoryTest
         result.Should().HaveCount(2);
         result.Exists(u => u.Email == ValidUserEmail).Should().BeTrue();
     }
+
+    [TestMethod]
+    public void GetUsers_WhenFilteredByFullName_ReturnsFilteredUsers()
+    {
+        // Act
+        var result = _userRepository.GetUsers(1, 10, fullNameFilter: "Jane");
+
+        // Assert
+        result.Should().HaveCount(1);
+        result.First().Email.Should().Be("jane.doe@example.com");
+    }
 }

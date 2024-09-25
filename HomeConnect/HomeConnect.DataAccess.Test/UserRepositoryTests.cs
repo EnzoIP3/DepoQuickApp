@@ -7,7 +7,7 @@ namespace HomeConnect.DataAccess.Test;
 [TestClass]
 public class UserRepositoryTest
 {
-    private readonly DbContext _context = DbContextBuilder.BuildTestDbContext();
+    private readonly Context _context = DbContextBuilder.BuildTestDbContext();
     private UserRepository _userRepository = null!;
     private User _validUser = null!;
     private User _otherUser = null!;
@@ -20,8 +20,8 @@ public class UserRepositoryTest
         _userRepository = new UserRepository(_context);
         _validUser = new User("John", "Doe", "john.doe@example.com", "Password#100", adminRole);
         _otherUser = new User("Jane", "Doe", "jane.doe@example.com", "Password#200", adminRole);
-        _context.Set<User>().Add(_validUser);
-        _context.Set<User>().Add(_otherUser);
+        _context.Users.Add(_validUser);
+        _context.Users.Add(_otherUser);
         _context.SaveChanges();
     }
 

@@ -5,9 +5,9 @@ namespace HomeConnect.DataAccess;
 
 public class UserRepository : IUserRepository
 {
-    private readonly DbContext _context;
+    private readonly Context _context;
 
-    public UserRepository(DbContext context)
+    public UserRepository(Context context)
     {
         _context = context;
     }
@@ -19,7 +19,7 @@ public class UserRepository : IUserRepository
 
     public bool Exists(string email)
     {
-        return _context.Set<User>().Any(u => u.Email == email);
+        return _context.Users.Any(u => u.Email == email);
     }
 
     public void Delete(string email)

@@ -87,4 +87,15 @@ public class UserRepositoryTest
         // Assert
         act.Should().Throw<ArgumentException>();
     }
+
+    [TestMethod]
+    public void GetUsers_WhenCalled_ReturnsPaginatedUsers()
+    {
+        // Act
+        var result = _userRepository.GetUsers(1, 2);
+
+        // Assert
+        result.Should().HaveCount(2);
+        result.Exists(u => u.Email == ValidUserEmail).Should().BeTrue();
+    }
 }

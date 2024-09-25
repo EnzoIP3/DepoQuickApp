@@ -7,6 +7,7 @@ namespace HomeConnect.DataAccess.Test;
 [TestClass]
 public class UserRepositoryTest
 {
+    private const string ValidUserEmail = "john.doe@example.com";
     private readonly Context _context = DbContextBuilder.BuildTestDbContext();
     private UserRepository _userRepository = null!;
     private User _validUser = null!;
@@ -18,7 +19,7 @@ public class UserRepositoryTest
         _context.Database.EnsureCreated();
         var adminRole = _context.Set<Role>().First(r => r.Name == "Admin");
         _userRepository = new UserRepository(_context);
-        _validUser = new User("John", "Doe", "john.doe@example.com", "Password#100", adminRole);
+        _validUser = new User("John", "Doe", ValidUserEmail, "Password#100", adminRole);
         _otherUser = new User("Jane", "Doe", "jane.doe@example.com", "Password#200", adminRole);
         _context.Users.Add(_validUser);
         _context.Users.Add(_otherUser);
@@ -53,5 +54,18 @@ public class UserRepositoryTest
 
         // Assert
         exists.Should().BeTrue();
+    }
+
+    [TestMethod]
+    public void Add_WhenUserAlreadyExists_ThrowsException()
+    {
+        // Arrange
+        var user = new User("John", "Doe", ValidUserEmail, "12345678M@", new Role("Role", []));
+
+        // Act
+        var act = () => _userRepository.Add(user);
+
+        // Assert
+        act.Should().Throw<ArgumentException>();
     }
 }

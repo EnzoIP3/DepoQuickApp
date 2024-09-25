@@ -14,6 +14,11 @@ public class UserRepository : IUserRepository
 
     public void Add(User user)
     {
+        if (Exists(user.Email))
+        {
+            throw new ArgumentException("User with this email already exists.");
+        }
+
         _context.Users.Add(user);
         _context.SaveChanges();
     }

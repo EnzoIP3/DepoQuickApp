@@ -35,6 +35,7 @@ public class BusinessOwnerServiceTests
         var owner = new User("John", "Doe", ownerEmail, "Password123!", new Role());
 
         _userRepository.Setup(x => x.GetUser(ownerEmail)).Returns(owner);
+        _businessRepository.Setup(x => x.GetBusinessByOwner(ownerEmail)).Returns((Business?)null);
         _businessRepository.Setup(x => x.Add(It.IsAny<Business>()));
 
         // Act
@@ -45,6 +46,31 @@ public class BusinessOwnerServiceTests
             b.Rut == businessRut &&
             b.Name == businessName &&
             b.Owner.Email == ownerEmail)));
+    }
+
+    #endregion
+
+    #region Failure
+
+    [TestMethod]
+    public void CreateBusiness_WhenOwnerAlreadyHasBusiness_ThrowsException()
+    {
+        // Arrange
+        var ownerEmail = "owner@example.com";
+        var businessRut = "123456789";
+        var businessName = "Test Business";
+        var owner = new User("John", "Doe", ownerEmail, "Password123!", new Role());
+        var existingBusiness = new Business(businessRut, "Existing Business", owner);
+
+        _userRepository.Setup(x => x.GetUser(ownerEmail)).Returns(owner);
+        _businessRepository.Setup(x => x.GetBusinessByOwner(ownerEmail)).Returns(existingBusiness);
+
+        // Act
+        Action act = () => _businessOwnerService.CreateBusiness(ownerEmail, businessRut, businessName);
+
+        // Assert
+        act.Should().Throw<InvalidOperationException>().WithMessage("Owner already has a business");
+        _businessRepository.Verify(x => x.Add(It.IsAny<Business>()), Times.Never);
     }
 
     #endregion

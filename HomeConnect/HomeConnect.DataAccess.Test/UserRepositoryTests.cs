@@ -17,9 +17,10 @@ public class UserRepositoryTest
     {
         _context.Database.EnsureCreated();
         var adminRole = _context.Set<Role>().First(r => r.Name == "Admin");
+        var businessOwnerRole = _context.Set<Role>().First(r => r.Name == "Business Owner");
         _userRepository = new UserRepository(_context);
         _validUser = new User("John", "Doe", ValidUserEmail, "Password#100", adminRole);
-        _otherUser = new User("Jane", "Doe", "jane.doe@example.com", "Password#200", adminRole);
+        _otherUser = new User("Jane", "Doe", "jane.doe@example.com", "Password#200", businessOwnerRole);
         _context.Users.Add(_validUser);
         _context.Users.Add(_otherUser);
         _context.SaveChanges();
@@ -108,5 +109,16 @@ public class UserRepositoryTest
         // Assert
         result.Should().HaveCount(1);
         result.First().Email.Should().Be("jane.doe@example.com");
+    }
+
+    [TestMethod]
+    public void GetUsers_WhenFilteredByRole_ReturnsUsersWithSpecificRole()
+    {
+        // Act
+        var result = _userRepository.GetUsers(1, 10, roleFilter: "Admin");
+
+        // Assert
+        result.Should().HaveCount(1);
+        result.First().Email.Should().Be(ValidUserEmail);
     }
 }

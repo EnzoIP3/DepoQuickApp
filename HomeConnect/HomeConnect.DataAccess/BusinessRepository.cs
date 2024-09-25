@@ -20,7 +20,8 @@ public class BusinessRepository : IBusinessRepository
         {
             query = query.Where(b => (b.Owner.Name + " " + b.Owner.Surname).Contains(fullNameFilter));
         }
-        else if (!string.IsNullOrWhiteSpace(nameFilter))
+
+        if (!string.IsNullOrWhiteSpace(nameFilter))
         {
             query = query.Where(b => b.Name.Contains(nameFilter));
         }

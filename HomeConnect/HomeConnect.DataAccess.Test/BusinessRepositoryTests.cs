@@ -85,4 +85,17 @@ public class BusinessRepositoryTests
         // Assert
         result.Should().BeEquivalentTo(expected);
     }
+
+    [TestMethod]
+    public void GetBusinesses_WithFullNameFilterAndNameFilter_ReturnsFilteredBusinesses()
+    {
+        // Arrange
+        var expected = new List<Business> { _otherBusiness };
+
+        // Act
+        var result = _businessRepository.GetBusinesses(1, 2, "J", "Other");
+
+        // Assert
+        result.Should().BeEquivalentTo(expected);
+    }
 }

@@ -45,7 +45,7 @@ public class UserRepositoryTest
     public void Add_WhenUserDoesNotExist_AddsUser()
     {
         // Arrange
-        var user = new User("Name", "Surname", "test@example.com", "12345678", new Role("Role", []));
+        var user = new User("Name", "Surname", "test@example.com", "12345678M@", new Role("Role", []));
 
         // Act
         _userRepository.Add(user);

@@ -14,7 +14,8 @@ public class UserRepository : IUserRepository
 
     public void Add(User user)
     {
-        throw new NotImplementedException();
+        _context.Users.Add(user);
+        _context.SaveChanges();
     }
 
     public bool Exists(string email)

@@ -73,6 +73,24 @@ public class BusinessOwnerServiceTests
         _businessRepository.Verify(x => x.Add(It.IsAny<Business>()), Times.Never);
     }
 
+    [TestMethod]
+    public void CreateBusiness_WhenOwnerDoesNotExist_ThrowsException()
+    {
+        // Arrange
+        var ownerEmail = "nonexistent@example.com";
+        var businessRut = "123456789";
+        var businessName = "Test Business";
+
+        _userRepository.Setup(x => x.GetUser(ownerEmail)).Returns((User?)null);
+
+        // Act
+        Action act = () => _businessOwnerService.CreateBusiness(ownerEmail, businessRut, businessName);
+
+        // Assert
+        act.Should().Throw<ArgumentException>().WithMessage("Owner does not exist");
+        _businessRepository.Verify(x => x.Add(It.IsAny<Business>()), Times.Never);
+    }
+
     #endregion
 
     #endregion

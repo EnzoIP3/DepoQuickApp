@@ -16,13 +16,18 @@ public class BusinessRepository : IBusinessRepository
     {
         IQueryable<Business> query = _context.Businesses;
         query = FilterByOwnerFullName(fullNameFilter, query);
+        query = FilterByBusinessName(nameFilter, query);
+        return query.Skip((page - 1) * pageSize).Take(pageSize).ToList();
+    }
 
+    private static IQueryable<Business> FilterByBusinessName(string? nameFilter, IQueryable<Business> query)
+    {
         if (!string.IsNullOrWhiteSpace(nameFilter))
         {
             query = query.Where(b => b.Name.Contains(nameFilter));
         }
 
-        return query.Skip((page - 1) * pageSize).Take(pageSize).ToList();
+        return query;
     }
 
     private static IQueryable<Business> FilterByOwnerFullName(string? fullNameFilter, IQueryable<Business> query)

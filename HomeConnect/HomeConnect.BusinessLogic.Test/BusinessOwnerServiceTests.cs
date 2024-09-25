@@ -32,8 +32,9 @@ public class BusinessOwnerServiceTests
         var ownerEmail = "owner@example.com";
         var businessRut = "123456789";
         var businessName = "Test Business";
+        var owner = new User("John", "Doe", ownerEmail, "Password123!", new Role());
 
-        _userRepository.Setup(x => x.Exists(ownerEmail)).Returns(true);
+        _userRepository.Setup(x => x.GetUser(ownerEmail)).Returns(owner);
         _businessRepository.Setup(x => x.Add(It.IsAny<Business>()));
 
         // Act

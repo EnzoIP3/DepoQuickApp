@@ -55,7 +55,13 @@ public class UserRepository : IUserRepository
 
     public List<User> GetUsers(int currentPage, int pageSize, string? fullNameFilter = null, string? roleFilter = null)
     {
-        var query = _context.Users;
+        IQueryable<User> query = _context.Users;
+
+        if (!string.IsNullOrEmpty(fullNameFilter))
+        {
+            query = query.Where(u => (u.Name + " " + u.Surname).Contains(fullNameFilter));
+        }
+
         return query
             .Skip((currentPage - 1) * pageSize)
             .Take(pageSize)

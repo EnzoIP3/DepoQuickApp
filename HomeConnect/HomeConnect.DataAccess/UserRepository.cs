@@ -14,13 +14,17 @@ public class UserRepository : IUserRepository
 
     public void Add(User user)
     {
+        EnsureUserDoesNotExist(user);
+        _context.Users.Add(user);
+        _context.SaveChanges();
+    }
+
+    private void EnsureUserDoesNotExist(User user)
+    {
         if (Exists(user.Email))
         {
             throw new ArgumentException("User with this email already exists.");
         }
-
-        _context.Users.Add(user);
-        _context.SaveChanges();
     }
 
     public bool Exists(string email)

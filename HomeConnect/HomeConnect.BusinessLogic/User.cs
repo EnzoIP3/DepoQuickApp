@@ -37,12 +37,7 @@ public class User
         private init
         {
             ValidateNotEmpty(value, nameof(Email));
-            const string emailPattern = @"^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$";
-            if (!Regex.IsMatch(value, emailPattern))
-            {
-                throw new ArgumentException("Email format invalid.");
-            }
-
+            ValidateEmailFormat(value);
             _email = value;
         }
     }
@@ -80,6 +75,15 @@ public class User
         if (string.IsNullOrEmpty(value) || string.IsNullOrWhiteSpace(value))
         {
             throw new Exception($"{propertyName} cannot be blank.");
+        }
+    }
+
+    private static void ValidateEmailFormat(string email)
+    {
+        const string emailPattern = @"^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$";
+        if (!Regex.IsMatch(email, emailPattern))
+        {
+            throw new ArgumentException("Email format invalid.");
         }
     }
 

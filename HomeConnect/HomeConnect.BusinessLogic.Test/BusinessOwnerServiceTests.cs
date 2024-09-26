@@ -37,6 +37,7 @@ public class BusinessOwnerServiceTests
         _userRepository.Setup(x => x.GetUser(ownerEmail)).Returns(owner);
         _businessRepository.Setup(x => x.GetBusinessByOwner(ownerEmail)).Returns((Business?)null);
         _businessRepository.Setup(x => x.Add(It.IsAny<Business>()));
+        _businessRepository.Setup(x => x.GetBusinessByRut(businessRut)).Returns((Business?)null);
 
         // Act
         _businessOwnerService.CreateBusiness(ownerEmail, businessRut, businessName);
@@ -88,6 +89,30 @@ public class BusinessOwnerServiceTests
 
         // Assert
         act.Should().Throw<ArgumentException>().WithMessage("Owner does not exist");
+        _businessRepository.Verify(x => x.Add(It.IsAny<Business>()), Times.Never);
+    }
+
+    [TestMethod]
+    public void CreateBusiness_WhenBusinessRutAlreadyExists_ThrowsException()
+    {
+        // Arrange
+        var ownerEmail = "owner@example.com";
+        var businessRut = "123456789";
+        var businessName = "Test Business";
+        var owner = new User("John", "Doe", ownerEmail, "Password123!", new Role());
+        var existingBusiness = new Business(businessRut, "Existing Business", owner);
+
+        _userRepository.Setup(x => x.GetUser(ownerEmail)).Returns(owner);
+        _businessRepository.Setup(x => x.GetBusinessByRut(businessRut)).Returns(existingBusiness);
+        _businessRepository.Setup(x => x.GetBusinessByOwner(ownerEmail)).Returns((Business?)null);
+        _businessRepository.Setup(x => x.Add(It.IsAny<Business>()));
+        _businessRepository.Setup(x=>x.GetBusinessByRut(businessRut)).Returns(existingBusiness);
+
+        // Act
+        Action act = () => _businessOwnerService.CreateBusiness(ownerEmail, businessRut, businessName);
+
+        // Assert
+        act.Should().Throw<InvalidOperationException>().WithMessage("RUT already exists");
         _businessRepository.Verify(x => x.Add(It.IsAny<Business>()), Times.Never);
     }
 

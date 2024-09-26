@@ -13,6 +13,12 @@ public class RoleRepository
 
     public Role GetRole(string name)
     {
-        return _context.Roles.FirstOrDefault(r => r.Name == name);
+        var role = _context.Roles.FirstOrDefault(r => r.Name == name);
+        if (role == null)
+        {
+            throw new ArgumentException("Role does not exist");
+        }
+
+        return role;
     }
 }

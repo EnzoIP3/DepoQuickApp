@@ -40,7 +40,7 @@ public class UserRepository : IUserRepository
         _context.SaveChanges();
     }
 
-    private User? GetUser(string email)
+    public User? GetUser(string email)
     {
         return _context.Users.FirstOrDefault(u => u.Email == email);
     }

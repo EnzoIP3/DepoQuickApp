@@ -13,6 +13,6 @@ public class RoleRepository
 
     public Role GetRole(string name)
     {
-        throw new NotImplementedException();
+        return _context.Roles.FirstOrDefault(r => r.Name == name);
     }
 }

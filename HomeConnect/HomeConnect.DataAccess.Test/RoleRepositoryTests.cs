@@ -34,4 +34,14 @@ public class RoleRepositoryTests
         // Assert
         result.Name.Should().Be("Role");
     }
+
+    [TestMethod]
+    public void GetRole_WhenRoleDoesNotExist_ShouldThrowException()
+    {
+        // Act
+        Action action = () => _roleRepository.GetRole("Role2");
+
+        // Assert
+        action.Should().Throw<ArgumentException>();
+    }
 }

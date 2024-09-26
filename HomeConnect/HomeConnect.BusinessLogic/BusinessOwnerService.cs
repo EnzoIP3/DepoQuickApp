@@ -15,11 +15,7 @@
 
         public void CreateBusiness(string ownerEmail, string businessRut, string businessName)
         {
-            var owner = UserRepository.GetUser(ownerEmail);
-            if (owner == null)
-            {
-                throw new ArgumentException("Owner does not exist");
-            }
+            var owner = VerifyOwnerExists(ownerEmail);
 
             var existingBusiness = BusinessRepository.GetBusinessByOwner(ownerEmail);
             if (existingBusiness != null)
@@ -35,6 +31,16 @@
 
             var business = new Business(businessRut, businessName, owner);
             BusinessRepository.Add(business);
+        }
+
+        private User VerifyOwnerExists(string ownerEmail)
+        {
+            var owner = UserRepository.GetUser(ownerEmail);
+            if (owner == null)
+            {
+                throw new ArgumentException("Owner does not exist");
+            }
+            return owner;
         }
     }
 }

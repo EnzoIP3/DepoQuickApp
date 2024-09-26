@@ -27,6 +27,12 @@
                 throw new InvalidOperationException("Owner already has a business");
             }
 
+            var existingBusinessByRut = BusinessRepository.GetBusinessByRut(businessRut);
+            if (existingBusinessByRut != null)
+            {
+                throw new InvalidOperationException("RUT already exists");
+            }
+
             var business = new Business(businessRut, businessName, owner);
             BusinessRepository.Add(business);
         }

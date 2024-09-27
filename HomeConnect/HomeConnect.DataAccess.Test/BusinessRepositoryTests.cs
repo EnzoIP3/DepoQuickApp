@@ -172,4 +172,24 @@ public class BusinessRepositoryTests
     #endregion
 
     #endregion
+
+    #region GestBusinessByRut
+
+    #region Success
+
+    [TestMethod]
+    public void GetBusinessByRut_WhenBusinessExists_ReturnsBusiness()
+    {
+        // Arrange
+        var expected = _validBusiness;
+
+        // Act
+        var result = _businessRepository.GetBusinessByRut(_validBusiness.Rut);
+
+        // Assert
+        result.Should().BeEquivalentTo(expected);
+    }
+
+    #endregion
+    #endregion
 }

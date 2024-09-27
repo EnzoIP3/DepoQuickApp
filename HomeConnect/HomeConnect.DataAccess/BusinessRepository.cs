@@ -52,6 +52,7 @@ public class BusinessRepository : IBusinessRepository
 
     public void Add(Business business)
     {
-        throw new NotImplementedException();
+        _context.Businesses.Add(business);
+        _context.SaveChanges();
     }
 }

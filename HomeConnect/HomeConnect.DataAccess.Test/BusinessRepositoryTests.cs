@@ -108,7 +108,7 @@ public class BusinessRepositoryTests
     #region Success
 
     [TestMethod]
-    public void Add_ValidBusiness_AddsBusiness()
+    public void Add_WhenBusinessDoesNotExist_AddsBusiness()
     {
         // Arrange
         var business = new Business("3", "New Business", _validUser);

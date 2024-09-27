@@ -1,4 +1,5 @@
 using System.Net;
+using BusinessLogic;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Filters;
 using Microsoft.Extensions.Primitives;
@@ -6,8 +7,9 @@ using Microsoft.Extensions.Primitives;
 namespace HomeConnect.WebApi.Filters;
 
 [AttributeUsage(AttributeTargets.Class | AttributeTargets.Method)]
-public sealed class AuthenticationFilterAttribute : Attribute, IAuthorizationFilter
+public sealed class AuthenticationFilterAttribute(IAuthRepository authRepository) : Attribute, IAuthorizationFilter
 {
+    public IAuthRepository AuthRepository { get; } = authRepository;
     private const string AuthorizationHeader = "Authorization";
 
     public void OnAuthorization(AuthorizationFilterContext context)
@@ -41,6 +43,26 @@ public sealed class AuthenticationFilterAttribute : Attribute, IAuthorizationFil
             };
             return;
         }
+
+        var isAuthorizationExpired = IsAuthorizationExpired(authorizationHeader);
+        if (isAuthorizationExpired)
+        {
+            context.Result = new ObjectResult(
+                new
+                {
+                    InnerCode = "ExpiredAuthorization",
+                    Message = "The provided authorization header is expired"
+                })
+            {
+                StatusCode = (int)HttpStatusCode.Unauthorized
+            };
+            return;
+        }
+    }
+
+    private bool IsAuthorizationExpired(StringValues authorizationHeader)
+    {
+        return AuthRepository.IsAuthorizationExpired(authorizationHeader!);
     }
 
     private bool IsAuthorizationFormatValid(StringValues authorizationHeader)

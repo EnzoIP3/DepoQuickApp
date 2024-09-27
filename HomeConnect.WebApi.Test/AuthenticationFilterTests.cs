@@ -16,13 +16,16 @@ namespace HomeConnect.WebApi.Test;
 public class AuthenticationFilterTests
 {
     private Mock<HttpContext> _httpContextMock = null!;
+    private Mock<IAuthRepository> _authRepositoryMock = null!;
     private AuthorizationFilterContext _context = null!;
-    private AuthenticationFilterAttribute _attribute = new();
+    private AuthenticationFilterAttribute _attribute = null;
 
     [TestInitialize]
     public void Initialize()
     {
         _httpContextMock = new Mock<HttpContext>(MockBehavior.Strict);
+        _authRepositoryMock = new Mock<IAuthRepository>(MockBehavior.Strict);
+        _attribute = new AuthenticationFilterAttribute(_authRepositoryMock.Object);
 
         _context = new AuthorizationFilterContext(
             new ActionContext(
@@ -36,7 +39,7 @@ public class AuthenticationFilterTests
 
     #region Error
     [TestMethod]
-    public void OnAuthorization_WhenEmptyHeaders_ShouldRerturnUnauthenticatedResponse()
+    public void OnAuthorization_WhenEmptyHeaders_ShouldReturnUnauthenticatedResponse()
     {
         _httpContextMock.Setup(h => h.Request.Headers).Returns(new HeaderDictionary());
 
@@ -94,8 +97,31 @@ public class AuthenticationFilterTests
         GetInnerCode(concreteResponse.Value).Should().Be("InvalidAuthorization");
         GetMessage(concreteResponse.Value).Should().Be("The provided authorization header format is invalid");
     }
-    #endregion
 
+    [TestMethod]
+    public void OnAuthorization_WhenAuthorizationExpired_ShouldReturnExpiredAuthorizationResponse()
+    {
+        var guid = Guid.NewGuid().ToString();
+        _httpContextMock.Setup(h => h.Request.Headers).Returns(new HeaderDictionary(new Dictionary<string, StringValues>
+        {
+            { "Authorization", $"Bearer {guid}" }
+        }));
+        _authRepositoryMock.Setup(a => a.IsAuthorizationExpired($"Bearer {guid}")).Returns(true);
+
+        _attribute.OnAuthorization(_context);
+
+        var response = _context.Result;
+
+        _httpContextMock.VerifyAll();
+        _authRepositoryMock.VerifyAll();
+        response.Should().NotBeNull();
+        var concreteResponse = response as ObjectResult;
+        concreteResponse.Should().NotBeNull();
+        concreteResponse.StatusCode.Should().Be((int)HttpStatusCode.Unauthorized);
+        GetInnerCode(concreteResponse.Value).Should().Be("ExpiredAuthorization");
+        GetMessage(concreteResponse.Value).Should().Be("The provided authorization header is expired");
+    }
+    #endregion
     private string GetInnerCode(object? value)
     {
         return value?.GetType().GetProperty("InnerCode")?.GetValue(value)?.ToString() ?? string.Empty;

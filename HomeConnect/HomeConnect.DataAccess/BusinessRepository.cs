@@ -52,6 +52,11 @@ public class BusinessRepository : IBusinessRepository
 
     public void Add(Business business)
     {
+        if (_context.Businesses.Any(b => b.Rut == business.Rut))
+        {
+            throw new ArgumentException("Business with this RUT already exists.");
+        }
+
         _context.Businesses.Add(business);
         _context.SaveChanges();
     }

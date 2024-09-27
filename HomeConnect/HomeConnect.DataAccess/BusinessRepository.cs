@@ -27,7 +27,7 @@ public class BusinessRepository : IBusinessRepository
 
     public Business? GetBusinessByRut(string rut)
     {
-        throw new NotImplementedException();
+        return _context.Businesses.FirstOrDefault(b => b.Rut == rut);
     }
 
     private static IQueryable<Business> FilterByBusinessName(string? nameFilter, IQueryable<Business> query)

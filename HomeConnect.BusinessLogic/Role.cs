@@ -6,7 +6,7 @@ public class Role
 {
     [Key]
     public string Name { get; init; } = string.Empty;
-    public List<SystemPermission> Permissions { get; init; } = new List<SystemPermission>();
+    public List<SystemPermission> Permissions { get; init; } = [];
 
     public Role()
     {

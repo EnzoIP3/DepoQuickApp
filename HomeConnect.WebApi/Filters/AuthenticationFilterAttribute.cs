@@ -1,6 +1,7 @@
 using System.Net;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Filters;
+using Microsoft.Extensions.Primitives;
 
 namespace HomeConnect.WebApi.Filters;
 
@@ -25,5 +26,32 @@ public sealed class AuthenticationFilterAttribute : Attribute, IAuthorizationFil
             };
             return;
         }
+
+        var isAuthorizationFormatNotValid = !IsAuthorizationFormatValid(authorizationHeader);
+        if (isAuthorizationFormatNotValid)
+        {
+            context.Result = new ObjectResult(
+                new
+                {
+                    InnerCode = "InvalidAuthorization",
+                    Message = "The provided authorization header format is invalid"
+                })
+            {
+                StatusCode = (int)HttpStatusCode.Unauthorized
+            };
+            return;
+        }
+    }
+
+    private bool IsAuthorizationFormatValid(StringValues authorizationHeader)
+    {
+        if (!authorizationHeader.ToString().StartsWith("Bearer "))
+        {
+            return false;
+        }
+
+        var token = authorizationHeader.ToString().Substring("Bearer ".Length);
+
+        return Guid.TryParse(token, out _);
     }
 }

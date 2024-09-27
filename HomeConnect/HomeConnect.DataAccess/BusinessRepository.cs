@@ -22,7 +22,7 @@ public class BusinessRepository : IBusinessRepository
 
     public Business? GetBusinessByOwner(string ownerEmail)
     {
-        throw new NotImplementedException();
+        return _context.Businesses.FirstOrDefault(b => b.Owner.Email == ownerEmail);
     }
 
     public Business? GetBusinessByRut(string rut)

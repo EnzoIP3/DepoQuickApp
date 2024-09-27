@@ -73,6 +73,27 @@ public class AuthenticationFilterTests
         GetInnerCode(concreteResponse.Value).Should().Be("Unauthenticated");
         GetMessage(concreteResponse.Value).Should().Be("You are not authenticated");
     }
+
+    [TestMethod]
+    public void OnAuthorization_WhenFormatIsInvalid_ShouldReturnInvalidAuthorizationResponse()
+    {
+        _httpContextMock.Setup(h => h.Request.Headers).Returns(new HeaderDictionary(new Dictionary<string, StringValues>
+        {
+            { "Authorization", "Bearer 1234" }
+        }));
+
+        _attribute.OnAuthorization(_context);
+
+        var response = _context.Result;
+
+        _httpContextMock.VerifyAll();
+        response.Should().NotBeNull();
+        var concreteResponse = response as ObjectResult;
+        concreteResponse.Should().NotBeNull();
+        concreteResponse.StatusCode.Should().Be((int)HttpStatusCode.Unauthorized);
+        GetInnerCode(concreteResponse.Value).Should().Be("InvalidAuthorization");
+        GetMessage(concreteResponse.Value).Should().Be("The provided authorization header format is invalid");
+    }
     #endregion
 
     private string GetInnerCode(object? value)

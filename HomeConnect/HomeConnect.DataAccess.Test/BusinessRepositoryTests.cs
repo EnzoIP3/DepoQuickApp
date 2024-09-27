@@ -139,4 +139,28 @@ public class BusinessRepositoryTests
     #endregion
 
     #endregion
+
+    #region GestBusinessByOwner
+
+    #region Success
+
+    [TestMethod]
+    public void GetBusinessByOwner_WhenBusinessExists_ReturnsBusiness()
+    {
+        // Arrange
+        var expected = _validBusiness;
+
+        // Act
+        var result = _businessRepository.GetBusinessByOwner(_validUser.Email);
+
+        // Assert
+        result.Should().BeEquivalentTo(expected);
+    }
+    #endregion
+
+    #region Error
+
+    #endregion
+
+    #endregion
 }

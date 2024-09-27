@@ -156,10 +156,19 @@ public class BusinessRepositoryTests
         // Assert
         result.Should().BeEquivalentTo(expected);
     }
-    #endregion
 
-    #region Error
+    [TestMethod]
+    public void GetBusinessByOwner_WhenBusinessDoesNotExist_ReturnsNull()
+    {
+        // Arrange
+        var nonExistentOwnerEmail = "nonexistent@example.com";
 
+        // Act
+        var result = _businessRepository.GetBusinessByOwner(nonExistentOwnerEmail);
+
+        // Assert
+        result.Should().BeNull();
+    }
     #endregion
 
     #endregion

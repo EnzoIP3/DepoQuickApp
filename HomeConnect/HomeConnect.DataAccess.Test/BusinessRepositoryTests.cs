@@ -121,6 +121,18 @@ public class BusinessRepositoryTests
     }
 
     #endregion
+    [TestMethod]
+    public void Add_WhenBusinessAlreadyExists_ThrowsException()
+    {
+        // Arrange
+        var business = new Business("1", "Business", _validUser);
+
+        // Act
+        var act = () => _businessRepository.Add(business);
+
+        // Assert
+        act.Should().Throw<ArgumentException>();
+    }
 
     #region Error
 

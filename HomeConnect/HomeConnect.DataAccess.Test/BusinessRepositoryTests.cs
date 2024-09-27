@@ -102,4 +102,29 @@ public class BusinessRepositoryTests
     }
 
     #endregion
+
+    #region Add
+
+    #region Success
+
+    [TestMethod]
+    public void Add_ValidBusiness_AddsBusiness()
+    {
+        // Arrange
+        var business = new Business("3", "New Business", _validUser);
+
+        // Act
+        _businessRepository.Add(business);
+
+        // Assert
+        _context.Businesses.Should().Contain(business);
+    }
+
+    #endregion
+
+    #region Error
+
+    #endregion
+
+    #endregion
 }

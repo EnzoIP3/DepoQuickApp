@@ -20,6 +20,16 @@ public class BusinessRepository : IBusinessRepository
         return query.Skip((page - 1) * pageSize).Take(pageSize).ToList();
     }
 
+    public Business? GetBusinessByOwner(string ownerEmail)
+    {
+        throw new NotImplementedException();
+    }
+
+    public Business? GetBusinessByRut(string rut)
+    {
+        throw new NotImplementedException();
+    }
+
     private static IQueryable<Business> FilterByBusinessName(string? nameFilter, IQueryable<Business> query)
     {
         if (!string.IsNullOrWhiteSpace(nameFilter))
@@ -38,5 +48,10 @@ public class BusinessRepository : IBusinessRepository
         }
 
         return query;
+    }
+
+    public void Add(Business business)
+    {
+        throw new NotImplementedException();
     }
 }

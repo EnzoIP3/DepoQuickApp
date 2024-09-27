@@ -11,8 +11,8 @@ public sealed class AdminServiceTests
     private Mock<IBusinessRepository> _businessRepository = null!;
     private Mock<IRoleRepository> _roleRepository = null!;
     private AdminService _adminService = null!;
-    private int _defaultPageSize = 10;
-    private int _defaultCurrentPage = 1;
+    private readonly int _defaultPageSize = 10;
+    private readonly int _defaultCurrentPage = 1;
 
     private UserModel _validUserModel = new UserModel
     {
@@ -307,7 +307,7 @@ public sealed class AdminServiceTests
         };
         var filter = "name surname";
         _userRepository.Setup(x => x.GetUsers(_defaultCurrentPage, _defaultPageSize, filter, null))
-            .Returns(new List<User> { users[0] });
+            .Returns([users[0]]);
 
         // Act
         var result = _adminService.GetUsers(fullNameFilter: filter);
@@ -339,7 +339,7 @@ public sealed class AdminServiceTests
         };
         var filter = "BusinessOwner";
         _userRepository.Setup(x => x.GetUsers(_defaultCurrentPage, _defaultPageSize, null, filter))
-            .Returns(new List<User> { users[1] });
+            .Returns([users[1]]);
 
         // Act
         var result = _adminService.GetUsers(roleFilter: filter);
@@ -459,7 +459,7 @@ public sealed class AdminServiceTests
         };
         var filter = $"{_owner.Name} {_owner.Surname}";
         _businessRepository.Setup(x => x.GetBusinesses(_defaultCurrentPage, _defaultPageSize, filter, null))
-            .Returns(new List<Business> { businesses[0] });
+            .Returns([businesses[0]]);
 
         // Act
         var result = _adminService.GetBusiness(fullNameFilter: filter);
@@ -493,7 +493,7 @@ public sealed class AdminServiceTests
         };
         var filter = "name2";
         _businessRepository.Setup(x => x.GetBusinesses(_defaultCurrentPage, _defaultPageSize, null, filter))
-            .Returns(new List<Business> { businesses[1] });
+            .Returns([businesses[1]]);
 
         // Act
         var result = _adminService.GetBusiness(nameFilter: filter);

@@ -10,7 +10,7 @@ public class UserTests
     private string _surname = null!;
     private string _email = null!;
     private string _password = null!;
-    private Role _role = new Role("Admin", []);
+    private readonly Role _role = new Role("Admin", []);
 
     [TestInitialize]
     public void Initialize()

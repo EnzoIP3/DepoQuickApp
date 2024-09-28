@@ -36,8 +36,11 @@ public class AuthorizationFilterTests
     [TestMethod]
     public void OnAuthorization_UserNotAuthenticated_ShouldReturnsUnauthorizedResult()
     {
-        _httpContextMock.Setup(h => h.Request.Headers).Returns(new HeaderDictionary());
-
+        var items = new Dictionary<object, object?>
+        {
+            { Items.UserLogged, null }
+        };
+        _httpContextMock.Setup(h => h.Items).Returns(items);
         _attribute.OnAuthorization(_context);
 
         var response = _context.Result;

@@ -58,6 +58,40 @@ public sealed class AuthenticationFilterAttribute(IAuthRepository authRepository
             };
             return;
         }
+
+        try
+        {
+            var userOfAuthorization = GetUserOfAuthorization(authorizationHeader);
+
+            if (userOfAuthorization == null)
+            {
+                context.Result = new ObjectResult(new
+                {
+                    InnerCode = "Unauthenticated",
+                    Message = "You are not authenticated"
+                })
+                {
+                    StatusCode = (int)HttpStatusCode.Unauthorized
+                };
+                return;
+            }
+        }
+        catch (Exception)
+        {
+            context.Result = new ObjectResult(new
+            {
+                InnerCode = "InternalError",
+                Message = "An error ocurred while processing the request"
+            })
+            {
+                StatusCode = (int)HttpStatusCode.InternalServerError
+            };
+        }
+    }
+
+    private User? GetUserOfAuthorization(StringValues authorizationHeader)
+    {
+        return AuthRepository.GetUserOfAuthorization(authorizationHeader!);
     }
 
     private bool IsAuthorizationExpired(StringValues authorizationHeader)

@@ -1,5 +1,6 @@
 using System.Diagnostics;
 using System.Net;
+using BusinessLogic;
 using FluentAssertions;
 using HomeConnect.WebApi.Filters;
 using Microsoft.AspNetCore.Http;
@@ -121,7 +122,33 @@ public class AuthenticationFilterTests
         GetInnerCode(concreteResponse.Value).Should().Be("ExpiredAuthorization");
         GetMessage(concreteResponse.Value).Should().Be("The provided authorization header is expired");
     }
+
+    [TestMethod]
+    public void OnAuthorization_WhenUserDoesNotExist_ShouldReturnUnauthenticatedResponse()
+    {
+        var guid = Guid.NewGuid().ToString();
+        _httpContextMock.Setup(h => h.Request.Headers).Returns(new HeaderDictionary(new Dictionary<string, StringValues>
+        {
+            { "Authorization", $"Bearer {guid}" }
+        }));
+        _authRepositoryMock.Setup(a => a.IsAuthorizationExpired($"Bearer {guid}")).Returns(false);
+        _authRepositoryMock.Setup(a => a.GetUserOfAuthorization($"Bearer {guid}")).Returns((User?)null);
+
+        _attribute.OnAuthorization(_context);
+
+        var response = _context.Result;
+
+        _httpContextMock.VerifyAll();
+        _authRepositoryMock.VerifyAll();
+        response.Should().NotBeNull();
+        var concreteResponse = response as ObjectResult;
+        concreteResponse.Should().NotBeNull();
+        concreteResponse.StatusCode.Should().Be((int)HttpStatusCode.Unauthorized);
+        GetInnerCode(concreteResponse.Value).Should().Be("Unauthenticated");
+        GetMessage(concreteResponse.Value).Should().Be("You are not authenticated");
+    }
     #endregion
+
     private string GetInnerCode(object? value)
     {
         return value?.GetType().GetProperty("InnerCode")?.GetValue(value)?.ToString() ?? string.Empty;

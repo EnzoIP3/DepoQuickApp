@@ -127,4 +127,9 @@ public class User
         const string specialCharacterPattern = @"[\W_]";
         return Regex.IsMatch(input, specialCharacterPattern);
     }
+
+    public bool HasPermission(string permission)
+    {
+        return Role.HasPermission(permission);
+    }
 }

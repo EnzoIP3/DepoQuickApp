@@ -1,12 +1,15 @@
 using System.Net;
+using BusinessLogic;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Filters;
 
 namespace HomeConnect.WebApi.Filters;
 
 [AttributeUsage(AttributeTargets.Class | AttributeTargets.Method)]
-public class AuthorizationFilterAttribute() : Attribute, IAuthorizationFilter
+public class AuthorizationFilterAttribute(IUserRepository userRepository, string? permission = null) : Attribute, IAuthorizationFilter
 {
+    public string? Permission { get; } = permission;
+
     public void OnAuthorization(AuthorizationFilterContext context)
     {
         var userLoggedIn = context.HttpContext.Items[Items.UserLogged];
@@ -22,6 +25,29 @@ public class AuthorizationFilterAttribute() : Attribute, IAuthorizationFilter
             {
                 StatusCode = (int)HttpStatusCode.Unauthorized
             };
+            return;
         }
+
+        var userLoggedMap = (UserModel)userLoggedIn;
+        var user = userRepository.GetUser(userLoggedMap.Email);
+        var permission = BuildPermission(context);
+        var hasNotPermission = !user.HasPermission(permission);
+
+        if (hasNotPermission)
+        {
+               context.Result = new ObjectResult(new
+                {
+                    InnerCode = "Forbidden",
+                    Message = $"Missing permission: {permission}"
+                })
+                {
+                    StatusCode = (int)HttpStatusCode.Forbidden
+                };
+        }
+    }
+
+    private string BuildPermission(AuthorizationFilterContext context)
+    {
+        return $"{context.RouteData.Values["action"].ToString().ToLower()}-{context.RouteData.Values["controller"].ToString().ToLower()}";
     }
 }

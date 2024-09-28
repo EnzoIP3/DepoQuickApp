@@ -149,6 +149,46 @@ public class AuthenticationFilterTests
     }
     #endregion
 
+    #region Success
+
+    [TestMethod]
+    public void OnAuthorization_WhenAuthorizationIsValid_ShouldSetUserLoggedInContext()
+    {
+        var guid = Guid.NewGuid().ToString();
+        _httpContextMock.Setup(h => h.Request.Headers).Returns(new HeaderDictionary(new Dictionary<string, StringValues>
+        {
+            { "Authorization", $"Bearer {guid}" }
+        }));
+        var validUserModel = new UserModel
+        {
+            Name = "name",
+            Surname = "surname",
+            Email = "email@email.com",
+            Password = "Password#100",
+            Role = "Admin"
+        };
+        var adminRole = new Role("Admin", []);
+        var user = new User(validUserModel.Name, validUserModel.Surname, validUserModel.Email, validUserModel.Password,
+            adminRole);
+        _authRepositoryMock.Setup(a => a.IsAuthorizationExpired($"Bearer {guid}")).Returns(false);
+        _authRepositoryMock.Setup(a => a.GetUserOfAuthorization($"Bearer {guid}")).Returns(user);
+
+        var items = new Dictionary<object, object>();
+        items.Add(Items.UserLogged, user);
+        _httpContextMock.Setup(h => h.Items).Returns(items);
+
+        _attribute.OnAuthorization(_context);
+
+        _httpContextMock.VerifyAll();
+        _authRepositoryMock.VerifyAll();
+
+        _context.HttpContext.Items[Items.UserLogged].Should().NotBeNull();
+        var userLogged = _context.HttpContext.Items[Items.UserLogged] as User;
+        userLogged.Should().NotBeNull();
+        userLogged.Should().Be(user);
+    }
+    #endregion
+
     private string GetInnerCode(object? value)
     {
         return value?.GetType().GetProperty("InnerCode")?.GetValue(value)?.ToString() ?? string.Empty;

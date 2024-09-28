@@ -75,6 +75,8 @@ public sealed class AuthenticationFilterAttribute(IAuthRepository authRepository
                 };
                 return;
             }
+
+            context.HttpContext.Items[Items.UserLogged] = userOfAuthorization;
         }
         catch (Exception)
         {

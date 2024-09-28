@@ -24,7 +24,7 @@ public class AuthorizationFilterTests
     {
         _httpContextMock = new Mock<HttpContext>(MockBehavior.Strict);
         _userRepositoryMock = new Mock<IUserRepository>(MockBehavior.Strict);
-        _attribute = new AuthorizationFilterAttribute(_userRepositoryMock.Object, "some-permission");
+        _attribute = new AuthorizationFilterAttribute("some-permission");
 
         _context = new AuthorizationFilterContext(
             new ActionContext(
@@ -64,29 +64,17 @@ public class AuthorizationFilterTests
         {
             {
                 Items.UserLogged,
-                new UserModel
-                {
-                    Name = "Name",
-                    Surname = "Surname",
-                    Email = "email@email.com",
-                    Password = "Password@100",
-                    Role = "Admin"
-                }
+                new User("Name", "Surname", "email@email.com", "Password@100",
+                    new Role("Admin", new List<SystemPermission>()))
             }
         };
-        var role = new Role("Admin", new List<SystemPermission> { new SystemPermission("some-permission") });
-
         _httpContextMock.Setup(h => h.Items).Returns(items);
 
-        // Mock RouteData
         var routeData = new RouteData();
         routeData.Values["action"] = "SomeAction";
         routeData.Values["controller"] = "SomeController";
-        var actionContext = new ActionContext(_httpContextMock.Object, routeData, new ActionDescriptor());
-        _context = new AuthorizationFilterContext(actionContext, new List<IFilterMetadata>());
+        _context.RouteData = routeData;
 
-        _userRepositoryMock.Setup(u => u.GetUser("email@email.com"))
-            .Returns(new User("Name", "Surname", "email@email.com", "Password@100", role));
         _attribute.OnAuthorization(_context);
 
         var response = _context.Result;

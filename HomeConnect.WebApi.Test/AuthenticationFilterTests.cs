@@ -3,6 +3,7 @@ using System.Net;
 using BusinessLogic;
 using FluentAssertions;
 using HomeConnect.WebApi.Filters;
+using HomeConnect.WebApi.Session;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Abstractions;
@@ -17,6 +18,7 @@ namespace HomeConnect.WebApi.Test;
 public class AuthenticationFilterTests
 {
     private Mock<HttpContext> _httpContextMock = null!;
+    private Mock<ISessionService> _sessionServiceMock = null!;
     private Mock<IAuthRepository> _authRepositoryMock = null!;
     private AuthorizationFilterContext _context = null!;
     private AuthenticationFilterAttribute _attribute = null;
@@ -25,6 +27,7 @@ public class AuthenticationFilterTests
     public void Initialize()
     {
         _httpContextMock = new Mock<HttpContext>(MockBehavior.Strict);
+        _sessionServiceMock = new Mock<ISessionService>(MockBehavior.Strict);
         _authRepositoryMock = new Mock<IAuthRepository>(MockBehavior.Strict);
         _attribute = new AuthenticationFilterAttribute(_authRepositoryMock.Object);
 
@@ -132,8 +135,8 @@ public class AuthenticationFilterTests
             { "Authorization", $"Bearer {guid}" }
         }));
         _authRepositoryMock.Setup(a => a.IsAuthorizationExpired($"Bearer {guid}")).Returns(false);
-        _authRepositoryMock.Setup(a => a.GetUserOfAuthorization($"Bearer {guid}")).Returns((User?)null);
-
+        _httpContextMock.Setup(h => h.RequestServices.GetService(typeof(ISessionService))).Returns(_sessionServiceMock.Object);
+        _sessionServiceMock.Setup(a => a.GetUserByToken(guid)).Returns((User?)null);
         _attribute.OnAuthorization(_context);
 
         var response = _context.Result;
@@ -171,11 +174,10 @@ public class AuthenticationFilterTests
         var user = new User(validUserModel.Name, validUserModel.Surname, validUserModel.Email, validUserModel.Password,
             adminRole);
         _authRepositoryMock.Setup(a => a.IsAuthorizationExpired($"Bearer {guid}")).Returns(false);
-        _authRepositoryMock.Setup(a => a.GetUserOfAuthorization($"Bearer {guid}")).Returns(user);
-
-        var items = new Dictionary<object, object>();
-        items.Add(Items.UserLogged, user);
+        _sessionServiceMock.Setup(a => a.GetUserByToken(guid)).Returns(user);
+        var items = new Dictionary<object, object> { { Items.UserLogged, user } };
         _httpContextMock.Setup(h => h.Items).Returns(items);
+        _httpContextMock.Setup(h => h.RequestServices.GetService(typeof(ISessionService))).Returns(_sessionServiceMock.Object);
 
         _attribute.OnAuthorization(_context);
 

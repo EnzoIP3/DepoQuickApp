@@ -1,5 +1,6 @@
 using System.Net;
 using BusinessLogic;
+using HomeConnect.WebApi.Session;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Filters;
 using Microsoft.Extensions.Primitives;
@@ -61,7 +62,7 @@ public sealed class AuthenticationFilterAttribute(IAuthRepository authRepository
 
         try
         {
-            var userOfAuthorization = GetUserOfAuthorization(authorizationHeader);
+            var userOfAuthorization = GetUserOfAuthorization(authorizationHeader, context);
 
             if (userOfAuthorization == null)
             {
@@ -91,9 +92,15 @@ public sealed class AuthenticationFilterAttribute(IAuthRepository authRepository
         }
     }
 
-    private User? GetUserOfAuthorization(StringValues authorizationHeader)
+    private User? GetUserOfAuthorization(
+        StringValues authorization,
+        AuthorizationFilterContext context)
     {
-        return AuthRepository.GetUserOfAuthorization(authorizationHeader!);
+        var token = authorization.ToString().Substring("Bearer ".Length);
+        var sessionService = context.HttpContext.RequestServices.GetRequiredService<ISessionService>();
+        var user = sessionService.GetUserByToken(token);
+
+        return user;
     }
 
     private bool IsAuthorizationExpired(StringValues authorizationHeader)

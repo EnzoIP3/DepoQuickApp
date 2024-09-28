@@ -6,7 +6,7 @@ using Microsoft.AspNetCore.Mvc.Filters;
 namespace HomeConnect.WebApi.Filters;
 
 [AttributeUsage(AttributeTargets.Class | AttributeTargets.Method)]
-public class AuthorizationFilterAttribute(IUserRepository userRepository, string? permission = null) : Attribute, IAuthorizationFilter
+public class AuthorizationFilterAttribute(string? permission = null) : Attribute, IAuthorizationFilter
 {
     public string? Permission { get; } = permission;
 
@@ -28,10 +28,9 @@ public class AuthorizationFilterAttribute(IUserRepository userRepository, string
             return;
         }
 
-        var userLoggedMap = (UserModel)userLoggedIn;
-        var user = userRepository.GetUser(userLoggedMap.Email);
+        var userLoggedMap = (User)userLoggedIn;
         var permission = BuildPermission(context);
-        var hasNotPermission = !user.HasPermission(permission);
+        var hasNotPermission = !userLoggedMap.HasPermission(permission);
 
         if (hasNotPermission)
         {

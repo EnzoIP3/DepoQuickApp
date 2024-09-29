@@ -27,6 +27,11 @@ public class Member
 
     public void DeletePermission(HomePermission permission)
     {
+        if (!HomePermissions.Contains(permission))
+        {
+            throw new InvalidOperationException("Permission does not exist");
+        }
+
         HomePermissions.Remove(permission);
     }
 }

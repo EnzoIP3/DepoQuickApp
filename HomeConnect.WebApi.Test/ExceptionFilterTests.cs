@@ -48,6 +48,22 @@ public class ExceptionFilterTests
         GetMessage(concreteResponse?.Value).Should().Be("There was an error when processing your request");
     }
 
+    [TestMethod]
+    public void OnException_WhenExceptionIsArgumentException_ShouldResponseBadRequest()
+    {
+        _context.Exception = new ArgumentException("Not registered");
+        _attribute.OnException(_context);
+
+        var response = _context.Result;
+
+        response.Should().NotBeNull();
+        var concreteResponse = response as ObjectResult;
+        concreteResponse.Should().NotBeNull();
+        concreteResponse.StatusCode.Should().Be((int)HttpStatusCode.BadRequest);
+        GetInnerCode(concreteResponse?.Value).Should().Be("BadRequest");
+        GetMessage(concreteResponse?.Value).Should().Be("The request is invalid");
+    }
+
     private string GetInnerCode(object? value)
     {
         return value?.GetType().GetProperty("InnerCode")?.GetValue(value)?.ToString() ?? string.Empty;

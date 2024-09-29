@@ -6,7 +6,16 @@ namespace HomeConnect.WebApi.Filters;
 
 public class ExceptionFilter : IExceptionFilter
 {
-    private readonly Dictionary<Type, IActionResult> _errors = new Dictionary<Type, IActionResult>();
+    private readonly Dictionary<Type, IActionResult> _errors = new Dictionary<Type, IActionResult>
+    {
+        {
+            typeof(ArgumentException),
+            new ObjectResult(new { InnerCode = "BadRequest", Message = "The request is invalid" })
+            {
+                StatusCode = (int)HttpStatusCode.BadRequest
+            }
+        },
+    };
     public void OnException(ExceptionContext context)
     {
         var response = _errors.GetValueOrDefault(context.Exception.GetType());

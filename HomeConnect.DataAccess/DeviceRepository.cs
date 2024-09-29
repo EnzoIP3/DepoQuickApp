@@ -13,12 +13,16 @@ public class DeviceRepository
 
     public void Add(Device device)
     {
+        EnsureDeviceDoesNotExist(device);
+        _context.Devices.Add(device);
+        _context.SaveChanges();
+    }
+
+    private void EnsureDeviceDoesNotExist(Device device)
+    {
         if (_context.Devices.Any(d => d.ModelNumber == device.ModelNumber))
         {
             throw new ArgumentException("Device already exists.");
         }
-
-        _context.Devices.Add(device);
-        _context.SaveChanges();
     }
 }

@@ -22,4 +22,10 @@ public class AdminController(IAdminService adminService) : ControllerBase
         var adminId = adminService.Create(userModel);
         return new CreateAdminResponse { Id = adminId.ToString() };
     }
+
+    [HttpDelete("{id}")]
+    public IActionResult DeleteAdmin([FromRoute] Guid id, [FromHeader] string authorization)
+    {
+        throw new NotImplementedException();
+    }
 }

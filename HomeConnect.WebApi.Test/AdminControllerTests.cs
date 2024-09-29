@@ -1,6 +1,7 @@
 using BusinessLogic;
 using FluentAssertions;
 using HomeConnect.WebApi.Controllers;
+using Microsoft.AspNetCore.Mvc;
 using Moq;
 
 namespace HomeConnect.WebApi.Test;
@@ -36,5 +37,21 @@ public class AdminControllerTests
         _adminService.VerifyAll();
         response.Should().NotBeNull();
         response.Id.Should().Be(guid.ToString());
+    }
+
+    [TestMethod]
+    public void DeleteAdmin_WhenCalledWithValidRequest_ReturnsNoContentResponse()
+    {
+        // Arrange
+        var guid = Guid.NewGuid();
+        _adminService.Setup(x => x.Delete(guid));
+
+        // Act
+        var response = _controller.DeleteAdmin(guid, $"Bearer {guid}");
+
+        // Assert
+        _adminService.VerifyAll();
+        response.Should().NotBeNull();
+        response.Should().BeOfType<NoContentResult>();
     }
 }

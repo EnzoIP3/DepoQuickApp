@@ -10,4 +10,9 @@ public class Member
     {
         User = user;
     }
+
+    public void AddPermission(HomePermission permission)
+    {
+        HomePermissions.Add(permission);
+    }
 }

@@ -18,4 +18,19 @@ public class MemberTests
         // Assert
         act.Should().NotThrow();
     }
+
+    [TestMethod]
+    public void AddPermission_WhenPermissionIsValid_AddsPermission()
+    {
+        // Arrange
+        var user = new User();
+        var member = new Member(user);
+        var permission = new HomePermission("value");
+
+        // Act
+        member.AddPermission(permission);
+
+        // Assert
+        member.HomePermissions.Should().Contain(permission);
+    }
 }

@@ -1,4 +1,5 @@
 using BusinessLogic;
+using FluentAssertions;
 
 namespace HomeConnect.BusinessLogic.Test;
 
@@ -19,6 +20,25 @@ public class HomeTest
         var home = new Home(owner, address, latitude, longitude, maxMembers);
 
         // Assert
-        Assert.IsNotNull(home);
+        home.Should().NotBeNull();
+    }
+
+    [TestMethod]
+    [DataRow("Main St")]
+    [DataRow("123")]
+    [DataRow("123 Main St")]
+    public void Constructor_WhenAddressIsNotRoadAndNumber_ThrowsArgumentException(string address)
+    {
+        // Arrange
+        var owner = new User();
+        const double latitude = 123.456;
+        const double longitude = 456.789;
+        const int maxMembers = 5;
+
+        // Act
+        var act = () => new Home(owner, address, latitude, longitude, maxMembers);
+
+        // Assert
+        act.Should().Throw<ArgumentException>();
     }
 }

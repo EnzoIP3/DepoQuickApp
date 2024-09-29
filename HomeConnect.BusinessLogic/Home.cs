@@ -73,6 +73,11 @@ public class Home
             throw new ArgumentException("Member is already added");
         }
 
+        if (Members.Count >= MaxMembers)
+        {
+            throw new InvalidOperationException("Home is full");
+        }
+
         Members.Add(member);
     }
 }

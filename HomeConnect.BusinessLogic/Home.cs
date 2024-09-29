@@ -63,6 +63,11 @@ public class Home
 
     public void AddMember(User member)
     {
+        if (member == Owner)
+        {
+            throw new ArgumentException("Owner cannot be added as member");
+        }
+
         Members.Add(member);
     }
 }

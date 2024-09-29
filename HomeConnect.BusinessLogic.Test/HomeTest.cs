@@ -54,7 +54,7 @@ public class HomeTest
         home.AddMember(member);
 
         // Assert
-        home.Members.Should().Contain(member);
+        home.Members.Should().ContainSingle(m => m.User == member);
     }
 
     [TestMethod]

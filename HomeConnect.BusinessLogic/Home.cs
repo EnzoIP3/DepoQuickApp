@@ -16,7 +16,7 @@ public class Home
     public Guid Id { get; set; } = Guid.NewGuid();
     public User Owner { get; set; }
 
-    public List<User> Members { get; set; } = new();
+    public List<Member> Members { get; set; } = new();
 
     public string Address
     {
@@ -66,7 +66,7 @@ public class Home
         EnsureMemberIsNotOwner(member);
         EnsureMemberIsNotAlreadyAdded(member);
         EnsureMaxMembersIsNotReached();
-        Members.Add(member);
+        Members.Add(new Member(member));
     }
 
     private void EnsureMaxMembersIsNotReached()
@@ -79,7 +79,7 @@ public class Home
 
     private void EnsureMemberIsNotAlreadyAdded(User member)
     {
-        if (Members.Contains(member))
+        if (Members.Any(m => m.User == member))
         {
             throw new ArgumentException("Member is already added");
         }

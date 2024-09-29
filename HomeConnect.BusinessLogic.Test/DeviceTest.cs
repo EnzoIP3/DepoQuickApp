@@ -1,6 +1,5 @@
 using BusinessLogic;
 using FluentAssertions;
-using Moq;
 
 namespace HomeConnect.BusinessLogic.Test;
 
@@ -43,7 +42,7 @@ public class DeviceTest
         string mainPhoto, string type)
     {
         // Act
-        var act = () => new Device(name, modelNumber, description, mainPhoto, new List<string>(), type);
+        var act = () => new Device(name, modelNumber, description, mainPhoto, [], type);
 
         // Assert
         act.Should().Throw<ArgumentException>();

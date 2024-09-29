@@ -63,21 +63,33 @@ public class Home
 
     public void AddMember(User member)
     {
-        if (member == Owner)
-        {
-            throw new ArgumentException("Owner cannot be added as member");
-        }
+        EnsureMemberIsNotOwner(member);
+        EnsureMemberIsNotAlreadyAdded(member);
+        EnsureMaxMembersIsNotReached();
+        Members.Add(member);
+    }
 
-        if (Members.Contains(member))
-        {
-            throw new ArgumentException("Member is already added");
-        }
-
+    private void EnsureMaxMembersIsNotReached()
+    {
         if (Members.Count >= MaxMembers)
         {
             throw new InvalidOperationException("Home is full");
         }
+    }
 
-        Members.Add(member);
+    private void EnsureMemberIsNotAlreadyAdded(User member)
+    {
+        if (Members.Contains(member))
+        {
+            throw new ArgumentException("Member is already added");
+        }
+    }
+
+    private void EnsureMemberIsNotOwner(User member)
+    {
+        if (member == Owner)
+        {
+            throw new ArgumentException("Owner cannot be added as member");
+        }
     }
 }

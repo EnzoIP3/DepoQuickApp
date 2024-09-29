@@ -1,16 +1,25 @@
 using BusinessLogic;
+using HomeConnect.WebApi.Filters;
+using Microsoft.AspNetCore.Mvc;
 
 namespace HomeConnect.WebApi.Controllers;
 
-public class AdminController
+[ApiController]
+[Route("admins")]
+[AuthorizationFilter]
+public class AdminController(IAdminService adminService) : ControllerBase
 {
-    public AdminController(IAdminService adminService)
+    [HttpPost]
+    public CreateAdminResponse CreateAdmin([FromBody] CreateAdminRequest request, [FromHeader] string authorization)
     {
-        throw new NotImplementedException();
-    }
-
-    public CreateAdminResponse CreateAdmin(CreateAdminRequest request, string s)
-    {
-        throw new NotImplementedException();
+        var userModel = new UserModel
+        {
+            Name = request.Name,
+            Surname = request.Surname,
+            Email = request.Email,
+            Password = request.Password
+        };
+        var adminId = adminService.Create(userModel);
+        return new CreateAdminResponse { Id = adminId.ToString() };
     }
 }

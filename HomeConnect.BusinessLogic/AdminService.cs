@@ -14,13 +14,14 @@ public class AdminService
         RoleRepository = roleRepository;
     }
 
-    public void Create(UserModel model)
+    public Guid Create(UserModel model)
     {
         ValidateAdminModel(model);
         EnsureUserEmailIsUnique(model.Email);
         var role = RoleRepository.GetRole(model.Role);
         var admin = new User(model.Name, model.Surname, model.Email, model.Password, role);
         UserRepository.Add(admin);
+        return admin.Id;
     }
 
     public void Delete(string email)

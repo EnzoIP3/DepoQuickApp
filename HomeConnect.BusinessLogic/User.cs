@@ -10,6 +10,7 @@ public class User
     private readonly string _surname = string.Empty;
     private readonly string _password = string.Empty;
 
+    public Guid Id { get; init; } = Guid.NewGuid();
     public string Name
     {
         get => _name;

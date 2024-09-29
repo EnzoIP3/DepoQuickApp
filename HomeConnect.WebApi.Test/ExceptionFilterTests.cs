@@ -45,7 +45,7 @@ public class ExceptionFilterTests
         concreteResponse.Should().NotBeNull();
         concreteResponse.StatusCode.Should().Be((int)HttpStatusCode.InternalServerError);
         GetInnerCode(concreteResponse?.Value).Should().Be("InternalServerError");
-        GetMessage(concreteResponse?.Value).Should().Be("An error occurred");
+        GetMessage(concreteResponse?.Value).Should().Be("There was an error when processing your request");
     }
 
     private string GetInnerCode(object? value)

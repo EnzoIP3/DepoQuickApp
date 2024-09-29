@@ -41,4 +41,19 @@ public class HomeTest
         // Assert
         act.Should().Throw<ArgumentException>();
     }
+
+    [TestMethod]
+    public void AddMember_WhenMemberIsNotOwner_AddsMember()
+    {
+        // Arrange
+        var owner = new User();
+        var home = new Home(owner, "Main St 123", 123.456, 456.789, 5);
+        var member = new User();
+
+        // Act
+        home.AddMember(member);
+
+        // Assert
+        home.Members.Should().Contain(member);
+    }
 }

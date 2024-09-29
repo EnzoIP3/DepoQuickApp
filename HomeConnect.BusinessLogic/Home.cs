@@ -16,6 +16,8 @@ public class Home
     public Guid Id { get; set; } = Guid.NewGuid();
     public User Owner { get; set; }
 
+    public List<User> Members { get; set; } = new();
+
     public string Address
     {
         get => _address;
@@ -57,5 +59,10 @@ public class Home
         {
             throw new ArgumentException("Address must be road and number");
         }
+    }
+
+    public void AddMember(User member)
+    {
+        throw new NotImplementedException();
     }
 }

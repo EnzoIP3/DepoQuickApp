@@ -68,6 +68,11 @@ public class Home
             throw new ArgumentException("Owner cannot be added as member");
         }
 
+        if (Members.Contains(member))
+        {
+            throw new ArgumentException("Member is already added");
+        }
+
         Members.Add(member);
     }
 }

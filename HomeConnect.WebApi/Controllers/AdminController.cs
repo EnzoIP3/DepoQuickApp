@@ -26,6 +26,7 @@ public class AdminController(IAdminService adminService) : ControllerBase
     [HttpDelete("{id}")]
     public IActionResult DeleteAdmin([FromRoute] Guid id, [FromHeader] string authorization)
     {
-        throw new NotImplementedException();
+        adminService.Delete(id);
+        return NoContent();
     }
 }

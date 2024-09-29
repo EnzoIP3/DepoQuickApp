@@ -86,4 +86,20 @@ public class HomeTest
         // Assert
         act.Should().Throw<ArgumentException>();
     }
+
+    [TestMethod]
+    public void AddMember_WhenMaxMembersReached_ThrowsInvalidOperationException()
+    {
+        // Arrange
+        var owner = new User();
+        var home = new Home(owner, "Main St 123", 123.456, 456.789, 1);
+        var member = new User();
+        home.AddMember(member);
+
+        // Act
+        var act = () => home.AddMember(new User());
+
+        // Assert
+        act.Should().Throw<InvalidOperationException>();
+    }
 }

@@ -36,4 +36,19 @@ public class DeviceRepositoryTests
         // Assert
         _context.Devices.Should().Contain(device);
     }
+
+    [TestMethod]
+    public void Add_WhenDeviceExists_ShouldThrowException()
+    {
+        // Arrange
+        var device = new Device("Device", 12345, "Device description", "https://example.com/image.png",
+            [], "Sensor");
+        _deviceRepository.Add(device);
+
+        // Act
+        Action act = () => _deviceRepository.Add(device);
+
+        // Assert
+        act.Should().Throw<ArgumentException>();
+    }
 }

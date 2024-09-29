@@ -70,4 +70,20 @@ public class HomeTest
         // Assert
         act.Should().Throw<ArgumentException>();
     }
+
+    [TestMethod]
+    public void AddMember_WhenMemberIsAlreadyMember_ThrowsArgumentException()
+    {
+        // Arrange
+        var owner = new User();
+        var home = new Home(owner, "Main St 123", 123.456, 456.789, 5);
+        var member = new User();
+        home.AddMember(member);
+
+        // Act
+        var act = () => home.AddMember(member);
+
+        // Assert
+        act.Should().Throw<ArgumentException>();
+    }
 }

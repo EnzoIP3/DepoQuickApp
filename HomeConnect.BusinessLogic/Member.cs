@@ -13,6 +13,11 @@ public class Member
 
     public void AddPermission(HomePermission permission)
     {
+        if (HomePermissions.Contains(permission))
+        {
+            throw new InvalidOperationException("Permission is already added");
+        }
+
         HomePermissions.Add(permission);
     }
 }

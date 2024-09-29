@@ -33,4 +33,20 @@ public class MemberTests
         // Assert
         member.HomePermissions.Should().Contain(permission);
     }
+
+    [TestMethod]
+    public void AddPermission_WhenPermissionIsAlreadyAdded_ThrowsInvalidOperationException()
+    {
+        // Arrange
+        var user = new User();
+        var member = new Member(user);
+        var permission = new HomePermission("value");
+        member.AddPermission(permission);
+
+        // Act
+        var act = () => member.AddPermission(permission);
+
+        // Assert
+        act.Should().Throw<InvalidOperationException>();
+    }
 }

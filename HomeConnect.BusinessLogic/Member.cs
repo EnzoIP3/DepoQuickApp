@@ -34,4 +34,9 @@ public class Member
 
         HomePermissions.Remove(permission);
     }
+
+    public bool HasPermission(HomePermission permission)
+    {
+        return HomePermissions.Contains(permission);
+    }
 }

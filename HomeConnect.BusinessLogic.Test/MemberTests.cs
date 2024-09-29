@@ -80,4 +80,20 @@ public class MemberTests
         // Assert
         act.Should().Throw<InvalidOperationException>();
     }
+
+    [TestMethod]
+    public void HasPermission_WhenPermissionExists_ReturnsTrue()
+    {
+        // Arrange
+        var user = new User();
+        var member = new Member(user);
+        var permission = new HomePermission("value");
+        member.AddPermission(permission);
+
+        // Act
+        var result = member.HasPermission(permission);
+
+        // Assert
+        result.Should().BeTrue();
+    }
 }

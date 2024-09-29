@@ -13,6 +13,11 @@ public class DeviceRepository
 
     public void Add(Device device)
     {
+        if (_context.Devices.Any(d => d.ModelNumber == device.ModelNumber))
+        {
+            throw new ArgumentException("Device already exists.");
+        }
+
         _context.Devices.Add(device);
         _context.SaveChanges();
     }

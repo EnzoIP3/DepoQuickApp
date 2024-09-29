@@ -49,4 +49,20 @@ public class MemberTests
         // Assert
         act.Should().Throw<InvalidOperationException>();
     }
+
+    [TestMethod]
+    public void DeletePermission_WhenPermissionExists_DeletesPermission()
+    {
+        // Arrange
+        var user = new User();
+        var member = new Member(user);
+        var permission = new HomePermission("value");
+        member.AddPermission(permission);
+
+        // Act
+        member.DeletePermission(permission);
+
+        // Assert
+        member.HomePermissions.Should().NotContain(permission);
+    }
 }

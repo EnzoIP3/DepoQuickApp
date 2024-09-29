@@ -24,4 +24,9 @@ public class Member
             throw new InvalidOperationException("Permission is already added");
         }
     }
+
+    public void DeletePermission(HomePermission permission)
+    {
+        HomePermissions.Remove(permission);
+    }
 }

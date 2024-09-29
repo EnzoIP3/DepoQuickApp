@@ -63,6 +63,6 @@ public class Home
 
     public void AddMember(User member)
     {
-        throw new NotImplementedException();
+        Members.Add(member);
     }
 }

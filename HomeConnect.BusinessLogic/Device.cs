@@ -7,8 +7,18 @@ public class Device
     private string _mainPhoto = string.Empty;
     private List<string> _secondaryPhotos = [];
     private string _type = string.Empty;
+    private Business _business = null;
 
     public Guid Id { get; init; } = Guid.NewGuid();
+
+    public Business Business
+    {
+        get => _business;
+        set
+        {
+            _business = value;
+        }
+    }
 
     public string Name
     {
@@ -64,7 +74,7 @@ public class Device
     }
 
     public Device(string name, int modelNumber, string description, string mainPhoto, List<string> secondaryPhotos,
-        string type)
+        string type, Business business)
     {
         Name = name;
         ModelNumber = modelNumber;
@@ -72,6 +82,7 @@ public class Device
         MainPhoto = mainPhoto;
         SecondaryPhotos = secondaryPhotos;
         Type = type;
+        Business = business;
     }
 
     private static void EnsurePhotoUrlIsValid(string photoUrl)

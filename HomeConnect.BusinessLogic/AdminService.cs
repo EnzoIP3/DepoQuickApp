@@ -58,12 +58,13 @@ public class AdminService : IAdminService
         }
     }
 
-    public void CreateBusinessOwner(UserModel model)
+    public Guid CreateBusinessOwner(UserModel model)
     {
         EnsureUserEmailIsUnique(Guid.Parse(model.Id));
         var role = RoleRepository.GetRole(model.Role);
         var user = new User(model.Name, model.Surname, model.Email, model.Password, role);
         UserRepository.Add(user);
+        return user.Id;
     }
 
     public List<ListUserModel> GetUsers(int? currentPage = null, int? pageSize = null, string? fullNameFilter = null,

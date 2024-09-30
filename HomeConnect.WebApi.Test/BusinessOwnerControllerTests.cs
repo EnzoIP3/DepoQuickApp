@@ -15,7 +15,7 @@ public class BusinessOwnerControllerTests
     public void Initialize()
     {
         _adminService = new Mock<IAdminService>();
-        _controller = new BusinessOwnerController();
+        _controller = new BusinessOwnerController(_adminService.Object);
     }
 
     [TestMethod]
@@ -27,7 +27,7 @@ public class BusinessOwnerControllerTests
             Name = "John", Surname = "Doe", Email = "email@email.com", Password = "password"
         };
         var guid = Guid.NewGuid();
-        _adminService.Setup(x => x.Create(It.IsAny<UserModel>())).Returns(guid);
+        _adminService.Setup(x => x.CreateBusinessOwner(It.IsAny<UserModel>())).Returns(guid);
 
         // Act
         var response = _controller.CreateBusinessOwner(request, $"Bearer {guid}");

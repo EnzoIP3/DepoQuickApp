@@ -4,4 +4,5 @@ public interface IAdminService
 {
     public Guid Create(UserModel userModel);
     void Delete(Guid id);
+    public Guid CreateBusinessOwner(UserModel userModel);
 }

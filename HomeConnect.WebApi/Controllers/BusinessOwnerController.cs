@@ -7,10 +7,18 @@ namespace HomeConnect.WebApi.Controllers;
 [ApiController]
 [Route("business_owners")]
 [AuthorizationFilter]
-public class BusinessOwnerController() : ControllerBase
+public class BusinessOwnerController(IAdminService adminService) : ControllerBase
 {
     public CreateBusinessOwnerResponse CreateBusinessOwner(CreateBusinessOwnerRequest request, string s)
     {
-        throw new NotImplementedException();
+        var userModel = new UserModel
+        {
+            Name = request.Name,
+            Surname = request.Surname,
+            Email = request.Email,
+            Password = request.Password
+        };
+        var businessOwnerId = adminService.CreateBusinessOwner(userModel);
+        return new CreateBusinessOwnerResponse() { Id = businessOwnerId.ToString() };
     }
 }

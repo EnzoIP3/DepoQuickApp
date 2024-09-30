@@ -72,10 +72,13 @@ public class HomeOwnerServiceTests
         var home = new Home(_user, "Main St 123", 1.0, 2.0, 5);
         var model = new AddMemberModel
         {
-            HomeId = home.Id, HomeOwnerEmail = "jane@doe.com", CanAddDevices = true, CanListDevices = true
+            HomeId = home.Id.ToString(),
+            HomeOwnerEmail = "jane@doe.com",
+            CanAddDevices = true,
+            CanListDevices = true
         };
         _userRepositoryMock.Setup(x => x.Get(model.HomeOwnerEmail)).Returns(invitedUser);
-        _homeRepositoryMock.Setup(x => x.Get(model.HomeId)).Returns(home);
+        _homeRepositoryMock.Setup(x => x.Get(Guid.Parse(model.HomeId))).Returns(home);
 
         // Act
         _homeOwnerService.AddMemberToHome(model);

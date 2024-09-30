@@ -30,7 +30,7 @@ public class HomeOwnerService
     public void AddMemberToHome(AddMemberModel model)
     {
         var user = _userRepository.Get(model.HomeOwnerEmail);
-        var home = _homeRepository.Get(model.HomeId);
+        var home = _homeRepository.Get(Guid.Parse(model.HomeId));
         var permissions = new List<HomePermission>();
 
         if (model.CanAddDevices)

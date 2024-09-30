@@ -34,6 +34,11 @@ public class HomeOwnerService
             throw new ArgumentException("All arguments are required");
         }
 
+        if (!Guid.TryParse(model.HomeId, out _))
+        {
+            throw new ArgumentException("HomeId must be a valid guid");
+        }
+
         var user = _userRepository.Get(model.HomeOwnerEmail);
         var home = _homeRepository.Get(Guid.Parse(model.HomeId));
         var permissions = new List<HomePermission>();

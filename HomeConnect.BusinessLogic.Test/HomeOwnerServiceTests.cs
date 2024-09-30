@@ -21,7 +21,7 @@ public class HomeOwnerServiceTests
     }
 
     [TestMethod]
-    public void CreateHome_WhenHomeIsValid_AddsHome()
+    public void CreateHome_WhenArgumentsAreValid_AddsHome()
     {
         // Arrange
         var model = new CreateHomeModel
@@ -65,7 +65,7 @@ public class HomeOwnerServiceTests
     }
 
     [TestMethod]
-    public void AddMemberToHome_WhenHomeExistsAndUserExists_AddsMember()
+    public void AddMemberToHome_WhenArgumentsAreValid_AddsMember()
     {
         // Arrange
         var invitedUser = new User("Jane", "Doe", "jane@doe.com", "12345678@My", new Role());

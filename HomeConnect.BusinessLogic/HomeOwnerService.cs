@@ -35,7 +35,7 @@ public class HomeOwnerService
     public void AddMemberToHome(AddMemberModel model)
     {
         EnsureAddMemberModelIsValid(model);
-        EnsureHomeIdIsValidGuid(model);
+        EnsureHomeIdIsValidGuid(model.HomeId);
         var user = _userRepository.Get(model.HomeOwnerEmail);
         var home = _homeRepository.Get(Guid.Parse(model.HomeId));
         var permissions = new List<HomePermission>();
@@ -54,9 +54,9 @@ public class HomeOwnerService
         home.AddMember(member);
     }
 
-    private static void EnsureHomeIdIsValidGuid(AddMemberModel model)
+    private static void EnsureHomeIdIsValidGuid(string homeId)
     {
-        if (!Guid.TryParse(model.HomeId, out _))
+        if (!Guid.TryParse(homeId, out _))
         {
             throw new ArgumentException("HomeId must be a valid guid");
         }
@@ -72,11 +72,7 @@ public class HomeOwnerService
 
     public void AddDeviceToHome(AddDeviceModel addDeviceModel)
     {
-        if (!Guid.TryParse(addDeviceModel.HomeId, out _))
-        {
-            throw new ArgumentException("HomeId must be a valid guid");
-        }
-
+        EnsureHomeIdIsValidGuid(addDeviceModel.HomeId);
         var home = _homeRepository.Get(Guid.Parse(addDeviceModel.HomeId));
         var devices = addDeviceModel.DeviceIds.Select(id => _deviceRepository.Get(Guid.Parse(id))).ToList();
         devices.ForEach((device) => _ownedDeviceRepository.Add(new OwnedDevice(home, device)));

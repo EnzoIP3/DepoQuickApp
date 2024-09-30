@@ -2,16 +2,18 @@
 
 public class BusinessOwnerService
 {
+    public IDeviceRepository DeviceRepository { get; init; }
     public IUserRepository UserRepository { get; init; }
     public IBusinessRepository BusinessRepository { get; init; }
     public IRoleRepository RoleRepository { get; init; }
 
     public BusinessOwnerService(IUserRepository userRepository, IBusinessRepository businessRepository,
-        IRoleRepository roleRepository)
+        IRoleRepository roleRepository, IDeviceRepository deviceRepository)
     {
         UserRepository = userRepository;
         BusinessRepository = businessRepository;
         RoleRepository = roleRepository;
+        DeviceRepository = deviceRepository;
     }
 
     public void CreateBusiness(string ownerEmail, string businessRut, string businessName)
@@ -36,7 +38,8 @@ public class BusinessOwnerService
 
     public void CreateDevice(string name, int modelNumber, string description, string mainPhoto, List<string> secondaryPhotos, string type)
     {
-        throw new NotImplementedException();
+        var device = new Device(name, modelNumber, description, mainPhoto, secondaryPhotos, type);
+        DeviceRepository.Add(device);
     }
 
     private User VerifyOwnerExists(string ownerEmail)

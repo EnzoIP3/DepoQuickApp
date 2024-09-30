@@ -25,7 +25,7 @@ public class BusinessOwnerServiceTests
         _userRepository = new Mock<IUserRepository>(MockBehavior.Strict);
         _businessRepository = new Mock<IBusinessRepository>(MockBehavior.Strict);
         _roleRepository = new Mock<IRoleRepository>(MockBehavior.Strict);
-        _businessOwnerService = new BusinessOwnerService(_userRepository.Object, _businessRepository.Object, _roleRepository.Object);
+        _businessOwnerService = new BusinessOwnerService(_userRepository.Object, _businessRepository.Object, _roleRepository.Object, _deviceRepository.Object);
 
         _ownerEmail = "owner@example.com";
         _businessRut = "123456789";

@@ -61,12 +61,12 @@ public class Home
         }
     }
 
-    public void AddMember(User member)
+    public void AddMember(Member member)
     {
         EnsureMemberIsNotOwner(member);
         EnsureMemberIsNotAlreadyAdded(member);
         EnsureMaxMembersIsNotReached();
-        Members.Add(new Member(member));
+        Members.Add(member);
     }
 
     private void EnsureMaxMembersIsNotReached()
@@ -77,17 +77,17 @@ public class Home
         }
     }
 
-    private void EnsureMemberIsNotAlreadyAdded(User member)
+    private void EnsureMemberIsNotAlreadyAdded(Member member)
     {
-        if (Members.Any(m => m.User == member))
+        if (Members.Any(m => m == member))
         {
             throw new ArgumentException("Member is already added");
         }
     }
 
-    private void EnsureMemberIsNotOwner(User member)
+    private void EnsureMemberIsNotOwner(Member member)
     {
-        if (member == Owner)
+        if (member.User == Owner)
         {
             throw new ArgumentException("Owner cannot be added as member");
         }

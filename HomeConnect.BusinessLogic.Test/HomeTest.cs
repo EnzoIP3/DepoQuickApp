@@ -48,13 +48,13 @@ public class HomeTest
         // Arrange
         var owner = new User();
         var home = new Home(owner, "Main St 123", 123.456, 456.789, 5);
-        var member = new User();
+        var member = new Member(new User());
 
         // Act
         home.AddMember(member);
 
         // Assert
-        home.Members.Should().ContainSingle(m => m.User == member);
+        home.Members.Should().ContainSingle(m => m == member);
     }
 
     [TestMethod]
@@ -62,10 +62,11 @@ public class HomeTest
     {
         // Arrange
         var owner = new User();
+        var ownerMember = new Member(owner);
         var home = new Home(owner, "Main St 123", 123.456, 456.789, 5);
 
         // Act
-        var act = () => home.AddMember(owner);
+        var act = () => home.AddMember(ownerMember);
 
         // Assert
         act.Should().Throw<ArgumentException>();
@@ -77,7 +78,8 @@ public class HomeTest
         // Arrange
         var owner = new User();
         var home = new Home(owner, "Main St 123", 123.456, 456.789, 5);
-        var member = new User();
+        var otherUser = new User();
+        var member = new Member(otherUser);
         home.AddMember(member);
 
         // Act
@@ -93,11 +95,11 @@ public class HomeTest
         // Arrange
         var owner = new User();
         var home = new Home(owner, "Main St 123", 123.456, 456.789, 1);
-        var member = new User();
+        var member = new Member(new User());
         home.AddMember(member);
 
         // Act
-        var act = () => home.AddMember(new User());
+        var act = () => home.AddMember(new Member(new User()));
 
         // Assert
         act.Should().Throw<InvalidOperationException>();

@@ -124,13 +124,14 @@ public class BusinessOwnerServiceTests
         var modelNumber = 123;
         var description = "Device Description";
         var mainPhoto = "https://www.example.com/photo1.jpg";
+        var business = new Business("RUTexample", "Business Name", _owner);
         var secondaryPhotos = new List<string> { "https://www.example.com/photo2.jpg", "https://www.example.com/photo3.jpg" };
         var type = "Device Type";
         _deviceRepository.Setup(x => x.EnsureDeviceDoesNotExist(It.IsAny<Device>()));
         _deviceRepository.Setup(x => x.Add(It.IsAny<Device>()));
 
         // Act
-        _businessOwnerService.CreateDevice(name, modelNumber, description, mainPhoto, secondaryPhotos, type);
+        _businessOwnerService.CreateDevice(name, modelNumber, description, mainPhoto, secondaryPhotos, type, business);
 
         // Assert
         _deviceRepository.Verify(x => x.Add(It.Is<Device>(d =>
@@ -156,12 +157,13 @@ public class BusinessOwnerServiceTests
         var mainPhoto = "https://www.example.com/photo1.jpg";
         var secondaryPhotos = new List<string> { "https://www.example.com/photo2.jpg", "https://www.example.com/photo3.jpg" };
         var type = "Device Type";
-        var existingDevice = new Device(name, modelNumber, description, mainPhoto, secondaryPhotos, type);
+        var business = new Business("RUTexample", "Business Name", _owner);
+        var existingDevice = new Device(name, modelNumber, description, mainPhoto, secondaryPhotos, type, business);
         _deviceRepository.Setup(x => x.EnsureDeviceDoesNotExist(It.IsAny<Device>())).Throws(new ArgumentException("Device already exists"));
         _deviceRepository.Setup(x => x.Add(It.IsAny<Device>()));
 
         // Act
-        Action act = () => _businessOwnerService.CreateDevice(name, modelNumber, description, mainPhoto, secondaryPhotos, type);
+        Action act = () => _businessOwnerService.CreateDevice(name, modelNumber, description, mainPhoto, secondaryPhotos, type, business);
 
         // Assert
         act.Should().Throw<ArgumentException>().WithMessage("Device already exists");

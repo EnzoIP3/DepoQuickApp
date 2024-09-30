@@ -26,9 +26,9 @@ public class BusinessOwnerService
         BusinessRepository.Add(business);
     }
 
-    public void CreateDevice(string name, int modelNumber, string description, string mainPhoto, List<string> secondaryPhotos, string type)
+    public void CreateDevice(string name, int modelNumber, string description, string mainPhoto, List<string> secondaryPhotos, string type, Business business)
     {
-        var device = new Device(name, modelNumber, description, mainPhoto, secondaryPhotos, type);
+        var device = new Device(name, modelNumber, description, mainPhoto, secondaryPhotos, type, business);
         DeviceRepository.EnsureDeviceDoesNotExist(device);
         DeviceRepository.Add(device);
     }

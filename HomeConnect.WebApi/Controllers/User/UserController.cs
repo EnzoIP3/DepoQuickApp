@@ -6,7 +6,7 @@ using Microsoft.AspNetCore.Mvc;
 namespace HomeConnect.WebApi.Controllers.User;
 
 [ApiController]
-[Route("admins")]
+[Route("users")]
 [AuthorizationFilter]
 public class UserController(IAdminService adminService) : ControllerBase
 {

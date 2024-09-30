@@ -33,6 +33,6 @@ public class OwnedDeviceTests
         var ownedDevice = new OwnedDevice(home, device);
 
         // Assert
-        ownedDevice.HardwareId.Should().NotBeNull();
+        ownedDevice.HardwareId.Should().NotBeEmpty();
     }
 }

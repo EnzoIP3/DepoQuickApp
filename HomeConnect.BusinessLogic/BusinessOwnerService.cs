@@ -34,6 +34,11 @@ public class BusinessOwnerService
         BusinessRepository.Add(business);
     }
 
+    public void CreateDevice(string name, int modelNumber, string description, string mainPhoto, List<string> secondaryPhotos, string type)
+    {
+        throw new NotImplementedException();
+    }
+
     private User VerifyOwnerExists(string ownerEmail)
     {
         var owner = UserRepository.GetUser(ownerEmail);

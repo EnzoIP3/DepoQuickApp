@@ -10,6 +10,7 @@ public class BusinessOwnerServiceTests
     private Mock<IUserRepository> _userRepository = null!;
     private Mock<IBusinessRepository> _businessRepository = null!;
     private Mock<IRoleRepository> _roleRepository = null!;
+    private Mock<IDeviceRepository> _deviceRepository = null!;
     private BusinessOwnerService _businessOwnerService = null!;
     private string _ownerEmail = null!;
     private string _businessRut = null!;
@@ -20,6 +21,7 @@ public class BusinessOwnerServiceTests
     [TestInitialize]
     public void TestInitialize()
     {
+        _deviceRepository = new Mock<IDeviceRepository>(MockBehavior.Strict);
         _userRepository = new Mock<IUserRepository>(MockBehavior.Strict);
         _businessRepository = new Mock<IBusinessRepository>(MockBehavior.Strict);
         _roleRepository = new Mock<IRoleRepository>(MockBehavior.Strict);
@@ -109,5 +111,41 @@ public class BusinessOwnerServiceTests
 
     #endregion
 
+    #endregion
+
+    #region CreateDevice
+
+    #region Success
+    [TestMethod]
+    public void CreateDevice_WhenDeviceDoesNotExist_CreatesDevice()
+    {
+        // Arrange
+        var name = "Device Name";
+        var modelNumber = 123;
+        var description = "Device Description";
+        var mainPhoto = "https://www.example.com/photo1.jpg";
+        var secondaryPhotos = new List<string> { "https://www.example.com/photo2.jpg", "https://www.example.com/photo3.jpg" };
+        var type = "Device Type";
+        _deviceRepository.Setup(x => x.EnsureDeviceDoesNotExist(It.IsAny<Device>()));
+        _deviceRepository.Setup(x => x.Add(It.IsAny<Device>()));
+
+        // Act
+        _businessOwnerService.CreateDevice(name, modelNumber, description, mainPhoto, secondaryPhotos, type);
+
+        // Assert
+        _deviceRepository.Verify(x => x.Add(It.Is<Device>(d =>
+            d.Name == name &&
+            d.ModelNumber == modelNumber &&
+            d.Description == description &&
+            d.MainPhoto == mainPhoto &&
+            d.SecondaryPhotos.SequenceEqual(secondaryPhotos) &&
+            d.Type == type)));
+    }
+
+    #endregion
+
+    #region Error
+
+    #endregion
     #endregion
 }

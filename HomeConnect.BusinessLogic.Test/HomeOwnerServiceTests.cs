@@ -161,4 +161,18 @@ public class HomeOwnerServiceTests
         // Assert
         act.Should().Throw<ArgumentException>();
     }
+
+    [TestMethod]
+    public void AddDevicesToHome_WhenDeviceIdIsNotAGuid_ThrowsException()
+    {
+        // Arrange
+        var home = new Home(_user, "Main St 123", 1.0, 2.0, 5);
+        var addDeviceModel = new AddDeviceModel { HomeId = home.Id.ToString(), DeviceIds = ["invalid-guid"] };
+
+        // Act
+        var act = () => _homeOwnerService.AddDeviceToHome(addDeviceModel);
+
+        // Assert
+        act.Should().Throw<ArgumentException>();
+    }
 }

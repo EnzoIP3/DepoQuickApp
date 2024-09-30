@@ -86,4 +86,22 @@ public class HomeOwnerServiceTests
         // Assert
         home.Members.Should().ContainSingle(x => x.User == invitedUser);
     }
+
+    [TestMethod]
+    [DataRow("", "jane@doe.com")]
+    [DataRow("12345678-1234-1234-1234-123456789012", "")]
+    public void AddMemberToHome_WhenArgumentsHaveEmptyFields_ThrowsException(string homeId, string homeOwnerEmail)
+    {
+        // Arrange
+        var model = new AddMemberModel
+        {
+            HomeId = homeId, HomeOwnerEmail = homeOwnerEmail, CanAddDevices = true, CanListDevices = true
+        };
+
+        // Act
+        var act = () => _homeOwnerService.AddMemberToHome(model);
+
+        // Assert
+        act.Should().Throw<ArgumentException>();
+    }
 }

@@ -11,9 +11,10 @@ namespace HomeConnect.WebApi.Controllers.User;
 public class UserController(IAdminService adminService) : ControllerBase
 {
     [HttpGet]
-    public IActionResult GetUsers()
+    public IActionResult GetUsers([FromQuery] int? currentPage = null, [FromQuery] int? pageSize = null,
+        [FromQuery] string? fullNameFilter = null, [FromQuery] string? roleFilter = null)
     {
-        var users = adminService.GetUsers(null, null, null, null);
+        var users = adminService.GetUsers(currentPage, pageSize, fullNameFilter, roleFilter);
         var response = new
         {
             users.Data,

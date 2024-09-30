@@ -17,7 +17,7 @@ public class BusinessControllerTests
     public void Initialize()
     {
         _adminService = new Mock<IAdminService>();
-        _controller = new BusinessController();
+        _controller = new BusinessController(_adminService.Object);
     }
 
     [TestMethod]

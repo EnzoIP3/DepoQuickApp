@@ -10,7 +10,7 @@ public class HomeOwnerServiceTests
     private Mock<IHomeRepository> _homeRepositoryMock = null!;
     private Mock<IUserRepository> _userRepositoryMock = null!;
     private HomeOwnerService _homeOwnerService = null!;
-    private User _user = new User("John", "Doe", "test@example.com", "12345678@My", new Role());
+    private readonly User _user = new User("John", "Doe", "test@example.com", "12345678@My", new Role());
 
     [TestInitialize]
     public void Initialize()
@@ -62,5 +62,25 @@ public class HomeOwnerServiceTests
 
         // Assert
         act.Should().Throw<ArgumentException>();
+    }
+
+    [TestMethod]
+    public void AddMemberToHome_WhenHomeExistsAndUserExists_AddsMember()
+    {
+        // Arrange
+        var invitedUser = new User("Jane", "Doe", "jane@doe.com", "12345678@My", new Role());
+        var home = new Home(_user, "Main St 123", 1.0, 2.0, 5);
+        var model = new AddMemberModel
+        {
+            HomeId = home.Id, HomeOwnerEmail = "jane@doe.com", CanAddDevices = true, CanListDevices = true
+        };
+        _userRepositoryMock.Setup(x => x.Get(model.HomeOwnerEmail)).Returns(invitedUser);
+        _homeRepositoryMock.Setup(x => x.Get(model.HomeId)).Returns(home);
+
+        // Act
+        _homeOwnerService.AddMemberToHome(model);
+
+        // Assert
+        home.Members.Should().ContainSingle(x => x.User == invitedUser);
     }
 }

@@ -26,4 +26,24 @@ public class HomeOwnerService
             throw new ArgumentException("All arguments are required");
         }
     }
+
+    public void AddMemberToHome(AddMemberModel model)
+    {
+        var user = _userRepository.Get(model.HomeOwnerEmail);
+        var home = _homeRepository.Get(model.HomeId);
+        var permissions = new List<HomePermission>();
+
+        if (model.CanAddDevices)
+        {
+            permissions.Add(new HomePermission("canAddDevices"));
+        }
+
+        if (model.CanListDevices)
+        {
+            permissions.Add(new HomePermission("canListDevices"));
+        }
+
+        var member = new Member(user, permissions);
+        home.AddMember(member);
+    }
 }

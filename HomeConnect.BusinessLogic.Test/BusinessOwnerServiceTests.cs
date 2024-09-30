@@ -146,6 +146,28 @@ public class BusinessOwnerServiceTests
 
     #region Error
 
+    [TestMethod]
+    public void CreateDevice_WhenDeviceAlreadyExists_ThrowsException()
+    {
+        // Arrange
+        var name = "Device Name";
+        var modelNumber = 123;
+        var description = "Device Description";
+        var mainPhoto = "https://www.example.com/photo1.jpg";
+        var secondaryPhotos = new List<string> { "https://www.example.com/photo2.jpg", "https://www.example.com/photo3.jpg" };
+        var type = "Device Type";
+        var existingDevice = new Device(name, modelNumber, description, mainPhoto, secondaryPhotos, type);
+        _deviceRepository.Setup(x => x.EnsureDeviceDoesNotExist(It.IsAny<Device>())).Throws(new ArgumentException("Device already exists"));
+        _deviceRepository.Setup(x => x.Add(It.IsAny<Device>()));
+
+        // Act
+        Action act = () => _businessOwnerService.CreateDevice(name, modelNumber, description, mainPhoto, secondaryPhotos, type);
+
+        // Assert
+        act.Should().Throw<ArgumentException>().WithMessage("Device already exists");
+        _deviceRepository.Verify(x => x.Add(It.IsAny<Device>()), Times.Never);
+    }
+
     #endregion
     #endregion
 }

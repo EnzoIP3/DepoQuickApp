@@ -73,6 +73,11 @@ public class HomeOwnerService
     public void AddDeviceToHome(AddDeviceModel addDeviceModel)
     {
         EnsureHomeIdIsValidGuid(addDeviceModel.HomeId);
+        if (addDeviceModel.DeviceIds.Any(id => !Guid.TryParse(id, out _)))
+        {
+            throw new ArgumentException("DeviceIds must be valid guids");
+        }
+
         var home = _homeRepository.Get(Guid.Parse(addDeviceModel.HomeId));
         var devices = addDeviceModel.DeviceIds.Select(id => _deviceRepository.Get(Guid.Parse(id))).ToList();
         devices.ForEach((device) => _ownedDeviceRepository.Add(new OwnedDevice(home, device)));

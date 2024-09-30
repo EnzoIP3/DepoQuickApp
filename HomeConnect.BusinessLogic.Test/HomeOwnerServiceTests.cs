@@ -133,13 +133,17 @@ public class HomeOwnerServiceTests
         var home = new Home(_user, "Main St 123", 1.0, 2.0, 5);
         var device = new Device("Sensor", 1, "A sensor", "https://example.com/image.png", [], "Sensor");
         var camera = new Camera("Camera", 2, "A camera", "https://example.com/image.png", [], true, true, true, true);
+        var addDeviceModel = new AddDeviceModel
+        {
+            HomeId = home.Id.ToString(), DeviceIds = [device.Id.ToString(), camera.Id.ToString()]
+        };
         _deviceRepositoryMock.Setup(x => x.Get(device.Id)).Returns(device);
         _deviceRepositoryMock.Setup(x => x.Get(camera.Id)).Returns(camera);
         _homeRepositoryMock.Setup(x => x.Get(home.Id)).Returns(home);
         _ownedDeviceRepositoryMock.Setup(x => x.Add(It.IsAny<OwnedDevice>())).Verifiable();
 
         // Act
-        _homeOwnerService.AddDeviceToHome(home.Id.ToString(), [device.Id.ToString(), camera.Id.ToString()]);
+        _homeOwnerService.AddDeviceToHome(addDeviceModel);
 
         // Assert
         _ownedDeviceRepositoryMock.Verify(x => x.Add(It.IsAny<OwnedDevice>()), Times.Exactly(2));

@@ -70,10 +70,10 @@ public class HomeOwnerService
         }
     }
 
-    public void AddDeviceToHome(string homeId, ICollection<string> deviceId)
+    public void AddDeviceToHome(AddDeviceModel addDeviceModel)
     {
-        var home = _homeRepository.Get(Guid.Parse(homeId));
-        var devices = deviceId.Select(id => _deviceRepository.Get(Guid.Parse(id))).ToList();
+        var home = _homeRepository.Get(Guid.Parse(addDeviceModel.HomeId));
+        var devices = addDeviceModel.DeviceIds.Select(id => _deviceRepository.Get(Guid.Parse(id))).ToList();
         devices.ForEach((device) => _ownedDeviceRepository.Add(new OwnedDevice(home, device)));
     }
 }

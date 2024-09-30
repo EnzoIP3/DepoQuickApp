@@ -20,4 +20,19 @@ public class OwnedDeviceTests
         // Assert
         act.Should().NotThrow();
     }
+
+    [TestMethod]
+    public void Constructor_WhenArgumentsAreValid_GeneratesHardwareId()
+    {
+        // Arrange
+        var home = new Home(new User(), "Main St 123", 12.5, 12.5, 5);
+        var device = new Device("Sensor", 12345, "A sensor", "https://sensor.com/image.png", [],
+            "Sensor");
+
+        // Act
+        var ownedDevice = new OwnedDevice(home, device);
+
+        // Assert
+        ownedDevice.HardwareId.Should().NotBeNull();
+    }
 }

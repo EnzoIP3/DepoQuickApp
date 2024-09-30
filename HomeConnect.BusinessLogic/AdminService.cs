@@ -75,6 +75,7 @@ public class AdminService : IAdminService
         var users = UserRepository.GetUsers((int)currentPage, (int)pageSize, fullNameFilter, roleFilter);
         return users.Select(x => new ListUserModel
         {
+            Id = x.Id.ToString(),
             Name = x.Name,
             Surname = x.Surname,
             FullName = $"{x.Name} {x.Surname}",

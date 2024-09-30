@@ -225,17 +225,19 @@ public sealed class AdminServiceTests
         {
             new ListUserModel
             {
-                Name = "name",
-                Surname = "surname",
-                FullName = "name surname",
+                Id = _validUser.Id.ToString(),
+                Name = _validUser.Name,
+                Surname = _validUser.Surname,
+                FullName = $"{_validUser.Name} {_validUser.Surname}",
                 Role = "Admin",
                 CreatedAt = DateOnly.FromDateTime(DateTime.Now)
             },
             new ListUserModel
             {
-                Name = "name2",
-                Surname = "surname2",
-                FullName = "name2 surname2",
+                Id = _otherOwner.Id.ToString(),
+                Name = _otherOwner.Name,
+                Surname = _otherOwner.Surname,
+                FullName = $"{_otherOwner.Name} {_otherOwner.Surname}",
                 Role = "Business Owner",
                 CreatedAt = DateOnly.FromDateTime(DateTime.Now)
             }
@@ -263,17 +265,19 @@ public sealed class AdminServiceTests
         {
             new ListUserModel
             {
-                Name = "name",
-                Surname = "surname",
-                FullName = "name surname",
+                Id = _validUser.Id.ToString(),
+                Name = _validUser.Name,
+                Surname = _validUser.Surname,
+                FullName = $"{_validUser.Name} {_validUser.Surname}",
                 Role = "Admin",
                 CreatedAt = DateOnly.FromDateTime(DateTime.Now)
             },
             new ListUserModel
             {
-                Name = "name2",
-                Surname = "surname2",
-                FullName = "name2 surname2",
+                Id = _otherOwner.Id.ToString(),
+                Name = _otherOwner.Name,
+                Surname = _otherOwner.Surname,
+                FullName = $"{_otherOwner.Name} {_otherOwner.Surname}",
                 Role = "Business Owner",
                 CreatedAt = DateOnly.FromDateTime(DateTime.Now)
             }
@@ -301,9 +305,10 @@ public sealed class AdminServiceTests
         {
             new ListUserModel
             {
-                Name = "name",
-                Surname = "surname",
-                FullName = "name surname",
+                Id = _validUser.Id.ToString(),
+                Name = _validUser.Name,
+                Surname = _validUser.Surname,
+                FullName = $"{_validUser.Name} {_validUser.Surname}",
                 Role = "Admin",
                 CreatedAt = DateOnly.FromDateTime(DateTime.Now)
             }
@@ -333,9 +338,10 @@ public sealed class AdminServiceTests
         {
             new ListUserModel
             {
-                Name = "name2",
-                Surname = "surname2",
-                FullName = "name2 surname2",
+                Id = _otherOwner.Id.ToString(),
+                Name = _otherOwner.Name,
+                Surname = _otherOwner.Surname,
+                FullName = $"{_otherOwner.Name} {_otherOwner.Surname}",
                 Role = "Business Owner",
                 CreatedAt = DateOnly.FromDateTime(DateTime.Now)
             }

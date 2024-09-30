@@ -148,4 +148,17 @@ public class HomeOwnerServiceTests
         // Assert
         _ownedDeviceRepositoryMock.Verify(x => x.Add(It.IsAny<OwnedDevice>()), Times.Exactly(2));
     }
+
+    [TestMethod]
+    public void AddDevicesToHome_WhenHomeIdIsNotAGuid_ThrowsException()
+    {
+        // Arrange
+        var addDeviceModel = new AddDeviceModel { HomeId = "invalid-guid", DeviceIds = ["1", "2"] };
+
+        // Act
+        var act = () => _homeOwnerService.AddDeviceToHome(addDeviceModel);
+
+        // Assert
+        act.Should().Throw<ArgumentException>();
+    }
 }

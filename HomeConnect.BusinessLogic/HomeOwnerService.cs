@@ -35,7 +35,7 @@ public class HomeOwnerService
     public void AddMemberToHome(AddMemberModel model)
     {
         EnsureAddMemberModelIsValid(model);
-        EnsureHomeIdIsValidGuid(model.HomeId);
+        EnsureGuidIsValid(model.HomeId);
         var user = _userRepository.Get(model.HomeOwnerEmail);
         var home = _homeRepository.Get(Guid.Parse(model.HomeId));
         var permissions = new List<HomePermission>();
@@ -54,7 +54,7 @@ public class HomeOwnerService
         home.AddMember(member);
     }
 
-    private static void EnsureHomeIdIsValidGuid(string homeId)
+    private static void EnsureGuidIsValid(string homeId)
     {
         if (!Guid.TryParse(homeId, out _))
         {
@@ -72,14 +72,35 @@ public class HomeOwnerService
 
     public void AddDeviceToHome(AddDeviceModel addDeviceModel)
     {
-        EnsureHomeIdIsValidGuid(addDeviceModel.HomeId);
-        if (addDeviceModel.DeviceIds.Any(id => !Guid.TryParse(id, out _)))
-        {
-            throw new ArgumentException("DeviceIds must be valid guids");
-        }
+        ValidateAddDeviceModel(addDeviceModel);
+        var home = GetHome(addDeviceModel.HomeId);
+        var devices = GetDevices(addDeviceModel.DeviceIds);
+        AddDevicesToHome(home, devices);
+    }
 
-        var home = _homeRepository.Get(Guid.Parse(addDeviceModel.HomeId));
-        var devices = addDeviceModel.DeviceIds.Select(id => _deviceRepository.Get(Guid.Parse(id))).ToList();
-        devices.ForEach((device) => _ownedDeviceRepository.Add(new OwnedDevice(home, device)));
+    private static void ValidateAddDeviceModel(AddDeviceModel addDeviceModel)
+    {
+        EnsureGuidIsValid(addDeviceModel.HomeId);
+        EnsureGuidsAreValid(addDeviceModel.DeviceIds);
+    }
+
+    private Home GetHome(string homeId)
+    {
+        return _homeRepository.Get(Guid.Parse(homeId));
+    }
+
+    private List<Device> GetDevices(IEnumerable<string> deviceIds)
+    {
+        return deviceIds.Select(id => _deviceRepository.Get(Guid.Parse(id))).ToList();
+    }
+
+    private void AddDevicesToHome(Home home, List<Device> devices)
+    {
+        devices.ForEach(device => _ownedDeviceRepository.Add(new OwnedDevice(home, device)));
+    }
+
+    private static void EnsureGuidsAreValid(IEnumerable<string> deviceIds)
+    {
+        deviceIds.ToList().ForEach(EnsureGuidIsValid);
     }
 }

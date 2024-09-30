@@ -16,6 +16,7 @@ public sealed class AdminServiceTests
 
     private UserModel _validUserModel = new UserModel
     {
+        Id = Guid.NewGuid().ToString(),
         Name = "name",
         Surname = "surname",
         Email = "email@email.com",
@@ -50,7 +51,7 @@ public sealed class AdminServiceTests
     public void Create_WhenAlreadyExists_ThrowsException()
     {
         // Arrange
-        _userRepository.Setup(x => x.Exists(It.IsAny<string>())).Returns(true);
+        _userRepository.Setup(x => x.Exists(It.IsAny<Guid>())).Returns(true);
 
         // Act
         var act = () => _adminService.Create(_validUserModel);
@@ -87,7 +88,7 @@ public sealed class AdminServiceTests
     public void Create_WhenArgumentsAreValid_CreatesAdmin()
     {
         // Arrange
-        _userRepository.Setup(x => x.Exists(It.IsAny<string>())).Returns(false);
+        _userRepository.Setup(x => x.Exists(It.IsAny<Guid>())).Returns(false);
         _userRepository.Setup(x => x.Add(It.IsAny<User>()));
         _roleRepository.Setup(x => x.GetRole(It.IsAny<string>())).Returns(new Role("Admin", []));
 
@@ -115,11 +116,11 @@ public sealed class AdminServiceTests
     public void Delete_WhenDoesNotExist_ThrowsException()
     {
         // Arrange
-        var email = "email";
-        _userRepository.Setup(x => x.Exists(It.IsAny<string>())).Returns(false);
+        var id = Guid.NewGuid();
+        _userRepository.Setup(x => x.Exists(It.IsAny<Guid>())).Returns(false);
 
         // Act
-        var act = () => _adminService.Delete(email);
+        var act = () => _adminService.Delete(id);
 
         // Assert
         act.Should().Throw<Exception>().WithMessage("Admin does not exist.");
@@ -133,15 +134,15 @@ public sealed class AdminServiceTests
     public void Delete_WhenArgumentsAreValid_DeletesAdmin()
     {
         // Arrange
-        var email = "email";
-        _userRepository.Setup(x => x.Exists(It.IsAny<string>())).Returns(true);
-        _userRepository.Setup(x => x.Delete(It.IsAny<string>()));
+        var id = Guid.NewGuid();
+        _userRepository.Setup(x => x.Exists(It.IsAny<Guid>())).Returns(true);
+        _userRepository.Setup(x => x.Delete(It.IsAny<Guid>()));
 
         // Act
-        _adminService.Delete(email);
+        _adminService.Delete(id);
 
         // Assert
-        _userRepository.Verify(x => x.Delete(It.Is<string>(a => a == email)));
+        _userRepository.Verify(x => x.Delete(It.Is<Guid>(a => a == id)));
     }
 
     #endregion
@@ -158,13 +159,14 @@ public sealed class AdminServiceTests
         // Arrange
         var businessOwnerModel = new UserModel
         {
+            Id = Guid.NewGuid().ToString(),
             Name = "name",
             Surname = "surname",
             Email = "email",
             Password = "password",
             Role = "BusinessOwner"
         };
-        _userRepository.Setup(x => x.Exists(It.IsAny<string>())).Returns(true);
+        _userRepository.Setup(x => x.Exists(It.IsAny<Guid>())).Returns(true);
 
         // Act
         var act = () => _adminService.CreateBusinessOwner(businessOwnerModel);
@@ -183,13 +185,14 @@ public sealed class AdminServiceTests
         // Arrange
         var businessOwnerModel = new UserModel
         {
+            Id = Guid.NewGuid().ToString(),
             Name = "name",
             Surname = "surname",
             Email = "email@email.com",
             Password = "Password#100",
             Role = "Business Owner"
         };
-        _userRepository.Setup(x => x.Exists(It.IsAny<string>())).Returns(false);
+        _userRepository.Setup(x => x.Exists(It.IsAny<Guid>())).Returns(false);
         _userRepository.Setup(x => x.Add(It.IsAny<User>()));
         _roleRepository.Setup(x => x.GetRole(It.IsAny<string>())).Returns(new Role(businessOwnerModel.Role, []));
 

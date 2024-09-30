@@ -3,7 +3,7 @@ namespace BusinessLogic;
 public interface IUserRepository
 {
     void Add(User user);
-    bool Exists(string email);
-    void Delete(string email);
+    bool Exists(Guid id);
+    void Delete(Guid id);
     List<User> GetUsers(int currentPage, int pageSize, string? fullNameFilter = null, string? roleFilter = null);
 }

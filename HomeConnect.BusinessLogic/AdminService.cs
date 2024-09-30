@@ -1,6 +1,6 @@
 namespace BusinessLogic;
 
-public class AdminService
+public class AdminService : IAdminService
 {
     private IUserRepository UserRepository { get; init; }
     private IBusinessRepository BusinessRepository { get; init; }
@@ -17,17 +17,17 @@ public class AdminService
     public Guid Create(UserModel model)
     {
         ValidateAdminModel(model);
-        EnsureUserEmailIsUnique(model.Email);
+        EnsureUserEmailIsUnique(Guid.Parse(model.Id));
         var role = RoleRepository.GetRole(model.Role);
         var admin = new User(model.Name, model.Surname, model.Email, model.Password, role);
         UserRepository.Add(admin);
         return admin.Id;
     }
 
-    public void Delete(string email)
+    public void Delete(Guid id)
     {
-        EnsureAdminExists(email);
-        UserRepository.Delete(email);
+        EnsureAdminExists(id);
+        UserRepository.Delete(id);
     }
 
     private void ValidateAdminModel(UserModel model)
@@ -42,17 +42,17 @@ public class AdminService
         }
     }
 
-    private void EnsureUserEmailIsUnique(string email)
+    private void EnsureUserEmailIsUnique(Guid id)
     {
-        if (UserRepository.Exists(email))
+        if (UserRepository.Exists(id))
         {
             throw new Exception("User already exists.");
         }
     }
 
-    private void EnsureAdminExists(string email)
+    private void EnsureAdminExists(Guid id)
     {
-        if (!UserRepository.Exists(email))
+        if (!UserRepository.Exists(id))
         {
             throw new Exception("Admin does not exist.");
         }
@@ -60,7 +60,7 @@ public class AdminService
 
     public void CreateBusinessOwner(UserModel model)
     {
-        EnsureUserEmailIsUnique(model.Email);
+        EnsureUserEmailIsUnique(Guid.Parse(model.Id));
         var role = RoleRepository.GetRole(model.Role);
         var user = new User(model.Name, model.Surname, model.Email, model.Password, role);
         UserRepository.Add(user);

@@ -21,7 +21,8 @@ public class HomeOwnerServiceTests
         _userRepositoryMock = new Mock<IUserRepository>(MockBehavior.Strict);
         _ownedDeviceRepositoryMock = new Mock<IOwnedDeviceRepository>(MockBehavior.Strict);
         _deviceRepositoryMock = new Mock<IDeviceRepository>(MockBehavior.Strict);
-        _homeOwnerService = new HomeOwnerService(_homeRepositoryMock.Object, _userRepositoryMock.Object);
+        _homeOwnerService = new HomeOwnerService(_homeRepositoryMock.Object, _userRepositoryMock.Object,
+            _deviceRepositoryMock.Object, _ownedDeviceRepositoryMock.Object);
     }
 
     [TestMethod]

@@ -4,11 +4,16 @@ public class HomeOwnerService
 {
     private readonly IHomeRepository _homeRepository;
     private readonly IUserRepository _userRepository;
+    private readonly IDeviceRepository _deviceRepository;
+    private readonly IOwnedDeviceRepository _ownedDeviceRepository;
 
-    public HomeOwnerService(IHomeRepository homeRepository, IUserRepository userRepository)
+    public HomeOwnerService(IHomeRepository homeRepository, IUserRepository userRepository,
+        IDeviceRepository deviceRepository, IOwnedDeviceRepository ownedDeviceRepository)
     {
         _homeRepository = homeRepository;
         _userRepository = userRepository;
+        _deviceRepository = deviceRepository;
+        _ownedDeviceRepository = ownedDeviceRepository;
     }
 
     public void CreateHome(CreateHomeModel model)
@@ -67,6 +72,8 @@ public class HomeOwnerService
 
     public void AddDeviceToHome(string homeId, ICollection<string> deviceId)
     {
-        throw new NotImplementedException();
+        var home = _homeRepository.Get(Guid.Parse(homeId));
+        var devices = deviceId.Select(id => _deviceRepository.Get(Guid.Parse(id))).ToList();
+        devices.ForEach((device) => _ownedDeviceRepository.Add(new OwnedDevice(home, device)));
     }
 }

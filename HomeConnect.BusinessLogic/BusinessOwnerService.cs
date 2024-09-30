@@ -19,18 +19,8 @@ public class BusinessOwnerService
     public void CreateBusiness(string ownerEmail, string businessRut, string businessName)
     {
         var owner = VerifyOwnerExists(ownerEmail);
-
-        var existingBusiness = BusinessRepository.GetBusinessByOwner(ownerEmail);
-        if (existingBusiness != null)
-        {
-            throw new InvalidOperationException("Owner already has a business");
-        }
-
-        var existingBusinessByRut = BusinessRepository.GetBusinessByRut(businessRut);
-        if (existingBusinessByRut != null)
-        {
-            throw new InvalidOperationException("RUT already exists");
-        }
+        EnsureOwnerDoesNotHaveBusiness(ownerEmail);
+        EnsureBusinessRutDoesNotExist(businessRut);
 
         var business = new Business(businessRut, businessName, owner);
         BusinessRepository.Add(business);
@@ -52,5 +42,23 @@ public class BusinessOwnerService
         }
 
         return owner;
+    }
+
+    private void EnsureOwnerDoesNotHaveBusiness(string ownerEmail)
+    {
+        var existingBusiness = BusinessRepository.GetBusinessByOwner(ownerEmail);
+        if (existingBusiness != null)
+        {
+            throw new InvalidOperationException("Owner already has a business");
+        }
+    }
+
+    private void EnsureBusinessRutDoesNotExist(string businessRut)
+    {
+        var existingBusinessByRut = BusinessRepository.GetBusinessByRut(businessRut);
+        if (existingBusinessByRut != null)
+        {
+            throw new InvalidOperationException("RUT already exists");
+        }
     }
 }

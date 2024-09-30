@@ -9,6 +9,8 @@ public class HomeOwnerServiceTests
 {
     private Mock<IHomeRepository> _homeRepositoryMock = null!;
     private Mock<IUserRepository> _userRepositoryMock = null!;
+    private Mock<IOwnedDeviceRepository> _ownedDeviceRepositoryMock = null!;
+    private Mock<IDeviceRepository> _deviceRepositoryMock = null!;
     private HomeOwnerService _homeOwnerService = null!;
     private readonly User _user = new User("John", "Doe", "test@example.com", "12345678@My", new Role());
 
@@ -17,6 +19,8 @@ public class HomeOwnerServiceTests
     {
         _homeRepositoryMock = new Mock<IHomeRepository>(MockBehavior.Strict);
         _userRepositoryMock = new Mock<IUserRepository>(MockBehavior.Strict);
+        _ownedDeviceRepositoryMock = new Mock<IOwnedDeviceRepository>(MockBehavior.Strict);
+        _deviceRepositoryMock = new Mock<IDeviceRepository>(MockBehavior.Strict);
         _homeOwnerService = new HomeOwnerService(_homeRepositoryMock.Object, _userRepositoryMock.Object);
     }
 
@@ -119,5 +123,24 @@ public class HomeOwnerServiceTests
 
         // Assert
         act.Should().Throw<ArgumentException>();
+    }
+
+    [TestMethod]
+    public void AddDevicesToHome_WhenArgumentsAreValid_AddsDevice()
+    {
+        // Arrange
+        var home = new Home(_user, "Main St 123", 1.0, 2.0, 5);
+        var device = new Device("Sensor", 1, "A sensor", "https://example.com/image.png", [], "Sensor");
+        var camera = new Camera("Camera", 2, "A camera", "https://example.com/image.png", [], true, true, true, true);
+        _deviceRepositoryMock.Setup(x => x.Get(device.Id)).Returns(device);
+        _deviceRepositoryMock.Setup(x => x.Get(camera.Id)).Returns(camera);
+        _homeRepositoryMock.Setup(x => x.Get(home.Id)).Returns(home);
+        _ownedDeviceRepositoryMock.Setup(x => x.Add(It.IsAny<OwnedDevice>())).Verifiable();
+
+        // Act
+        _homeOwnerService.AddDeviceToHome(home.Id.ToString(), [device.Id.ToString(), camera.Id.ToString()]);
+
+        // Assert
+        _ownedDeviceRepositoryMock.Verify(x => x.Add(It.IsAny<OwnedDevice>()), Times.Exactly(2));
     }
 }

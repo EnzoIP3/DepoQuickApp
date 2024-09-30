@@ -64,4 +64,9 @@ public class HomeOwnerService
             throw new ArgumentException("All arguments are required");
         }
     }
+
+    public void AddDeviceToHome(string homeId, ICollection<string> deviceId)
+    {
+        throw new NotImplementedException();
+    }
 }

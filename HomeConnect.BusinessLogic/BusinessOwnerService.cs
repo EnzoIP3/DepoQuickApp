@@ -39,6 +39,7 @@ public class BusinessOwnerService
     public void CreateDevice(string name, int modelNumber, string description, string mainPhoto, List<string> secondaryPhotos, string type)
     {
         var device = new Device(name, modelNumber, description, mainPhoto, secondaryPhotos, type);
+        DeviceRepository.EnsureDeviceDoesNotExist(device);
         DeviceRepository.Add(device);
     }
 

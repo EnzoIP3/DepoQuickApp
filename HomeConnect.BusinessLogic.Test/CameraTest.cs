@@ -24,9 +24,11 @@ public class CameraTest
         const bool personDetection = false;
         const bool isExterior = true;
         const bool isInterior = false;
+        var _owner = new User("John", "Doe", "JohnDoe@example.com", "Password123!", new Role());
+        var business = new Business("RUTexample", "Business Name", _owner);
 
         // Act
-        var act = () => new Camera(name, modelNumber, description, mainPhoto, secondaryPhotos, motionDetection,
+        var act = () => new Camera(name, modelNumber, description, mainPhoto, secondaryPhotos, business, motionDetection,
             personDetection, isExterior, isInterior);
 
         // Assert
@@ -51,9 +53,11 @@ public class CameraTest
         const bool personDetection = false;
         const bool isExterior = false;
         const bool isInterior = false;
+        var _owner = new User("John", "Doe", "JohnDoe@example.com", "Password123!", new Role());
+        var business = new Business("RUTexample", "Business Name", _owner);
 
         // Act
-        var act = () => new Camera(name, modelNumber, description, mainPhoto, secondaryPhotos, motionDetection,
+        var act = () => new Camera(name, modelNumber, description, mainPhoto, secondaryPhotos, business, motionDetection,
             personDetection, isExterior, isInterior);
 
         // Assert

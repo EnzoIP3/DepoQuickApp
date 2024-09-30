@@ -21,9 +21,11 @@ public class DeviceTest
         const string type = "Camera";
         var secondaryPhotos =
             new List<string> { "https://www.example.com/photo2.jpg", "https://www.example.com/photo3.jpg" };
+        var _owner = new User("John", "Doe", "JohnDoe@example.com", "Password123!", new Role());
+        var business = new Business("RUTexample", "Business Name", _owner);
 
         // Act
-        var act = () => new Device(name, modelNumber, description, mainPhoto, secondaryPhotos, type);
+        var act = () => new Device(name, modelNumber, description, mainPhoto, secondaryPhotos, type, business);
 
         // Assert
         act.Should().NotThrow();
@@ -41,8 +43,12 @@ public class DeviceTest
     public void Constructor_WhenArgumentsAreBlank_ThrowsException(string name, int modelNumber, string description,
         string mainPhoto, string type)
     {
+        // Arrange
+        var _owner = new User("John", "Doe", "JohnDoe@example.com", "Password123!", new Role());
+        var business = new Business("RUTexample", "Business Name", _owner);
+
         // Act
-        var act = () => new Device(name, modelNumber, description, mainPhoto, [], type);
+        var act = () => new Device(name, modelNumber, description, mainPhoto, new List<string>(), type, business);
 
         // Assert
         act.Should().Throw<ArgumentException>();
@@ -59,9 +65,11 @@ public class DeviceTest
         const string type = "Camera";
         var secondaryPhotos =
             new List<string> { "https://www.example.com/photo2.jpg", "https://www.example.com/photo3.jpg" };
+        var _owner = new User("John", "Doe", "JohnDoe@example.com", "Password123!", new Role());
+        var business = new Business("RUTexample", "Business Name", _owner);
 
         // Act
-        var act = () => new Device(name, modelNumber, description, mainPhoto, secondaryPhotos, type);
+        var act = () => new Device(name, modelNumber, description, mainPhoto, secondaryPhotos, type, business);
 
         // Assert
         act.Should().Throw<ArgumentException>();
@@ -77,9 +85,11 @@ public class DeviceTest
         const string mainPhoto = "https://www.example.com/photo1.jpg";
         const string type = "Camera";
         var secondaryPhotos = new List<string> { "photo2.jpg", "https://www.example.com/photo3.jpg" };
+        var _owner = new User("John", "Doe", "JohnDoe@example.com", "Password123!", new Role());
+        var business = new Business("RUTexample", "Business Name", _owner);
 
         // Act
-        var act = () => new Device(name, modelNumber, description, mainPhoto, secondaryPhotos, type);
+        var act = () => new Device(name, modelNumber, description, mainPhoto, secondaryPhotos, type, business);
 
         // Assert
         act.Should().Throw<ArgumentException>();

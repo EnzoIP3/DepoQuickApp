@@ -13,13 +13,13 @@ public class HomeOwnerService
 
     public void CreateHome(CreateHomeModel model)
     {
-        EnsureArgumentsAreValid(model);
+        EnsureCreateHomeModelIsValid(model);
         var user = _userRepository.Get(model.HomeOwnerEmail);
         var home = new Home(user, model.Address, model.Latitude, model.Longitude, model.MaxMembers);
         _homeRepository.Add(home);
     }
 
-    private static void EnsureArgumentsAreValid(CreateHomeModel model)
+    private static void EnsureCreateHomeModelIsValid(CreateHomeModel model)
     {
         if (string.IsNullOrWhiteSpace(model.HomeOwnerEmail) || string.IsNullOrWhiteSpace(model.Address))
         {
@@ -29,16 +29,8 @@ public class HomeOwnerService
 
     public void AddMemberToHome(AddMemberModel model)
     {
-        if (string.IsNullOrWhiteSpace(model.HomeId) || string.IsNullOrWhiteSpace(model.HomeOwnerEmail))
-        {
-            throw new ArgumentException("All arguments are required");
-        }
-
-        if (!Guid.TryParse(model.HomeId, out _))
-        {
-            throw new ArgumentException("HomeId must be a valid guid");
-        }
-
+        EnsureAddMemberModelIsValid(model);
+        EnsureHomeIdIsValidGuid(model);
         var user = _userRepository.Get(model.HomeOwnerEmail);
         var home = _homeRepository.Get(Guid.Parse(model.HomeId));
         var permissions = new List<HomePermission>();
@@ -55,5 +47,21 @@ public class HomeOwnerService
 
         var member = new Member(user, permissions);
         home.AddMember(member);
+    }
+
+    private static void EnsureHomeIdIsValidGuid(AddMemberModel model)
+    {
+        if (!Guid.TryParse(model.HomeId, out _))
+        {
+            throw new ArgumentException("HomeId must be a valid guid");
+        }
+    }
+
+    private static void EnsureAddMemberModelIsValid(AddMemberModel model)
+    {
+        if (string.IsNullOrWhiteSpace(model.HomeId) || string.IsNullOrWhiteSpace(model.HomeOwnerEmail))
+        {
+            throw new ArgumentException("All arguments are required");
+        }
     }
 }

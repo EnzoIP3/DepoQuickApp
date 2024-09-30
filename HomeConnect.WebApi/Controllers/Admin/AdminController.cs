@@ -2,7 +2,7 @@ using BusinessLogic;
 using HomeConnect.WebApi.Filters;
 using Microsoft.AspNetCore.Mvc;
 
-namespace HomeConnect.WebApi.Controllers;
+namespace HomeConnect.WebApi.Controllers.Admin;
 
 [ApiController]
 [Route("admins")]

@@ -1,4 +1,4 @@
-namespace HomeConnect.WebApi.Controllers;
+namespace HomeConnect.WebApi.Controllers.Admin;
 
 public struct CreateAdminResponse
 {

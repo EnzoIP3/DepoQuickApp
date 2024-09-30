@@ -9,7 +9,7 @@ using Microsoft.AspNetCore.Mvc.Filters;
 using Microsoft.AspNetCore.Routing;
 using Moq;
 
-namespace HomeConnect.WebApi.Test;
+namespace HomeConnect.WebApi.Test.Filters;
 
 [TestClass]
 public class AuthorizationFilterTests

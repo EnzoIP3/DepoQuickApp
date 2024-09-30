@@ -1,4 +1,3 @@
-using System.Diagnostics;
 using System.Net;
 using BusinessLogic;
 using FluentAssertions;
@@ -12,7 +11,7 @@ using Microsoft.AspNetCore.Routing;
 using Microsoft.Extensions.Primitives;
 using Moq;
 
-namespace HomeConnect.WebApi.Test;
+namespace HomeConnect.WebApi.Test.Filters;
 
 [TestClass]
 public class AuthenticationFilterTests

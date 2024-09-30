@@ -1,4 +1,4 @@
-namespace HomeConnect.WebApi.Controllers;
+namespace HomeConnect.WebApi.Controllers.BusinessOwner;
 
 public struct CreateBusinessOwnerResponse
 {

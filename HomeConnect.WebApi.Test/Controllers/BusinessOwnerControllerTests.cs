@@ -1,9 +1,9 @@
 using BusinessLogic;
 using FluentAssertions;
-using HomeConnect.WebApi.Controllers;
+using HomeConnect.WebApi.Controllers.BusinessOwner;
 using Moq;
 
-namespace HomeConnect.WebApi.Test;
+namespace HomeConnect.WebApi.Test.Controllers;
 
 [TestClass]
 public class BusinessOwnerControllerTests

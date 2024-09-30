@@ -1,6 +1,6 @@
-namespace HomeConnect.WebApi.Controllers;
+namespace HomeConnect.WebApi.Controllers.Admin;
 
-public struct CreateBusinessOwnerRequest
+public struct CreateAdminRequest
 {
     public string Name { get; set; }
     public string Surname { get; set; }

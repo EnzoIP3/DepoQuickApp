@@ -1,10 +1,10 @@
 using BusinessLogic;
 using FluentAssertions;
-using HomeConnect.WebApi.Controllers;
+using HomeConnect.WebApi.Controllers.Admin;
 using Microsoft.AspNetCore.Mvc;
 using Moq;
 
-namespace HomeConnect.WebApi.Test;
+namespace HomeConnect.WebApi.Test.Controllers;
 
 [TestClass]
 public class AdminControllerTests

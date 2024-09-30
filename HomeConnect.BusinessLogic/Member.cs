@@ -7,6 +7,11 @@ public class Member
         User = user;
     }
 
+    public Member(User user, List<HomePermission> homePermissions)
+    {
+        throw new NotImplementedException();
+    }
+
     public Guid Id { get; } = Guid.NewGuid();
     public User User { get; init; }
     public List<HomePermission> HomePermissions { get; } = [];

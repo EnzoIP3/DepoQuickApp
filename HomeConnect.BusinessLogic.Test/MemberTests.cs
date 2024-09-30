@@ -20,6 +20,20 @@ public class MemberTests
     }
 
     [TestMethod]
+    public void Constructor_WhenHomePermissionsAreSet_CreatesInstance()
+    {
+        // Arrange
+        var user = new User();
+        var permissions = new List<HomePermission> { new HomePermission("value") };
+
+        // Act
+        var act = () => new Member(user, permissions);
+
+        // Assert
+        act.Should().NotThrow();
+    }
+
+    [TestMethod]
     public void AddPermission_WhenPermissionIsValid_AddsPermission()
     {
         // Arrange

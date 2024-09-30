@@ -1,4 +1,6 @@
+using BusinessLogic;
 using HomeConnect.WebApi.Filters;
+using HomeConnect.WebApi.Test.Controllers;
 using Microsoft.AspNetCore.Mvc;
 
 namespace HomeConnect.WebApi.Controllers.User;
@@ -6,11 +8,20 @@ namespace HomeConnect.WebApi.Controllers.User;
 [ApiController]
 [Route("admins")]
 [AuthorizationFilter]
-public class UserController() : ControllerBase
+public class UserController(IAdminService adminService) : ControllerBase
 {
     [HttpGet]
     public IActionResult GetUsers()
     {
-        throw new NotImplementedException();
+        var users = adminService.GetUsers(null, null, null, null);
+        var response = new
+        {
+            users.Data,
+            Pagination = new Pagination
+            {
+                Page = users.Page, PageSize = users.PageSize, TotalPages = users.TotalPages
+            }
+        };
+        return Ok(response);
     }
 }

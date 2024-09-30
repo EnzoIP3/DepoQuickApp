@@ -1,20 +1,31 @@
 using BusinessLogic;
 using FluentAssertions;
+using System.Collections.Generic;
 
 namespace HomeConnect.BusinessLogic.Test;
 
 [TestClass]
 public class RoleTest
 {
+    private const string RoleName = "Admin";
+    private const string Permission = "create_admin";
+    private List<SystemPermission> _permissions = null!;
+    private Role _role = null!;
+
+    [TestInitialize]
+    public void TestInitialize()
+    {
+        _permissions = new List<SystemPermission> { new SystemPermission(Permission) };
+        _role = new Role(RoleName, _permissions);
+    }
+
     [TestMethod]
     public void Constructor_WhenArgumentsAreValid_CreatesInstance()
     {
         // Arrange
-        const string name = "Admin";
-        var permissions = new List<SystemPermission> { new SystemPermission("create_admin") };
 
         // Act
-        var act = () => new Role(name, permissions);
+        var act = () => new Role(RoleName, _permissions);
 
         // Assert
         act.Should().NotThrow();
@@ -24,12 +35,9 @@ public class RoleTest
     public void HasPermission_WhenCalledWithExistingPermission_ReturnsTrue()
     {
         // Arrange
-        const string permission = "create_admin";
-        var permissions = new List<SystemPermission> { new SystemPermission(permission) };
-        var role = new Role("Admin", permissions);
 
         // Act
-        var result = role.HasPermission(permission);
+        var result = _role.HasPermission(Permission);
 
         // Assert
         result.Should().Be(true);
@@ -39,12 +47,10 @@ public class RoleTest
     public void HasPermission_WhenCalledWithNotExistingPermission_ReturnsFalse()
     {
         // Arrange
-        const string permission = "create_admin";
-        var permissions = new List<SystemPermission>();
-        var role = new Role("Admin", permissions);
+        var roleWithNoPermissions = new Role(RoleName, new List<SystemPermission>());
 
         // Act
-        var result = role.HasPermission(permission);
+        var result = roleWithNoPermissions.HasPermission(Permission);
 
         // Assert
         result.Should().Be(false);

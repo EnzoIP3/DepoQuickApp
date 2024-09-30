@@ -18,6 +18,13 @@ public class BusinessOwnerServiceTests
     private User _owner = null!;
     private Business _existingBusiness = null!;
 
+    private const string DeviceName = "Device Name";
+    private const int ModelNumber = 123;
+    private const string Description = "Device Description";
+    private const string MainPhoto = "https://www.example.com/photo1.jpg";
+    private readonly List<string> SecondaryPhotos = new List<string> { "https://www.example.com/photo2.jpg", "https://www.example.com/photo3.jpg" };
+    private const string Type = "Device Type";
+
     [TestInitialize]
     public void TestInitialize()
     {
@@ -120,27 +127,21 @@ public class BusinessOwnerServiceTests
     public void CreateDevice_WhenDeviceDoesNotExist_CreatesDevice()
     {
         // Arrange
-        var name = "Device Name";
-        var modelNumber = 123;
-        var description = "Device Description";
-        var mainPhoto = "https://www.example.com/photo1.jpg";
         var business = new Business("RUTexample", "Business Name", _owner);
-        var secondaryPhotos = new List<string> { "https://www.example.com/photo2.jpg", "https://www.example.com/photo3.jpg" };
-        var type = "Device Type";
         _deviceRepository.Setup(x => x.EnsureDeviceDoesNotExist(It.IsAny<Device>()));
         _deviceRepository.Setup(x => x.Add(It.IsAny<Device>()));
 
         // Act
-        _businessOwnerService.CreateDevice(name, modelNumber, description, mainPhoto, secondaryPhotos, type, business);
+        _businessOwnerService.CreateDevice(DeviceName, ModelNumber, Description, MainPhoto, SecondaryPhotos, Type, business);
 
         // Assert
         _deviceRepository.Verify(x => x.Add(It.Is<Device>(d =>
-            d.Name == name &&
-            d.ModelNumber == modelNumber &&
-            d.Description == description &&
-            d.MainPhoto == mainPhoto &&
-            d.SecondaryPhotos.SequenceEqual(secondaryPhotos) &&
-            d.Type == type)));
+            d.Name == DeviceName &&
+            d.ModelNumber == ModelNumber &&
+            d.Description == Description &&
+            d.MainPhoto == MainPhoto &&
+            d.SecondaryPhotos.SequenceEqual(SecondaryPhotos) &&
+            d.Type == Type)));
     }
 
     #endregion
@@ -151,19 +152,13 @@ public class BusinessOwnerServiceTests
     public void CreateDevice_WhenDeviceAlreadyExists_ThrowsException()
     {
         // Arrange
-        var name = "Device Name";
-        var modelNumber = 123;
-        var description = "Device Description";
-        var mainPhoto = "https://www.example.com/photo1.jpg";
-        var secondaryPhotos = new List<string> { "https://www.example.com/photo2.jpg", "https://www.example.com/photo3.jpg" };
-        var type = "Device Type";
         var business = new Business("RUTexample", "Business Name", _owner);
-        var existingDevice = new Device(name, modelNumber, description, mainPhoto, secondaryPhotos, type, business);
+        var existingDevice = new Device(DeviceName, ModelNumber, Description, MainPhoto, SecondaryPhotos, Type, business);
         _deviceRepository.Setup(x => x.EnsureDeviceDoesNotExist(It.IsAny<Device>())).Throws(new ArgumentException("Device already exists"));
         _deviceRepository.Setup(x => x.Add(It.IsAny<Device>()));
 
         // Act
-        Action act = () => _businessOwnerService.CreateDevice(name, modelNumber, description, mainPhoto, secondaryPhotos, type, business);
+        Action act = () => _businessOwnerService.CreateDevice(DeviceName, ModelNumber, Description, MainPhoto, SecondaryPhotos, Type, business);
 
         // Assert
         act.Should().Throw<ArgumentException>().WithMessage("Device already exists");

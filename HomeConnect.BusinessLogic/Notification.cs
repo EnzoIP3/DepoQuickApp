@@ -11,6 +11,11 @@ public class Notification
 
     public Notification(Guid id, DateTime date, bool read, string @event, OwnedDevice ownedDevice, User user)
     {
-        throw new NotImplementedException();
+        Id = id;
+        Date = date;
+        Read = read;
+        Event = @event;
+        OwnedDevice = ownedDevice;
+        User = user;
     }
 }

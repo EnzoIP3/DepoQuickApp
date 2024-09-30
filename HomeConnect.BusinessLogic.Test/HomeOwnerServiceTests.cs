@@ -1,4 +1,5 @@
 using BusinessLogic;
+using FluentAssertions;
 using Moq;
 
 namespace HomeConnect.BusinessLogic.Test;
@@ -39,5 +40,27 @@ public class HomeOwnerServiceTests
 
         // Assert
         _homeRepositoryMock.Verify(x => x.Add(It.IsAny<Home>()), Times.Once);
+    }
+
+    [TestMethod]
+    [DataRow("", "Main St 123")]
+    [DataRow("test@example.com", "")]
+    public void CreateHome_WhenArgumentsHaveEmptyFields_ThrowsException(string homeOwnerEmail, string address)
+    {
+        // Arrange
+        var model = new CreateHomeModel
+        {
+            HomeOwnerEmail = homeOwnerEmail,
+            Address = address,
+            Latitude = 1.0,
+            Longitude = 2.0,
+            MaxMembers = 5
+        };
+
+        // Act
+        var act = () => _homeOwnerService.CreateHome(model);
+
+        // Assert
+        act.Should().Throw<ArgumentException>();
     }
 }

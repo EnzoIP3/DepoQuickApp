@@ -104,4 +104,20 @@ public class HomeOwnerServiceTests
         // Assert
         act.Should().Throw<ArgumentException>();
     }
+
+    [TestMethod]
+    public void AddMemberToHome_WhenHomeIdIsNotAGuid_ThrowsException()
+    {
+        // Arrange
+        var model = new AddMemberModel
+        {
+            HomeId = "invalid-guid", HomeOwnerEmail = "jane@doe.com", CanAddDevices = true, CanListDevices = true
+        };
+
+        // Act
+        var act = () => _homeOwnerService.AddMemberToHome(model);
+
+        // Assert
+        act.Should().Throw<ArgumentException>();
+    }
 }

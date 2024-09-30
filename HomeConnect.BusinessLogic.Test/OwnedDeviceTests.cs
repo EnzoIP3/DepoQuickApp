@@ -35,4 +35,19 @@ public class OwnedDeviceTests
         // Assert
         ownedDevice.HardwareId.Should().NotBeEmpty();
     }
+
+    [TestMethod]
+    public void Constructor_WhenArgumentsAreValid_SetsConnected()
+    {
+        // Arrange
+        var home = new Home(new User(), "Main St 123", 12.5, 12.5, 5);
+        var device = new Device("Sensor", 12345, "A sensor", "https://sensor.com/image.png", [],
+            "Sensor");
+
+        // Act
+        var ownedDevice = new OwnedDevice(home, device);
+
+        // Assert
+        ownedDevice.Connected.Should().BeTrue();
+    }
 }

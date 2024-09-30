@@ -9,7 +9,8 @@ public class Member
 
     public Member(User user, List<HomePermission> homePermissions)
     {
-        throw new NotImplementedException();
+        User = user;
+        HomePermissions = homePermissions;
     }
 
     public Guid Id { get; } = Guid.NewGuid();

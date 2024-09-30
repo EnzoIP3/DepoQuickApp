@@ -45,11 +45,17 @@ public void GetUsers_WhenCalledWithValidRequest_ReturnsExpectedResponse()
             CreatedAt = otherUser.CreatedAt
         }
     };
-    var expectedPagination = new Pagination { Page = 2, PageSize = 50, TotalPages = 3 };
+    var expectedPagination = new Pagination { Page = 1, PageSize = 10, TotalPages = 1 };
     var expectedResponse = new { Data = expectedUsers, Pagination = expectedPagination };
+    var pagedList = new PagedData<ListUserModel>
+    {
+        Data = expectedUsers,
+        Page = expectedPagination.Page,
+        PageSize = expectedPagination.PageSize,
+        TotalPages = expectedPagination.TotalPages
+    };
 
-    // get users null null null null
-    _adminService.Setup(x => x.GetUsers(null, null, null, null)).Returns(expectedUsers);
+    _adminService.Setup(x => x.GetUsers(null, null, null, null)).Returns(pagedList);
 
     // Act
     var response = _controller.GetUsers();

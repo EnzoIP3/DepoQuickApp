@@ -67,13 +67,13 @@ public class AdminService : IAdminService
         return user.Id;
     }
 
-    public List<ListUserModel> GetUsers(int? currentPage = null, int? pageSize = null, string? fullNameFilter = null,
+    public PagedData<ListUserModel> GetUsers(int? currentPage = null, int? pageSize = null, string? fullNameFilter = null,
         string? roleFilter = null)
     {
         currentPage ??= 1;
         pageSize ??= 10;
         var users = UserRepository.GetUsers((int)currentPage, (int)pageSize, fullNameFilter, roleFilter);
-        return users.Select(x => new ListUserModel
+        var data = users.Data.Select(x => new ListUserModel
         {
             Id = x.Id.ToString(),
             Name = x.Name,
@@ -82,21 +82,35 @@ public class AdminService : IAdminService
             Role = x.Role.Name,
             CreatedAt = x.CreatedAt
         }).ToList();
+        return new PagedData<ListUserModel>
+        {
+            Data = data,
+            Page = users.Page,
+            PageSize = users.PageSize,
+            TotalPages = users.TotalPages
+        };
     }
 
-    public List<ListBusinessModel> GetBusiness(int? currentPage = null, int? pageSize = null,
+    public PagedData<ListBusinessModel> GetBusiness(int? currentPage = null, int? pageSize = null,
         string? fullNameFilter = null, string? nameFilter = null)
     {
         currentPage ??= 1;
         pageSize ??= 10;
         var businesses = BusinessRepository.GetBusinesses((int)currentPage, (int)pageSize, fullNameFilter,
             nameFilter);
-        return businesses.Select(x => new ListBusinessModel
+        var data = businesses.Data.Select(x => new ListBusinessModel
         {
             Rut = x.Rut,
             Name = x.Name,
             OwnerEmail = x.Owner.Email,
             OwnerFullName = $"{x.Owner.Name} {x.Owner.Surname}"
         }).ToList();
+        return new PagedData<ListBusinessModel>
+        {
+            Data = data,
+            Page = businesses.Page,
+            PageSize = businesses.PageSize,
+            TotalPages = businesses.TotalPages
+        };
     }
 }

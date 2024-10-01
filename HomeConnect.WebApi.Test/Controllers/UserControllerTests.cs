@@ -70,4 +70,124 @@ public class UserControllerTests
         var okResult = response as OkObjectResult;
         okResult.Value.Should().BeEquivalentTo(expectedResponse);
     }
+
+    [TestMethod]
+    public void GetUsers_WhenCalledWithValidRequestAndFullNameFilter_ReturnsFilteredExpectedResponse()
+    {
+        // Arrange
+        var user = new User("Name", "Surname", "email@email.com", "Password@100",
+            new Role("Admin", new List<SystemPermission>()));
+        var expectedUsers = new List<ListUserModel>
+        {
+            new ListUserModel()
+            {
+                Name = user.Name,
+                Surname = user.Surname,
+                FullName = $"{user.Name} {user.Surname}",
+                Role = user.Role.Name,
+                CreatedAt = user.CreatedAt
+            }
+        };
+        var expectedPagination = new Pagination { Page = _defaultPage, PageSize = _defaultPageSize, TotalPages = 1 };
+        var expectedResponse = new { Data = expectedUsers, Pagination = expectedPagination };
+        var pagedList = new PagedData<ListUserModel>
+        {
+            Data = expectedUsers,
+            Page = expectedPagination.Page,
+            PageSize = expectedPagination.PageSize,
+            TotalPages = expectedPagination.TotalPages
+        };
+
+        _adminService.Setup(x => x.GetUsers(null, null, expectedUsers.First().FullName, null)).Returns(pagedList);
+
+        // Act
+        var response = _controller.GetUsers(fullNameFilter: expectedUsers.First().FullName);
+
+        // Assert
+        _adminService.VerifyAll();
+        response.Should().NotBeNull();
+        response.Should().BeOfType<OkObjectResult>();
+        var okResult = response as OkObjectResult;
+        okResult.Value.Should().BeEquivalentTo(expectedResponse);
+    }
+
+    [TestMethod]
+    public void GetUsers_WhenCalledWithValidRequestAndRoleFilter_ReturnsFilteredExpectedResponse()
+    {
+        // Arrange
+        var user = new User("Name", "Surname", "email@email.com", "Password@100",
+            new Role("Admin", new List<SystemPermission>()));
+        var expectedUsers = new List<ListUserModel>
+        {
+            new ListUserModel()
+            {
+                Name = user.Name,
+                Surname = user.Surname,
+                FullName = $"{user.Name} {user.Surname}",
+                Role = user.Role.Name,
+                CreatedAt = user.CreatedAt
+            }
+        };
+        var expectedPagination = new Pagination { Page = _defaultPage, PageSize = _defaultPageSize, TotalPages = 1 };
+        var expectedResponse = new { Data = expectedUsers, Pagination = expectedPagination };
+        var pagedList = new PagedData<ListUserModel>
+        {
+            Data = expectedUsers,
+            Page = expectedPagination.Page,
+            PageSize = expectedPagination.PageSize,
+            TotalPages = expectedPagination.TotalPages
+        };
+
+        _adminService.Setup(x => x.GetUsers(null, null, null, expectedUsers.First().Role)).Returns(pagedList);
+
+        // Act
+        var response = _controller.GetUsers(roleFilter: expectedUsers.First().Role);
+
+        // Assert
+        _adminService.VerifyAll();
+        response.Should().NotBeNull();
+        response.Should().BeOfType<OkObjectResult>();
+        var okResult = response as OkObjectResult;
+        okResult.Value.Should().BeEquivalentTo(expectedResponse);
+    }
+
+    [TestMethod]
+    public void GetUsers_WhenCalledWithPagination_ReturnsPagedExpectedResponse()
+    {
+        // Arrange
+        var user = new User("Name", "Surname", "email@email.com", "Password@100",
+            new Role("Admin", new List<SystemPermission>()));
+        var expectedUsers = new List<ListUserModel>
+        {
+            new ListUserModel()
+            {
+                Name = user.Name,
+                Surname = user.Surname,
+                FullName = $"{user.Name} {user.Surname}",
+                Role = user.Role.Name,
+                CreatedAt = user.CreatedAt
+            }
+        };
+        var expectedPagination = new Pagination { Page = 1, PageSize = 1, TotalPages = 1 };
+        var expectedResponse = new { Data = expectedUsers, Pagination = expectedPagination };
+        var pagedList = new PagedData<ListUserModel>
+        {
+            Data = expectedUsers,
+            Page = expectedPagination.Page,
+            PageSize = expectedPagination.PageSize,
+            TotalPages = expectedPagination.TotalPages
+        };
+
+        _adminService.Setup(x => x.GetUsers(expectedPagination.Page, expectedPagination.PageSize, null, null)).Returns(pagedList);
+
+        // Act
+        var response = _controller.GetUsers(expectedPagination.Page, expectedPagination.PageSize);
+
+        // Assert
+        _adminService.VerifyAll();
+        response.Should().NotBeNull();
+        response.Should().BeOfType<OkObjectResult>();
+        var okResult = response as OkObjectResult;
+        okResult.Value.Should().BeEquivalentTo(expectedResponse);
+    }
 }

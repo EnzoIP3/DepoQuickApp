@@ -29,10 +29,10 @@ public class AdminController(IAdminService adminService) : ControllerBase
         return userModel;
     }
 
-    [HttpDelete("{id}")]
-    public IActionResult DeleteAdmin([FromRoute] Guid id, [FromHeader] string authorization)
+    [HttpDelete("{adminId}")]
+    public IActionResult DeleteAdmin([FromRoute] Guid adminId, [FromHeader] string authorization)
     {
-        adminService.Delete(id);
+        adminService.Delete(adminId);
         return NoContent();
     }
 }

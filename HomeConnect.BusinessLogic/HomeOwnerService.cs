@@ -110,4 +110,9 @@ public class HomeOwnerService
         var home = GetHome(homeId);
         return home.Members;
     }
+
+    public IEnumerable<OwnedDevice> GetHomeDevices(string homeId)
+    {
+        throw new NotImplementedException();
+    }
 }

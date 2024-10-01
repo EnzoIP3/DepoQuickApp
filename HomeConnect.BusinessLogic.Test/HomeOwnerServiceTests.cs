@@ -204,4 +204,23 @@ public class HomeOwnerServiceTests
         // Assert
         act.Should().Throw<ArgumentException>();
     }
+
+    [TestMethod]
+    public void GetHomeDevices_WhenArgumentsAreValid_ReturnsDevices()
+    {
+        // Arrange
+        var home = new Home(_user, "Main St 123", 1.0, 2.0, 5);
+        var sensor = new Device("Sensor", 1, "A sensor", "https://example.com/image.png", [], "Sensor");
+        var camera = new Camera("Camera", 2, "A camera", "https://example.com/image.png", [], true, true, true, true);
+        var ownedDevices =
+            new List<OwnedDevice>() { new OwnedDevice(home, sensor), new OwnedDevice(home, camera) };
+        _homeRepositoryMock.Setup(x => x.Get(home.Id)).Returns(home);
+        _ownedDeviceRepositoryMock.Setup(x => x.GetOwnedDevicesByHome(home)).Returns(ownedDevices);
+
+        // Act
+        var result = _homeOwnerService.GetHomeDevices(home.Id.ToString());
+
+        // Assert
+        result.Should().BeEquivalentTo(ownedDevices);
+    }
 }

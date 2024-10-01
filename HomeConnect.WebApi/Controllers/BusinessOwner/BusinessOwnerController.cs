@@ -9,7 +9,7 @@ namespace HomeConnect.WebApi.Controllers.BusinessOwner;
 [AuthorizationFilter]
 public class BusinessOwnerController(IAdminService adminService) : ControllerBase
 {
-    public CreateBusinessOwnerResponse CreateBusinessOwner(CreateBusinessOwnerRequest request, string s)
+    public CreateBusinessOwnerResponse CreateBusinessOwner(CreateBusinessOwnerRequest request)
     {
         UserModel userModel = UserModelFromRequest(request);
         var businessOwnerId = adminService.CreateBusinessOwner(userModel);

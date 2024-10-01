@@ -40,7 +40,7 @@ public class BusinessOwnerControllerTests
         _adminService.Setup(x => x.CreateBusinessOwner(userModel)).Returns(guid);
 
         // Act
-        var response = _controller.CreateBusinessOwner(request, $"Bearer {guid}");
+        var response = _controller.CreateBusinessOwner(request);
 
         // Assert
         _adminService.VerifyAll();

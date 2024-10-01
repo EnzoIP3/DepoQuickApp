@@ -10,6 +10,7 @@ public class User
     private readonly string _surname = string.Empty;
     private readonly string _password = string.Empty;
 
+    public Guid Id { get; init; } = Guid.NewGuid();
     public string Name
     {
         get => _name;
@@ -126,5 +127,10 @@ public class User
     {
         const string specialCharacterPattern = @"[\W_]";
         return Regex.IsMatch(input, specialCharacterPattern);
+    }
+
+    public bool HasPermission(string permission)
+    {
+        return Role.HasPermission(permission);
     }
 }

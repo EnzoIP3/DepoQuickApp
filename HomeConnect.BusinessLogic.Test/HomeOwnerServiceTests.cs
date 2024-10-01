@@ -165,8 +165,9 @@ public class HomeOwnerServiceTests
     {
         // Arrange
         var home = new Home(_user, "Main St 123", 1.0, 2.0, 5);
-        var device = new Device("Sensor", 1, "A sensor", "https://example.com/image.png", [], "Sensor");
-        var camera = new Camera("Camera", 2, "A camera", "https://example.com/image.png", [], true, true, true, true);
+        var device = new Device("Sensor", 1, "A sensor", "https://example.com/image.png", [], "Sensor", new Business());
+        var camera = new Camera("Camera", 2, "A camera", "https://example.com/image.png", [], new Business(), true,
+            true, true, true);
         var addDeviceModel = new AddDeviceModel
         {
             HomeId = home.Id.ToString(),
@@ -269,8 +270,8 @@ public class HomeOwnerServiceTests
     {
         // Arrange
         var home = new Home(_user, "Main St 123", 1.0, 2.0, 5);
-        var sensor = new Device("Sensor", 1, "A sensor", "https://example.com/image.png", [], "Sensor");
-        var camera = new Camera("Camera", 2, "A camera", "https://example.com/image.png", [], true, true, true, true);
+        var sensor = new Device("Sensor", 1, "A sensor", "https://example.com/image.png", [], "Sensor", new Business());
+        var camera = new Camera("Camera", 2, "A camera", "https://example.com/image.png", [], new Business(), true, true, true, true);
         var ownedDevices =
             new List<OwnedDevice>() { new OwnedDevice(home, sensor), new OwnedDevice(home, camera) };
         _homeRepositoryMock.Setup(x => x.Get(home.Id)).Returns(home);

@@ -6,19 +6,17 @@ namespace HomeConnect.BusinessLogic.Test;
 [TestClass]
 public class UserTests
 {
-    private string _name = null!;
-    private string _surname = null!;
-    private string _email = null!;
-    private string _password = null!;
+    private const string Name = "name";
+    private const string Surname = "surname";
+    private const string Email = "email@email.com";
+    private const string Password = "Password#100";
     private readonly Role _role = new Role("Admin", []);
+    private User _user = null!;
 
     [TestInitialize]
     public void Initialize()
     {
-        _name = "name";
-        _surname = "surname";
-        _email = "email@email.com";
-        _password = "Password#100";
+        _user = new User(Name, Surname, Email, Password, _role);
     }
 
     #region Constructor
@@ -26,10 +24,10 @@ public class UserTests
     #region Error
 
     [TestMethod]
-    [DataRow("", "surname", "email@email.com", "Password#100")]
-    [DataRow("name", "", "email@email.com", "Password#100")]
-    [DataRow("name", "surname", "", "Password#100")]
-    [DataRow("name", "surname", "email@email.com", "")]
+    [DataRow("", Surname, Email, Password)]
+    [DataRow(Name, "", Email, Password)]
+    [DataRow(Name, Surname, "", Password)]
+    [DataRow(Name, Surname, Email, "")]
     public void Constructor_WhenArgumentsAreBlank_ThrowsException(string name, string surname, string email,
         string password)
     {
@@ -44,7 +42,7 @@ public class UserTests
     public void Constructor_WhenEmailHasInvalidFormat_ThrowsException()
     {
         // Act
-        var act = () => new User(_name, _surname, "email.com", _password, _role);
+        var act = () => new User(Name, Surname, "email.com", Password, _role);
 
         // Assert
         act.Should().Throw<ArgumentException>().WithMessage("Email format invalid.");
@@ -54,7 +52,7 @@ public class UserTests
     public void Constructor_WhenPasswordHasNoCapitalLetter_ThrowsException()
     {
         // Act
-        var act = () => new User(_name, _surname, _email, "password100!", _role);
+        var act = () => new User(Name, Surname, Email, "password100!", _role);
 
         // Assert
         act.Should().Throw<Exception>().WithMessage("Password must contain at least one capital letter.");
@@ -64,7 +62,7 @@ public class UserTests
     public void Constructor_WhenPasswordHasNoDigit_ThrowsException()
     {
         // Act
-        var act = () => new User(_name, _surname, _email, "Password!", _role);
+        var act = () => new User(Name, Surname, Email, "Password!", _role);
 
         // Assert
         act.Should().Throw<Exception>().WithMessage("Password must contain at least one digit.");
@@ -74,7 +72,7 @@ public class UserTests
     public void Constructor_WhenPasswordHasNoSpecialCharacter_ThrowsException()
     {
         // Act
-        var act = () => new User(_name, _surname, _email, "Password100", _role);
+        var act = () => new User(Name, Surname, Email, "Password100", _role);
 
         // Assert
         act.Should().Throw<Exception>().WithMessage("Password must contain at least one special character.");
@@ -84,7 +82,7 @@ public class UserTests
     public void Constructor_WhenPasswordIsTooShort_ThrowsException()
     {
         // Act
-        var act = () => new User(_name, _surname, _email, "Pwd1!", _role);
+        var act = () => new User(Name, Surname, Email, "Pwd1!", _role);
 
         // Assert
         act.Should().Throw<Exception>().WithMessage("Password must be at least 8 characters long.");
@@ -98,13 +96,13 @@ public class UserTests
     public void Constructor_WhenArgumentsAreValid_SetsProperties()
     {
         // Act
-        var admin = new User(_name, _surname, _email, _password, _role);
+        var admin = new User(Name, Surname, Email, Password, _role);
 
         // Assert
-        admin.Name.Should().Be(_name);
-        admin.Surname.Should().Be(_surname);
-        admin.Email.Should().Be(_email);
-        admin.Password.Should().Be(_password);
+        admin.Name.Should().Be(Name);
+        admin.Surname.Should().Be(Surname);
+        admin.Email.Should().Be(Email);
+        admin.Password.Should().Be(Password);
     }
 
     #endregion

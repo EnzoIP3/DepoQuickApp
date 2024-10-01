@@ -1,4 +1,4 @@
-namespace BusinessLogic;
+using BusinessLogic;
 
 public class Camera : Device
 {
@@ -8,10 +8,9 @@ public class Camera : Device
     public bool IsExterior { get; set; }
     public bool IsInterior { get; set; }
 
-    public Camera(string name, int modelNumber, string description, string mainPhoto, List<string> secondaryPhotos,
+    public Camera(string name, int modelNumber, string description, string mainPhoto, List<string> secondaryPhotos, Business business,
         bool motionDetection, bool personDetection, bool isExterior, bool isInterior)
-        : base(name, modelNumber,
-            description, mainPhoto, secondaryPhotos, CameraType)
+        : base(name, modelNumber, description, mainPhoto, secondaryPhotos, CameraType, business)
     {
         MotionDetection = motionDetection;
         PersonDetection = personDetection;

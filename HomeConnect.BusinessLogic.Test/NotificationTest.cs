@@ -11,7 +11,7 @@ public class NotificationTest
     {
         // Arrange
         var ownedDevice = new OwnedDevice(new Home(new User(), "Main St 123", 12.5, 12.5, 5),
-            new Device("Sensor", 12345, "A sensor", "https://sensor.com/image.png", [], "Sensor"));
+            new Device("Sensor", 12345, "A sensor", "https://sensor.com/image.png", [], "Sensor", new Business()));
 
         // Act
         var act = () => new Notification(Guid.NewGuid(), DateTime.Now, false, "Event", ownedDevice, new User());

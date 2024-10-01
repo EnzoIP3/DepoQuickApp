@@ -18,7 +18,7 @@ public class DeviceRepository
         _context.SaveChanges();
     }
 
-    private void EnsureDeviceDoesNotExist(Device device)
+    public void EnsureDeviceDoesNotExist(Device device)
     {
         if (_context.Devices.Any(d => d.ModelNumber == device.ModelNumber))
         {

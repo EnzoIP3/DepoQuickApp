@@ -1,8 +1,9 @@
 using BusinessLogic;
+using Microsoft.EntityFrameworkCore;
 
 namespace HomeConnect.DataAccess;
 
-public class UserRepository
+public class UserRepository : IUserRepository
 {
     private readonly Context _context;
 

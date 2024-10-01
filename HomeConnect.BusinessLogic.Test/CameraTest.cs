@@ -1,11 +1,29 @@
 using BusinessLogic;
 using FluentAssertions;
-
 namespace HomeConnect.BusinessLogic.Test;
 
 [TestClass]
 public class CameraTest
 {
+    private const string Name = "Name";
+    private const int ModelNumber = 123;
+    private const string Description = "Description";
+    private const string MainPhoto = "https://www.example.com/photo1.jpg";
+    private readonly List<string> secondaryPhotos = ["https://www.example.com/photo2.jpg", "https://www.example.com/photo3.jpg"];
+    private const bool MotionDetection = true;
+    private const bool PersonDetection = false;
+    private const bool IsExterior = true;
+    private const bool IsInterior = false;
+    private User _owner = null!;
+    private Business _business = null!;
+
+    [TestInitialize]
+    public void TestInitialize()
+    {
+        _owner = new User("John", "Doe", "JohnDoe@example.com", "Password123!", new Role());
+        _business = new Business("RUTexample", "Business Name", _owner);
+    }
+
     #region Create
 
     #region Success
@@ -14,20 +32,10 @@ public class CameraTest
     public void Constructor_WhenArgumentsAreValid_CreatesInstance()
     {
         // Arrange
-        const string name = "Name";
-        const int modelNumber = 123;
-        const string description = "Description";
-        const string mainPhoto = "https://www.example.com/photo1.jpg";
-        var secondaryPhotos =
-            new List<string> { "https://www.example.com/photo2.jpg", "https://www.example.com/photo3.jpg" };
-        const bool motionDetection = true;
-        const bool personDetection = false;
-        const bool isExterior = true;
-        const bool isInterior = false;
 
         // Act
-        var act = () => new Camera(name, modelNumber, description, mainPhoto, secondaryPhotos, motionDetection,
-            personDetection, isExterior, isInterior);
+        var act = () => new Camera(Name, ModelNumber, Description, MainPhoto, secondaryPhotos, _business, MotionDetection,
+            PersonDetection, IsExterior, IsInterior);
 
         // Assert
         act.Should().NotThrow();
@@ -41,20 +49,12 @@ public class CameraTest
     public void Constructor_WhenNotExteriorAndNotInterior_ThrowsArgumentException()
     {
         // Arrange
-        const string name = "Name";
-        const int modelNumber = 123;
-        const string description = "Description";
-        const string mainPhoto = "https://www.example.com/photo1.jpg";
-        var secondaryPhotos =
-            new List<string> { "https://www.example.com/photo2.jpg", "https://www.example.com/photo3.jpg" };
-        const bool motionDetection = true;
-        const bool personDetection = false;
         const bool isExterior = false;
         const bool isInterior = false;
 
         // Act
-        var act = () => new Camera(name, modelNumber, description, mainPhoto, secondaryPhotos, motionDetection,
-            personDetection, isExterior, isInterior);
+        var act = () => new Camera(Name, ModelNumber, Description, MainPhoto, secondaryPhotos, _business, MotionDetection,
+            PersonDetection, isExterior, isInterior);
 
         // Assert
         act.Should().Throw<ArgumentException>();

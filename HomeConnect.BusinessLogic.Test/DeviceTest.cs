@@ -6,6 +6,15 @@ namespace HomeConnect.BusinessLogic.Test;
 [TestClass]
 public class DeviceTest
 {
+    private const string Name = "Name";
+    private const int ModelNumber = 123;
+    private const string Description = "Description";
+    private const string MainPhoto = "https://www.example.com/photo1.jpg";
+    private const string Type = "Camera";
+    private readonly List<string> secondaryPhotos = ["https://www.example.com/photo2.jpg", "https://www.example.com/photo3.jpg"];
+    private static readonly User _owner = new User("John", "Doe", "JohnDoe@example.com", "Password123!", new Role());
+    private readonly Business business = new Business("RUTexample", "Business Name", _owner);
+
     #region Create
 
     #region Success
@@ -13,17 +22,8 @@ public class DeviceTest
     [TestMethod]
     public void Constructor_WhenArgumentsAreValid_CreatesInstance()
     {
-        // Arrange
-        const string name = "Name";
-        const int modelNumber = 123;
-        const string description = "Description";
-        const string mainPhoto = "https://www.example.com/photo1.jpg";
-        const string type = "Camera";
-        var secondaryPhotos =
-            new List<string> { "https://www.example.com/photo2.jpg", "https://www.example.com/photo3.jpg" };
-
         // Act
-        var act = () => new Device(name, modelNumber, description, mainPhoto, secondaryPhotos, type);
+        var act = () => new Device(Name, ModelNumber, Description, MainPhoto, secondaryPhotos, Type, business);
 
         // Assert
         act.Should().NotThrow();
@@ -42,7 +42,7 @@ public class DeviceTest
         string mainPhoto, string type)
     {
         // Act
-        var act = () => new Device(name, modelNumber, description, mainPhoto, [], type);
+        var act = () => new Device(name, modelNumber, description, mainPhoto, [], type, business);
 
         // Assert
         act.Should().Throw<ArgumentException>();
@@ -52,16 +52,10 @@ public class DeviceTest
     public void Constructor_WhenMainPhotoFormatIsInvalid_ThrowsException()
     {
         // Arrange
-        const string name = "Name";
-        const int modelNumber = 123;
-        const string description = "Description";
         const string mainPhoto = "photo1.jpg";
-        const string type = "Camera";
-        var secondaryPhotos =
-            new List<string> { "https://www.example.com/photo2.jpg", "https://www.example.com/photo3.jpg" };
 
         // Act
-        var act = () => new Device(name, modelNumber, description, mainPhoto, secondaryPhotos, type);
+        var act = () => new Device(Name, ModelNumber, Description, mainPhoto, secondaryPhotos, Type, business);
 
         // Assert
         act.Should().Throw<ArgumentException>();
@@ -71,15 +65,10 @@ public class DeviceTest
     public void Constructor_WhenSecondaryPhotoFormatIsInvalid_ThrowsException()
     {
         // Arrange
-        const string name = "Name";
-        const int modelNumber = 123;
-        const string description = "Description";
-        const string mainPhoto = "https://www.example.com/photo1.jpg";
-        const string type = "Camera";
         var secondaryPhotos = new List<string> { "photo2.jpg", "https://www.example.com/photo3.jpg" };
 
         // Act
-        var act = () => new Device(name, modelNumber, description, mainPhoto, secondaryPhotos, type);
+        var act = () => new Device(Name, ModelNumber, Description, MainPhoto, secondaryPhotos, Type, business);
 
         // Assert
         act.Should().Throw<ArgumentException>();

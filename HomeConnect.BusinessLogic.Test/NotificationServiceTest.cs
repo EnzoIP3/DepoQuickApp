@@ -22,10 +22,10 @@ public class NotificationServiceTest
         // Arrange
         var user = new User("name", "surname", "email@email.com", "Password#100", new Role());
         var device = new Device("Device", 12345, "Device description", "https://example.com/image.png",
-            [], "Sensor");
+            [], "Sensor", new Business("Rut", "Business", user));
         var home = new Home(user, "Adress 3420", 100, 100, 5);
         var ownedDevice = new OwnedDevice(home, device);
-        var @event = "Test Event";
+        const string @event = "Test Event";
 
         // Act
         _notificationService.CreateNotification(ownedDevice, @event, user);

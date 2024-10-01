@@ -27,8 +27,9 @@ public class DeviceRepositoryTests
     public void Add_WhenDeviceDoesNotExist_ShouldAddDevice()
     {
         // Arrange
+        var business = new Business("12345", "Business", new User());
         var device = new Device("Device", 12345, "Device description", "https://example.com/image.png",
-            [], "Sensor");
+            [], "Sensor", business);
 
         // Act
         _deviceRepository.Add(device);
@@ -41,8 +42,9 @@ public class DeviceRepositoryTests
     public void Add_WhenDeviceExists_ShouldThrowException()
     {
         // Arrange
+        var business = new Business("12345", "Business", new User());
         var device = new Device("Device", 12345, "Device description", "https://example.com/image.png",
-            [], "Sensor");
+            [], "Sensor", business);
         _deviceRepository.Add(device);
 
         // Act

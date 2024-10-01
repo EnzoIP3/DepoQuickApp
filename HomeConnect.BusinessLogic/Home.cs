@@ -4,6 +4,10 @@ public class Home
 {
     private string _address = string.Empty;
 
+    public Home()
+    {
+    }
+
     public Home(User owner, string address, double latitude, double longitude, int maxMembers)
     {
         Owner = owner;
@@ -14,7 +18,7 @@ public class Home
     }
 
     public Guid Id { get; set; } = Guid.NewGuid();
-    public User Owner { get; set; }
+    public User Owner { get; set; } = null!;
 
     public List<Member> Members { get; set; } = new();
 

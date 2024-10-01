@@ -2,6 +2,10 @@ namespace BusinessLogic;
 
 public class Member
 {
+    public Member()
+    {
+    }
+
     public Member(User user)
     {
         User = user;
@@ -14,7 +18,7 @@ public class Member
     }
 
     public Guid Id { get; } = Guid.NewGuid();
-    public User User { get; init; }
+    public User User { get; init; } = null!;
     public List<HomePermission> HomePermissions { get; } = [];
 
     public void AddPermission(HomePermission permission)

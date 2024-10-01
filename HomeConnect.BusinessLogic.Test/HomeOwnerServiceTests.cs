@@ -223,4 +223,17 @@ public class HomeOwnerServiceTests
         // Assert
         result.Should().BeEquivalentTo(ownedDevices);
     }
+
+    [TestMethod]
+    public void GetHomeDevices_WhenHomeIdIsNotAGuid_ThrowsException()
+    {
+        // Arrange
+        var homeId = "invalid-guid";
+
+        // Act
+        var act = () => _homeOwnerService.GetHomeDevices(homeId);
+
+        // Assert
+        act.Should().Throw<ArgumentException>();
+    }
 }

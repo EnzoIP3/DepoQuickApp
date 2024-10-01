@@ -172,7 +172,7 @@ public class AuthenticationFilterTests
             adminRole);
         _authRepositoryMock.Setup(a => a.IsAuthorizationExpired($"Bearer {guid}")).Returns(false);
         _sessionServiceMock.Setup(a => a.GetUserByToken(guid)).Returns(user);
-        var items = new Dictionary<object, object> { { Items.UserLogged, user } };
+        var items = new Dictionary<object, object> { { Item.UserLogged, user } };
         _httpContextMock.Setup(h => h.Items).Returns(items);
         _httpContextMock.Setup(h => h.RequestServices.GetService(typeof(ISessionService))).Returns(_sessionServiceMock.Object);
 
@@ -181,8 +181,8 @@ public class AuthenticationFilterTests
         _httpContextMock.VerifyAll();
         _authRepositoryMock.VerifyAll();
 
-        _context.HttpContext.Items[Items.UserLogged].Should().NotBeNull();
-        var userLogged = _context.HttpContext.Items[Items.UserLogged] as User;
+        _context.HttpContext.Items[Item.UserLogged].Should().NotBeNull();
+        var userLogged = _context.HttpContext.Items[Item.UserLogged] as User;
         userLogged.Should().NotBeNull();
         userLogged.Should().Be(user);
     }

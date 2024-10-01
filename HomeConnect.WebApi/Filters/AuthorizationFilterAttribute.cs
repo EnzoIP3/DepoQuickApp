@@ -12,7 +12,7 @@ public class AuthorizationFilterAttribute(string? permission = null) : Attribute
 
     public void OnAuthorization(AuthorizationFilterContext context)
     {
-        var userLoggedIn = context.HttpContext.Items[Items.UserLogged];
+        var userLoggedIn = context.HttpContext.Items[Item.UserLogged];
         var userIsNotIdentified = userLoggedIn == null;
 
         if (userIsNotIdentified)

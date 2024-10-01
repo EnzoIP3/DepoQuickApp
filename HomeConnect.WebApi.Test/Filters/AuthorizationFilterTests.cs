@@ -39,7 +39,7 @@ public class AuthorizationFilterTests
     {
         var items = new Dictionary<object, object?>
         {
-            { Items.UserLogged, null }
+            { Item.UserLogged, null }
         };
         _httpContextMock.Setup(h => h.Items).Returns(items);
         _attribute.OnAuthorization(_context);
@@ -61,7 +61,7 @@ public class AuthorizationFilterTests
         var items = new Dictionary<object, object?>
         {
             {
-                Items.UserLogged,
+                Item.UserLogged,
                 new User("Name", "Surname", "email@email.com", "Password@100",
                     new Role("Admin", []))
             }

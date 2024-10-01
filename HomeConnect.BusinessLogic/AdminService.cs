@@ -25,7 +25,7 @@ public class AdminService
 
     public void Delete(string email)
     {
-        EnsureAdminExists(email);
+        EnsureUserExists(email);
         UserRepository.Delete(email);
     }
 
@@ -49,7 +49,7 @@ public class AdminService
         }
     }
 
-    private void EnsureAdminExists(string email)
+    private void EnsureUserExists(string email)
     {
         if (!UserRepository.Exists(email))
         {

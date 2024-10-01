@@ -85,6 +85,10 @@ public class Device
         Business = business;
     }
 
+    public Device()
+    {
+    }
+
     private static void EnsurePhotoUrlIsValid(string photoUrl)
     {
         if (!Uri.IsWellFormedUriString(photoUrl, UriKind.Absolute))

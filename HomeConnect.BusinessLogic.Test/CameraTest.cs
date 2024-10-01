@@ -9,7 +9,7 @@ public class CameraTest
     private const int ModelNumber = 123;
     private const string Description = "Description";
     private const string MainPhoto = "https://www.example.com/photo1.jpg";
-    private readonly List<string> SecondaryPhotos = new List<string> { "https://www.example.com/photo2.jpg", "https://www.example.com/photo3.jpg" };
+    private readonly List<string> secondaryPhotos = ["https://www.example.com/photo2.jpg", "https://www.example.com/photo3.jpg"];
     private const bool MotionDetection = true;
     private const bool PersonDetection = false;
     private const bool IsExterior = true;
@@ -34,7 +34,7 @@ public class CameraTest
         // Arrange
 
         // Act
-        var act = () => new Camera(Name, ModelNumber, Description, MainPhoto, SecondaryPhotos, _business, MotionDetection,
+        var act = () => new Camera(Name, ModelNumber, Description, MainPhoto, secondaryPhotos, _business, MotionDetection,
             PersonDetection, IsExterior, IsInterior);
 
         // Assert
@@ -53,7 +53,7 @@ public class CameraTest
         const bool isInterior = false;
 
         // Act
-        var act = () => new Camera(Name, ModelNumber, Description, MainPhoto, SecondaryPhotos, _business, MotionDetection,
+        var act = () => new Camera(Name, ModelNumber, Description, MainPhoto, secondaryPhotos, _business, MotionDetection,
             PersonDetection, isExterior, isInterior);
 
         // Assert

@@ -1,6 +1,5 @@
 using BusinessLogic;
 using FluentAssertions;
-using System.Collections.Generic;
 
 namespace HomeConnect.BusinessLogic.Test;
 
@@ -15,7 +14,7 @@ public class RoleTest
     [TestInitialize]
     public void TestInitialize()
     {
-        _permissions = new List<SystemPermission> { new SystemPermission(Permission) };
+        _permissions = [new SystemPermission(Permission)];
         _role = new Role(RoleName, _permissions);
     }
 
@@ -47,7 +46,7 @@ public class RoleTest
     public void HasPermission_WhenCalledWithNotExistingPermission_ReturnsFalse()
     {
         // Arrange
-        var roleWithNoPermissions = new Role(RoleName, new List<SystemPermission>());
+        var roleWithNoPermissions = new Role(RoleName, []);
 
         // Act
         var result = roleWithNoPermissions.HasPermission(Permission);

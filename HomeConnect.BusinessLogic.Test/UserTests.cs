@@ -1,7 +1,5 @@
 using BusinessLogic;
 using FluentAssertions;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
-using System;
 
 namespace HomeConnect.BusinessLogic.Test;
 

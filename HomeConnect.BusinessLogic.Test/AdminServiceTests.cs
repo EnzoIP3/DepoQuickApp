@@ -16,6 +16,7 @@ public sealed class AdminServiceTests
 
     private UserModel _validUserModel = new UserModel
     {
+        Id = Guid.NewGuid().ToString(),
         Name = "name",
         Surname = "surname",
         Email = "email@email.com",
@@ -50,7 +51,7 @@ public sealed class AdminServiceTests
     public void Create_WhenAlreadyExists_ThrowsException()
     {
         // Arrange
-        _userRepository.Setup(x => x.Exists(It.IsAny<string>())).Returns(true);
+        _userRepository.Setup(x => x.Exists(It.IsAny<Guid>())).Returns(true);
 
         // Act
         var act = () => _adminService.Create(_validUserModel);
@@ -87,7 +88,7 @@ public sealed class AdminServiceTests
     public void Create_WhenArgumentsAreValid_CreatesAdmin()
     {
         // Arrange
-        _userRepository.Setup(x => x.Exists(It.IsAny<string>())).Returns(false);
+        _userRepository.Setup(x => x.Exists(It.IsAny<Guid>())).Returns(false);
         _userRepository.Setup(x => x.Add(It.IsAny<User>()));
         _roleRepository.Setup(x => x.GetRole(It.IsAny<string>())).Returns(new Role("Admin", []));
 
@@ -115,11 +116,11 @@ public sealed class AdminServiceTests
     public void Delete_WhenDoesNotExist_ThrowsException()
     {
         // Arrange
-        var email = "email";
-        _userRepository.Setup(x => x.Exists(It.IsAny<string>())).Returns(false);
+        var id = Guid.NewGuid();
+        _userRepository.Setup(x => x.Exists(It.IsAny<Guid>())).Returns(false);
 
         // Act
-        var act = () => _adminService.Delete(email);
+        var act = () => _adminService.Delete(id);
 
         // Assert
         act.Should().Throw<Exception>().WithMessage("Admin does not exist.");
@@ -133,15 +134,15 @@ public sealed class AdminServiceTests
     public void Delete_WhenArgumentsAreValid_DeletesAdmin()
     {
         // Arrange
-        var email = "email";
-        _userRepository.Setup(x => x.Exists(It.IsAny<string>())).Returns(true);
-        _userRepository.Setup(x => x.Delete(It.IsAny<string>()));
+        var id = Guid.NewGuid();
+        _userRepository.Setup(x => x.Exists(It.IsAny<Guid>())).Returns(true);
+        _userRepository.Setup(x => x.Delete(It.IsAny<Guid>()));
 
         // Act
-        _adminService.Delete(email);
+        _adminService.Delete(id);
 
         // Assert
-        _userRepository.Verify(x => x.Delete(It.Is<string>(a => a == email)));
+        _userRepository.Verify(x => x.Delete(It.Is<Guid>(a => a == id)));
     }
 
     #endregion
@@ -158,13 +159,14 @@ public sealed class AdminServiceTests
         // Arrange
         var businessOwnerModel = new UserModel
         {
+            Id = Guid.NewGuid().ToString(),
             Name = "name",
             Surname = "surname",
             Email = "email",
             Password = "password",
             Role = "BusinessOwner"
         };
-        _userRepository.Setup(x => x.Exists(It.IsAny<string>())).Returns(true);
+        _userRepository.Setup(x => x.Exists(It.IsAny<Guid>())).Returns(true);
 
         // Act
         var act = () => _adminService.CreateBusinessOwner(businessOwnerModel);
@@ -183,13 +185,14 @@ public sealed class AdminServiceTests
         // Arrange
         var businessOwnerModel = new UserModel
         {
+            Id = Guid.NewGuid().ToString(),
             Name = "name",
             Surname = "surname",
             Email = "email@email.com",
             Password = "Password#100",
             Role = "Business Owner"
         };
-        _userRepository.Setup(x => x.Exists(It.IsAny<string>())).Returns(false);
+        _userRepository.Setup(x => x.Exists(It.IsAny<Guid>())).Returns(false);
         _userRepository.Setup(x => x.Add(It.IsAny<User>()));
         _roleRepository.Setup(x => x.GetRole(It.IsAny<string>())).Returns(new Role(businessOwnerModel.Role, []));
 
@@ -222,28 +225,44 @@ public sealed class AdminServiceTests
         {
             new ListUserModel
             {
-                Name = "name",
-                Surname = "surname",
-                FullName = "name surname",
+                Id = _validUser.Id.ToString(),
+                Name = _validUser.Name,
+                Surname = _validUser.Surname,
+                FullName = $"{_validUser.Name} {_validUser.Surname}",
                 Role = "Admin",
                 CreatedAt = DateOnly.FromDateTime(DateTime.Now)
             },
             new ListUserModel
             {
-                Name = "name2",
-                Surname = "surname2",
-                FullName = "name2 surname2",
+                Id = _otherOwner.Id.ToString(),
+                Name = _otherOwner.Name,
+                Surname = _otherOwner.Surname,
+                FullName = $"{_otherOwner.Name} {_otherOwner.Surname}",
                 Role = "Business Owner",
                 CreatedAt = DateOnly.FromDateTime(DateTime.Now)
             }
         };
-        _userRepository.Setup(x => x.GetUsers(_defaultCurrentPage, _defaultPageSize, null, null)).Returns(users);
+        var pagedList = new PagedData<User>
+        {
+            Data = users,
+            Page = _defaultCurrentPage,
+            PageSize = _defaultPageSize,
+            TotalPages = 1
+        };
+        var pagedResponse = new PagedData<ListUserModel>
+        {
+            Data = userList,
+            Page = _defaultCurrentPage,
+            PageSize = _defaultPageSize,
+            TotalPages = 1
+        };
+        _userRepository.Setup(x => x.GetUsers(_defaultCurrentPage, _defaultPageSize, null, null)).Returns(pagedList);
 
         // Act
         var result = _adminService.GetUsers(_defaultCurrentPage, _defaultPageSize);
 
         // Assert
-        result.Should().BeEquivalentTo(userList);
+        result.Should().BeEquivalentTo(pagedResponse, options => options.ComparingByMembers<PagedData<ListUserModel>>());
         _userRepository.Verify(x => x.GetUsers(
             It.Is<int>(a => a == _defaultCurrentPage),
             It.Is<int>(a => a == _defaultPageSize),
@@ -260,28 +279,44 @@ public sealed class AdminServiceTests
         {
             new ListUserModel
             {
-                Name = "name",
-                Surname = "surname",
-                FullName = "name surname",
+                Id = _validUser.Id.ToString(),
+                Name = _validUser.Name,
+                Surname = _validUser.Surname,
+                FullName = $"{_validUser.Name} {_validUser.Surname}",
                 Role = "Admin",
                 CreatedAt = DateOnly.FromDateTime(DateTime.Now)
             },
             new ListUserModel
             {
-                Name = "name2",
-                Surname = "surname2",
-                FullName = "name2 surname2",
+                Id = _otherOwner.Id.ToString(),
+                Name = _otherOwner.Name,
+                Surname = _otherOwner.Surname,
+                FullName = $"{_otherOwner.Name} {_otherOwner.Surname}",
                 Role = "Business Owner",
                 CreatedAt = DateOnly.FromDateTime(DateTime.Now)
             }
         };
-        _userRepository.Setup(x => x.GetUsers(_defaultCurrentPage, _defaultPageSize, null, null)).Returns(users);
+        var pagedList = new PagedData<User>
+        {
+            Data = users,
+            Page = _defaultCurrentPage,
+            PageSize = _defaultPageSize,
+            TotalPages = 1
+        };
+        var pagedResponse = new PagedData<ListUserModel>
+        {
+            Data = userList,
+            Page = _defaultCurrentPage,
+            PageSize = _defaultPageSize,
+            TotalPages = 1
+        };
+        _userRepository.Setup(x => x.GetUsers(_defaultCurrentPage, _defaultPageSize, null, null)).Returns(pagedList);
 
         // Act
         var result = _adminService.GetUsers();
 
         // Assert
-        result.Should().BeEquivalentTo(userList);
+        result.Should().BeEquivalentTo(pagedResponse, options => options.ComparingByMembers<PagedData<ListUserModel>>());
         _userRepository.Verify(x => x.GetUsers(
             It.Is<int>(a => a == _defaultCurrentPage),
             It.Is<int>(a => a == _defaultPageSize),
@@ -298,22 +333,37 @@ public sealed class AdminServiceTests
         {
             new ListUserModel
             {
-                Name = "name",
-                Surname = "surname",
-                FullName = "name surname",
+                Id = _validUser.Id.ToString(),
+                Name = _validUser.Name,
+                Surname = _validUser.Surname,
+                FullName = $"{_validUser.Name} {_validUser.Surname}",
                 Role = "Admin",
                 CreatedAt = DateOnly.FromDateTime(DateTime.Now)
             }
         };
         var filter = "name surname";
+        var pagedList = new PagedData<User>
+        {
+            Data = [users[0]],
+            Page = _defaultCurrentPage,
+            PageSize = _defaultPageSize,
+            TotalPages = 1
+        };
+        var pagedResponse = new PagedData<ListUserModel>
+        {
+            Data = userList,
+            Page = _defaultCurrentPage,
+            PageSize = _defaultPageSize,
+            TotalPages = 1
+        };
         _userRepository.Setup(x => x.GetUsers(_defaultCurrentPage, _defaultPageSize, filter, null))
-            .Returns([users[0]]);
+            .Returns(pagedList);
 
         // Act
         var result = _adminService.GetUsers(fullNameFilter: filter);
 
         // Assert
-        result.Should().BeEquivalentTo(userList);
+        result.Should().BeEquivalentTo(pagedResponse, options => options.ComparingByMembers<PagedData<ListUserModel>>());
         _userRepository.Verify(x => x.GetUsers(
             It.Is<int>(a => a == _defaultCurrentPage),
             It.Is<int>(a => a == _defaultPageSize),
@@ -330,22 +380,37 @@ public sealed class AdminServiceTests
         {
             new ListUserModel
             {
-                Name = "name2",
-                Surname = "surname2",
-                FullName = "name2 surname2",
+                Id = _otherOwner.Id.ToString(),
+                Name = _otherOwner.Name,
+                Surname = _otherOwner.Surname,
+                FullName = $"{_otherOwner.Name} {_otherOwner.Surname}",
                 Role = "Business Owner",
                 CreatedAt = DateOnly.FromDateTime(DateTime.Now)
             }
         };
         var filter = "BusinessOwner";
+        var pagedList = new PagedData<User>
+        {
+            Data = [users[1]],
+            Page = _defaultCurrentPage,
+            PageSize = _defaultPageSize,
+            TotalPages = 1
+        };
+        var pagedResponse = new PagedData<ListUserModel>
+        {
+            Data = userList,
+            Page = _defaultCurrentPage,
+            PageSize = _defaultPageSize,
+            TotalPages = 1
+        };
         _userRepository.Setup(x => x.GetUsers(_defaultCurrentPage, _defaultPageSize, null, filter))
-            .Returns([users[1]]);
+            .Returns(pagedList);
 
         // Act
         var result = _adminService.GetUsers(roleFilter: filter);
 
         // Assert
-        result.Should().BeEquivalentTo(userList);
+        result.Should().BeEquivalentTo(pagedResponse, options => options.ComparingByMembers<PagedData<ListUserModel>>());
         _userRepository.Verify(x => x.GetUsers(
             It.Is<int>(a => a == _defaultCurrentPage),
             It.Is<int>(a => a == _defaultPageSize),
@@ -384,14 +449,28 @@ public sealed class AdminServiceTests
                 Rut = "123456789456"
             }
         };
+        var pagedList = new PagedData<Business>
+        {
+            Data = businesses,
+            Page = _defaultCurrentPage,
+            PageSize = _defaultPageSize,
+            TotalPages = 1
+        };
+        var pagedResponse = new PagedData<ListBusinessModel>
+        {
+            Data = businessList,
+            Page = _defaultCurrentPage,
+            PageSize = _defaultPageSize,
+            TotalPages = 1
+        };
         _businessRepository.Setup(x => x.GetBusinesses(_defaultCurrentPage, _defaultPageSize, null, null))
-            .Returns(businesses);
+            .Returns(pagedList);
 
         // Act
         var result = _adminService.GetBusiness(_defaultCurrentPage, _defaultPageSize);
 
         // Assert
-        result.Should().BeEquivalentTo(businessList);
+        result.Should().BeEquivalentTo(pagedResponse, options => options.ComparingByMembers<PagedData<ListBusinessModel>>());
         _businessRepository.Verify(x => x.GetBusinesses(
             It.Is<int>(a => a == _defaultCurrentPage),
             It.Is<int>(a => a == _defaultPageSize),
@@ -424,14 +503,28 @@ public sealed class AdminServiceTests
                 Rut = "123456789456"
             }
         };
+        var pagedList = new PagedData<Business>
+        {
+            Data = businesses,
+            Page = _defaultCurrentPage,
+            PageSize = _defaultPageSize,
+            TotalPages = 1
+        };
+        var pagedResponse = new PagedData<ListBusinessModel>
+        {
+            Data = businessList,
+            Page = _defaultCurrentPage,
+            PageSize = _defaultPageSize,
+            TotalPages = 1
+        };
         _businessRepository.Setup(x => x.GetBusinesses(_defaultCurrentPage, _defaultPageSize, null, null))
-            .Returns(businesses);
+            .Returns(pagedList);
 
         // Act
         var result = _adminService.GetBusiness();
 
         // Assert
-        result.Should().BeEquivalentTo(businessList);
+        result.Should().BeEquivalentTo(pagedResponse, options => options.ComparingByMembers<PagedData<ListBusinessModel>>());
         _businessRepository.Verify(x => x.GetBusinesses(
             It.Is<int>(a => a == _defaultCurrentPage),
             It.Is<int>(a => a == _defaultPageSize),
@@ -458,14 +551,28 @@ public sealed class AdminServiceTests
             }
         };
         var filter = $"{_owner.Name} {_owner.Surname}";
+        var pagedList = new PagedData<Business>
+        {
+            Data = [businesses[0]],
+            Page = _defaultCurrentPage,
+            PageSize = _defaultPageSize,
+            TotalPages = 1
+        };
+        var pagedResponse = new PagedData<ListBusinessModel>
+        {
+            Data = businessList,
+            Page = _defaultCurrentPage,
+            PageSize = _defaultPageSize,
+            TotalPages = 1
+        };
         _businessRepository.Setup(x => x.GetBusinesses(_defaultCurrentPage, _defaultPageSize, filter, null))
-            .Returns([businesses[0]]);
+            .Returns(pagedList);
 
         // Act
         var result = _adminService.GetBusiness(fullNameFilter: filter);
 
         // Assert
-        result.Should().BeEquivalentTo(businessList);
+        result.Should().BeEquivalentTo(pagedResponse, options => options.ComparingByMembers<PagedData<ListBusinessModel>>());
         _businessRepository.Verify(x => x.GetBusinesses(
             It.Is<int>(a => a == _defaultCurrentPage),
             It.Is<int>(a => a == _defaultPageSize),
@@ -492,14 +599,28 @@ public sealed class AdminServiceTests
             }
         };
         var filter = "name2";
+        var pagedList = new PagedData<Business>
+        {
+            Data = [businesses[1]],
+            Page = _defaultCurrentPage,
+            PageSize = _defaultPageSize,
+            TotalPages = 1
+        };
+        var pagedResponse = new PagedData<ListBusinessModel>
+        {
+            Data = businessList,
+            Page = _defaultCurrentPage,
+            PageSize = _defaultPageSize,
+            TotalPages = 1
+        };
         _businessRepository.Setup(x => x.GetBusinesses(_defaultCurrentPage, _defaultPageSize, null, filter))
-            .Returns([businesses[1]]);
+            .Returns(pagedList);
 
         // Act
         var result = _adminService.GetBusiness(nameFilter: filter);
 
         // Assert
-        result.Should().BeEquivalentTo(businessList);
+        result.Should().BeEquivalentTo(pagedResponse, options => options.ComparingByMembers<PagedData<ListBusinessModel>>());
         _businessRepository.Verify(x => x.GetBusinesses(
             It.Is<int>(a => a == _defaultCurrentPage),
             It.Is<int>(a => a == _defaultPageSize),

@@ -2,7 +2,7 @@ using BusinessLogic;
 
 namespace HomeConnect.DataAccess;
 
-public class UserRepository : IUserRepository
+public class UserRepository
 {
     private readonly Context _context;
 

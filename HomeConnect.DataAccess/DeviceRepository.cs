@@ -2,7 +2,7 @@ using BusinessLogic;
 
 namespace HomeConnect.DataAccess;
 
-public class DeviceRepository : IDeviceRepository
+public class DeviceRepository
 {
     private readonly Context _context;
 

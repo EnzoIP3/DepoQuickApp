@@ -22,7 +22,7 @@ public class BusinessOwnerServiceTests
     private const int ModelNumber = 123;
     private const string Description = "Device Description";
     private const string MainPhoto = "https://www.example.com/photo1.jpg";
-    private readonly List<string> SecondaryPhotos = new List<string> { "https://www.example.com/photo2.jpg", "https://www.example.com/photo3.jpg" };
+    private readonly List<string> secondaryPhotos = ["https://www.example.com/photo2.jpg", "https://www.example.com/photo3.jpg"];
     private const string Type = "Device Type";
 
     [TestInitialize]
@@ -132,7 +132,7 @@ public class BusinessOwnerServiceTests
         _deviceRepository.Setup(x => x.Add(It.IsAny<Device>()));
 
         // Act
-        _businessOwnerService.CreateDevice(DeviceName, ModelNumber, Description, MainPhoto, SecondaryPhotos, Type, business);
+        _businessOwnerService.CreateDevice(DeviceName, ModelNumber, Description, MainPhoto, secondaryPhotos, Type, business);
 
         // Assert
         _deviceRepository.Verify(x => x.Add(It.Is<Device>(d =>
@@ -140,7 +140,7 @@ public class BusinessOwnerServiceTests
             d.ModelNumber == ModelNumber &&
             d.Description == Description &&
             d.MainPhoto == MainPhoto &&
-            d.SecondaryPhotos.SequenceEqual(SecondaryPhotos) &&
+            d.SecondaryPhotos.SequenceEqual(secondaryPhotos) &&
             d.Type == Type)));
     }
 
@@ -153,12 +153,12 @@ public class BusinessOwnerServiceTests
     {
         // Arrange
         var business = new Business("RUTexample", "Business Name", _owner);
-        var existingDevice = new Device(DeviceName, ModelNumber, Description, MainPhoto, SecondaryPhotos, Type, business);
+        var existingDevice = new Device(DeviceName, ModelNumber, Description, MainPhoto, secondaryPhotos, Type, business);
         _deviceRepository.Setup(x => x.EnsureDeviceDoesNotExist(It.IsAny<Device>())).Throws(new ArgumentException("Device already exists"));
         _deviceRepository.Setup(x => x.Add(It.IsAny<Device>()));
 
         // Act
-        Action act = () => _businessOwnerService.CreateDevice(DeviceName, ModelNumber, Description, MainPhoto, SecondaryPhotos, Type, business);
+        Action act = () => _businessOwnerService.CreateDevice(DeviceName, ModelNumber, Description, MainPhoto, secondaryPhotos, Type, business);
 
         // Assert
         act.Should().Throw<ArgumentException>().WithMessage("Device already exists");

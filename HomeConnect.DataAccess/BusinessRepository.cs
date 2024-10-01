@@ -11,13 +11,30 @@ public class BusinessRepository : IBusinessRepository
         _context = context;
     }
 
-    public List<Business> GetBusinesses(int page, int pageSize, string? fullNameFilter = null,
+    public PagedData<Business> GetBusinesses(int page, int pageSize, string? fullNameFilter = null,
         string? nameFilter = null)
     {
         IQueryable<Business> query = _context.Businesses;
         query = FilterByOwnerFullName(fullNameFilter, query);
         query = FilterByBusinessName(nameFilter, query);
+        var businesses = PaginateBusinesses(page, pageSize, query);
+        return new PagedData<Business>()
+        {
+            Data = businesses,
+            Page = page,
+            PageSize = pageSize,
+            TotalPages = CalculateTotalPages(pageSize, query)
+        };
+    }
+
+    private static List<Business> PaginateBusinesses(int page, int pageSize, IQueryable<Business> query)
+    {
         return query.Skip((page - 1) * pageSize).Take(pageSize).ToList();
+    }
+
+    private static int CalculateTotalPages(int pageSize, IQueryable<Business> query)
+    {
+        return (int)Math.Ceiling(query.Count() / (double)pageSize);
     }
 
     public Business? GetBusinessByOwner(string ownerEmail)

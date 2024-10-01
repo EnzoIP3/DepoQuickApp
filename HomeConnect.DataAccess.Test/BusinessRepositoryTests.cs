@@ -40,13 +40,19 @@ public class BusinessRepositoryTests
     public void GetBusinesses_WithNoFilters_ReturnsAllBusinesses()
     {
         // Arrange
-        var expected = new List<Business> { _validBusiness, _otherBusiness };
+        var expected = new PagedData<Business>()
+        {
+            Data = [_validBusiness, _otherBusiness],
+            Page = 1,
+            PageSize = 2,
+            TotalPages = 1
+        };
 
         // Act
         var result = _businessRepository.GetBusinesses(1, 2);
 
         // Assert
-        result.Should().BeEquivalentTo(expected);
+        result.Data.Should().BeEquivalentTo(expected.Data);
     }
 
     [TestMethod]
@@ -59,46 +65,46 @@ public class BusinessRepositoryTests
         var result = _businessRepository.GetBusinesses(1, 1);
 
         // Assert
-        result.Should().BeEquivalentTo(expected);
+        result.Data.Should().BeEquivalentTo(expected);
     }
 
     [TestMethod]
     public void GetBusinesses_WithFullNameFilter_ReturnsFilteredBusinesses()
     {
         // Arrange
-        var expected = new List<Business> { _validBusiness };
+        var expected = new PagedData<Business>() { Data = [_validBusiness], Page = 1, PageSize = 2, TotalPages = 1 };
 
         // Act
         var result = _businessRepository.GetBusinesses(1, 2, "John Doe");
 
         // Assert
-        result.Should().BeEquivalentTo(expected);
+        result.Data.Should().BeEquivalentTo(expected.Data);
     }
 
     [TestMethod]
     public void GetBusinesses_WithNameFilter_ReturnsFilteredBusinesses()
     {
         // Arrange
-        var expected = new List<Business> { _otherBusiness };
+        var expected = new PagedData<Business>() { Data = [_otherBusiness], Page = 1, PageSize = 2, TotalPages = 1 };
 
         // Act
         var result = _businessRepository.GetBusinesses(1, 2, null, "Other");
 
         // Assert
-        result.Should().BeEquivalentTo(expected);
+        result.Data.Should().BeEquivalentTo(expected.Data);
     }
 
     [TestMethod]
     public void GetBusinesses_WithFullNameFilterAndNameFilter_ReturnsFilteredBusinesses()
     {
         // Arrange
-        var expected = new List<Business> { _otherBusiness };
+        var expected = new PagedData<Business>() { Data = [_otherBusiness], Page = 1, PageSize = 2, TotalPages = 1 };
 
         // Act
         var result = _businessRepository.GetBusinesses(1, 2, "J", "Other");
 
         // Assert
-        result.Should().BeEquivalentTo(expected);
+        result.Data.Should().BeEquivalentTo(expected.Data);
     }
 
     #endregion
@@ -121,6 +127,7 @@ public class BusinessRepositoryTests
     }
 
     #endregion
+
     [TestMethod]
     public void Add_WhenBusinessAlreadyExists_ThrowsException()
     {
@@ -133,10 +140,6 @@ public class BusinessRepositoryTests
         // Assert
         act.Should().Throw<ArgumentException>();
     }
-
-    #region Error
-
-    #endregion
 
     #endregion
 
@@ -169,6 +172,7 @@ public class BusinessRepositoryTests
         // Assert
         result.Should().BeNull();
     }
+
     #endregion
 
     #endregion
@@ -191,5 +195,6 @@ public class BusinessRepositoryTests
     }
 
     #endregion
+
     #endregion
 }

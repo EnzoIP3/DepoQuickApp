@@ -106,6 +106,7 @@ public class HomeOwnerService
 
     public List<Member> GetHomeMembers(string homeId)
     {
+        EnsureGuidIsValid(homeId);
         var home = GetHome(homeId);
         return home.Members;
     }

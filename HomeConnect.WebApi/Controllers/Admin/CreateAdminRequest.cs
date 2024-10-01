@@ -1,11 +1,9 @@
-namespace BusinessLogic;
+namespace HomeConnect.WebApi.Controllers.Admin;
 
-public struct UserModel
+public struct CreateAdminRequest
 {
-    public string Id { get; set; }
     public string Name { get; set; }
     public string Surname { get; set; }
     public string Email { get; set; }
     public string Password { get; set; }
-    public string Role { get; set; }
 }

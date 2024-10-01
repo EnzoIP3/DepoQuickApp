@@ -106,6 +106,7 @@ public class HomeOwnerService
 
     public List<Member> GetHomeMembers(string homeId)
     {
-        throw new NotImplementedException();
+        var home = GetHome(homeId);
+        return home.Members;
     }
 }

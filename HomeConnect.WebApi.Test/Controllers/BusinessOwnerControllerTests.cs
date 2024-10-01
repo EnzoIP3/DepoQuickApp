@@ -26,8 +26,15 @@ public class BusinessOwnerControllerTests
         {
             Name = "John", Surname = "Doe", Email = "email@email.com", Password = "password"
         };
+        var userModel = new UserModel
+        {
+            Name = request.Name,
+            Surname = request.Surname,
+            Email = request.Email,
+            Password = request.Password
+        };
         var guid = Guid.NewGuid();
-        _adminService.Setup(x => x.CreateBusinessOwner(It.IsAny<UserModel>())).Returns(guid);
+        _adminService.Setup(x => x.CreateBusinessOwner(userModel)).Returns(guid);
 
         // Act
         var response = _controller.CreateBusinessOwner(request, $"Bearer {guid}");

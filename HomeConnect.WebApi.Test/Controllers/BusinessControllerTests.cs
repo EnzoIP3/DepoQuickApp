@@ -21,7 +21,7 @@ public class BusinessControllerTests
     }
 
     [TestMethod]
-    public void GetBusinesses_WhenCalledWithValidRequest_ReturnsExpectedResponse()
+    public void GetBusinesses_WhenCalledWithNoParameters_ReturnsExpectedResponse()
     {
         // Arrange
         var role = new Role("BusinessOwner", new List<SystemPermission>());

@@ -27,11 +27,19 @@ public class AdminControllerTests
         {
             Name = "John", Surname = "Doe", Email = "email@email.com", Password = "password"
         };
+        var userModel = new UserModel
+        {
+            Name = request.Name,
+            Surname = request.Surname,
+            Email = request.Email,
+            Password = request.Password
+        };
         var guid = Guid.NewGuid();
-        _adminService.Setup(x => x.Create(It.IsAny<UserModel>())).Returns(guid);
+
+        _adminService.Setup(x => x.Create(userModel)).Returns(guid);
 
         // Act
-        var response = _controller.CreateAdmin(request, $"Bearer {guid}");
+        var response = _controller.CreateAdmin(request);
 
         // Assert
         _adminService.VerifyAll();
@@ -47,7 +55,7 @@ public class AdminControllerTests
         _adminService.Setup(x => x.Delete(guid));
 
         // Act
-        var response = _controller.DeleteAdmin(guid, $"Bearer {guid}");
+        var response = _controller.DeleteAdmin(guid);
 
         // Assert
         _adminService.VerifyAll();

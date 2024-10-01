@@ -10,7 +10,7 @@ namespace HomeConnect.WebApi.Controllers.Admin;
 public class AdminController(IAdminService adminService) : ControllerBase
 {
     [HttpPost]
-    public CreateAdminResponse CreateAdmin([FromBody] CreateAdminRequest request, [FromHeader] string authorization)
+    public CreateAdminResponse CreateAdmin([FromBody] CreateAdminRequest request)
     {
         UserModel userModel = UserModelFromRequest(request);
         var adminId = adminService.Create(userModel);
@@ -30,7 +30,7 @@ public class AdminController(IAdminService adminService) : ControllerBase
     }
 
     [HttpDelete("{adminId}")]
-    public IActionResult DeleteAdmin([FromRoute] Guid adminId, [FromHeader] string authorization)
+    public IActionResult DeleteAdmin([FromRoute] Guid adminId)
     {
         adminService.Delete(adminId);
         return NoContent();

@@ -9,6 +9,7 @@ public class Context(DbContextOptions<Context> options) : DbContext(options)
     public DbSet<SystemPermission> Permissions { get; set; } = null!;
     public DbSet<Role> Roles { get; set; } = null!;
     public DbSet<Device> Devices { get; set; } = null!;
+    public DbSet<Notification> Notifications { get; set; } = null!;
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {

@@ -103,4 +103,18 @@ public class HomeOwnerService
     {
         deviceIds.ToList().ForEach(EnsureGuidIsValid);
     }
+
+    public List<Member> GetHomeMembers(string homeId)
+    {
+        EnsureGuidIsValid(homeId);
+        var home = GetHome(homeId);
+        return home.Members;
+    }
+
+    public IEnumerable<OwnedDevice> GetHomeDevices(string homeId)
+    {
+        EnsureGuidIsValid(homeId);
+        var home = GetHome(homeId);
+        return _ownedDeviceRepository.GetOwnedDevicesByHome(home);
+    }
 }

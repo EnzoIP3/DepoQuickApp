@@ -25,6 +25,10 @@ public class HomeOwnerServiceTests
             _deviceRepositoryMock.Object, _ownedDeviceRepositoryMock.Object);
     }
 
+    #region CreateHome
+
+    #region Success
+
     [TestMethod]
     public void CreateHome_WhenArgumentsAreValid_AddsHome()
     {
@@ -46,6 +50,10 @@ public class HomeOwnerServiceTests
         // Assert
         _homeRepositoryMock.Verify(x => x.Add(It.IsAny<Home>()), Times.Once);
     }
+
+    #endregion
+
+    #region Error
 
     [TestMethod]
     [DataRow("", "Main St 123")]
@@ -69,6 +77,14 @@ public class HomeOwnerServiceTests
         act.Should().Throw<ArgumentException>();
     }
 
+    #endregion
+
+    #endregion
+
+    #region AddMemberToHome
+
+    #region Success
+
     [TestMethod]
     public void AddMemberToHome_WhenArgumentsAreValid_AddsMember()
     {
@@ -91,6 +107,10 @@ public class HomeOwnerServiceTests
         // Assert
         home.Members.Should().ContainSingle(x => x.User == invitedUser);
     }
+
+    #endregion
+
+    #region Error
 
     [TestMethod]
     [DataRow("", "jane@doe.com")]
@@ -126,6 +146,14 @@ public class HomeOwnerServiceTests
         act.Should().Throw<ArgumentException>();
     }
 
+    #endregion
+
+    #endregion
+
+    #region AddDevicesToHome
+
+    #region Success
+
     [TestMethod]
     public void AddDevicesToHome_WhenArgumentsAreValid_AddsDevice()
     {
@@ -148,6 +176,10 @@ public class HomeOwnerServiceTests
         // Assert
         _ownedDeviceRepositoryMock.Verify(x => x.Add(It.IsAny<OwnedDevice>()), Times.Exactly(2));
     }
+
+    #endregion
+
+    #region Error
 
     [TestMethod]
     public void AddDevicesToHome_WhenHomeIdIsNotAGuid_ThrowsException()
@@ -175,4 +207,93 @@ public class HomeOwnerServiceTests
         // Assert
         act.Should().Throw<ArgumentException>();
     }
+
+    #endregion
+
+    #endregion
+
+    #region GetHomeMembers
+
+    #region Success
+
+    [TestMethod]
+    public void GetHomeMembers_WhenArgumentsAreValid_ReturnsMembers()
+    {
+        // Arrange
+        var home = new Home(_user, "Main St 123", 1.0, 2.0, 5);
+        var member = new Member(new User("Jane", "Doe", "test@example.com", "12345678@My", new Role()));
+        home.AddMember(member);
+        _homeRepositoryMock.Setup(x => x.Get(home.Id)).Returns(home);
+
+        // Act
+        var result = _homeOwnerService.GetHomeMembers(home.Id.ToString());
+
+        // Assert
+        result.Should().ContainSingle(x => x.User == member.User);
+    }
+
+    #endregion
+
+    #region Error
+
+    [TestMethod]
+    public void GetHomeMembers_WhenHomeIdIsNotAGuid_ThrowsException()
+    {
+        // Arrange
+        var homeId = "invalid-guid";
+
+        // Act
+        var act = () => _homeOwnerService.GetHomeMembers(homeId);
+
+        // Assert
+        act.Should().Throw<ArgumentException>();
+    }
+
+    #endregion
+
+    #endregion
+
+    #region GetHomeDevices
+
+    #region Success
+
+    [TestMethod]
+    public void GetHomeDevices_WhenArgumentsAreValid_ReturnsDevices()
+    {
+        // Arrange
+        var home = new Home(_user, "Main St 123", 1.0, 2.0, 5);
+        var sensor = new Device("Sensor", 1, "A sensor", "https://example.com/image.png", [], "Sensor");
+        var camera = new Camera("Camera", 2, "A camera", "https://example.com/image.png", [], true, true, true, true);
+        var ownedDevices =
+            new List<OwnedDevice>() { new OwnedDevice(home, sensor), new OwnedDevice(home, camera) };
+        _homeRepositoryMock.Setup(x => x.Get(home.Id)).Returns(home);
+        _ownedDeviceRepositoryMock.Setup(x => x.GetOwnedDevicesByHome(home)).Returns(ownedDevices);
+
+        // Act
+        var result = _homeOwnerService.GetHomeDevices(home.Id.ToString());
+
+        // Assert
+        result.Should().BeEquivalentTo(ownedDevices);
+    }
+
+    #endregion
+
+    #region Error
+
+    [TestMethod]
+    public void GetHomeDevices_WhenHomeIdIsNotAGuid_ThrowsException()
+    {
+        // Arrange
+        var homeId = "invalid-guid";
+
+        // Act
+        var act = () => _homeOwnerService.GetHomeDevices(homeId);
+
+        // Assert
+        act.Should().Throw<ArgumentException>();
+    }
+
+    #endregion
+
+    #endregion
 }

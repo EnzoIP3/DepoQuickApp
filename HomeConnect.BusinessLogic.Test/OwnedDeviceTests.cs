@@ -6,13 +6,16 @@ namespace HomeConnect.BusinessLogic.Test;
 [TestClass]
 public class OwnedDeviceTests
 {
+    #region Constructor
+
+    #region Success
+
     [TestMethod]
     public void Constructor_WhenArgumentsAreValid_CreatesInstance()
     {
         // Arrange
         var home = new Home(new User(), "Main St 123", 12.5, 12.5, 5);
-        var device = new Device("Sensor", 12345, "A sensor", "https://sensor.com/image.png", [],
-            "Sensor");
+        var device = new Device("Sensor", 12345, "A sensor", "https://sensor.com/image.png", [], "Sensor");
 
         // Act
         var act = () => new OwnedDevice(home, device);
@@ -26,8 +29,7 @@ public class OwnedDeviceTests
     {
         // Arrange
         var home = new Home(new User(), "Main St 123", 12.5, 12.5, 5);
-        var device = new Device("Sensor", 12345, "A sensor", "https://sensor.com/image.png", [],
-            "Sensor");
+        var device = new Device("Sensor", 12345, "A sensor", "https://sensor.com/image.png", [], "Sensor");
 
         // Act
         var ownedDevice = new OwnedDevice(home, device);
@@ -41,8 +43,7 @@ public class OwnedDeviceTests
     {
         // Arrange
         var home = new Home(new User(), "Main St 123", 12.5, 12.5, 5);
-        var device = new Device("Sensor", 12345, "A sensor", "https://sensor.com/image.png", [],
-            "Sensor");
+        var device = new Device("Sensor", 12345, "A sensor", "https://sensor.com/image.png", [], "Sensor");
 
         // Act
         var ownedDevice = new OwnedDevice(home, device);
@@ -50,4 +51,8 @@ public class OwnedDeviceTests
         // Assert
         ownedDevice.Connected.Should().BeTrue();
     }
+
+    #endregion
+
+    #endregion
 }

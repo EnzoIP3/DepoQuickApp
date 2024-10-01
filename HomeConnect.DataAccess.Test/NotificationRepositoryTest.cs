@@ -41,4 +41,25 @@ public class NotificationRepositoryTest
         // Assert
         _context.Notifications.Should().Contain(notification);
     }
+
+    [TestMethod]
+    public void Add_WhenNotificationExists_ShouldThrowInvalidOperationException()
+    {
+        // Arrange
+        var user = new User("name", "surname", "email@email.com", "Password#100", new Role());
+        var device = new Device("Device", 12345, "Device description", "https://example.com/image.png",
+            new List<string>(), "Sensor");
+        var home = new Home(user, "Adress 3420", 100, 100, 5);
+        var ownedDevice = new OwnedDevice(home, device);
+        var notification = new Notification(Guid.NewGuid(), DateTime.Now, false,
+            "Notification message", ownedDevice, user);
+
+        // Act
+        _notificationRepository.Add(notification);
+        _context.SaveChanges();
+
+        // Assert
+        Action act = () => _notificationRepository.Add(notification);
+        act.Should().Throw<InvalidOperationException>();
+    }
 }

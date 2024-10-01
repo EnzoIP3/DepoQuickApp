@@ -175,4 +175,20 @@ public class HomeOwnerServiceTests
         // Assert
         act.Should().Throw<ArgumentException>();
     }
+
+    [TestMethod]
+    public void GetHomeMembers_WhenArgumentsAreValid_ReturnsMembers()
+    {
+        // Arrange
+        var home = new Home(_user, "Main St 123", 1.0, 2.0, 5);
+        var member = new Member(new User("Jane", "Doe", "test@example.com", "12345678@My", new Role()));
+        home.AddMember(member);
+        _homeRepositoryMock.Setup(x => x.Get(home.Id)).Returns(home);
+
+        // Act
+        var result = _homeOwnerService.GetHomeMembers(home.Id.ToString());
+
+        // Assert
+        result.Should().ContainSingle(x => x.User == member.User);
+    }
 }

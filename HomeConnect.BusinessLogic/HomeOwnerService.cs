@@ -103,4 +103,9 @@ public class HomeOwnerService
     {
         deviceIds.ToList().ForEach(EnsureGuidIsValid);
     }
+
+    public List<Member> GetHomeMembers(string homeId)
+    {
+        throw new NotImplementedException();
+    }
 }

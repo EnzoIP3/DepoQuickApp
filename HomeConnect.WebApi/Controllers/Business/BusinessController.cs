@@ -14,6 +14,12 @@ public class BusinessController(IAdminService adminService) : ControllerBase
         [FromQuery] string? nameFilter = null, [FromQuery] string? ownerFilter = null)
     {
         var businesses = adminService.GetBusiness(currentPage, pageSize, nameFilter, ownerFilter);
+        var response = ResponseFromBusinesses(businesses);
+        return Ok(response);
+    }
+
+    private static object ResponseFromBusinesses(PagedData<ListBusinessModel> businesses)
+    {
         var response = new
         {
             businesses.Data,
@@ -22,6 +28,6 @@ public class BusinessController(IAdminService adminService) : ControllerBase
                 Page = businesses.Page, PageSize = businesses.PageSize, TotalPages = businesses.TotalPages
             }
         };
-        return Ok(response);
+        return response;
     }
 }

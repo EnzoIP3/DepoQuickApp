@@ -44,8 +44,8 @@ public class ExceptionFilterTests
         var concreteResponse = response as ObjectResult;
         concreteResponse.Should().NotBeNull();
         concreteResponse.StatusCode.Should().Be((int)HttpStatusCode.InternalServerError);
-        GetInnerCode(concreteResponse?.Value).Should().Be("InternalServerError");
-        GetMessage(concreteResponse?.Value).Should().Be("There was an error when processing your request");
+        FilterTestsUtils.GetInnerCode(concreteResponse?.Value).Should().Be("InternalServerError");
+        FilterTestsUtils.GetMessage(concreteResponse?.Value).Should().Be("There was an error when processing your request");
     }
 
     [TestMethod]
@@ -60,17 +60,7 @@ public class ExceptionFilterTests
         var concreteResponse = response as ObjectResult;
         concreteResponse.Should().NotBeNull();
         concreteResponse.StatusCode.Should().Be((int)HttpStatusCode.BadRequest);
-        GetInnerCode(concreteResponse?.Value).Should().Be("BadRequest");
-        GetMessage(concreteResponse?.Value).Should().Be("The request is invalid");
-    }
-
-    private string GetInnerCode(object? value)
-    {
-        return value?.GetType().GetProperty("InnerCode")?.GetValue(value)?.ToString() ?? string.Empty;
-    }
-
-    private string GetMessage(object? value)
-    {
-        return value?.GetType().GetProperty("Message")?.GetValue(value)?.ToString() ?? string.Empty;
+        FilterTestsUtils.GetInnerCode(concreteResponse?.Value).Should().Be("BadRequest");
+        FilterTestsUtils.GetMessage(concreteResponse?.Value).Should().Be("The request is invalid");
     }
 }

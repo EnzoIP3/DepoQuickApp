@@ -1,6 +1,7 @@
 using BusinessLogic;
 using FluentAssertions;
 using HomeConnect.WebApi.Controllers.User;
+using HomeConnect.WebApi.Test.Filters;
 using Microsoft.AspNetCore.Mvc;
 using Moq;
 

@@ -15,6 +15,12 @@ public class UserController(IAdminService adminService) : ControllerBase
         [FromQuery] string? fullNameFilter = null, [FromQuery] string? roleFilter = null)
     {
         var users = adminService.GetUsers(currentPage, pageSize, fullNameFilter, roleFilter);
+        var response = ResponseFromUsers(users);
+        return Ok(response);
+    }
+
+    private static object ResponseFromUsers(PagedData<ListUserModel> users)
+    {
         var response = new
         {
             users.Data,
@@ -23,6 +29,6 @@ public class UserController(IAdminService adminService) : ControllerBase
                 Page = users.Page, PageSize = users.PageSize, TotalPages = users.TotalPages
             }
         };
-        return Ok(response);
+        return response;
     }
 }

@@ -55,8 +55,8 @@ public class AuthenticationFilterTests
         var concreteResponse = response as ObjectResult;
         concreteResponse.Should().NotBeNull();
         concreteResponse.StatusCode.Should().Be((int)HttpStatusCode.Unauthorized);
-        GetInnerCode(concreteResponse?.Value).Should().Be("Unauthenticated");
-        GetMessage(concreteResponse?.Value).Should().Be("You are not authenticated");
+        FilterTestsUtils.GetInnerCode(concreteResponse?.Value).Should().Be("Unauthenticated");
+        FilterTestsUtils.GetMessage(concreteResponse?.Value).Should().Be("You are not authenticated");
     }
 
     [TestMethod]
@@ -76,8 +76,8 @@ public class AuthenticationFilterTests
         var concreteResponse = response as ObjectResult;
         concreteResponse.Should().NotBeNull();
         concreteResponse.StatusCode.Should().Be((int)HttpStatusCode.Unauthorized);
-        GetInnerCode(concreteResponse.Value).Should().Be("Unauthenticated");
-        GetMessage(concreteResponse.Value).Should().Be("You are not authenticated");
+        FilterTestsUtils.GetInnerCode(concreteResponse.Value).Should().Be("Unauthenticated");
+        FilterTestsUtils.GetMessage(concreteResponse.Value).Should().Be("You are not authenticated");
     }
 
     [TestMethod]
@@ -97,8 +97,8 @@ public class AuthenticationFilterTests
         var concreteResponse = response as ObjectResult;
         concreteResponse.Should().NotBeNull();
         concreteResponse.StatusCode.Should().Be((int)HttpStatusCode.Unauthorized);
-        GetInnerCode(concreteResponse.Value).Should().Be("InvalidAuthorization");
-        GetMessage(concreteResponse.Value).Should().Be("The provided authorization header format is invalid");
+        FilterTestsUtils.GetInnerCode(concreteResponse.Value).Should().Be("InvalidAuthorization");
+        FilterTestsUtils.GetMessage(concreteResponse.Value).Should().Be("The provided authorization header format is invalid");
     }
 
     [TestMethod]
@@ -121,8 +121,8 @@ public class AuthenticationFilterTests
         var concreteResponse = response as ObjectResult;
         concreteResponse.Should().NotBeNull();
         concreteResponse.StatusCode.Should().Be((int)HttpStatusCode.Unauthorized);
-        GetInnerCode(concreteResponse.Value).Should().Be("ExpiredAuthorization");
-        GetMessage(concreteResponse.Value).Should().Be("The provided authorization header is expired");
+        FilterTestsUtils.GetInnerCode(concreteResponse.Value).Should().Be("ExpiredAuthorization");
+        FilterTestsUtils.GetMessage(concreteResponse.Value).Should().Be("The provided authorization header is expired");
     }
 
     [TestMethod]
@@ -146,8 +146,8 @@ public class AuthenticationFilterTests
         var concreteResponse = response as ObjectResult;
         concreteResponse.Should().NotBeNull();
         concreteResponse.StatusCode.Should().Be((int)HttpStatusCode.Unauthorized);
-        GetInnerCode(concreteResponse.Value).Should().Be("Unauthenticated");
-        GetMessage(concreteResponse.Value).Should().Be("You are not authenticated");
+        FilterTestsUtils.GetInnerCode(concreteResponse.Value).Should().Be("Unauthenticated");
+        FilterTestsUtils.GetMessage(concreteResponse.Value).Should().Be("You are not authenticated");
     }
     #endregion
 
@@ -189,14 +189,4 @@ public class AuthenticationFilterTests
         userLogged.Should().Be(user);
     }
     #endregion
-
-    private string GetInnerCode(object? value)
-    {
-        return value?.GetType().GetProperty("InnerCode")?.GetValue(value)?.ToString() ?? string.Empty;
-    }
-
-    private string GetMessage(object? value)
-    {
-        return value?.GetType().GetProperty("Message")?.GetValue(value)?.ToString() ?? string.Empty;
-    }
 }

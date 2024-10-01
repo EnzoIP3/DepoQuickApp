@@ -53,8 +53,8 @@ public class AuthorizationFilterTests
         var concreteResponse = response as ObjectResult;
         concreteResponse.Should().NotBeNull();
         concreteResponse.StatusCode.Should().Be((int)HttpStatusCode.Unauthorized);
-        GetInnerCode(concreteResponse?.Value).Should().Be("Unauthorized");
-        GetMessage(concreteResponse?.Value).Should().Be("You are not authenticated");
+        FilterTestsUtils.GetInnerCode(concreteResponse?.Value).Should().Be("Unauthorized");
+        FilterTestsUtils.GetMessage(concreteResponse?.Value).Should().Be("You are not authenticated");
     }
 
     [TestMethod]
@@ -85,17 +85,7 @@ public class AuthorizationFilterTests
         var concreteResponse = response as ObjectResult;
         concreteResponse.Should().NotBeNull();
         concreteResponse.StatusCode.Should().Be((int)HttpStatusCode.Forbidden);
-        GetInnerCode(concreteResponse?.Value).Should().Be("Forbidden");
-        GetMessage(concreteResponse?.Value).Should().Be("Missing permission: someaction-somecontroller");
-    }
-
-    private string GetInnerCode(object? value)
-    {
-        return value?.GetType().GetProperty("InnerCode")?.GetValue(value)?.ToString() ?? string.Empty;
-    }
-
-    private string GetMessage(object? value)
-    {
-        return value?.GetType().GetProperty("Message")?.GetValue(value)?.ToString() ?? string.Empty;
+        FilterTestsUtils.GetInnerCode(concreteResponse?.Value).Should().Be("Forbidden");
+        FilterTestsUtils.GetMessage(concreteResponse?.Value).Should().Be("Missing permission: someaction-somecontroller");
     }
 }

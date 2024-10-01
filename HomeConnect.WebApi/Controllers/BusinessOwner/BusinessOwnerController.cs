@@ -11,6 +11,13 @@ public class BusinessOwnerController(IAdminService adminService) : ControllerBas
 {
     public CreateBusinessOwnerResponse CreateBusinessOwner(CreateBusinessOwnerRequest request, string s)
     {
+        UserModel userModel = UserModelFromRequest(request);
+        var businessOwnerId = adminService.CreateBusinessOwner(userModel);
+        return new CreateBusinessOwnerResponse() { Id = businessOwnerId.ToString() };
+    }
+
+    private static UserModel UserModelFromRequest(CreateBusinessOwnerRequest request)
+    {
         var userModel = new UserModel
         {
             Name = request.Name,
@@ -18,7 +25,6 @@ public class BusinessOwnerController(IAdminService adminService) : ControllerBas
             Email = request.Email,
             Password = request.Password
         };
-        var businessOwnerId = adminService.CreateBusinessOwner(userModel);
-        return new CreateBusinessOwnerResponse() { Id = businessOwnerId.ToString() };
+        return userModel;
     }
 }

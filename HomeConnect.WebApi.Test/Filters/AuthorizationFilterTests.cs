@@ -30,10 +30,8 @@ public class AuthorizationFilterTests
             new ActionContext(
                 _httpContextMock.Object,
                 new RouteData(),
-                new ActionDescriptor()
-            ),
-            new List<IFilterMetadata>()
-        );
+                new ActionDescriptor()),
+            new List<IFilterMetadata>());
     }
 
     [TestMethod]
@@ -65,7 +63,7 @@ public class AuthorizationFilterTests
             {
                 Items.UserLogged,
                 new User("Name", "Surname", "email@email.com", "Password@100",
-                    new Role("Admin", new List<SystemPermission>()))
+                    new Role("Admin", []))
             }
         };
         _httpContextMock.Setup(h => h.Items).Returns(items);

@@ -14,7 +14,7 @@ namespace HomeConnect.WebApi.Test.Filters;
 public class ExceptionFilterTests
 {
     private ExceptionContext _context = null!;
-    private ExceptionFilter _attribute;
+    private readonly ExceptionFilter _attribute;
 
     public ExceptionFilterTests()
     {

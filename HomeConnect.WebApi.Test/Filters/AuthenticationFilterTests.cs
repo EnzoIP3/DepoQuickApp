@@ -34,10 +34,8 @@ public class AuthenticationFilterTests
             new ActionContext(
                 _httpContextMock.Object,
                 new RouteData(),
-                new ActionDescriptor()
-            ),
-            new List<IFilterMetadata>()
-        );
+                new ActionDescriptor()),
+            new List<IFilterMetadata>());
     }
 
     #region Error

@@ -1,7 +1,6 @@
 using BusinessLogic;
 using FluentAssertions;
 using HomeConnect.WebApi.Controllers.User;
-using HomeConnect.WebApi.Test.Filters;
 using Microsoft.AspNetCore.Mvc;
 using Moq;
 
@@ -11,8 +10,8 @@ public class UserControllerTests
 {
     private Mock<IAdminService> _adminService = null!;
     private UserController _controller = null!;
-    private int _defaultPageSize = 10;
-    private int _defaultPage = 1;
+    private readonly int _defaultPageSize = 10;
+    private readonly int _defaultPage = 1;
 
     [TestInitialize]
     public void Initialize()
@@ -26,9 +25,9 @@ public class UserControllerTests
     {
         // Arrange
         var user = new User("Name", "Surname", "email@email.com", "Password@100",
-            new Role("Admin", new List<SystemPermission>()));
+            new Role("Admin", []));
         var otherUser = new User("Name1", "Surname1", "email1@email.com", "Password@100",
-            new Role("BusinessOwner", new List<SystemPermission>()));
+            new Role("BusinessOwner", []));
         var expectedUsers = new List<ListUserModel>
         {
             new ListUserModel()
@@ -76,7 +75,7 @@ public class UserControllerTests
     {
         // Arrange
         var user = new User("Name", "Surname", "email@email.com", "Password@100",
-            new Role("Admin", new List<SystemPermission>()));
+            new Role("Admin", []));
         var expectedUsers = new List<ListUserModel>
         {
             new ListUserModel()
@@ -116,7 +115,7 @@ public class UserControllerTests
     {
         // Arrange
         var user = new User("Name", "Surname", "email@email.com", "Password@100",
-            new Role("Admin", new List<SystemPermission>()));
+            new Role("Admin", []));
         var expectedUsers = new List<ListUserModel>
         {
             new ListUserModel()
@@ -156,7 +155,7 @@ public class UserControllerTests
     {
         // Arrange
         var user = new User("Name", "Surname", "email@email.com", "Password@100",
-            new Role("Admin", new List<SystemPermission>()));
+            new Role("Admin", []));
         var expectedUsers = new List<ListUserModel>
         {
             new ListUserModel()

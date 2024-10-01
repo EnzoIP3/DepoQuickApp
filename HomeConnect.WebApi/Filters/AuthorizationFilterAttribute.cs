@@ -34,14 +34,14 @@ public class AuthorizationFilterAttribute(string? permission = null) : Attribute
 
         if (hasNotPermission)
         {
-               context.Result = new ObjectResult(new
-                {
-                    InnerCode = "Forbidden",
-                    Message = $"Missing permission: {permission}"
-                })
-                {
-                    StatusCode = (int)HttpStatusCode.Forbidden
-                };
+            context.Result = new ObjectResult(new
+            {
+                InnerCode = "Forbidden",
+                Message = $"Missing permission: {permission}"
+            })
+            {
+                StatusCode = (int)HttpStatusCode.Forbidden
+            };
         }
     }
 

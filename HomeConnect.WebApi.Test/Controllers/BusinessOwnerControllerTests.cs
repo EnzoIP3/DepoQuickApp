@@ -24,7 +24,10 @@ public class BusinessOwnerControllerTests
         // Arrange
         var request = new CreateBusinessOwnerRequest
         {
-            Name = "John", Surname = "Doe", Email = "email@email.com", Password = "password"
+            Name = "John",
+            Surname = "Doe",
+            Email = "email@email.com",
+            Password = "password"
         };
         var userModel = new UserModel
         {

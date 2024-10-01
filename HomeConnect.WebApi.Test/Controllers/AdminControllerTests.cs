@@ -25,7 +25,10 @@ public class AdminControllerTests
         // Arrange
         var request = new CreateAdminRequest
         {
-            Name = "John", Surname = "Doe", Email = "email@email.com", Password = "password"
+            Name = "John",
+            Surname = "Doe",
+            Email = "email@email.com",
+            Password = "password"
         };
         var userModel = new UserModel
         {

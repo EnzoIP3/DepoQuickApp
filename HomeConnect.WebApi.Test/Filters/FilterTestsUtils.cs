@@ -1,6 +1,6 @@
 namespace HomeConnect.WebApi.Test.Filters;
 
-internal class FilterTestsUtils
+internal sealed class FilterTestsUtils
 {
     internal static string GetInnerCode(object? value)
     {

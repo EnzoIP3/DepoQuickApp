@@ -1,5 +1,4 @@
 using BusinessLogic;
-using Microsoft.Extensions.Primitives;
 
 namespace HomeConnect.WebApi.Filters;
 

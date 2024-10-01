@@ -1,7 +1,6 @@
 using BusinessLogic;
 using FluentAssertions;
 using HomeConnect.WebApi.Controllers;
-using HomeConnect.WebApi.Controllers.User;
 using Microsoft.AspNetCore.Mvc;
 using Moq;
 
@@ -24,7 +23,7 @@ public class BusinessControllerTests
     public void GetBusinesses_WhenCalledWithNoFiltersOrPagination_ReturnsExpectedResponse()
     {
         // Arrange
-        var role = new Role("BusinessOwner", new List<SystemPermission>());
+        var role = new Role("BusinessOwner", []);
         var user = new User("Name", "Surname", "email@email.com", "Password@100", role);
         var otherUser = new User("Name1", "Surname1", "email1@email.com", "Password@100", role);
         var businesses = new List<Business>
@@ -75,7 +74,7 @@ public class BusinessControllerTests
     public void GetBusinesses_WhenCalledWithNameFilter_ReturnsFilteredExpectedResponse()
     {
         // Arrange
-        var role = new Role("BusinessOwner", new List<SystemPermission>());
+        var role = new Role("BusinessOwner", []);
         var otherUser = new User("Name1", "Surname1", "email1@email.com", "Password@100", role);
         var businesses = new List<Business>
         {
@@ -118,7 +117,7 @@ public class BusinessControllerTests
     public void GetBusinesses_WhenCalledWithFullNameFilter_ReturnsFilteredExpectedResponse()
     {
         // Arrange
-        var role = new Role("BusinessOwner", new List<SystemPermission>());
+        var role = new Role("BusinessOwner", []);
         var otherUser = new User("Name1", "Surname1", "email1@email.com", "Password@100", role);
         var businesses = new List<Business>
         {
@@ -161,7 +160,7 @@ public class BusinessControllerTests
     public void GetBusinesses_WhenCalledWithPagination_ReturnsPagedExpectedResponse()
     {
         // Arrange
-        var role = new Role("BusinessOwner", new List<SystemPermission>());
+        var role = new Role("BusinessOwner", []);
         var otherUser = new User("Name1", "Surname1", "email1@email.com", "Password@100", role);
         var businesses = new List<Business>
         {

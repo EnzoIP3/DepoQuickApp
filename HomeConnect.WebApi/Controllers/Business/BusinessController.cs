@@ -25,7 +25,9 @@ public class BusinessController(IAdminService adminService) : ControllerBase
             businesses.Data,
             Pagination = new Pagination
             {
-                Page = businesses.Page, PageSize = businesses.PageSize, TotalPages = businesses.TotalPages
+                Page = businesses.Page,
+                PageSize = businesses.PageSize,
+                TotalPages = businesses.TotalPages
             }
         };
         return response;

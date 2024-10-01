@@ -5,11 +5,7 @@ namespace BusinessLogic;
 public class HomePermission
 {
     [Key]
-    private string Value { get; set; } = null!;
-
-    public HomePermission()
-    {
-    }
+    public string Value { get; init; }
 
     public HomePermission(string value)
     {

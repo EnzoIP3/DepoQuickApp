@@ -1,7 +1,11 @@
+using System.ComponentModel.DataAnnotations;
+
 namespace BusinessLogic;
 
 public class Member
 {
+    [Key]
+    public Guid Id { get; set; } = Guid.NewGuid();
     public Member()
     {
     }
@@ -17,9 +21,8 @@ public class Member
         HomePermissions = homePermissions;
     }
 
-    public Guid Id { get; } = Guid.NewGuid();
     public User User { get; init; } = null!;
-    public List<HomePermission> HomePermissions { get; } = [];
+    public List<HomePermission> HomePermissions { get; set; } = [];
 
     public void AddPermission(HomePermission permission)
     {

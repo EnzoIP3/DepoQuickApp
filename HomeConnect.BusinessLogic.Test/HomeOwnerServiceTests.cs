@@ -35,13 +35,13 @@ public class HomeOwnerServiceTests
         // Arrange
         var model = new CreateHomeModel
         {
-            HomeOwnerEmail = _user.Email,
+            HomeOwnerId = _user.Id.ToString(),
             Address = "Main St 123",
             Latitude = 1.0,
             Longitude = 2.0,
             MaxMembers = 5
         };
-        _userRepositoryMock.Setup(x => x.Get(model.HomeOwnerEmail)).Returns(_user);
+        _userRepositoryMock.Setup(x => x.Get(Guid.Parse(model.HomeOwnerId))).Returns(_user);
         _homeRepositoryMock.Setup(x => x.Add(It.IsAny<Home>())).Verifiable();
 
         // Act
@@ -57,13 +57,13 @@ public class HomeOwnerServiceTests
 
     [TestMethod]
     [DataRow("", "Main St 123")]
-    [DataRow("test@example.com", "")]
-    public void CreateHome_WhenArgumentsHaveEmptyFields_ThrowsException(string homeOwnerEmail, string address)
+    [DataRow("a99feb27-7dac-41ec-8fd2-942533868689", "")]
+    public void CreateHome_WhenArgumentsHaveEmptyFields_ThrowsException(string homeOwnerId, string address)
     {
         // Arrange
         var model = new CreateHomeModel
         {
-            HomeOwnerEmail = homeOwnerEmail,
+            HomeOwnerId = homeOwnerId,
             Address = address,
             Latitude = 1.0,
             Longitude = 2.0,
@@ -94,11 +94,11 @@ public class HomeOwnerServiceTests
         var model = new AddMemberModel
         {
             HomeId = home.Id.ToString(),
-            HomeOwnerEmail = "jane@doe.com",
+            HomeOwnerId = invitedUser.Id.ToString(),
             CanAddDevices = true,
             CanListDevices = true
         };
-        _userRepositoryMock.Setup(x => x.Get(model.HomeOwnerEmail)).Returns(invitedUser);
+        _userRepositoryMock.Setup(x => x.Get(Guid.Parse(model.HomeOwnerId))).Returns(invitedUser);
         _homeRepositoryMock.Setup(x => x.Get(Guid.Parse(model.HomeId))).Returns(home);
 
         // Act
@@ -113,15 +113,15 @@ public class HomeOwnerServiceTests
     #region Error
 
     [TestMethod]
-    [DataRow("", "jane@doe.com")]
+    [DataRow("", "a99feb27-7dac-41ec-8fd2-942533868689")]
     [DataRow("12345678-1234-1234-1234-123456789012", "")]
-    public void AddMemberToHome_WhenArgumentsHaveEmptyFields_ThrowsException(string homeId, string homeOwnerEmail)
+    public void AddMemberToHome_WhenArgumentsHaveEmptyFields_ThrowsException(string homeId, string homeOwnerId)
     {
         // Arrange
         var model = new AddMemberModel
         {
             HomeId = homeId,
-            HomeOwnerEmail = homeOwnerEmail,
+            HomeOwnerId = homeOwnerId,
             CanAddDevices = true,
             CanListDevices = true
         };
@@ -140,7 +140,7 @@ public class HomeOwnerServiceTests
         var model = new AddMemberModel
         {
             HomeId = "invalid-guid",
-            HomeOwnerEmail = "jane@doe.com",
+            HomeOwnerId = "a99feb27-7dac-41ec-8fd2-942533868689",
             CanAddDevices = true,
             CanListDevices = true
         };

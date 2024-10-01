@@ -19,14 +19,14 @@ public class HomeOwnerService
     public void CreateHome(CreateHomeModel model)
     {
         EnsureCreateHomeModelIsValid(model);
-        var user = _userRepository.Get(model.HomeOwnerEmail);
+        var user = _userRepository.Get(Guid.Parse(model.HomeOwnerId));
         var home = new Home(user, model.Address, model.Latitude, model.Longitude, model.MaxMembers);
         _homeRepository.Add(home);
     }
 
     private static void EnsureCreateHomeModelIsValid(CreateHomeModel model)
     {
-        if (string.IsNullOrWhiteSpace(model.HomeOwnerEmail) || string.IsNullOrWhiteSpace(model.Address))
+        if (string.IsNullOrWhiteSpace(model.HomeOwnerId) || string.IsNullOrWhiteSpace(model.Address))
         {
             throw new ArgumentException("All arguments are required");
         }
@@ -36,7 +36,7 @@ public class HomeOwnerService
     {
         EnsureAddMemberModelIsValid(model);
         EnsureGuidIsValid(model.HomeId);
-        var user = _userRepository.Get(model.HomeOwnerEmail);
+        var user = _userRepository.Get(Guid.Parse(model.HomeOwnerId));
         var home = _homeRepository.Get(Guid.Parse(model.HomeId));
         var permissions = new List<HomePermission>();
 
@@ -64,7 +64,7 @@ public class HomeOwnerService
 
     private static void EnsureAddMemberModelIsValid(AddMemberModel model)
     {
-        if (string.IsNullOrWhiteSpace(model.HomeId) || string.IsNullOrWhiteSpace(model.HomeOwnerEmail))
+        if (string.IsNullOrWhiteSpace(model.HomeId) || string.IsNullOrWhiteSpace(model.HomeOwnerId))
         {
             throw new ArgumentException("All arguments are required");
         }

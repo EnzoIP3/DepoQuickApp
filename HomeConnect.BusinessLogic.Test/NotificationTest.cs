@@ -6,7 +6,7 @@ namespace HomeConnect.BusinessLogic.Test;
 [TestClass]
 public class NotificationTest
 {
-[TestMethod]
+    [TestMethod]
     public void Constructor_WhenArgumentsAreValid_CreatesInstance()
     {
         // Arrange

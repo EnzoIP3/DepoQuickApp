@@ -191,4 +191,17 @@ public class HomeOwnerServiceTests
         // Assert
         result.Should().ContainSingle(x => x.User == member.User);
     }
+
+    [TestMethod]
+    public void GetHomeMembers_WhenHomeIdIsNotAGuid_ThrowsException()
+    {
+        // Arrange
+        var homeId = "invalid-guid";
+
+        // Act
+        var act = () => _homeOwnerService.GetHomeMembers(homeId);
+
+        // Assert
+        act.Should().Throw<ArgumentException>();
+    }
 }

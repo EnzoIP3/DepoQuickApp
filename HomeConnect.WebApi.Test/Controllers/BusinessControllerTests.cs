@@ -30,7 +30,7 @@ public class BusinessControllerTests
         var businesses = new List<Business>
         {
             new Business("123456789123", "Business 1", user),
-            new Business("123456789124", "Business 2", user),
+            new Business("123456789124", "Business 2", otherUser),
         };
         var expectedBusinesses = new List<ListBusinessModel>
         {
@@ -44,8 +44,8 @@ public class BusinessControllerTests
             new ListBusinessModel()
             {
                 Name = businesses[1].Name,
-                OwnerFullName = $"{user.Name} {user.Surname}",
-                OwnerEmail = user.Email,
+                OwnerFullName = $"{otherUser.Name} {otherUser.Surname}",
+                OwnerEmail = otherUser.Email,
                 Rut = businesses[1].Rut,
             }
         };

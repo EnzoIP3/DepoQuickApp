@@ -6,6 +6,10 @@ namespace HomeConnect.BusinessLogic.Test;
 [TestClass]
 public class HomeTest
 {
+    #region Constructor
+
+    #region Success
+
     [TestMethod]
     public void Constructor_WhenArgumentsAreValid_CreatesInstance()
     {
@@ -22,6 +26,10 @@ public class HomeTest
         // Assert
         home.Should().NotBeNull();
     }
+
+    #endregion
+
+    #region Error
 
     [TestMethod]
     [DataRow("Main St")]
@@ -42,6 +50,14 @@ public class HomeTest
         act.Should().Throw<ArgumentException>();
     }
 
+    #endregion
+
+    #endregion
+
+    #region AddMember
+
+    #region Success
+
     [TestMethod]
     public void AddMember_WhenMemberIsNotOwner_AddsMember()
     {
@@ -56,6 +72,10 @@ public class HomeTest
         // Assert
         home.Members.Should().ContainSingle(m => m == member);
     }
+
+    #endregion
+
+    #region Error
 
     [TestMethod]
     public void AddMember_WhenMemberIsOwner_ThrowsArgumentException()
@@ -104,4 +124,8 @@ public class HomeTest
         // Assert
         act.Should().Throw<InvalidOperationException>();
     }
+
+    #endregion
+
+    #endregion
 }

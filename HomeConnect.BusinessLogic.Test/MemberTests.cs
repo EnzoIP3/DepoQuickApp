@@ -6,6 +6,10 @@ namespace HomeConnect.BusinessLogic.Test;
 [TestClass]
 public class MemberTests
 {
+    #region Constructor
+
+    #region Success
+
     [TestMethod]
     public void Constructor_WhenArgumentsAreValid_CreatesInstance()
     {
@@ -33,6 +37,14 @@ public class MemberTests
         act.Should().NotThrow();
     }
 
+    #endregion
+
+    #endregion
+
+    #region AddPermission
+
+    #region Success
+
     [TestMethod]
     public void AddPermission_WhenPermissionIsValid_AddsPermission()
     {
@@ -47,6 +59,10 @@ public class MemberTests
         // Assert
         member.HomePermissions.Should().Contain(permission);
     }
+
+    #endregion
+
+    #region Error
 
     [TestMethod]
     public void AddPermission_WhenPermissionIsAlreadyAdded_ThrowsInvalidOperationException()
@@ -64,6 +80,14 @@ public class MemberTests
         act.Should().Throw<InvalidOperationException>();
     }
 
+    #endregion
+
+    #endregion
+
+    #region DeletePermission
+
+    #region Success
+
     [TestMethod]
     public void DeletePermission_WhenPermissionExists_DeletesPermission()
     {
@@ -80,6 +104,10 @@ public class MemberTests
         member.HomePermissions.Should().NotContain(permission);
     }
 
+    #endregion
+
+    #region Error
+
     [TestMethod]
     public void DeletePermission_WhenPermissionDoesNotExist_ThrowsInvalidOperationException()
     {
@@ -94,6 +122,14 @@ public class MemberTests
         // Assert
         act.Should().Throw<InvalidOperationException>();
     }
+
+    #endregion
+
+    #endregion
+
+    #region HasPermission
+
+    #region Success
 
     [TestMethod]
     public void HasPermission_WhenPermissionExists_ReturnsTrue()
@@ -110,4 +146,8 @@ public class MemberTests
         // Assert
         result.Should().BeTrue();
     }
+
+    #endregion
+
+    #endregion
 }

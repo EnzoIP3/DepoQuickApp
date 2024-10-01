@@ -25,6 +25,10 @@ public class HomeOwnerServiceTests
             _deviceRepositoryMock.Object, _ownedDeviceRepositoryMock.Object);
     }
 
+    #region CreateHome
+
+    #region Success
+
     [TestMethod]
     public void CreateHome_WhenArgumentsAreValid_AddsHome()
     {
@@ -46,6 +50,10 @@ public class HomeOwnerServiceTests
         // Assert
         _homeRepositoryMock.Verify(x => x.Add(It.IsAny<Home>()), Times.Once);
     }
+
+    #endregion
+
+    #region Error
 
     [TestMethod]
     [DataRow("", "Main St 123")]
@@ -69,6 +77,14 @@ public class HomeOwnerServiceTests
         act.Should().Throw<ArgumentException>();
     }
 
+    #endregion
+
+    #endregion
+
+    #region AddMemberToHome
+
+    #region Success
+
     [TestMethod]
     public void AddMemberToHome_WhenArgumentsAreValid_AddsMember()
     {
@@ -91,6 +107,10 @@ public class HomeOwnerServiceTests
         // Assert
         home.Members.Should().ContainSingle(x => x.User == invitedUser);
     }
+
+    #endregion
+
+    #region Error
 
     [TestMethod]
     [DataRow("", "jane@doe.com")]
@@ -126,6 +146,14 @@ public class HomeOwnerServiceTests
         act.Should().Throw<ArgumentException>();
     }
 
+    #endregion
+
+    #endregion
+
+    #region AddDevicesToHome
+
+    #region Success
+
     [TestMethod]
     public void AddDevicesToHome_WhenArgumentsAreValid_AddsDevice()
     {
@@ -148,6 +176,10 @@ public class HomeOwnerServiceTests
         // Assert
         _ownedDeviceRepositoryMock.Verify(x => x.Add(It.IsAny<OwnedDevice>()), Times.Exactly(2));
     }
+
+    #endregion
+
+    #region Error
 
     [TestMethod]
     public void AddDevicesToHome_WhenHomeIdIsNotAGuid_ThrowsException()
@@ -176,6 +208,14 @@ public class HomeOwnerServiceTests
         act.Should().Throw<ArgumentException>();
     }
 
+    #endregion
+
+    #endregion
+
+    #region GetHomeMembers
+
+    #region Success
+
     [TestMethod]
     public void GetHomeMembers_WhenArgumentsAreValid_ReturnsMembers()
     {
@@ -192,6 +232,10 @@ public class HomeOwnerServiceTests
         result.Should().ContainSingle(x => x.User == member.User);
     }
 
+    #endregion
+
+    #region Error
+
     [TestMethod]
     public void GetHomeMembers_WhenHomeIdIsNotAGuid_ThrowsException()
     {
@@ -204,6 +248,14 @@ public class HomeOwnerServiceTests
         // Assert
         act.Should().Throw<ArgumentException>();
     }
+
+    #endregion
+
+    #endregion
+
+    #region GetHomeDevices
+
+    #region Success
 
     [TestMethod]
     public void GetHomeDevices_WhenArgumentsAreValid_ReturnsDevices()
@@ -224,6 +276,10 @@ public class HomeOwnerServiceTests
         result.Should().BeEquivalentTo(ownedDevices);
     }
 
+    #endregion
+
+    #region Error
+
     [TestMethod]
     public void GetHomeDevices_WhenHomeIdIsNotAGuid_ThrowsException()
     {
@@ -236,4 +292,8 @@ public class HomeOwnerServiceTests
         // Assert
         act.Should().Throw<ArgumentException>();
     }
+
+    #endregion
+
+    #endregion
 }

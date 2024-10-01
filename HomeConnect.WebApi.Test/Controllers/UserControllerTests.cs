@@ -11,6 +11,8 @@ public class UserControllerTests
 {
     private Mock<IAdminService> _adminService = null!;
     private UserController _controller = null!;
+    private int _defaultPageSize = 10;
+    private int _defaultPage = 1;
 
     [TestInitialize]
     public void Initialize()
@@ -20,7 +22,7 @@ public class UserControllerTests
     }
 
     [TestMethod]
-    public void GetUsers_WhenCalledWithValidRequest_ReturnsExpectedResponse()
+    public void GetUsers_WhenCalledWithValidRequestAndNoFiltersOrPagination_ReturnsExpectedResponse()
     {
         // Arrange
         var user = new User("Name", "Surname", "email@email.com", "Password@100",
@@ -46,7 +48,7 @@ public class UserControllerTests
                 CreatedAt = otherUser.CreatedAt
             }
         };
-        var expectedPagination = new Pagination { Page = 1, PageSize = 10, TotalPages = 1 };
+        var expectedPagination = new Pagination { Page = _defaultPage, PageSize = _defaultPageSize, TotalPages = 1 };
         var expectedResponse = new { Data = expectedUsers, Pagination = expectedPagination };
         var pagedList = new PagedData<ListUserModel>
         {

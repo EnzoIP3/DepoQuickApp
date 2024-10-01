@@ -113,6 +113,7 @@ public class HomeOwnerService
 
     public IEnumerable<OwnedDevice> GetHomeDevices(string homeId)
     {
+        EnsureGuidIsValid(homeId);
         var home = GetHome(homeId);
         return _ownedDeviceRepository.GetOwnedDevicesByHome(home);
     }

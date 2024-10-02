@@ -191,4 +191,21 @@ public class UserRepositoryTest
     }
     #endregion
     #endregion
+
+    #region Exists
+    #region Success
+
+    [TestMethod]
+    public void Exists_WhenUserExists_ShouldReturnTrue()
+    {
+        // Act
+        var exists = _userRepository.Exists(_validUser.Id);
+
+        // Assert
+        exists.Should().BeTrue();
+    }
+
+    #endregion
+
+    #endregion
 }

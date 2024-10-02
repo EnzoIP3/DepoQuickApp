@@ -33,7 +33,7 @@ public class UserRepository : IUserRepository
 
     public bool Exists(Guid id)
     {
-        throw new NotImplementedException();
+        return _context.Users.Any(u => u.Id == id);
     }
 
     public void Delete(Guid id)

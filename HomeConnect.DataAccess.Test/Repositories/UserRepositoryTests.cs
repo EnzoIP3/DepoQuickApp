@@ -205,6 +205,19 @@ public class UserRepositoryTest
         exists.Should().BeTrue();
     }
 
+    [TestMethod]
+    public void Exists_WhenUserDoesNotExist_ShouldReturnFalse()
+    {
+        // Arrange
+        var nonExistentUserId = Guid.NewGuid();
+
+        // Act
+        var exists = _userRepository.Exists(nonExistentUserId);
+
+        // Assert
+        exists.Should().BeFalse();
+    }
+
     #endregion
 
     #endregion

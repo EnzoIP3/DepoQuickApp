@@ -1,8 +1,10 @@
+using BusinessLogic;
 using BusinessLogic.Users.Entities;
+using BusinessLogic.Users.Repositories;
 
 namespace HomeConnect.DataAccess.Users;
 
-public class UserRepository
+public class UserRepository : IUserRepository
 {
     private readonly Context _context;
 
@@ -16,6 +18,26 @@ public class UserRepository
         EnsureUserDoesNotExist(user);
         _context.Users.Add(user);
         _context.SaveChanges();
+    }
+
+    public User Get(Guid id)
+    {
+        throw new NotImplementedException();
+    }
+
+    public bool Exists(Guid id)
+    {
+        throw new NotImplementedException();
+    }
+
+    public void Delete(Guid id)
+    {
+        throw new NotImplementedException();
+    }
+
+    PagedData<User> IUserRepository.GetUsers(int currentPage, int pageSize, string? fullNameFilter, string? roleFilter)
+    {
+        throw new NotImplementedException();
     }
 
     private void EnsureUserDoesNotExist(User user)

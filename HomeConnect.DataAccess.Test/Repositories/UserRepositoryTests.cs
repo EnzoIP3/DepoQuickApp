@@ -163,4 +163,20 @@ public class UserRepositoryTest
     #endregion
 
     #endregion
+
+    #region Get
+    #region Success
+    [TestMethod]
+    public void Get_WhenUserExists_ReturnsUser()
+    {
+        // Act
+        var result = _userRepository.Get(_validUser.Id);
+
+        // Assert
+        result.Should().BeEquivalentTo(_validUser);
+    }
+    #endregion
+    #region Error
+    #endregion
+    #endregion
 }

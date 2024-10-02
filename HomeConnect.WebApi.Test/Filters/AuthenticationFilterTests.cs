@@ -1,5 +1,7 @@
 using System.Net;
-using BusinessLogic;
+using BusinessLogic.Roles.Entities;
+using BusinessLogic.Users.Entities;
+using BusinessLogic.Users.Models;
 using FluentAssertions;
 using HomeConnect.WebApi.Filters;
 using HomeConnect.WebApi.Session;
@@ -159,7 +161,7 @@ public class AuthenticationFilterTests
         {
             { "Authorization", $"Bearer {guid}" }
         }));
-        var validUserModel = new UserModel
+        var validUserModel = new CreateUserArgs
         {
             Name = "name",
             Surname = "surname",

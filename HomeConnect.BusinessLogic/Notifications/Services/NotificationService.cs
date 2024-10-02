@@ -1,0 +1,21 @@
+using BusinessLogic.Devices.Entities;
+using BusinessLogic.Notifications.Repositories;
+using BusinessLogic.Users.Entities;
+
+namespace BusinessLogic.Notifications.Services;
+
+public class NotificationService
+{
+    private INotificationRepository NotificationRepository { get; init; }
+
+    public NotificationService(INotificationRepository notificationRepository)
+    {
+        NotificationRepository = notificationRepository;
+    }
+
+    public void CreateNotification(OwnedDevice ownedDevice, string @event, User user)
+    {
+        var notification = new Entities.Notification(Guid.NewGuid(), DateTime.Now, false, @event, ownedDevice, user);
+        NotificationRepository.Add(notification);
+    }
+}

@@ -1,4 +1,4 @@
-using BusinessLogic;
+using BusinessLogic.Users.Entities;
 using HomeConnect.WebApi.Filters;
 namespace HomeConnect.WebApi;
 

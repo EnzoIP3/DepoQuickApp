@@ -1,9 +1,10 @@
 using BusinessLogic;
+using BusinessLogic.Admins.Models;
+using BusinessLogic.Admins.Services;
 using HomeConnect.WebApi.Filters;
-using HomeConnect.WebApi.Test.Controllers;
 using Microsoft.AspNetCore.Mvc;
 
-namespace HomeConnect.WebApi.Controllers;
+namespace HomeConnect.WebApi.Controllers.Business;
 
 [ApiController]
 [Route("businesses")]
@@ -13,12 +14,12 @@ public class BusinessController(IAdminService adminService) : ControllerBase
     public IActionResult GetBusinesses([FromQuery] int? currentPage = null, [FromQuery] int? pageSize = null,
         [FromQuery] string? nameFilter = null, [FromQuery] string? ownerFilter = null)
     {
-        var businesses = adminService.GetBusiness(currentPage, pageSize, nameFilter, ownerFilter);
+        var businesses = adminService.GetBusinesses(currentPage, pageSize, nameFilter, ownerFilter);
         var response = ResponseFromBusinesses(businesses);
         return Ok(response);
     }
 
-    private static object ResponseFromBusinesses(PagedData<ListBusinessModel> businesses)
+    private static object ResponseFromBusinesses(PagedData<GetBusinessesArgs> businesses)
     {
         var response = new
         {

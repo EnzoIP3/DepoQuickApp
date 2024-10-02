@@ -1,4 +1,8 @@
 using BusinessLogic;
+using BusinessLogic.Admins.Models;
+using BusinessLogic.Admins.Services;
+using BusinessLogic.Roles.Entities;
+using BusinessLogic.Users.Entities;
 using FluentAssertions;
 using HomeConnect.WebApi.Controllers.User;
 using Microsoft.AspNetCore.Mvc;
@@ -28,9 +32,9 @@ public class UserControllerTests
             new Role("Admin", []));
         var otherUser = new User("Name1", "Surname1", "email1@email.com", "Password@100",
             new Role("BusinessOwner", []));
-        var expectedUsers = new List<ListUserModel>
+        var expectedUsers = new List<GetUsersArgs>
         {
-            new ListUserModel()
+            new GetUsersArgs()
             {
                 Name = user.Name,
                 Surname = user.Surname,
@@ -38,7 +42,7 @@ public class UserControllerTests
                 Role = user.Role.Name,
                 CreatedAt = user.CreatedAt
             },
-            new ListUserModel()
+            new GetUsersArgs()
             {
                 Name = otherUser.Name,
                 Surname = otherUser.Surname,
@@ -49,7 +53,7 @@ public class UserControllerTests
         };
         var expectedPagination = new Pagination { Page = _defaultPage, PageSize = _defaultPageSize, TotalPages = 1 };
         var expectedResponse = new { Data = expectedUsers, Pagination = expectedPagination };
-        var pagedList = new PagedData<ListUserModel>
+        var pagedList = new PagedData<GetUsersArgs>
         {
             Data = expectedUsers,
             Page = expectedPagination.Page,
@@ -76,9 +80,9 @@ public class UserControllerTests
         // Arrange
         var user = new User("Name", "Surname", "email@email.com", "Password@100",
             new Role("Admin", []));
-        var expectedUsers = new List<ListUserModel>
+        var expectedUsers = new List<GetUsersArgs>
         {
-            new ListUserModel()
+            new GetUsersArgs()
             {
                 Name = user.Name,
                 Surname = user.Surname,
@@ -89,7 +93,7 @@ public class UserControllerTests
         };
         var expectedPagination = new Pagination { Page = _defaultPage, PageSize = _defaultPageSize, TotalPages = 1 };
         var expectedResponse = new { Data = expectedUsers, Pagination = expectedPagination };
-        var pagedList = new PagedData<ListUserModel>
+        var pagedList = new PagedData<GetUsersArgs>
         {
             Data = expectedUsers,
             Page = expectedPagination.Page,
@@ -116,9 +120,9 @@ public class UserControllerTests
         // Arrange
         var user = new User("Name", "Surname", "email@email.com", "Password@100",
             new Role("Admin", []));
-        var expectedUsers = new List<ListUserModel>
+        var expectedUsers = new List<GetUsersArgs>
         {
-            new ListUserModel()
+            new GetUsersArgs()
             {
                 Name = user.Name,
                 Surname = user.Surname,
@@ -129,7 +133,7 @@ public class UserControllerTests
         };
         var expectedPagination = new Pagination { Page = _defaultPage, PageSize = _defaultPageSize, TotalPages = 1 };
         var expectedResponse = new { Data = expectedUsers, Pagination = expectedPagination };
-        var pagedList = new PagedData<ListUserModel>
+        var pagedList = new PagedData<GetUsersArgs>
         {
             Data = expectedUsers,
             Page = expectedPagination.Page,
@@ -156,9 +160,9 @@ public class UserControllerTests
         // Arrange
         var user = new User("Name", "Surname", "email@email.com", "Password@100",
             new Role("Admin", []));
-        var expectedUsers = new List<ListUserModel>
+        var expectedUsers = new List<GetUsersArgs>
         {
-            new ListUserModel()
+            new GetUsersArgs()
             {
                 Name = user.Name,
                 Surname = user.Surname,
@@ -169,7 +173,7 @@ public class UserControllerTests
         };
         var expectedPagination = new Pagination { Page = 1, PageSize = 1, TotalPages = 1 };
         var expectedResponse = new { Data = expectedUsers, Pagination = expectedPagination };
-        var pagedList = new PagedData<ListUserModel>
+        var pagedList = new PagedData<GetUsersArgs>
         {
             Data = expectedUsers,
             Page = expectedPagination.Page,

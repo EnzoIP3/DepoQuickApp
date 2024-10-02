@@ -1,6 +1,8 @@
-using BusinessLogic;
+using BusinessLogic.Admins.Services;
+using BusinessLogic.Users.Models;
 using FluentAssertions;
 using HomeConnect.WebApi.Controllers.Admin;
+using HomeConnect.WebApi.Controllers.Admin.Models;
 using Microsoft.AspNetCore.Mvc;
 using Moq;
 
@@ -30,7 +32,7 @@ public class AdminControllerTests
             Email = "email@email.com",
             Password = "password"
         };
-        var userModel = new UserModel
+        var userModel = new CreateUserArgs
         {
             Name = request.Name,
             Surname = request.Surname,

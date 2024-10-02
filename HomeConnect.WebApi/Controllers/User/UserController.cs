@@ -1,6 +1,7 @@
 using BusinessLogic;
+using BusinessLogic.Admins.Models;
+using BusinessLogic.Admins.Services;
 using HomeConnect.WebApi.Filters;
-using HomeConnect.WebApi.Test.Controllers;
 using Microsoft.AspNetCore.Mvc;
 
 namespace HomeConnect.WebApi.Controllers.User;
@@ -19,7 +20,7 @@ public class UserController(IAdminService adminService) : ControllerBase
         return Ok(response);
     }
 
-    private static object ResponseFromUsers(PagedData<ListUserModel> users)
+    private static object ResponseFromUsers(PagedData<GetUsersArgs> users)
     {
         var response = new
         {

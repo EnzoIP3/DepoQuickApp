@@ -4,6 +4,7 @@ using BusinessLogic.HomeOwners.Entities;
 using BusinessLogic.HomeOwners.Models;
 using BusinessLogic.HomeOwners.Repositories;
 using BusinessLogic.Users.Repositories;
+using HomeConnect.WebApi.Test.Controllers;
 
 namespace BusinessLogic.HomeOwners.Services;
 

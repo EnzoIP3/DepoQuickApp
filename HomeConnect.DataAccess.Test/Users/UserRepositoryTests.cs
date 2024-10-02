@@ -1,9 +1,9 @@
-using BusinessLogic;
 using BusinessLogic.Roles.Entities;
 using BusinessLogic.Users.Entities;
 using FluentAssertions;
+using HomeConnect.DataAccess.Users;
 
-namespace HomeConnect.DataAccess.Test;
+namespace HomeConnect.DataAccess.Test.Users;
 
 [TestClass]
 public class UserRepositoryTest

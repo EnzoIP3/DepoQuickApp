@@ -1,10 +1,10 @@
-using BusinessLogic;
 using BusinessLogic.BusinessOwners.Entities;
 using BusinessLogic.Devices.Entities;
 using BusinessLogic.Users.Entities;
 using FluentAssertions;
+using HomeConnect.DataAccess.Devices;
 
-namespace HomeConnect.DataAccess.Test;
+namespace HomeConnect.DataAccess.Test.Devices;
 
 [TestClass]
 public class DeviceRepositoryTests

@@ -1,4 +1,3 @@
-using BusinessLogic;
 using BusinessLogic.BusinessOwners.Entities;
 using BusinessLogic.Devices.Entities;
 using BusinessLogic.HomeOwners.Entities;
@@ -6,8 +5,9 @@ using BusinessLogic.Notifications.Entities;
 using BusinessLogic.Roles.Entities;
 using BusinessLogic.Users.Entities;
 using FluentAssertions;
+using HomeConnect.DataAccess.Notifications;
 
-namespace HomeConnect.DataAccess.Test;
+namespace HomeConnect.DataAccess.Test.Notifications;
 
 [TestClass]
 public class NotificationRepositoryTest

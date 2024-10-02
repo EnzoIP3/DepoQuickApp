@@ -23,7 +23,22 @@ public class HomeController(IHomeOwnerService homeOwnerService) : ControllerBase
     [HttpPost("{homesId}/members")]
     public AddMemberResponse AddMember(string homesId, [FromBody] AddMemberRequest request, AuthorizationFilterContext context)
     {
-        throw new NotImplementedException();
+        var userLoggedIn = context.HttpContext.Items[Item.UserLogged];
+        var addMemberArgs = ArgsFromRequest(request, homesId, (BusinessLogic.Users.Entities.User)userLoggedIn!);
+        var addedMemberId = homeOwnerService.AddMemberToHome(addMemberArgs);
+        return new AddMemberResponse { HomeId = homesId, MemberId = addedMemberId.ToString() };
+    }
+
+    private AddMemberArgs ArgsFromRequest(AddMemberRequest request, string homesId, BusinessLogic.Users.Entities.User userLoggedIn)
+    {
+        var addMemberArgs = new AddMemberArgs
+        {
+            HomeId = homesId,
+            HomeOwnerId = userLoggedIn.Id.ToString(),
+            CanAddDevices = request.CanAddDevices,
+            CanListDevices = request.CanListDevices
+        };
+        return addMemberArgs;
     }
 
     private CreateHomeArgs HomeArgsFromRequest(CreateHomeRequest request, BusinessLogic.Users.Entities.User user)

@@ -5,6 +5,10 @@ using BusinessLogic.Users.Entities;
 using FluentAssertions;
 using HomeConnect.WebApi.Controllers.Home;
 using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Abstractions;
+using Microsoft.AspNetCore.Mvc.Filters;
+using Microsoft.AspNetCore.Routing;
 using Moq;
 
 namespace HomeConnect.WebApi.Test.Controllers;
@@ -15,22 +19,30 @@ public class HomeControllerTests
     private HomeController _controller = null!;
     private Mock<HttpContext> _httpContextMock = null!;
     private Mock<IHomeOwnerService> _homeOwnerService = null!;
+    private AuthorizationFilterContext _context = null!;
 
     [TestInitialize]
     public void Initialize()
     {
         _httpContextMock = new Mock<HttpContext>(MockBehavior.Strict);
         _homeOwnerService = new Mock<IHomeOwnerService>(MockBehavior.Strict);
-        _controller = new HomeController();
+        _controller = new HomeController(_homeOwnerService.Object);
+        _context = new AuthorizationFilterContext(
+            new ActionContext(
+                _httpContextMock.Object,
+                new RouteData(),
+                new ActionDescriptor()),
+            new List<IFilterMetadata>());
     }
 
+    #region CreateHome
     [TestMethod]
     public void CreateHome_WhenCalledWithValidRequest_ReturnsCreatedResponse()
     {
         // Arrange
         var request = new CreateHomeRequest
         {
-            Address = "123 Main St",
+            Address = "Road 123",
             Latitude = 123.456,
             Longitude = 456.789,
             MaxMembers = 3
@@ -57,11 +69,12 @@ public class HomeControllerTests
         _homeOwnerService.Setup(x => x.Create(args)).Returns(home.Id);
 
         // Act
-        var response = _controller.CreateHome(request);
+        var response = _controller.CreateHome(request, _context);
 
         // Assert
         _homeOwnerService.VerifyAll();
         response.Should().NotBeNull();
         response.Id.Should().Be(home.Id.ToString());
     }
+    #endregion
 }

@@ -8,7 +8,7 @@ using HomeConnect.WebApi.Test.Controllers;
 
 namespace BusinessLogic.HomeOwners.Services;
 
-public class HomeOwnerService
+public class HomeOwnerService : IHomeOwnerService
 {
     private readonly IHomeRepository _homeRepository;
     private readonly IUserRepository _userRepository;
@@ -24,12 +24,13 @@ public class HomeOwnerService
         _ownedDeviceRepository = ownedDeviceRepository;
     }
 
-    public void CreateHome(CreateHomeArgs args)
+    public Guid CreateHome(CreateHomeArgs args)
     {
         EnsureCreateHomeModelIsValid(args);
         var user = _userRepository.Get(Guid.Parse(args.HomeOwnerId));
         var home = new Home(user, args.Address, args.Latitude, args.Longitude, args.MaxMembers);
         _homeRepository.Add(home);
+        return home.Id;
     }
 
     private static void EnsureCreateHomeModelIsValid(CreateHomeArgs args)
@@ -40,7 +41,7 @@ public class HomeOwnerService
         }
     }
 
-    public void AddMemberToHome(AddMemberArgs args)
+    public Guid AddMemberToHome(AddMemberArgs args)
     {
         EnsureAddMemberModelIsValid(args);
         EnsureGuidIsValid(args.HomeId);
@@ -60,6 +61,7 @@ public class HomeOwnerService
 
         var member = new Member(user, permissions);
         home.AddMember(member);
+        return user.Id;
     }
 
     private static void EnsureGuidIsValid(string homeId)

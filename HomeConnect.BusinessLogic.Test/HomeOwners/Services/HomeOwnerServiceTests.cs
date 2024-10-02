@@ -48,14 +48,18 @@ public class HomeOwnerServiceTests
             Longitude = 2.0,
             MaxMembers = 5
         };
+        var home = new Home(_user, model.Address, model.Latitude, model.Longitude, model.MaxMembers);
         _userRepositoryMock.Setup(x => x.Get(Guid.Parse(model.HomeOwnerId))).Returns(_user);
-        _homeRepositoryMock.Setup(x => x.Add(It.IsAny<Home>())).Verifiable();
+        _homeRepositoryMock.Setup(x => x.Add(It.Is<Home>(x =>
+            x.Address == model.Address && x.Latitude == model.Latitude && x.Longitude == model.Longitude &&
+            x.MaxMembers == model.MaxMembers && x.Owner == _user))).Callback<Home>(x => x.Id = Guid.NewGuid());
 
         // Act
-        _homeOwnerService.CreateHome(model);
+        var result = _homeOwnerService.CreateHome(model);
 
         // Assert
         _homeRepositoryMock.Verify(x => x.Add(It.IsAny<Home>()), Times.Once);
+        result.Should().NotBeEmpty();
     }
 
     #endregion
@@ -109,10 +113,11 @@ public class HomeOwnerServiceTests
         _homeRepositoryMock.Setup(x => x.Get(Guid.Parse(model.HomeId))).Returns(home);
 
         // Act
-        _homeOwnerService.AddMemberToHome(model);
+        var result = _homeOwnerService.AddMemberToHome(model);
 
         // Assert
         home.Members.Should().ContainSingle(x => x.User == invitedUser);
+        result.Should().Be(invitedUser.Id);
     }
 
     #endregion

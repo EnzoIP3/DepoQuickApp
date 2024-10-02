@@ -16,7 +16,7 @@ public class HomeController(IHomeOwnerService homeOwnerService) : ControllerBase
     {
         var userLoggedIn = context.HttpContext.Items[Item.UserLogged];
         CreateHomeArgs createHomeArgs = HomeArgsFromRequest(request, (BusinessLogic.Users.Entities.User)userLoggedIn!);
-        var homeId = homeOwnerService.Create(createHomeArgs);
+        var homeId = homeOwnerService.CreateHome(createHomeArgs);
         return new CreateHomeResponse { Id = homeId.ToString() };
     }
 

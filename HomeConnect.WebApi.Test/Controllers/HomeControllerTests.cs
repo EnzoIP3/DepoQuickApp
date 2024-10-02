@@ -66,7 +66,7 @@ public class HomeControllerTests
             Longitude = request.Longitude,
             MaxMembers = request.MaxMembers
         };
-        _homeOwnerService.Setup(x => x.Create(args)).Returns(home.Id);
+        _homeOwnerService.Setup(x => x.CreateHome(args)).Returns(home.Id);
 
         // Act
         var response = _controller.CreateHome(request, _context);

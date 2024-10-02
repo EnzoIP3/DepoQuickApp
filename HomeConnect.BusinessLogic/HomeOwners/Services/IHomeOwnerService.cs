@@ -4,6 +4,6 @@ namespace HomeConnect.WebApi.Test.Controllers;
 
 public interface IHomeOwnerService
 {
-    public Guid Create(CreateHomeArgs createHomeArgs);
+    public Guid CreateHome(CreateHomeArgs createHomeArgs);
     public Guid AddMemberToHome(AddMemberArgs args);
 }

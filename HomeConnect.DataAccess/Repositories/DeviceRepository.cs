@@ -14,7 +14,13 @@ public class DeviceRepository : IDeviceRepository
 
     public Device Get(Guid deviceId)
     {
-        return _context.Devices.FirstOrDefault(d => d.Id == deviceId);
+        var device = _context.Devices.FirstOrDefault(d => d.Id == deviceId);
+        if (device == null)
+        {
+            throw new ArgumentException("Device does not exist");
+        }
+
+        return device;
     }
 
     public void Add(Device device)

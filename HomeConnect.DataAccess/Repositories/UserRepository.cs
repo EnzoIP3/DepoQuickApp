@@ -23,6 +23,11 @@ public class UserRepository : IUserRepository
     public User Get(Guid id)
     {
         var user = _context.Users.FirstOrDefault(u => u.Id == id);
+        if(user == null)
+        {
+            throw new ArgumentException("User does not exist");
+        }
+
         return user;
     }
 

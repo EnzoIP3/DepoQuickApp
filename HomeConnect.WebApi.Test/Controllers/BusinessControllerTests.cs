@@ -1,4 +1,9 @@
 using BusinessLogic;
+using BusinessLogic.Admins.Models;
+using BusinessLogic.Admins.Services;
+using BusinessLogic.BusinessOwners.Entities;
+using BusinessLogic.Roles.Entities;
+using BusinessLogic.Users.Entities;
 using FluentAssertions;
 using HomeConnect.WebApi.Controllers;
 using Microsoft.AspNetCore.Mvc;
@@ -30,16 +35,16 @@ public class BusinessControllerTests
         {
             new Business("123456789123", "Business 1", user), new Business("123456789124", "Business 2", otherUser),
         };
-        var expectedBusinesses = new List<ListBusinessModel>
+        var expectedBusinesses = new List<GetBusinessesArgs>
         {
-            new ListBusinessModel()
+            new GetBusinessesArgs()
             {
                 Name = businesses[0].Name,
                 OwnerFullName = $"{user.Name} {user.Surname}",
                 OwnerEmail = user.Email,
                 Rut = businesses[0].Rut,
             },
-            new ListBusinessModel()
+            new GetBusinessesArgs()
             {
                 Name = businesses[1].Name,
                 OwnerFullName = $"{otherUser.Name} {otherUser.Surname}",
@@ -49,7 +54,7 @@ public class BusinessControllerTests
         };
         var expectedPagination = new Pagination { Page = 1, PageSize = 10, TotalPages = 1 };
         var expectedResponse = new { Data = expectedBusinesses, Pagination = expectedPagination };
-        var pagedList = new PagedData<ListBusinessModel>
+        var pagedList = new PagedData<GetBusinessesArgs>
         {
             Data = expectedBusinesses,
             Page = expectedPagination.Page,
@@ -57,7 +62,7 @@ public class BusinessControllerTests
             TotalPages = expectedPagination.TotalPages
         };
 
-        _adminService.Setup(x => x.GetBusiness(null, null, null, null)).Returns(pagedList);
+        _adminService.Setup(x => x.GetBusinesses(null, null, null, null)).Returns(pagedList);
 
         // Act
         var response = _controller.GetBusinesses();
@@ -80,9 +85,9 @@ public class BusinessControllerTests
         {
             new Business("123456789124", "Business 2", otherUser)
         };
-        var expectedBusinesses = new List<ListBusinessModel>
+        var expectedBusinesses = new List<GetBusinessesArgs>
         {
-            new ListBusinessModel()
+            new GetBusinessesArgs()
             {
                 Name = businesses[0].Name,
                 OwnerFullName = $"{otherUser.Name} {otherUser.Surname}",
@@ -92,7 +97,7 @@ public class BusinessControllerTests
         };
         var expectedPagination = new Pagination { Page = 1, PageSize = 10, TotalPages = 1 };
         var expectedResponse = new { Data = expectedBusinesses, Pagination = expectedPagination };
-        var pagedList = new PagedData<ListBusinessModel>
+        var pagedList = new PagedData<GetBusinessesArgs>
         {
             Data = expectedBusinesses,
             Page = expectedPagination.Page,
@@ -100,7 +105,7 @@ public class BusinessControllerTests
             TotalPages = expectedPagination.TotalPages
         };
 
-        _adminService.Setup(x => x.GetBusiness(null, null, expectedBusinesses.First().Name, null)).Returns(pagedList);
+        _adminService.Setup(x => x.GetBusinesses(null, null, expectedBusinesses.First().Name, null)).Returns(pagedList);
 
         // Act
         var response = _controller.GetBusinesses(nameFilter: expectedBusinesses.First().Name);
@@ -123,9 +128,9 @@ public class BusinessControllerTests
         {
             new Business("123456789124", "Business 2", otherUser),
         };
-        var expectedBusinesses = new List<ListBusinessModel>
+        var expectedBusinesses = new List<GetBusinessesArgs>
         {
-            new ListBusinessModel()
+            new GetBusinessesArgs()
             {
                 Name = businesses[0].Name,
                 OwnerFullName = $"{otherUser.Name} {otherUser.Surname}",
@@ -135,7 +140,7 @@ public class BusinessControllerTests
         };
         var expectedPagination = new Pagination { Page = 1, PageSize = 10, TotalPages = 1 };
         var expectedResponse = new { Data = expectedBusinesses, Pagination = expectedPagination };
-        var pagedList = new PagedData<ListBusinessModel>
+        var pagedList = new PagedData<GetBusinessesArgs>
         {
             Data = expectedBusinesses,
             Page = expectedPagination.Page,
@@ -143,7 +148,7 @@ public class BusinessControllerTests
             TotalPages = expectedPagination.TotalPages
         };
 
-        _adminService.Setup(x => x.GetBusiness(null, null, expectedBusinesses.First().OwnerFullName, null)).Returns(pagedList);
+        _adminService.Setup(x => x.GetBusinesses(null, null, expectedBusinesses.First().OwnerFullName, null)).Returns(pagedList);
 
         // Act
         var response = _controller.GetBusinesses(nameFilter: expectedBusinesses.First().OwnerFullName);
@@ -166,9 +171,9 @@ public class BusinessControllerTests
         {
             new Business("123456789124", "Business 2", otherUser),
         };
-        var expectedBusinesses = new List<ListBusinessModel>
+        var expectedBusinesses = new List<GetBusinessesArgs>
         {
-            new ListBusinessModel()
+            new GetBusinessesArgs()
             {
                 Name = businesses[0].Name,
                 OwnerFullName = $"{otherUser.Name} {otherUser.Surname}",
@@ -178,7 +183,7 @@ public class BusinessControllerTests
         };
         var expectedPagination = new Pagination { Page = 1, PageSize = 1, TotalPages = 1 };
         var expectedResponse = new { Data = expectedBusinesses, Pagination = expectedPagination };
-        var pagedList = new PagedData<ListBusinessModel>
+        var pagedList = new PagedData<GetBusinessesArgs>
         {
             Data = expectedBusinesses,
             Page = expectedPagination.Page,
@@ -186,7 +191,7 @@ public class BusinessControllerTests
             TotalPages = expectedPagination.TotalPages
         };
 
-        _adminService.Setup(x => x.GetBusiness(1, 1, null, null)).Returns(pagedList);
+        _adminService.Setup(x => x.GetBusinesses(1, 1, null, null)).Returns(pagedList);
 
         // Act
         var response = _controller.GetBusinesses(1, 1);

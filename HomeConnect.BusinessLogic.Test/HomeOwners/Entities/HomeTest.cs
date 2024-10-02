@@ -1,7 +1,7 @@
-using BusinessLogic;
+using BusinessLogic.HomeOwners.Entities;
 using FluentAssertions;
 
-namespace HomeConnect.BusinessLogic.Test;
+namespace HomeConnect.BusinessLogic.Test.HomeOwners.Entities;
 
 [TestClass]
 public class HomeTest
@@ -14,7 +14,7 @@ public class HomeTest
     public void Constructor_WhenArgumentsAreValid_CreatesInstance()
     {
         // Arrange
-        var owner = new User();
+        var owner = new global::BusinessLogic.Users.Entities.User();
         const string address = "Main St 123";
         const double latitude = 123.456;
         const double longitude = 456.789;
@@ -38,7 +38,7 @@ public class HomeTest
     public void Constructor_WhenAddressIsNotRoadAndNumber_ThrowsArgumentException(string address)
     {
         // Arrange
-        var owner = new User();
+        var owner = new global::BusinessLogic.Users.Entities.User();
         const double latitude = 123.456;
         const double longitude = 456.789;
         const int maxMembers = 5;
@@ -62,9 +62,9 @@ public class HomeTest
     public void AddMember_WhenMemberIsNotOwner_AddsMember()
     {
         // Arrange
-        var owner = new User();
+        var owner = new global::BusinessLogic.Users.Entities.User();
         var home = new Home(owner, "Main St 123", 123.456, 456.789, 5);
-        var member = new Member(new User());
+        var member = new Member(new global::BusinessLogic.Users.Entities.User());
 
         // Act
         home.AddMember(member);
@@ -81,7 +81,7 @@ public class HomeTest
     public void AddMember_WhenMemberIsOwner_ThrowsArgumentException()
     {
         // Arrange
-        var owner = new User();
+        var owner = new global::BusinessLogic.Users.Entities.User();
         var ownerMember = new Member(owner);
         var home = new Home(owner, "Main St 123", 123.456, 456.789, 5);
 
@@ -96,9 +96,9 @@ public class HomeTest
     public void AddMember_WhenMemberIsAlreadyMember_ThrowsArgumentException()
     {
         // Arrange
-        var owner = new User();
+        var owner = new global::BusinessLogic.Users.Entities.User();
         var home = new Home(owner, "Main St 123", 123.456, 456.789, 5);
-        var otherUser = new User();
+        var otherUser = new global::BusinessLogic.Users.Entities.User();
         var member = new Member(otherUser);
         home.AddMember(member);
 
@@ -113,13 +113,13 @@ public class HomeTest
     public void AddMember_WhenMaxMembersReached_ThrowsInvalidOperationException()
     {
         // Arrange
-        var owner = new User();
+        var owner = new global::BusinessLogic.Users.Entities.User();
         var home = new Home(owner, "Main St 123", 123.456, 456.789, 1);
-        var member = new Member(new User());
+        var member = new Member(new global::BusinessLogic.Users.Entities.User());
         home.AddMember(member);
 
         // Act
-        var act = () => home.AddMember(new Member(new User()));
+        var act = () => home.AddMember(new Member(new global::BusinessLogic.Users.Entities.User()));
 
         // Assert
         act.Should().Throw<InvalidOperationException>();

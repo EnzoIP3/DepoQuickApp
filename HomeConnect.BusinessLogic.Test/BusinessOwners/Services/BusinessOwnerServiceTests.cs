@@ -1,8 +1,13 @@
-﻿using BusinessLogic;
+﻿using BusinessLogic.BusinessOwners.Entities;
+using BusinessLogic.BusinessOwners.Repositories;
+using BusinessLogic.BusinessOwners.Services;
+using BusinessLogic.Devices.Repositories;
+using BusinessLogic.Roles.Repositories;
+using BusinessLogic.Users.Repositories;
 using FluentAssertions;
 using Moq;
 
-namespace HomeConnect.BusinessLogic.Test;
+namespace HomeConnect.BusinessLogic.Test.BusinessOwners.Services;
 
 [TestClass]
 public class BusinessOwnerServiceTests
@@ -15,7 +20,7 @@ public class BusinessOwnerServiceTests
     private string _ownerEmail = null!;
     private string _businessRut = null!;
     private string _businessName = null!;
-    private User _owner = null!;
+    private global::BusinessLogic.Users.Entities.User _owner = null!;
     private Business _existingBusiness = null!;
 
     private const string DeviceName = "Device Name";
@@ -37,7 +42,7 @@ public class BusinessOwnerServiceTests
         _ownerEmail = "owner@example.com";
         _businessRut = "123456789";
         _businessName = "Test Business";
-        _owner = new User("John", "Doe", _ownerEmail, "Password123!", new Role());
+        _owner = new global::BusinessLogic.Users.Entities.User("John", "Doe", _ownerEmail, "Password123!", new global::BusinessLogic.Roles.Entities.Role());
         _existingBusiness = new Business(_businessRut, "Existing Business", _owner);
     }
 
@@ -88,7 +93,7 @@ public class BusinessOwnerServiceTests
     {
         // Arrange
         var nonexistentEmail = "nonexistent@example.com";
-        _userRepository.Setup(x => x.GetUser(nonexistentEmail)).Returns((User?)null);
+        _userRepository.Setup(x => x.GetUser(nonexistentEmail)).Returns((global::BusinessLogic.Users.Entities.User?)null);
 
         // Act
         Action act = () => _businessOwnerService.CreateBusiness(nonexistentEmail, _businessRut, _businessName);
@@ -128,14 +133,14 @@ public class BusinessOwnerServiceTests
     {
         // Arrange
         var business = new Business("RUTexample", "Business Name", _owner);
-        _deviceRepository.Setup(x => x.EnsureDeviceDoesNotExist(It.IsAny<Device>()));
-        _deviceRepository.Setup(x => x.Add(It.IsAny<Device>()));
+        _deviceRepository.Setup(x => x.EnsureDeviceDoesNotExist(It.IsAny<global::BusinessLogic.Devices.Entities.Device>()));
+        _deviceRepository.Setup(x => x.Add(It.IsAny<global::BusinessLogic.Devices.Entities.Device>()));
 
         // Act
         _businessOwnerService.CreateDevice(DeviceName, ModelNumber, Description, MainPhoto, secondaryPhotos, Type, business);
 
         // Assert
-        _deviceRepository.Verify(x => x.Add(It.Is<Device>(d =>
+        _deviceRepository.Verify(x => x.Add(It.Is<global::BusinessLogic.Devices.Entities.Device>(d =>
             d.Name == DeviceName &&
             d.ModelNumber == ModelNumber &&
             d.Description == Description &&
@@ -153,16 +158,16 @@ public class BusinessOwnerServiceTests
     {
         // Arrange
         var business = new Business("RUTexample", "Business Name", _owner);
-        var existingDevice = new Device(DeviceName, ModelNumber, Description, MainPhoto, secondaryPhotos, Type, business);
-        _deviceRepository.Setup(x => x.EnsureDeviceDoesNotExist(It.IsAny<Device>())).Throws(new ArgumentException("Device already exists"));
-        _deviceRepository.Setup(x => x.Add(It.IsAny<Device>()));
+        var existingDevice = new global::BusinessLogic.Devices.Entities.Device(DeviceName, ModelNumber, Description, MainPhoto, secondaryPhotos, Type, business);
+        _deviceRepository.Setup(x => x.EnsureDeviceDoesNotExist(It.IsAny<global::BusinessLogic.Devices.Entities.Device>())).Throws(new ArgumentException("Device already exists"));
+        _deviceRepository.Setup(x => x.Add(It.IsAny<global::BusinessLogic.Devices.Entities.Device>()));
 
         // Act
         Action act = () => _businessOwnerService.CreateDevice(DeviceName, ModelNumber, Description, MainPhoto, secondaryPhotos, Type, business);
 
         // Assert
         act.Should().Throw<ArgumentException>().WithMessage("Device already exists");
-        _deviceRepository.Verify(x => x.Add(It.IsAny<Device>()), Times.Never);
+        _deviceRepository.Verify(x => x.Add(It.IsAny<global::BusinessLogic.Devices.Entities.Device>()), Times.Never);
     }
 
     #endregion

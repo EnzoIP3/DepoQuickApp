@@ -1,7 +1,7 @@
-using BusinessLogic;
+using BusinessLogic.HomeOwners.Entities;
 using FluentAssertions;
 
-namespace HomeConnect.BusinessLogic.Test;
+namespace HomeConnect.BusinessLogic.Test.HomeOwners.Entities;
 
 [TestClass]
 public class HomePermissionTests

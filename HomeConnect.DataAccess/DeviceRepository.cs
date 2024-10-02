@@ -1,4 +1,5 @@
 using BusinessLogic;
+using BusinessLogic.Devices.Entities;
 
 namespace HomeConnect.DataAccess;
 

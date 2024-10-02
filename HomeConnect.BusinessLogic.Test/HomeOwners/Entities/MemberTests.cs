@@ -1,7 +1,7 @@
-using BusinessLogic;
+using BusinessLogic.HomeOwners.Entities;
 using FluentAssertions;
 
-namespace HomeConnect.BusinessLogic.Test;
+namespace HomeConnect.BusinessLogic.Test.HomeOwners.Entities;
 
 [TestClass]
 public class MemberTests
@@ -14,7 +14,7 @@ public class MemberTests
     public void Constructor_WhenArgumentsAreValid_CreatesInstance()
     {
         // Arrange
-        var user = new User();
+        var user = new global::BusinessLogic.Users.Entities.User();
 
         // Act
         var act = () => new Member(user);
@@ -27,7 +27,7 @@ public class MemberTests
     public void Constructor_WhenHomePermissionsAreSet_CreatesInstance()
     {
         // Arrange
-        var user = new User();
+        var user = new global::BusinessLogic.Users.Entities.User();
         var permissions = new List<HomePermission> { new HomePermission("value") };
 
         // Act
@@ -49,7 +49,7 @@ public class MemberTests
     public void AddPermission_WhenPermissionIsValid_AddsPermission()
     {
         // Arrange
-        var user = new User();
+        var user = new global::BusinessLogic.Users.Entities.User();
         var member = new Member(user);
         var permission = new HomePermission("value");
 
@@ -68,7 +68,7 @@ public class MemberTests
     public void AddPermission_WhenPermissionIsAlreadyAdded_ThrowsInvalidOperationException()
     {
         // Arrange
-        var user = new User();
+        var user = new global::BusinessLogic.Users.Entities.User();
         var member = new Member(user);
         var permission = new HomePermission("value");
         member.AddPermission(permission);
@@ -92,7 +92,7 @@ public class MemberTests
     public void DeletePermission_WhenPermissionExists_DeletesPermission()
     {
         // Arrange
-        var user = new User();
+        var user = new global::BusinessLogic.Users.Entities.User();
         var member = new Member(user);
         var permission = new HomePermission("value");
         member.AddPermission(permission);
@@ -112,7 +112,7 @@ public class MemberTests
     public void DeletePermission_WhenPermissionDoesNotExist_ThrowsInvalidOperationException()
     {
         // Arrange
-        var user = new User();
+        var user = new global::BusinessLogic.Users.Entities.User();
         var member = new Member(user);
         var permission = new HomePermission("value");
 
@@ -135,7 +135,7 @@ public class MemberTests
     public void HasPermission_WhenPermissionExists_ReturnsTrue()
     {
         // Arrange
-        var user = new User();
+        var user = new global::BusinessLogic.Users.Entities.User();
         var member = new Member(user);
         var permission = new HomePermission("value");
         member.AddPermission(permission);

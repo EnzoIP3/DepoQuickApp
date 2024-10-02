@@ -1,4 +1,7 @@
 using BusinessLogic;
+using BusinessLogic.BusinessOwners.Entities;
+using BusinessLogic.Devices.Entities;
+using BusinessLogic.Users.Entities;
 using FluentAssertions;
 
 namespace HomeConnect.DataAccess.Test;

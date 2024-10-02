@@ -1,4 +1,9 @@
 ﻿using BusinessLogic;
+using BusinessLogic.BusinessOwners.Entities;
+using BusinessLogic.Devices.Entities;
+using BusinessLogic.Notifications.Entities;
+using BusinessLogic.Roles.Entities;
+using BusinessLogic.Users.Entities;
 using Microsoft.EntityFrameworkCore;
 
 namespace HomeConnect.DataAccess;

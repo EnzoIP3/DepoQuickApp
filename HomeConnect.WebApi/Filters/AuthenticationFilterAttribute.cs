@@ -1,5 +1,6 @@
 using System.Net;
 using BusinessLogic;
+using BusinessLogic.Users.Entities;
 using HomeConnect.WebApi.Session;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Filters;

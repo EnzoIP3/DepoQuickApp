@@ -1,5 +1,8 @@
 using System.Net;
 using BusinessLogic;
+using BusinessLogic.Roles.Entities;
+using BusinessLogic.Users.Entities;
+using BusinessLogic.Users.Repositories;
 using FluentAssertions;
 using HomeConnect.WebApi.Filters;
 using Microsoft.AspNetCore.Http;

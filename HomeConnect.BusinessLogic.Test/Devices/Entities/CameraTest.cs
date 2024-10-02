@@ -1,6 +1,8 @@
-using BusinessLogic;
+using BusinessLogic.BusinessOwners.Entities;
+using BusinessLogic.Devices.Entities;
 using FluentAssertions;
-namespace HomeConnect.BusinessLogic.Test;
+
+namespace HomeConnect.BusinessLogic.Test.Devices.Entities;
 
 [TestClass]
 public class CameraTest
@@ -14,13 +16,13 @@ public class CameraTest
     private const bool PersonDetection = false;
     private const bool IsExterior = true;
     private const bool IsInterior = false;
-    private User _owner = null!;
+    private global::BusinessLogic.Users.Entities.User _owner = null!;
     private Business _business = null!;
 
     [TestInitialize]
     public void TestInitialize()
     {
-        _owner = new User("John", "Doe", "JohnDoe@example.com", "Password123!", new Role());
+        _owner = new global::BusinessLogic.Users.Entities.User("John", "Doe", "JohnDoe@example.com", "Password123!", new global::BusinessLogic.Roles.Entities.Role());
         _business = new Business("RUTexample", "Business Name", _owner);
     }
 

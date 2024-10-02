@@ -1,4 +1,6 @@
 using BusinessLogic;
+using BusinessLogic.Notifications.Entities;
+using BusinessLogic.Notifications.Repositories;
 
 namespace HomeConnect.DataAccess;
 

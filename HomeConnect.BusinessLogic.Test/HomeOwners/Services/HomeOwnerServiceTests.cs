@@ -1,8 +1,15 @@
-using BusinessLogic;
+using BusinessLogic.BusinessOwners.Entities;
+using BusinessLogic.Devices.Entities;
+using BusinessLogic.Devices.Repositories;
+using BusinessLogic.HomeOwners.Entities;
+using BusinessLogic.HomeOwners.Models;
+using BusinessLogic.HomeOwners.Repositories;
+using BusinessLogic.HomeOwners.Services;
+using BusinessLogic.Users.Repositories;
 using FluentAssertions;
 using Moq;
 
-namespace HomeConnect.BusinessLogic.Test;
+namespace HomeConnect.BusinessLogic.Test.HomeOwners.Services;
 
 [TestClass]
 public class HomeOwnerServiceTests
@@ -12,7 +19,7 @@ public class HomeOwnerServiceTests
     private Mock<IOwnedDeviceRepository> _ownedDeviceRepositoryMock = null!;
     private Mock<IDeviceRepository> _deviceRepositoryMock = null!;
     private HomeOwnerService _homeOwnerService = null!;
-    private readonly User _user = new User("John", "Doe", "test@example.com", "12345678@My", new Role());
+    private readonly global::BusinessLogic.Users.Entities.User _user = new global::BusinessLogic.Users.Entities.User("John", "Doe", "test@example.com", "12345678@My", new global::BusinessLogic.Roles.Entities.Role());
 
     [TestInitialize]
     public void Initialize()
@@ -33,7 +40,7 @@ public class HomeOwnerServiceTests
     public void CreateHome_WhenArgumentsAreValid_AddsHome()
     {
         // Arrange
-        var model = new CreateHomeModel
+        var model = new CreateHomeArgs
         {
             HomeOwnerId = _user.Id.ToString(),
             Address = "Main St 123",
@@ -61,7 +68,7 @@ public class HomeOwnerServiceTests
     public void CreateHome_WhenArgumentsHaveEmptyFields_ThrowsException(string homeOwnerId, string address)
     {
         // Arrange
-        var model = new CreateHomeModel
+        var model = new CreateHomeArgs
         {
             HomeOwnerId = homeOwnerId,
             Address = address,
@@ -89,9 +96,9 @@ public class HomeOwnerServiceTests
     public void AddMemberToHome_WhenArgumentsAreValid_AddsMember()
     {
         // Arrange
-        var invitedUser = new User("Jane", "Doe", "jane@doe.com", "12345678@My", new Role());
+        var invitedUser = new global::BusinessLogic.Users.Entities.User("Jane", "Doe", "jane@doe.com", "12345678@My", new global::BusinessLogic.Roles.Entities.Role());
         var home = new Home(_user, "Main St 123", 1.0, 2.0, 5);
-        var model = new AddMemberModel
+        var model = new AddMemberArgs
         {
             HomeId = home.Id.ToString(),
             HomeOwnerId = invitedUser.Id.ToString(),
@@ -118,12 +125,9 @@ public class HomeOwnerServiceTests
     public void AddMemberToHome_WhenArgumentsHaveEmptyFields_ThrowsException(string homeId, string homeOwnerId)
     {
         // Arrange
-        var model = new AddMemberModel
+        var model = new AddMemberArgs()
         {
-            HomeId = homeId,
-            HomeOwnerId = homeOwnerId,
-            CanAddDevices = true,
-            CanListDevices = true
+            HomeId = homeId, HomeOwnerId = homeOwnerId, CanAddDevices = true, CanListDevices = true
         };
 
         // Act
@@ -137,7 +141,7 @@ public class HomeOwnerServiceTests
     public void AddMemberToHome_WhenHomeIdIsNotAGuid_ThrowsException()
     {
         // Arrange
-        var model = new AddMemberModel
+        var model = new AddMemberArgs()
         {
             HomeId = "invalid-guid",
             HomeOwnerId = "a99feb27-7dac-41ec-8fd2-942533868689",
@@ -165,13 +169,12 @@ public class HomeOwnerServiceTests
     {
         // Arrange
         var home = new Home(_user, "Main St 123", 1.0, 2.0, 5);
-        var device = new Device("Sensor", 1, "A sensor", "https://example.com/image.png", [], "Sensor", new Business());
+        var device = new global::BusinessLogic.Devices.Entities.Device("Sensor", 1, "A sensor", "https://example.com/image.png", [], "Sensor", new Business());
         var camera = new Camera("Camera", 2, "A camera", "https://example.com/image.png", [], new Business(), true,
             true, true, true);
-        var addDeviceModel = new AddDeviceModel
+        var addDeviceModel = new AddDevicesArgs
         {
-            HomeId = home.Id.ToString(),
-            DeviceIds = [device.Id.ToString(), camera.Id.ToString()]
+            HomeId = home.Id.ToString(), DeviceIds = [device.Id.ToString(), camera.Id.ToString()]
         };
         _deviceRepositoryMock.Setup(x => x.Get(device.Id)).Returns(device);
         _deviceRepositoryMock.Setup(x => x.Get(camera.Id)).Returns(camera);
@@ -193,7 +196,7 @@ public class HomeOwnerServiceTests
     public void AddDevicesToHome_WhenHomeIdIsNotAGuid_ThrowsException()
     {
         // Arrange
-        var addDeviceModel = new AddDeviceModel { HomeId = "invalid-guid", DeviceIds = ["1", "2"] };
+        var addDeviceModel = new AddDevicesArgs { HomeId = "invalid-guid", DeviceIds = ["1", "2"] };
 
         // Act
         var act = () => _homeOwnerService.AddDeviceToHome(addDeviceModel);
@@ -207,7 +210,7 @@ public class HomeOwnerServiceTests
     {
         // Arrange
         var home = new Home(_user, "Main St 123", 1.0, 2.0, 5);
-        var addDeviceModel = new AddDeviceModel { HomeId = home.Id.ToString(), DeviceIds = ["invalid-guid"] };
+        var addDeviceModel = new AddDevicesArgs { HomeId = home.Id.ToString(), DeviceIds = ["invalid-guid"] };
 
         // Act
         var act = () => _homeOwnerService.AddDeviceToHome(addDeviceModel);
@@ -229,7 +232,7 @@ public class HomeOwnerServiceTests
     {
         // Arrange
         var home = new Home(_user, "Main St 123", 1.0, 2.0, 5);
-        var member = new Member(new User("Jane", "Doe", "test@example.com", "12345678@My", new Role()));
+        var member = new Member(new global::BusinessLogic.Users.Entities.User("Jane", "Doe", "test@example.com", "12345678@My", new global::BusinessLogic.Roles.Entities.Role()));
         home.AddMember(member);
         _homeRepositoryMock.Setup(x => x.Get(home.Id)).Returns(home);
 
@@ -270,8 +273,9 @@ public class HomeOwnerServiceTests
     {
         // Arrange
         var home = new Home(_user, "Main St 123", 1.0, 2.0, 5);
-        var sensor = new Device("Sensor", 1, "A sensor", "https://example.com/image.png", [], "Sensor", new Business());
-        var camera = new Camera("Camera", 2, "A camera", "https://example.com/image.png", [], new Business(), true, true, true, true);
+        var sensor = new global::BusinessLogic.Devices.Entities.Device("Sensor", 1, "A sensor", "https://example.com/image.png", [], "Sensor", new Business());
+        var camera = new Camera("Camera", 2, "A camera", "https://example.com/image.png", [], new Business(), true,
+            true, true, true);
         var ownedDevices =
             new List<OwnedDevice>() { new OwnedDevice(home, sensor), new OwnedDevice(home, camera) };
         _homeRepositoryMock.Setup(x => x.Get(home.Id)).Returns(home);

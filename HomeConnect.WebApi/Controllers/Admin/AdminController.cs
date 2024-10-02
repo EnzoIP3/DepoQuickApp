@@ -1,4 +1,6 @@
 using BusinessLogic;
+using BusinessLogic.Admins.Services;
+using BusinessLogic.Users.Models;
 using HomeConnect.WebApi.Filters;
 using Microsoft.AspNetCore.Mvc;
 
@@ -12,14 +14,14 @@ public class AdminController(IAdminService adminService) : ControllerBase
     [HttpPost]
     public CreateAdminResponse CreateAdmin([FromBody] CreateAdminRequest request)
     {
-        UserModel userModel = UserModelFromRequest(request);
-        var adminId = adminService.Create(userModel);
+        CreateUserArgs createUserArgs = UserModelFromRequest(request);
+        var adminId = adminService.Create(createUserArgs);
         return new CreateAdminResponse { Id = adminId.ToString() };
     }
 
-    private static UserModel UserModelFromRequest(CreateAdminRequest request)
+    private static CreateUserArgs UserModelFromRequest(CreateAdminRequest request)
     {
-        var userModel = new UserModel
+        var userModel = new CreateUserArgs
         {
             Name = request.Name,
             Surname = request.Surname,

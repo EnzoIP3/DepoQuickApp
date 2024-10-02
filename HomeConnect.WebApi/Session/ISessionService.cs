@@ -1,4 +1,5 @@
 using BusinessLogic;
+using BusinessLogic.Users.Entities;
 
 namespace HomeConnect.WebApi.Session;
 

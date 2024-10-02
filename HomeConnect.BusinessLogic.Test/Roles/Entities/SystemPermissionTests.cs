@@ -1,7 +1,7 @@
-using BusinessLogic;
+using BusinessLogic.Roles.Entities;
 using FluentAssertions;
 
-namespace HomeConnect.BusinessLogic.Test;
+namespace HomeConnect.BusinessLogic.Test.Roles.Entities;
 
 [TestClass]
 public class SystemPermissionTests

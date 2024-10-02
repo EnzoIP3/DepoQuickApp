@@ -2,10 +2,9 @@ using BusinessLogic;
 using BusinessLogic.Admins.Models;
 using BusinessLogic.Admins.Services;
 using HomeConnect.WebApi.Filters;
-using HomeConnect.WebApi.Test.Controllers;
 using Microsoft.AspNetCore.Mvc;
 
-namespace HomeConnect.WebApi.Controllers;
+namespace HomeConnect.WebApi.Controllers.Business;
 
 [ApiController]
 [Route("businesses")]

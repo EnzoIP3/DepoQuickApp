@@ -3,6 +3,7 @@ using BusinessLogic.Admins.Services;
 using BusinessLogic.Users.Models;
 using FluentAssertions;
 using HomeConnect.WebApi.Controllers.Admin;
+using HomeConnect.WebApi.Controllers.Admin.Models;
 using Microsoft.AspNetCore.Mvc;
 using Moq;
 

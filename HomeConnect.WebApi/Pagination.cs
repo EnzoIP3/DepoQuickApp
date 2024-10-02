@@ -1,4 +1,4 @@
-namespace HomeConnect.WebApi.Test.Controllers;
+namespace HomeConnect.WebApi;
 
 public struct Pagination
 {

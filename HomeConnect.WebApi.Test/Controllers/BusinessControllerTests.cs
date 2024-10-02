@@ -6,6 +6,7 @@ using BusinessLogic.Roles.Entities;
 using BusinessLogic.Users.Entities;
 using FluentAssertions;
 using HomeConnect.WebApi.Controllers;
+using HomeConnect.WebApi.Controllers.Business;
 using Microsoft.AspNetCore.Mvc;
 using Moq;
 

@@ -1,6 +1,7 @@
 using BusinessLogic;
 using BusinessLogic.Admins.Services;
 using BusinessLogic.Users.Models;
+using HomeConnect.WebApi.Controllers.Admin.Models;
 using HomeConnect.WebApi.Filters;
 using Microsoft.AspNetCore.Mvc;
 

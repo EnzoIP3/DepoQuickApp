@@ -221,4 +221,25 @@ public class UserRepositoryTest
     #endregion
 
     #endregion
+
+    #region Delete
+    #region Success
+
+    [TestMethod]
+    public void Delete_WhenUserExists_ShouldDeleteUser()
+    {
+        // Act
+        _userRepository.Delete(_validUser.Id);
+
+        // Assert
+        _userRepository.Exists(_validUser.Id).Should().BeFalse();
+    }
+
+    #endregion
+
+    #region Error
+
+    #endregion
+
+    #endregion
 }

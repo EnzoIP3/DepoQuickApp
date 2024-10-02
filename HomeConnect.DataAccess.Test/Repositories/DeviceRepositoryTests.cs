@@ -26,6 +26,10 @@ public class DeviceRepositoryTests
         _context.Database.EnsureDeleted();
     }
 
+    #region Add
+
+    #region Success
+
     [TestMethod]
     public void Add_WhenDeviceDoesNotExist_ShouldAddDevice()
     {
@@ -40,6 +44,10 @@ public class DeviceRepositoryTests
         // Assert
         _context.Devices.Should().Contain(device);
     }
+
+    #endregion
+
+    #region Error
 
     [TestMethod]
     public void Add_WhenDeviceExists_ShouldThrowException()
@@ -56,6 +64,14 @@ public class DeviceRepositoryTests
         // Assert
         act.Should().Throw<ArgumentException>();
     }
+
+    #endregion
+
+    #endregion
+
+    #region Get
+
+    #region Success
 
     [TestMethod]
     public void Get_WhenDeviceExists_ShouldReturnDevice()
@@ -74,6 +90,10 @@ public class DeviceRepositoryTests
         result.Should().BeEquivalentTo(device);
     }
 
+    #endregion
+
+    #region Error
+
     [TestMethod]
     public void Get_WhenDeviceDoesNotExist_ShouldThrowArgumentException()
     {
@@ -86,4 +106,8 @@ public class DeviceRepositoryTests
         // Assert
         act.Should().Throw<ArgumentException>();
     }
+
+    #endregion
+
+    #endregion
 }

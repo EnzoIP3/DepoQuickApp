@@ -26,6 +26,10 @@ public class RoleRepositoryTests
         _context.Database.EnsureDeleted();
     }
 
+    #region GetRole
+
+    #region Success
+
     [TestMethod]
     public void GetRole_WhenRoleExists_ShouldReturnRole()
     {
@@ -36,6 +40,10 @@ public class RoleRepositoryTests
         result.Name.Should().Be("Role");
     }
 
+    #endregion
+
+    #region Error
+
     [TestMethod]
     public void GetRole_WhenRoleDoesNotExist_ShouldThrowException()
     {
@@ -45,4 +53,8 @@ public class RoleRepositoryTests
         // Assert
         action.Should().Throw<ArgumentException>();
     }
+
+    #endregion
+
+    #endregion
 }

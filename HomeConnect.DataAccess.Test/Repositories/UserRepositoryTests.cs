@@ -177,6 +177,18 @@ public class UserRepositoryTest
     }
     #endregion
     #region Error
+    [TestMethod]
+    public void Get_WhenUserDoesNotExist_ShouldThrowException()
+    {
+        // Arrange
+        var nonExistentUserId = Guid.NewGuid();
+
+        // Act
+        Action action = () => _userRepository.Get(nonExistentUserId);
+
+        // Assert
+        action.Should().Throw<ArgumentException>();
+    }
     #endregion
     #endregion
 }

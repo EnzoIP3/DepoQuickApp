@@ -38,7 +38,9 @@ public class UserRepository : IUserRepository
 
     public void Delete(Guid id)
     {
-        throw new NotImplementedException();
+        var user = Get(id);
+        _context.Users.Remove(user);
+        _context.SaveChanges();
     }
 
     PagedData<User> IUserRepository.GetUsers(int currentPage, int pageSize, string? fullNameFilter, string? roleFilter)

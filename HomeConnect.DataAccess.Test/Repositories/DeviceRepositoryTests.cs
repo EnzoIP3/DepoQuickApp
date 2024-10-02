@@ -56,4 +56,21 @@ public class DeviceRepositoryTests
         // Assert
         act.Should().Throw<ArgumentException>();
     }
+
+    [TestMethod]
+    public void Get_WhenDeviceExists_ShouldReturnDevice()
+    {
+        // Arrange
+        var business = new Business("12345", "Business", new User());
+        var device = new Device("Device", 12345, "Device description", "https://example.com/image.png",
+            [], "Sensor", business);
+        _deviceRepository.Add(device);
+        _context.SaveChanges();
+
+        // Act
+        var result = _deviceRepository.Get(device.Id);
+
+        // Assert
+        result.Should().BeEquivalentTo(device);
+    }
 }

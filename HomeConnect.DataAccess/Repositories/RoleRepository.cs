@@ -1,8 +1,9 @@
 using BusinessLogic.Roles.Entities;
+using BusinessLogic.Roles.Repositories;
 
 namespace HomeConnect.DataAccess.Roles;
 
-public class RoleRepository
+public class RoleRepository : IRoleRepository
 {
     private readonly Context _context;
 

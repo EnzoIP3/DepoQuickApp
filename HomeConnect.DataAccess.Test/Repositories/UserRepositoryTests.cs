@@ -134,8 +134,8 @@ public class UserRepositoryTest
         var result = _userRepository.GetUsers(1, 2);
 
         // Assert
-        result.Should().HaveCount(2);
-        result.Exists(u => u.Email == ValidUserEmail).Should().BeTrue();
+        result.Data.Should().HaveCount(2);
+        result.Data.Exists(u => u.Email == ValidUserEmail).Should().BeTrue();
     }
 
     [TestMethod]
@@ -145,8 +145,8 @@ public class UserRepositoryTest
         var result = _userRepository.GetUsers(1, 10, fullNameFilter: "Jane");
 
         // Assert
-        result.Should().HaveCount(1);
-        result.First().Email.Should().Be("jane.doe@example.com");
+        result.Data.Should().HaveCount(1);
+        result.Data.First().Email.Should().Be("jane.doe@example.com");
     }
 
     [TestMethod]
@@ -156,10 +156,9 @@ public class UserRepositoryTest
         var result = _userRepository.GetUsers(1, 10, "J", "Admin");
 
         // Assert
-        result.Should().HaveCount(1);
-        result.First().Email.Should().Be(ValidUserEmail);
+        result.Data.Should().HaveCount(1);
+        result.Data.First().Email.Should().Be(ValidUserEmail);
     }
-
     #endregion
 
     #endregion

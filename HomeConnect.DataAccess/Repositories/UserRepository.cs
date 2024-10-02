@@ -43,11 +43,6 @@ public class UserRepository : IUserRepository
         _context.SaveChanges();
     }
 
-    PagedData<User> IUserRepository.GetUsers(int currentPage, int pageSize, string? fullNameFilter, string? roleFilter)
-    {
-        throw new NotImplementedException();
-    }
-
     private void EnsureUserDoesNotExist(User user)
     {
         if (Exists(user.Email))
@@ -82,16 +77,26 @@ public class UserRepository : IUserRepository
         }
     }
 
-    public List<User> GetUsers(int currentPage, int pageSize, string? fullNameFilter = null, string? roleFilter = null)
+    public PagedData<User> GetUsers(int currentPage, int pageSize, string? fullNameFilter = null, string? roleFilter = null)
+{
+    IQueryable<User> query = _context.Users;
+    query = FilterByFullName(fullNameFilter, query);
+    query = FilterByRole(roleFilter, query);
+
+    var totalUsers = query.Count();
+    var users = query
+        .Skip((currentPage - 1) * pageSize)
+        .Take(pageSize)
+        .ToList();
+
+    return new PagedData<User>
     {
-        IQueryable<User> query = _context.Users;
-        query = FilterByFullName(fullNameFilter, query);
-        query = FilterByRole(roleFilter, query);
-        return query
-            .Skip((currentPage - 1) * pageSize)
-            .Take(pageSize)
-            .ToList();
-    }
+        Data = users,
+        Page = currentPage,
+        PageSize = pageSize,
+        TotalPages = (int)Math.Ceiling((double)totalUsers / pageSize)
+    };
+}
 
     private static IQueryable<User> FilterByRole(string? roleFilter, IQueryable<User> query)
     {

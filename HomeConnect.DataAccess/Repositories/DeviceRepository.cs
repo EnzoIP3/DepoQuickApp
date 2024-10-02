@@ -14,7 +14,7 @@ public class DeviceRepository : IDeviceRepository
 
     public Device Get(Guid deviceId)
     {
-        throw new NotImplementedException();
+        return _context.Devices.FirstOrDefault(d => d.Id == deviceId);
     }
 
     public void Add(Device device)

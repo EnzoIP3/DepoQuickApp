@@ -239,6 +239,18 @@ public class UserRepositoryTest
 
     #region Error
 
+    [TestMethod]
+    public void Delete_WhenUserDoesNotExist_ShouldThrowException()
+    {
+        // Arrange
+        var nonExistentUserId = Guid.NewGuid();
+
+        // Act
+        Action act = () => _userRepository.Delete(nonExistentUserId);
+
+        // Assert
+        act.Should().Throw<ArgumentException>();
+    }
     #endregion
 
     #endregion

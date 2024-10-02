@@ -21,7 +21,7 @@ public class HomeController(IHomeOwnerService homeOwnerService) : ControllerBase
     }
 
     [HttpPost("{homesId}/members")]
-    public AddMemberResponse AddMember(string homesId, [FromBody] AddMemberRequest request, AuthorizationFilterContext context)
+    public AddMemberResponse AddMember([FromRoute] string homesId, [FromBody] AddMemberRequest request, AuthorizationFilterContext context)
     {
         var userLoggedIn = context.HttpContext.Items[Item.UserLogged];
         var addMemberArgs = ArgsFromRequest(request, homesId, (BusinessLogic.Users.Entities.User)userLoggedIn!);

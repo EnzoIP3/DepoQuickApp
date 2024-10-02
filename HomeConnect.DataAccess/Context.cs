@@ -1,5 +1,4 @@
-﻿using BusinessLogic;
-using BusinessLogic.BusinessOwners.Entities;
+﻿using BusinessLogic.BusinessOwners.Entities;
 using BusinessLogic.Devices.Entities;
 using BusinessLogic.Notifications.Entities;
 using BusinessLogic.Roles.Entities;

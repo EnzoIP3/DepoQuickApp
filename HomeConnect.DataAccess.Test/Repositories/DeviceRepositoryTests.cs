@@ -73,4 +73,17 @@ public class DeviceRepositoryTests
         // Assert
         result.Should().BeEquivalentTo(device);
     }
+
+    [TestMethod]
+    public void Get_WhenDeviceDoesNotExist_ShouldThrowArgumentException()
+    {
+        // Arrange
+        var nonExistentDeviceId = Guid.NewGuid();
+
+        // Act
+        Action act = () => _deviceRepository.Get(nonExistentDeviceId);
+
+        // Assert
+        act.Should().Throw<ArgumentException>();
+    }
 }

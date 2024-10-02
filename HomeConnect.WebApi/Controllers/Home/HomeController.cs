@@ -20,6 +20,12 @@ public class HomeController(IHomeOwnerService homeOwnerService) : ControllerBase
         return new CreateHomeResponse { Id = homeId.ToString() };
     }
 
+    [HttpPost("{homesId}/members")]
+    public AddMemberResponse AddMember(string homesId, [FromBody] AddMemberRequest request, AuthorizationFilterContext context)
+    {
+        throw new NotImplementedException();
+    }
+
     private CreateHomeArgs HomeArgsFromRequest(CreateHomeRequest request, BusinessLogic.Users.Entities.User user)
     {
         var homeArgs = new CreateHomeArgs

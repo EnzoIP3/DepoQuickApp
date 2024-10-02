@@ -77,4 +77,47 @@ public class HomeControllerTests
         response.Id.Should().Be(home.Id.ToString());
     }
     #endregion
+
+    #region AddMember
+    [TestMethod]
+    public void AddMember_WhenCalledWithValidRequest_ReturnsCreatedResponse()
+    {
+        // Arrange
+        var user = new User("John", "Doe", "email@email.com", "Password@100",
+            new Role { Name = "Admin", Permissions = new List<SystemPermission>() });
+        var home = new Home(user, "Road 123", 123.456, 456.789, 3);
+        var request = new AddMemberRequest
+        {
+            HomeId = home.Id.ToString(),
+            HomeOwnerId = user.Id.ToString(),
+            CanAddDevices = true,
+            CanListDevices = false
+        };
+        var items = new Dictionary<object, object?>
+        {
+            {
+                Item.UserLogged,
+                user
+            }
+        };
+        _httpContextMock.Setup(h => h.Items).Returns(items);
+        var args = new AddMemberArgs
+        {
+            HomeId = home.Id.ToString(),
+            HomeOwnerId = user.Id.ToString(),
+            CanAddDevices = request.CanAddDevices,
+            CanListDevices = request.CanListDevices
+        };
+        _homeOwnerService.Setup(x => x.AddMemberToHome(args)).Returns(user.Id);
+
+        // Act
+        var response = _controller.AddMember(home.Id.ToString(), request, _context);
+
+        // Assert
+        _homeOwnerService.VerifyAll();
+        response.Should().NotBeNull();
+        response.HomeId.Should().Be(home.Id.ToString());
+        response.MemberId.Should().Be(user.Id.ToString());
+    }
+    #endregion
 }

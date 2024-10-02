@@ -22,7 +22,8 @@ public class UserRepository : IUserRepository
 
     public User Get(Guid id)
     {
-        throw new NotImplementedException();
+        var user = _context.Users.FirstOrDefault(u => u.Id == id);
+        return user;
     }
 
     public bool Exists(Guid id)

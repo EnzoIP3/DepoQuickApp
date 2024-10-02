@@ -2,7 +2,7 @@ using BusinessLogic;
 using BusinessLogic.BusinessOwners.Entities;
 using BusinessLogic.BusinessOwners.Repositories;
 
-namespace HomeConnect.DataAccess;
+namespace HomeConnect.DataAccess.BusinessOwners;
 
 public class BusinessRepository : IBusinessRepository
 {

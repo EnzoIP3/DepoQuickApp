@@ -1,7 +1,6 @@
-using BusinessLogic;
 using BusinessLogic.Users.Entities;
 
-namespace HomeConnect.DataAccess;
+namespace HomeConnect.DataAccess.Users;
 
 public class UserRepository
 {

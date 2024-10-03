@@ -5,9 +5,13 @@ namespace BusinessLogic.Sessions.Entities;
 public class Session
 {
     public static int DurationInHours { get; } = 1;
-    public Guid Id { get; } = Guid.NewGuid();
-    public User User { get; }
+    public Guid Id { get; set; } = Guid.NewGuid();
+    public User User { get; } = null!;
     public DateTime CreatedAt { get; init; } = DateTime.UtcNow;
+
+    public Session()
+    {
+    }
 
     public Session(User user)
     {

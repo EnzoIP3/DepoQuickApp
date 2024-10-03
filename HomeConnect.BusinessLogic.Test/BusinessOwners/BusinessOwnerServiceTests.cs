@@ -221,6 +221,22 @@ public class BusinessOwnerServiceTests
             d.IsExterior == false &&
             d.IsInterior == true)));
     }
+
+    [TestMethod]
+    public void CreateCamera_ReturnsCorrectId()
+    {
+        // Arrange
+        var business = new Business("RUTexample", "Business Name", _owner);
+        Camera addedCamera = null;
+        _deviceRepository.Setup(x => x.EnsureDeviceDoesNotExist(It.IsAny<global::BusinessLogic.Devices.Entities.Device>()));
+        _deviceRepository.Setup(x => x.Add(It.IsAny<global::BusinessLogic.Devices.Entities.Device>())).Callback<Device>(d => addedCamera = (Camera)d);
+
+        // Act
+        var returnedId = _businessOwnerService.CreateCamera(DeviceName, ModelNumber, Description, MainPhoto, secondaryPhotos, business, false, false, false, true);
+
+        // Assert
+        Assert.AreEqual(addedCamera.Id, returnedId);
+    }
     #endregion
 
     #region Error

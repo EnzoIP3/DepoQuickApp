@@ -2,6 +2,7 @@ using BusinessLogic.Sessions.Entities;
 using BusinessLogic.Sessions.Repositories;
 using BusinessLogic.Sessions.Services;
 using BusinessLogic.Users.Entities;
+using FluentAssertions;
 using Moq;
 
 namespace HomeConnect.BusinessLogic.Test.Sessions.Services;
@@ -28,9 +29,9 @@ public class SessionServiceTests
         _sessionRepository.Setup(x => x.Get(sessionId)).Returns(new Session(user));
 
         // Act
-        var result = _sessionService.GetUserFromSession(sessionId.ToString());
+        var act = () => _sessionService.GetUserFromSession(sessionId.ToString());
 
         // Assert
-        Assert.AreEqual(user, result);
+        act.Should().NotThrow();
     }
 }

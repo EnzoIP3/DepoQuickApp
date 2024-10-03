@@ -1,5 +1,6 @@
 using BusinessLogic.Sessions.Entities;
 using BusinessLogic.Users.Entities;
+using FluentAssertions;
 
 namespace HomeConnect.BusinessLogic.Test.Sessions.Entities;
 
@@ -13,10 +14,10 @@ public class SessionTests
         var user = new User();
 
         // Act
-        var session = new Session(user);
+        var act = () => new Session(user);
 
         // Assert
-        Assert.IsNotNull(session);
+        act.Should().NotThrow();
     }
 
     [TestMethod]
@@ -30,6 +31,6 @@ public class SessionTests
         var result = session.IsExpired();
 
         // Assert
-        Assert.IsTrue(result);
+        result.Should().BeTrue();
     }
 }

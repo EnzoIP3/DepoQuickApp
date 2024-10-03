@@ -24,7 +24,7 @@ public class SessionTests
     {
         // Arrange
         var user = new User();
-        var session = new Session(user) { CreatedAt = DateTime.UtcNow.AddHours(-1) };
+        var session = new Session(user) { CreatedAt = DateTime.UtcNow.AddHours(-Session.DurationInHours) };
 
         // Act
         var result = session.IsExpired();

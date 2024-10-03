@@ -1,6 +1,7 @@
 using System.Net;
+using BusinessLogic.Session.Repositories;
+using BusinessLogic.Session.Services;
 using BusinessLogic.Users.Entities;
-using HomeConnect.WebApi.Session;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Filters;
 using Microsoft.Extensions.Primitives;
@@ -8,9 +9,9 @@ using Microsoft.Extensions.Primitives;
 namespace HomeConnect.WebApi.Filters;
 
 [AttributeUsage(AttributeTargets.Class | AttributeTargets.Method)]
-public sealed class AuthenticationFilterAttribute(IAuthRepository authRepository) : Attribute, IAuthorizationFilter
+public sealed class AuthenticationFilterAttribute(ISessionRepository sessionRepository) : Attribute, IAuthorizationFilter
 {
-    public IAuthRepository AuthRepository { get; } = authRepository;
+    public ISessionRepository SessionRepository { get; } = sessionRepository;
     private const string AuthorizationHeader = "Authorization";
 
     public void OnAuthorization(AuthorizationFilterContext context)
@@ -105,7 +106,7 @@ public sealed class AuthenticationFilterAttribute(IAuthRepository authRepository
 
     private bool IsAuthorizationExpired(StringValues authorizationHeader)
     {
-        return AuthRepository.IsAuthorizationExpired(authorizationHeader!);
+        return SessionRepository.IsAuthorizationExpired(authorizationHeader!);
     }
 
     private bool IsAuthorizationFormatValid(StringValues authorizationHeader)

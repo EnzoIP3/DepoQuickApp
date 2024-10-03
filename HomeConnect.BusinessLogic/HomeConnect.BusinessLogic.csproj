@@ -7,4 +7,8 @@
         <RootNamespace>BusinessLogic</RootNamespace>
     </PropertyGroup>
 
+    <ItemGroup>
+      <Folder Include="Session\Entities\" />
+    </ItemGroup>
+
 </Project>

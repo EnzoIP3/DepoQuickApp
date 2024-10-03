@@ -1,6 +1,4 @@
 using System.Diagnostics.CodeAnalysis;
-using HomeConnect.WebApi;
-using HomeConnect.WebApi.Filters;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -12,7 +10,6 @@ builder.Services.AddControllers().ConfigureApiBehaviorOptions(options =>
 });
 
 var services = builder.Services;
-services.AddScoped<IAuthRepository, AuthRepository>();
 
 var app = builder.Build();
 

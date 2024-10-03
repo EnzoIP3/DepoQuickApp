@@ -1,6 +1,6 @@
 using BusinessLogic.Users.Entities;
 
-namespace HomeConnect.WebApi.Session;
+namespace BusinessLogic.Session.Services;
 
 public interface ISessionService
 {

@@ -1,10 +1,11 @@
 using System.Net;
 using BusinessLogic.Roles.Entities;
+using BusinessLogic.Session.Repositories;
+using BusinessLogic.Session.Services;
 using BusinessLogic.Users.Entities;
 using BusinessLogic.Users.Models;
 using FluentAssertions;
 using HomeConnect.WebApi.Filters;
-using HomeConnect.WebApi.Session;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Abstractions;
@@ -20,7 +21,7 @@ public class AuthenticationFilterTests
 {
     private Mock<HttpContext> _httpContextMock = null!;
     private Mock<ISessionService> _sessionServiceMock = null!;
-    private Mock<IAuthRepository> _authRepositoryMock = null!;
+    private Mock<ISessionRepository> _authRepositoryMock = null!;
     private AuthorizationFilterContext _context = null!;
     private AuthenticationFilterAttribute _attribute = null;
 
@@ -29,7 +30,7 @@ public class AuthenticationFilterTests
     {
         _httpContextMock = new Mock<HttpContext>(MockBehavior.Strict);
         _sessionServiceMock = new Mock<ISessionService>(MockBehavior.Strict);
-        _authRepositoryMock = new Mock<IAuthRepository>(MockBehavior.Strict);
+        _authRepositoryMock = new Mock<ISessionRepository>(MockBehavior.Strict);
         _attribute = new AuthenticationFilterAttribute(_authRepositoryMock.Object);
 
         _context = new AuthorizationFilterContext(

@@ -13,6 +13,7 @@
 
     <ItemGroup>
       <ProjectReference Include="..\HomeConnect.BusinessLogic\HomeConnect.BusinessLogic.csproj" />
+      <ProjectReference Include="..\HomeConnect.WebApi\HomeConnect.WebApi.csproj" />
     </ItemGroup>
 
 </Project>

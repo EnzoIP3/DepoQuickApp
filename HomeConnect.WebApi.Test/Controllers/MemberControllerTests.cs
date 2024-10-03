@@ -14,7 +14,7 @@ public class MemberControllerTests
     public void Initialize()
     {
         _homeOwnerService = new Mock<IHomeOwnerService>();
-        _memberController = new MemberController();
+        _memberController = new MemberController(_homeOwnerService.Object);
     }
 
     #region UpdateMemberNotifications

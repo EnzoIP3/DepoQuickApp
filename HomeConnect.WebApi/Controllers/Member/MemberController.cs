@@ -8,13 +8,19 @@ namespace HomeConnect.WebApi.Controllers.Member;
 [ApiController]
 [Route("members")]
 [AuthorizationFilter]
-public class MemberController() : ControllerBase
+public class MemberController(IHomeOwnerService homeOwnerService) : ControllerBase
 {
     [HttpPatch("{membersId}/notifications")]
     public UpdateMemberNotificationsResponse UpdateMemberNotifications([FromRoute] string membersId,
         [FromBody] UpdateMemberNotificationsRequest request)
     {
-        throw new NotImplementedException();
+        homeOwnerService.UpdateMemberNotifications(Guid.Parse(membersId), request.ShouldBeNotified);
+        var response = new UpdateMemberNotificationsResponse
+        {
+            MemberId = membersId,
+            ShouldBeNotified = request.ShouldBeNotified
+        };
+        return response;
     }
 }
 

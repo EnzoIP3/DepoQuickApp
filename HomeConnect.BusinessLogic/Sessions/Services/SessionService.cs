@@ -14,8 +14,17 @@ public class SessionService : ISessionService
 
     public User GetUserFromSession(string sessionId)
     {
+        EnsureSessionIdIsValidGuid(sessionId);
         var session = _sessionRepository.Get(Guid.Parse(sessionId));
         return session.User;
+    }
+
+    private static void EnsureSessionIdIsValidGuid(string sessionId)
+    {
+        if (!Guid.TryParse(sessionId, out _))
+        {
+            throw new ArgumentException("Invalid session id");
+        }
     }
 
     public bool IsSessionExpired(string sessionId)

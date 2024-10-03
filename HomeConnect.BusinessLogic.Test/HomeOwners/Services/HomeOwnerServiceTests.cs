@@ -240,6 +240,7 @@ public class HomeOwnerServiceTests
         _deviceRepositoryMock.Setup(x => x.Get(camera.Id)).Returns(camera);
         _homeRepositoryMock.Setup(x => x.Get(home.Id)).Returns(home);
         _ownedDeviceRepositoryMock.Setup(x => x.Add(It.IsAny<OwnedDevice>())).Verifiable();
+        _ownedDeviceRepositoryMock.Setup(x => x.GetOwnedDevicesByHome(home)).Returns(new List<OwnedDevice>());
 
         // Act
         _homeOwnerService.AddDeviceToHome(addDeviceModel);

@@ -103,8 +103,22 @@ public class HomeOwnerService : IHomeOwnerService
     {
         ValidateAddDeviceModel(addDevicesArgs);
         var home = GetHome(addDevicesArgs.HomeId);
+        EnsureDevicesAreNotAdded(addDevicesArgs.DeviceIds, home);
+
         var devices = GetDevices(addDevicesArgs.DeviceIds);
         AddDevicesToHome(home, devices);
+    }
+
+    private void EnsureDevicesAreNotAdded(IEnumerable<string> argsDeviceIds, Home home)
+    {
+        var deviceIds = argsDeviceIds.ToList();
+        var ownedDevices = _ownedDeviceRepository.GetOwnedDevicesByHome(home);
+        var ownedDeviceIds = ownedDevices.Select(od => od.Device.Id.ToString()).ToList();
+        var duplicateDevices = deviceIds.Intersect(ownedDeviceIds).ToList();
+        if (duplicateDevices.Any())
+        {
+            throw new ArgumentException($"Devices with ids {string.Join(", ", duplicateDevices)} are already added to the home");
+        }
     }
 
     private static void ValidateAddDeviceModel(AddDevicesArgs addDevicesArgs)

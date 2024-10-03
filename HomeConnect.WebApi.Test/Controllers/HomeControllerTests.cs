@@ -191,7 +191,22 @@ public class HomeControllerTests
         _homeOwnerService.Setup(x => x.GetHomeMembers(home.Id.ToString()))
             .Returns([member, otherMember]);
 
-        var expectedResponse = new GetMembersResponse
+        var expectedResponse = CreateGetMembersResponse(member, otherMember);
+
+        // Act
+        var response = _controller.GetMembers(home.Id.ToString(), _context);
+
+        // Assert
+        _homeOwnerService.VerifyAll();
+        response.Should().NotBeNull();
+        response.Members.Should().NotBeNullOrEmpty();
+        response.Members.Should().HaveCount(2);
+        response.Members.Should().BeEquivalentTo(expectedResponse.Members);
+    }
+
+    private static GetMembersResponse CreateGetMembersResponse(Member member, Member otherMember)
+    {
+        return new GetMembersResponse
         {
             Members =
             [
@@ -219,17 +234,8 @@ public class HomeControllerTests
 
             ]
         };
-
-        // Act
-        var response = _controller.GetMembers(home.Id.ToString(), _context);
-
-        // Assert
-        _homeOwnerService.VerifyAll();
-        response.Should().NotBeNull();
-        response.Members.Should().NotBeNullOrEmpty();
-        response.Members.Should().HaveCount(2);
-        response.Members.Should().BeEquivalentTo(expectedResponse.Members);
     }
+
     #endregion
 
     #region GetDevices

@@ -1,4 +1,6 @@
+using BusinessLogic;
 using BusinessLogic.Admins.Services;
+using BusinessLogic.BusinessOwners.Services;
 using BusinessLogic.Users.Models;
 using HomeConnect.WebApi.Filters;
 using Microsoft.AspNetCore.Mvc;
@@ -27,5 +29,12 @@ public class BusinessOwnerController(IAdminService adminService) : ControllerBas
             Password = request.Password
         };
         return userModel;
+    }
+
+    [HttpPost]
+    [Route("businesses")]
+    public CreateBusinessOwnerResponse CreateBusiness([FromBody] CreateBusinessRequest request, [FromHeader] string authorization)
+    {
+        throw new NotImplementedException();
     }
 }

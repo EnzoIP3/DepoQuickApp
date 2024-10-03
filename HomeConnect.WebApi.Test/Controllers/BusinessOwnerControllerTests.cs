@@ -1,4 +1,7 @@
 using BusinessLogic.Admins.Services;
+using BusinessLogic.BusinessOwners.Entities;
+using BusinessLogic.BusinessOwners.Services;
+using BusinessLogic.Users.Entities;
 using BusinessLogic.Users.Models;
 using FluentAssertions;
 using HomeConnect.WebApi.Controllers.BusinessOwner;
@@ -10,12 +13,14 @@ namespace HomeConnect.WebApi.Test.Controllers;
 public class BusinessOwnerControllerTests
 {
     private Mock<IAdminService> _adminService = null!;
+    private Mock<IBusinessOwnerService> _businessOwnerService = null!;
     private BusinessOwnerController _controller = null!;
 
     [TestInitialize]
     public void Initialize()
     {
         _adminService = new Mock<IAdminService>();
+        _businessOwnerService = new Mock<IBusinessOwnerService>();
         _controller = new BusinessOwnerController(_adminService.Object);
     }
 
@@ -47,5 +52,32 @@ public class BusinessOwnerControllerTests
         _adminService.VerifyAll();
         response.Should().NotBeNull();
         response.Id.Should().Be(guid.ToString());
+    }
+
+    [TestMethod]
+    public void CreateBusiness_WhenCalledWithValidRequest_ReturnsCreatedResponse()
+    {
+        // Arrange
+        var request = new CreateBusinessRequest
+        {
+            Name = "OSE",
+            Rut = "306869575",
+            Owner = new User { Id = Guid.NewGuid() }
+        };
+        var business = new Business
+        {
+            Name = request.Name,
+            Rut = request.Rut,
+            Owner = request.Owner
+        };
+        _businessOwnerService.Setup(x => x.CreateBusiness(business.Owner.Email, business.Rut, business.Name)).Returns(business.Rut);
+
+        // Act
+        var response = _controller.CreateBusiness(request, $"Bearer {business.Owner.Id}");
+
+        // Assert
+        _businessOwnerService.VerifyAll();
+        response.Should().NotBeNull();
+        response.Id.Should().Be(business.Rut);
     }
 }

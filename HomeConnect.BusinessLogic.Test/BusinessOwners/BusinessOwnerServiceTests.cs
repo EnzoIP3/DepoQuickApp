@@ -1,6 +1,7 @@
 ﻿using BusinessLogic.BusinessOwners.Entities;
 using BusinessLogic.BusinessOwners.Repositories;
 using BusinessLogic.BusinessOwners.Services;
+using BusinessLogic.Devices.Entities;
 using BusinessLogic.Devices.Repositories;
 using BusinessLogic.Roles.Repositories;
 using BusinessLogic.Users.Repositories;
@@ -223,6 +224,22 @@ public class BusinessOwnerServiceTests
     #endregion
 
     #region Error
+    [TestMethod]
+    public void CreateCamera_WhenCameraAlreadyExists_ThrowsException()
+    {
+        // Arrange
+        var business = new Business("RUTexample", "Business Name", _owner);
+        var existingCamera = new Camera(DeviceName, ModelNumber, Description, MainPhoto, secondaryPhotos, business, false, false, false, true);
+        _deviceRepository.Setup(x => x.EnsureDeviceDoesNotExist(It.IsAny<global::BusinessLogic.Devices.Entities.Device>())).Throws(new ArgumentException("Device already exists"));
+        _deviceRepository.Setup(x => x.Add(It.IsAny<global::BusinessLogic.Devices.Entities.Device>()));
+
+        // Act
+        Action act = () => _businessOwnerService.CreateCamera(DeviceName, ModelNumber, Description, MainPhoto, secondaryPhotos, business, false, false, false, true);
+
+        // Assert
+        act.Should().Throw<ArgumentException>().WithMessage("Device already exists");
+        _deviceRepository.Verify(x => x.Add(It.IsAny<global::BusinessLogic.Devices.Entities.Device>()), Times.Never);
+    }
     #endregion
 
     #endregion

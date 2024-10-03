@@ -12,9 +12,10 @@ public class SessionService : ISessionService
         _sessionRepository = sessionRepository;
     }
 
-    public User? GetUserFromSession(string sessionId)
+    public User GetUserFromSession(string sessionId)
     {
-        throw new NotImplementedException();
+        var session = _sessionRepository.Get(Guid.Parse(sessionId));
+        return session.User;
     }
 
     public bool IsSessionExpired(string sessionId)

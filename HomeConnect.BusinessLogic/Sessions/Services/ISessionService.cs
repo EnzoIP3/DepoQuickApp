@@ -4,5 +4,6 @@ namespace BusinessLogic.Sessions.Services;
 
 public interface ISessionService
 {
-    User? GetUserByToken(string token);
+    User? GetUserFromSession(string sessionId);
+    bool IsSessionExpired(string sessionId);
 }

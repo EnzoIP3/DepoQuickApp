@@ -1,6 +1,9 @@
+using BusinessLogic.Sessions.Entities;
+
 namespace BusinessLogic.Sessions.Repositories;
 
 public interface ISessionRepository
 {
-    bool IsAuthorizationExpired(string authorizationHeader);
+    Session Get(Guid sessionId);
+    void Add(Session session);
 }

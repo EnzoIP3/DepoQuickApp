@@ -21,17 +21,15 @@ public class AuthenticationFilterTests
 {
     private Mock<HttpContext> _httpContextMock = null!;
     private Mock<ISessionService> _sessionServiceMock = null!;
-    private Mock<ISessionRepository> _authRepositoryMock = null!;
     private AuthorizationFilterContext _context = null!;
-    private AuthenticationFilterAttribute _attribute = null;
+    private AuthenticationFilterAttribute _attribute = null!;
 
     [TestInitialize]
     public void Initialize()
     {
         _httpContextMock = new Mock<HttpContext>(MockBehavior.Strict);
         _sessionServiceMock = new Mock<ISessionService>(MockBehavior.Strict);
-        _authRepositoryMock = new Mock<ISessionRepository>(MockBehavior.Strict);
-        _attribute = new AuthenticationFilterAttribute(_authRepositoryMock.Object);
+        _attribute = new AuthenticationFilterAttribute();
 
         _context = new AuthorizationFilterContext(
             new ActionContext(
@@ -42,6 +40,7 @@ public class AuthenticationFilterTests
     }
 
     #region Error
+
     [TestMethod]
     public void OnAuthorization_WhenEmptyHeaders_ShouldReturnUnauthenticatedResponse()
     {
@@ -99,7 +98,8 @@ public class AuthenticationFilterTests
         concreteResponse.Should().NotBeNull();
         concreteResponse.StatusCode.Should().Be((int)HttpStatusCode.Unauthorized);
         FilterTestsUtils.GetInnerCode(concreteResponse.Value).Should().Be("InvalidAuthorization");
-        FilterTestsUtils.GetMessage(concreteResponse.Value).Should().Be("The provided authorization header format is invalid");
+        FilterTestsUtils.GetMessage(concreteResponse.Value).Should()
+            .Be("The provided authorization header format is invalid");
     }
 
     [TestMethod]
@@ -110,14 +110,16 @@ public class AuthenticationFilterTests
         {
             { "Authorization", $"Bearer {guid}" }
         }));
-        _authRepositoryMock.Setup(a => a.IsAuthorizationExpired($"Bearer {guid}")).Returns(true);
+        _httpContextMock.Setup(h => h.RequestServices.GetService(typeof(ISessionService)))
+            .Returns(_sessionServiceMock.Object);
+        _sessionServiceMock.Setup(a => a.IsSessionExpired(guid)).Returns(true);
 
         _attribute.OnAuthorization(_context);
 
         var response = _context.Result;
 
         _httpContextMock.VerifyAll();
-        _authRepositoryMock.VerifyAll();
+        _sessionServiceMock.VerifyAll();
         response.Should().NotBeNull();
         var concreteResponse = response as ObjectResult;
         concreteResponse.Should().NotBeNull();
@@ -134,15 +136,16 @@ public class AuthenticationFilterTests
         {
             { "Authorization", $"Bearer {guid}" }
         }));
-        _authRepositoryMock.Setup(a => a.IsAuthorizationExpired($"Bearer {guid}")).Returns(false);
-        _httpContextMock.Setup(h => h.RequestServices.GetService(typeof(ISessionService))).Returns(_sessionServiceMock.Object);
-        _sessionServiceMock.Setup(a => a.GetUserByToken(guid)).Returns((User?)null);
+        _sessionServiceMock.Setup(a => a.IsSessionExpired(guid)).Returns(false);
+        _httpContextMock.Setup(h => h.RequestServices.GetService(typeof(ISessionService)))
+            .Returns(_sessionServiceMock.Object);
+        _sessionServiceMock.Setup(a => a.GetUserFromSession(guid)).Returns((User?)null);
         _attribute.OnAuthorization(_context);
 
         var response = _context.Result;
 
         _httpContextMock.VerifyAll();
-        _authRepositoryMock.VerifyAll();
+        _sessionServiceMock.VerifyAll();
         response.Should().NotBeNull();
         var concreteResponse = response as ObjectResult;
         concreteResponse.Should().NotBeNull();
@@ -150,6 +153,7 @@ public class AuthenticationFilterTests
         FilterTestsUtils.GetInnerCode(concreteResponse.Value).Should().Be("Unauthenticated");
         FilterTestsUtils.GetMessage(concreteResponse.Value).Should().Be("You are not authenticated");
     }
+
     #endregion
 
     #region Success
@@ -173,21 +177,23 @@ public class AuthenticationFilterTests
         var adminRole = new Role("Admin", []);
         var user = new User(validUserModel.Name, validUserModel.Surname, validUserModel.Email, validUserModel.Password,
             adminRole);
-        _authRepositoryMock.Setup(a => a.IsAuthorizationExpired($"Bearer {guid}")).Returns(false);
-        _sessionServiceMock.Setup(a => a.GetUserByToken(guid)).Returns(user);
+        _sessionServiceMock.Setup(a => a.IsSessionExpired(guid)).Returns(false);
+        _sessionServiceMock.Setup(a => a.GetUserFromSession(guid)).Returns(user);
         var items = new Dictionary<object, object> { { Item.UserLogged, user } };
         _httpContextMock.Setup(h => h.Items).Returns(items);
-        _httpContextMock.Setup(h => h.RequestServices.GetService(typeof(ISessionService))).Returns(_sessionServiceMock.Object);
+        _httpContextMock.Setup(h => h.RequestServices.GetService(typeof(ISessionService)))
+            .Returns(_sessionServiceMock.Object);
 
         _attribute.OnAuthorization(_context);
 
         _httpContextMock.VerifyAll();
-        _authRepositoryMock.VerifyAll();
+        _sessionServiceMock.VerifyAll();
 
         _context.HttpContext.Items[Item.UserLogged].Should().NotBeNull();
         var userLogged = _context.HttpContext.Items[Item.UserLogged] as User;
         userLogged.Should().NotBeNull();
         userLogged.Should().Be(user);
     }
+
     #endregion
 }

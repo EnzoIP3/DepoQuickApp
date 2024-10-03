@@ -44,6 +44,7 @@ public class HomeOwnerService : IHomeOwnerService
     {
         EnsureAddMemberModelIsValid(args);
         EnsureGuidIsValid(args.HomeId);
+        EnsureMemberIsNotAlreadyAdded(args);
         var user = _userRepository.Get(Guid.Parse(args.HomeOwnerId));
         var home = _homeRepository.Get(Guid.Parse(args.HomeId));
         var permissions = new List<HomePermission>();
@@ -61,6 +62,15 @@ public class HomeOwnerService : IHomeOwnerService
         var member = new Member(user, permissions);
         home.AddMember(member);
         return user.Id;
+    }
+
+    private void EnsureMemberIsNotAlreadyAdded(AddMemberArgs args)
+    {
+        var home = GetHome(args.HomeId);
+        if (home.Members.Any(m => m.User.Id.ToString() == args.HomeOwnerId))
+        {
+            throw new ArgumentException("Member is already added to the home");
+        }
     }
 
     private static void EnsureGuidIsValid(string homeId)

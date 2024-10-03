@@ -5,6 +5,8 @@ using BusinessLogic.HomeOwners.Entities;
 using BusinessLogic.HomeOwners.Models;
 using BusinessLogic.HomeOwners.Repositories;
 using BusinessLogic.HomeOwners.Services;
+using BusinessLogic.Roles.Entities;
+using BusinessLogic.Users.Entities;
 using BusinessLogic.Users.Repositories;
 using FluentAssertions;
 using Moq;
@@ -162,6 +164,31 @@ public class HomeOwnerServiceTests
 
         // Assert
         act.Should().Throw<ArgumentException>();
+    }
+
+    [TestMethod]
+    public void AddMemberToHome_WhenMemberIsAlreadyAdded_ThrowsException()
+    {
+        // Arrange
+        var invitedUser = new User("name", "surname", "email1@email.com", "Password@100",
+            new Role { Name = "HomeOwner", Permissions = new List<SystemPermission>() });
+        var home = new Home(_user, "Main St 123", 1.0, 2.0, 5);
+        var member = new Member(invitedUser);
+        home.AddMember(member);
+        var args = new AddMemberArgs
+        {
+            HomeId = home.Id.ToString(),
+            HomeOwnerId = invitedUser.Id.ToString(),
+            CanAddDevices = true,
+            CanListDevices = true
+        };
+        _homeRepositoryMock.Setup(x => x.Get(home.Id)).Returns(home);
+
+        // Act
+        var act = () => _homeOwnerService.AddMemberToHome(args);
+
+        // Assert
+        act.Should().Throw<ArgumentException>().WithMessage("Member is already added to the home");
     }
 
     #endregion

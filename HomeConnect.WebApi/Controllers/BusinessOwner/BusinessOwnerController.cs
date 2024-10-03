@@ -52,6 +52,20 @@ public class BusinessOwnerController(IAdminService adminService, IBusinessOwnerS
     [Route("devices")]
     public CreateDeviceResponse CreateDevice([FromBody] CreateDeviceRequest request, [FromHeader] string authorization)
     {
-        throw new NotImplementedException();
+        var device = new Device
+        {
+            Business = request.Business,
+            Description = request.Description,
+            MainPhoto = request.MainPhoto,
+            ModelNumber = request.ModelNumber,
+            Name = request.Name,
+            SecondaryPhotos = request.SecondaryPhotos,
+            Type = request.Type,
+            Id = request.Id
+        };
+
+        var createdDevice = businessOwnerService.CreateDevice(device.Name, device.ModelNumber, device.Description, device.MainPhoto, device.SecondaryPhotos, device.Type, device.Business);
+
+        return new CreateDeviceResponse { Id = createdDevice };
     }
 }

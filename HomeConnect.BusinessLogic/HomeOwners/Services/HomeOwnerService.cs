@@ -141,5 +141,10 @@ public class HomeOwnerService : IHomeOwnerService
             member.AddPermission(new HomePermission("shouldBeNotified"));
             _homeRepository.UpdateMember(member);
         }
+        else if (!requestShouldBeNotified && hasPermission)
+        {
+            member.DeletePermission(new HomePermission("shouldBeNotified"));
+            _homeRepository.UpdateMember(member);
+        }
     }
 }

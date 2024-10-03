@@ -1,3 +1,4 @@
+using BusinessLogic.BusinessOwners.Entities;
 using BusinessLogic.Devices.Entities;
 using BusinessLogic.HomeOwners.Entities;
 using BusinessLogic.HomeOwners.Models;
@@ -121,6 +122,49 @@ public class HomeControllerTests
         response.Should().NotBeNull();
         response.HomeId.Should().Be(_home.Id.ToString());
         response.MemberId.Should().Be(_user.Id.ToString());
+    }
+    #endregion
+    #region AddDevices
+
+    [TestMethod]
+    public void AddDevices_WhenCalledWithValidRequest_ReturnsOkResponse()
+    {
+        // Arrange
+        var businessOwner = new User("Business", "Owner", "bo@email.com", "Password@100",
+            new Role { Name = "BusinessOwner", Permissions = [] });
+        var business = new Business("123456789123", "business", businessOwner);
+        var sensor = new Device("sensor", 123, "a camera", "https://www.example.com/photo1.jpg", new List<string>(),
+            "sensor", business);
+        var camera = new Camera("camera", 123, "a camera", "https://www.example.com/photo1.jpg", new List<string>(),
+            business, true, true, false, true);
+
+        var request = new AddDevicesRequest
+        {
+            DeviceIds = new List<string> { sensor.Id.ToString(), camera.Id.ToString() }
+        };
+        var items = new Dictionary<object, object?>
+        {
+            {
+                Item.UserLogged,
+                _user
+            }
+        };
+        _httpContextMock.Setup(h => h.Items).Returns(items);
+        var args = new AddDevicesArgs
+        {
+            HomeId = _home.Id.ToString(),
+            DeviceIds = request.DeviceIds
+        };
+        _homeOwnerService.Setup(x => x.AddDeviceToHome(args));
+
+        // Act
+        var response = _controller.AddDevices(_home.Id.ToString(), request);
+
+        // Assert
+        _homeOwnerService.VerifyAll();
+        response.Should().NotBeNull();
+        response.DeviceIds.Should().BeEquivalentTo(request.DeviceIds);
+        response.HomeId.Should().Be(_home.Id.ToString());
     }
     #endregion
 

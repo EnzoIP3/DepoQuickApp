@@ -88,4 +88,10 @@ public class HomeController(IHomeOwnerService homeOwnerService) : ControllerBase
         }).ToList();
         return new GetDevicesResponse { Device = deviceInfos };
     }
+
+    [HttpPost("{homesId}/devices")]
+    public AddDevicesResponse AddDevices([FromRoute] string homesId, AddDevicesRequest request)
+    {
+        throw new NotImplementedException();
+    }
 }

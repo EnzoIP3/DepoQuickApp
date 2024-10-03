@@ -53,4 +53,10 @@ public class HomeController(IHomeOwnerService homeOwnerService) : ControllerBase
         };
         return homeArgs;
     }
+
+    [HttpGet("{homesId}/members")]
+    public GetMembersResponse GetMembers([FromRoute] string homesId, AuthorizationFilterContext context)
+    {
+        throw new NotImplementedException();
+    }
 }

@@ -75,6 +75,16 @@ public class HomeController(IHomeOwnerService homeOwnerService) : ControllerBase
     [HttpGet("{homesId}/devices")]
     public GetDevicesResponse GetDevices([FromRoute] string homesId, AuthorizationFilterContext context)
     {
-        throw new NotImplementedException();
+        var userLoggedIn = context.HttpContext.Items[Item.UserLogged];
+        var devices = homeOwnerService.GetHomeDevices(homesId);
+        var deviceInfos = devices.Select(d => new ListDeviceInfo
+        {
+            Name = d.Device.Name,
+            Type = d.Device.Type,
+            ModelNumber = d.Device.ModelNumber,
+            Photo = d.Device.MainPhoto,
+            IsConnected = d.Connected
+        }).ToList();
+        return new GetDevicesResponse { Device = deviceInfos };
     }
 }

@@ -1,6 +1,7 @@
 using BusinessLogic.Admins.Services;
 using BusinessLogic.BusinessOwners.Entities;
 using BusinessLogic.BusinessOwners.Services;
+using BusinessLogic.Devices.Entities;
 using BusinessLogic.Users.Entities;
 using BusinessLogic.Users.Models;
 using FluentAssertions;
@@ -79,5 +80,40 @@ public class BusinessOwnerControllerTests
         _businessOwnerService.VerifyAll();
         response.Should().NotBeNull();
         response.Id.Should().Be(business.Rut);
+    }
+
+    [TestMethod]
+    public void CreateDevice_WhenCalledWithValidRequest_ReturnsCreatedResponse()
+    {
+        // Arrange
+        var request = new CreateDeviceRequest
+        {
+            Name = "Device1",
+            ModelNumber = 123,
+            Description = "Test device",
+            MainPhoto = "https://www.example.com/photo1.jpg",
+            SecondaryPhotos = new List<string> {},
+            Type = "Camera",
+            Business = new Business()
+        };
+        var device = new Device
+        {
+            Name = request.Name,
+            ModelNumber = request.ModelNumber,
+            Description = request.Description,
+            MainPhoto = request.MainPhoto,
+            SecondaryPhotos = request.SecondaryPhotos,
+            Type = request.Type,
+            Business = request.Business
+        };
+        _businessOwnerService.Setup(x => x.CreateDevice(device.Name, device.ModelNumber, device.Description, device.MainPhoto, device.SecondaryPhotos, device.Type, device.Business)).Returns(device.Id);
+
+        // Act
+        var response = _controller.CreateDevice(request, $"Bearer {device.Id}");
+
+        // Assert
+        _businessOwnerService.VerifyAll();
+        response.Should().NotBeNull();
+        response.Id.Should().Be(device.Id);
     }
 }

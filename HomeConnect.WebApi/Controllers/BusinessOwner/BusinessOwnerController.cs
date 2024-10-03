@@ -47,4 +47,11 @@ public class BusinessOwnerController(IAdminService adminService, IBusinessOwnerS
 
         return new CreateBusinessResponse { Id = createdBusiness };
     }
+
+    [HttpPost]
+    [Route("devices")]
+    public CreateDeviceResponse CreateDevice([FromBody] CreateDeviceRequest request, [FromHeader] string authorization)
+    {
+        throw new NotImplementedException();
+    }
 }

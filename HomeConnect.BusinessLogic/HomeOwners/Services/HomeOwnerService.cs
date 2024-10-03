@@ -134,5 +134,12 @@ public class HomeOwnerService : IHomeOwnerService
         {
             throw new ArgumentException("Member does not exist");
         }
+
+        var hasPermission = member.HasPermission(new HomePermission("shouldBeNotified"));
+        if (requestShouldBeNotified && !hasPermission)
+        {
+            member.AddPermission(new HomePermission("shouldBeNotified"));
+            _homeRepository.UpdateMember(member);
+        }
     }
 }

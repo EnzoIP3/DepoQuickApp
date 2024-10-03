@@ -7,4 +7,5 @@ public interface IHomeRepository
     void Add(Home home);
     Home Get(Guid homeId);
     Member GetMemberById(Guid memberId);
+    void UpdateMember(Member member);
 }

@@ -334,5 +334,30 @@ public class HomeOwnerServiceTests
         act.Should().Throw<ArgumentException>().WithMessage("Member does not exist");
     }
     #endregion
+
+    #region success
+
+    [TestMethod]
+    public void UpdateMemberNotifications_WhenMemberDoesNotHavePermissionAndRequestShouldBeNotifiedIsTrue_AddsPermission()
+    {
+        // Arrange
+        var member = new Member(_user);
+        var memberId = member.Id;
+        _homeRepositoryMock.Setup(x => x.GetMemberById(memberId)).Returns(member);
+        var permissionList = new List<HomePermission> { new HomePermission("shouldBeNotified") };
+
+        _homeRepositoryMock.Setup(x =>
+            x.UpdateMember(It.Is<Member>(x =>
+                x.User == _user && x.HomePermissions.First().Value == "shouldBeNotified")));
+
+        // Act
+        _homeOwnerService.UpdateMemberNotifications(memberId, true);
+
+        // Assert
+        _homeRepositoryMock.VerifyAll();
+        member.HomePermissions.Should().BeEquivalentTo(permissionList);
+    }
+
+    #endregion
     #endregion
 }

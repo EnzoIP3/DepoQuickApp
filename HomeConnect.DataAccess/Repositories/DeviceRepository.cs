@@ -1,7 +1,7 @@
 using BusinessLogic.Devices.Entities;
 using BusinessLogic.Devices.Repositories;
 
-namespace HomeConnect.DataAccess.Devices;
+namespace HomeConnect.DataAccess.Repositories;
 
 public class DeviceRepository : IDeviceRepository
 {
@@ -14,7 +14,7 @@ public class DeviceRepository : IDeviceRepository
 
     public Device Get(Guid deviceId)
     {
-        var device = _context.Devices.FirstOrDefault(d => d.Id == deviceId);
+        Device? device = _context.Devices.FirstOrDefault(d => d.Id == deviceId);
         if (device == null)
         {
             throw new ArgumentException("Device does not exist");

@@ -1,7 +1,7 @@
 using BusinessLogic.Roles.Entities;
 using BusinessLogic.Users.Entities;
 using FluentAssertions;
-using HomeConnect.DataAccess.Users;
+using HomeConnect.DataAccess.Repositories;
 
 namespace HomeConnect.DataAccess.Test.Users;
 
@@ -131,7 +131,7 @@ public class UserRepositoryTest
     public void GetUsers_WhenCalled_ReturnsPaginatedUsers()
     {
         // Act
-        var result = _userRepository.GetUsers(1, 2);
+        var result = _userRepository.GetAllPaged(1, 2);
 
         // Assert
         result.Data.Should().HaveCount(2);
@@ -142,7 +142,7 @@ public class UserRepositoryTest
     public void GetUsers_WhenFilteredByFullName_ReturnsFilteredUsers()
     {
         // Act
-        var result = _userRepository.GetUsers(1, 10, fullNameFilter: "Jane");
+        var result = _userRepository.GetAllPaged(1, 10, fullNameFilter: "Jane");
 
         // Assert
         result.Data.Should().HaveCount(1);
@@ -153,7 +153,7 @@ public class UserRepositoryTest
     public void GetUsers_WhenFilteredByFullNameAndRole_ReturnsFilteredUsers()
     {
         // Act
-        var result = _userRepository.GetUsers(1, 10, "J", "Admin");
+        var result = _userRepository.GetAllPaged(1, 10, "J", "Admin");
 
         // Assert
         result.Data.Should().HaveCount(1);

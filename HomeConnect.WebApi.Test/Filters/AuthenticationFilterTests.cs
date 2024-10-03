@@ -1,7 +1,7 @@
 using System.Net;
 using BusinessLogic.Roles.Entities;
-using BusinessLogic.Session.Repositories;
-using BusinessLogic.Session.Services;
+using BusinessLogic.Sessions.Repositories;
+using BusinessLogic.Sessions.Services;
 using BusinessLogic.Users.Entities;
 using BusinessLogic.Users.Models;
 using FluentAssertions;

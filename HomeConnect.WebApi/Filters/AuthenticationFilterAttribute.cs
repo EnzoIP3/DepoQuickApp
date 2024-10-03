@@ -1,6 +1,6 @@
 using System.Net;
-using BusinessLogic.Session.Repositories;
-using BusinessLogic.Session.Services;
+using BusinessLogic.Sessions.Repositories;
+using BusinessLogic.Sessions.Services;
 using BusinessLogic.Users.Entities;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Filters;

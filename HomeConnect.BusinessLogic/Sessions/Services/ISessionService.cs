@@ -1,6 +1,6 @@
 using BusinessLogic.Users.Entities;
 
-namespace BusinessLogic.Session.Services;
+namespace BusinessLogic.Sessions.Services;
 
 public interface ISessionService
 {

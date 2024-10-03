@@ -1,4 +1,4 @@
-using BusinessLogic.Session.Repositories;
+using BusinessLogic.Sessions.Repositories;
 using BusinessLogic.Users.Entities;
 
 namespace HomeConnect.DataAccess.Repositories;

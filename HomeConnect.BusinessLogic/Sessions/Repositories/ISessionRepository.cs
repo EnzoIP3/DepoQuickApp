@@ -1,4 +1,4 @@
-namespace BusinessLogic.Session.Repositories;
+namespace BusinessLogic.Sessions.Repositories;
 
 public interface ISessionRepository
 {

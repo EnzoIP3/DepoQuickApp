@@ -57,6 +57,18 @@ public class HomeController(IHomeOwnerService homeOwnerService) : ControllerBase
     [HttpGet("{homesId}/members")]
     public GetMembersResponse GetMembers([FromRoute] string homesId, AuthorizationFilterContext context)
     {
-        throw new NotImplementedException();
+        var userLoggedIn = context.HttpContext.Items[Item.UserLogged];
+        var members = homeOwnerService.GetHomeMembers(homesId);
+        var memberInfos = members.Select(m => new ListMemberInfo
+        {
+            Id = m.User.Id.ToString(),
+            Name = m.User.Name,
+            Surname = m.User.Surname,
+            Photo = m.User.ProfilePhoto,
+            CanAddDevices = m.HasPermission(new BusinessLogic.HomeOwners.Entities.HomePermission("canAddDevices")),
+            CanListDevices = m.HasPermission(new BusinessLogic.HomeOwners.Entities.HomePermission("canListDevices")),
+            ShouldBeNotified = m.HasPermission(new BusinessLogic.HomeOwners.Entities.HomePermission("shouldBeNotified"))
+        }).ToList();
+        return new GetMembersResponse { Members = memberInfos };
     }
 }

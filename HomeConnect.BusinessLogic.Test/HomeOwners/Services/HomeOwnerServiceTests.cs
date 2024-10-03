@@ -279,6 +279,24 @@ public class HomeOwnerServiceTests
         act.Should().Throw<ArgumentException>();
     }
 
+    [TestMethod]
+    public void AddDevicesToHome_WhenAtLeastOneDevicesIsAlreadyAdded_ThrowsException()
+    {
+        // Arrange
+        var home = new Home(_user, "Main St 123", 1.0, 2.0, 5);
+        var device = new Device("Sensor", 1, "A sensor", "https://example.com/image.png", [], "Sensor", new Business());
+        Device camera = new Camera("Camera", 2, "A camera", "https://example.com/image.png", [], new Business(), true,
+            true, true, true);
+        var deviceIdList = new List<string> { device.Id.ToString(), camera.Id.ToString() };
+        _homeRepositoryMock.Setup(x => x.Get(home.Id)).Returns(home);
+        _ownedDeviceRepositoryMock.Setup(x => x.GetOwnedDevicesByHome(home)).Returns(new List<OwnedDevice> { new OwnedDevice(home, device) });
+
+        // Act
+        var act = () => _homeOwnerService.AddDeviceToHome(new AddDevicesArgs { HomeId = home.Id.ToString(), DeviceIds = deviceIdList });
+
+        // Assert
+        act.Should().Throw<ArgumentException>().WithMessage($"Devices with ids {device.Id.ToString()} are already added to the home");
+    }
     #endregion
 
     #endregion

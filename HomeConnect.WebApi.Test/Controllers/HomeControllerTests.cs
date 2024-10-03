@@ -1,3 +1,4 @@
+using BusinessLogic.Devices.Entities;
 using BusinessLogic.HomeOwners.Entities;
 using BusinessLogic.HomeOwners.Models;
 using BusinessLogic.Roles.Entities;
@@ -128,31 +129,30 @@ public class HomeControllerTests
     {
         // Arrange
         var owner = new User("owner", "owner", "email@email.com", "Password@100",
-            new Role { Name = "HomeOwner", Permissions = new List<SystemPermission>() });
+            new Role { Name = "HomeOwner", Permissions = [] });
         var user = new User("John", "Doe", "email1@email.com", "Password@100",
-            new Role { Name = "HomeOwner", Permissions = new List<SystemPermission>() });
+            new Role { Name = "HomeOwner", Permissions = [] });
         var otherUser = new User("Jane", "Doe", "email2@email.com", "Password@100",
-            new Role { Name = "HomeOwner", Permissions = new List<SystemPermission>() });
+            new Role { Name = "HomeOwner", Permissions = [] });
         var home = new Home(owner, "Road 123", 123.456, 456.789, 3);
         var member = new Member(user,
-            new List<HomePermission>
-            {
-                new HomePermission("canAddDevices"),
-                new HomePermission("canListDevices"),
-                new HomePermission("shouldBeNotified")
-            });
-        var otherMember = new Member(otherUser, new List<HomePermission> { new HomePermission("canAddDevices"), });
+        [
+            new HomePermission("canAddDevices"),
+            new HomePermission("canListDevices"),
+            new HomePermission("shouldBeNotified")
+        ]);
+        var otherMember = new Member(otherUser, [new HomePermission("canAddDevices")]);
         home.AddMember(member);
         home.AddMember(otherMember);
         var items = new Dictionary<object, object?> { { Item.UserLogged, user } };
         _httpContextMock.Setup(h => h.Items).Returns(items);
         _homeOwnerService.Setup(x => x.GetHomeMembers(home.Id.ToString()))
-            .Returns(new List<Member> { member, otherMember });
+            .Returns([member, otherMember]);
 
         var expectedResponse = new GetMembersResponse
         {
-            Members = new List<ListMemberInfo>
-            {
+            Members =
+            [
                 new ListMemberInfo
                 {
                     Id = member.User.Id.ToString(),
@@ -163,6 +163,7 @@ public class HomeControllerTests
                     CanListDevices = member.HasPermission(new HomePermission("canListDevices")),
                     ShouldBeNotified = member.HasPermission(new HomePermission("shouldBeNotified"))
                 },
+
                 new ListMemberInfo
                 {
                     Id = otherMember.User.Id.ToString(),
@@ -173,7 +174,8 @@ public class HomeControllerTests
                     CanListDevices = otherMember.HasPermission(new HomePermission("canListDevices")),
                     ShouldBeNotified = otherMember.HasPermission(new HomePermission("shouldBeNotified"))
                 }
-            }
+
+            ]
         };
 
         // Act
@@ -186,6 +188,64 @@ public class HomeControllerTests
         response.Members.Should().HaveCount(2);
         response.Members.Should().BeEquivalentTo(expectedResponse.Members);
     }
+    #endregion
 
+    #region GetDevices
+
+    [TestMethod]
+    public void GetDevices_WhenCalledWithValidRequest_ReturnsDevices()
+    {
+        // Arrange
+        var user = new User("John", "Doe", "email@email.com", "Password@100",
+            new Role { Name = "Admin", Permissions = new List<SystemPermission>() });
+        var home = new Home(user, "Road 123", 123.456, 456.789, 3);
+        var device1 = new OwnedDevice(home,
+            new Device
+            {
+                Name = "Device1", Type = "Type1", ModelNumber = 1, MainPhoto = "https://www.example.com/photo1.jpg"
+            });
+        var device2 = new OwnedDevice(home,
+            new Device
+            {
+                Name = "Device2", Type = "Type2", ModelNumber = 2, MainPhoto = "https://www.example.com/photo2.jpg"
+            });
+        var items = new Dictionary<object, object?> { { Item.UserLogged, user } };
+        _httpContextMock.Setup(h => h.Items).Returns(items);
+        _homeOwnerService.Setup(x => x.GetHomeDevices(home.Id.ToString()))
+            .Returns(new List<OwnedDevice> { device1, device2 });
+
+        var expectedResponse = new GetDevicesResponse
+        {
+            Device = new List<ListDeviceInfo>
+            {
+                new ListDeviceInfo
+                {
+                    Name = device1.Device.Name,
+                    Type = device1.Device.Type,
+                    ModelNumber = device1.Device.ModelNumber,
+                    Photo = device1.Device.MainPhoto,
+                    IsConnected = device1.Connected
+                },
+                new ListDeviceInfo
+                {
+                    Name = device2.Device.Name,
+                    Type = device2.Device.Type,
+                    ModelNumber = device2.Device.ModelNumber,
+                    Photo = device2.Device.MainPhoto,
+                    IsConnected = device2.Connected
+                }
+            }
+        };
+
+        // Act
+        var response = _controller.GetDevices(home.Id.ToString(), _context);
+
+        // Assert
+        _homeOwnerService.VerifyAll();
+        response.Should().NotBeNull();
+        response.Device.Should().NotBeNullOrEmpty();
+        response.Device.Should().HaveCount(2);
+        response.Device.Should().BeEquivalentTo(expectedResponse.Device);
+    }
     #endregion
 }

@@ -71,4 +71,10 @@ public class HomeController(IHomeOwnerService homeOwnerService) : ControllerBase
         }).ToList();
         return new GetMembersResponse { Members = memberInfos };
     }
+
+    [HttpGet("{homesId}/devices")]
+    public GetDevicesResponse GetDevices([FromRoute] string homesId, AuthorizationFilterContext context)
+    {
+        throw new NotImplementedException();
+    }
 }

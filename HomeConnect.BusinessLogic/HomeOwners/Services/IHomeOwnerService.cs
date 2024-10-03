@@ -1,3 +1,4 @@
+using BusinessLogic.Devices.Entities;
 using BusinessLogic.HomeOwners.Entities;
 using BusinessLogic.HomeOwners.Models;
 using BusinessLogic.Users.Entities;
@@ -9,4 +10,5 @@ public interface IHomeOwnerService
     public Guid CreateHome(CreateHomeArgs createHomeArgs);
     public Guid AddMemberToHome(AddMemberArgs args);
     List<Member> GetHomeMembers(string homeId);
+    public IEnumerable<OwnedDevice> GetHomeDevices(string homeId);
 }

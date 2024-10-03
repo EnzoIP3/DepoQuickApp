@@ -192,4 +192,38 @@ public class BusinessOwnerServiceTests
 
     #endregion
     #endregion
+
+    #region CreateCamera
+
+    #region  Success
+    [TestMethod]
+    public void CreateCamera_WhenCameraDoesNotExist_CreatesCamera()
+    {
+        // Arrange
+        var business = new Business("RUTexample", "Business Name", _owner);
+        _deviceRepository.Setup(x => x.EnsureDeviceDoesNotExist(It.IsAny<global::BusinessLogic.Devices.Entities.Device>()));
+        _deviceRepository.Setup(x => x.Add(It.IsAny<global::BusinessLogic.Devices.Entities.Device>()));
+
+        // Act
+        _businessOwnerService.CreateCamera(DeviceName, ModelNumber, Description, MainPhoto, secondaryPhotos, business, false, false, false, true);
+
+        // Assert
+        _deviceRepository.Verify(x => x.Add(It.Is<global::BusinessLogic.Devices.Entities.Camera>(d =>
+            d.Name == DeviceName &&
+            d.ModelNumber == ModelNumber &&
+            d.Description == Description &&
+            d.MainPhoto == MainPhoto &&
+            d.SecondaryPhotos.SequenceEqual(secondaryPhotos) &&
+            d.Business == business &&
+            d.MotionDetection == false &&
+            d.PersonDetection == false &&
+            d.IsExterior == false &&
+            d.IsInterior == true)));
+    }
+    #endregion
+
+    #region Error
+    #endregion
+
+    #endregion
 }

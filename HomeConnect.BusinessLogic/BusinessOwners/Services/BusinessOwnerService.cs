@@ -43,6 +43,12 @@ public class BusinessOwnerService : IBusinessOwnerService
         return device.Id;
     }
 
+    public Guid CreateCamera(string name, int modelNumber, string description, string mainPhoto, List<string> secondaryPhotos,
+        Business business, bool motionDetection, bool personDetection, bool isExterior, bool isInterior)
+    {
+        throw new NotImplementedException();
+    }
+
     private User VerifyOwnerExists(string ownerEmail)
     {
         var owner = UserRepository.GetUser(ownerEmail);

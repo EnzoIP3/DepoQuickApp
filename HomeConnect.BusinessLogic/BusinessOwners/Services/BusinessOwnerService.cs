@@ -49,7 +49,7 @@ public class BusinessOwnerService : IBusinessOwnerService
         var camera = new Camera(name, modelNumber, description, mainPhoto, secondaryPhotos, business, motionDetection, personDetection, isExterior, isInterior);
         DeviceRepository.EnsureDeviceDoesNotExist(camera);
         DeviceRepository.Add(camera);
-        return default;
+        return camera.Id;
     }
 
     private User VerifyOwnerExists(string ownerEmail)

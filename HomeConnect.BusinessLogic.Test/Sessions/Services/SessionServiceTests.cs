@@ -1,3 +1,4 @@
+using BusinessLogic.Roles.Entities;
 using BusinessLogic.Sessions.Entities;
 using BusinessLogic.Sessions.Models;
 using BusinessLogic.Sessions.Repositories;
@@ -57,8 +58,9 @@ public class SessionServiceTests
     {
         // Arrange
         var args = new CreateSessionArgs() { Email = "test@example.com", Password = "password1M@" };
+        var user = new User("Name", "Surname", args.Email, args.Password, new Role());
         _sessionRepository.Setup(x => x.Add(It.IsAny<Session>())).Verifiable();
-        _userRepository.Setup(x => x.GetUser(args.Email)).Returns(new User());
+        _userRepository.Setup(x => x.GetUser(args.Email)).Returns(user);
 
         // Act
         var result = _sessionService.CreateSession(args);
@@ -66,5 +68,19 @@ public class SessionServiceTests
         // Assert
         result.Should().NotBeNullOrEmpty();
         _sessionRepository.Verify(x => x.Add(It.IsAny<Session>()), Times.Once);
+    }
+
+    [TestMethod]
+    public void CreateSession_WithNonExistingEmail_ShouldThrowException()
+    {
+        // Arrange
+        var args = new CreateSessionArgs() { Email = "test@example.com", Password = "password1M@" };
+        _userRepository.Setup(x => x.GetUser(args.Email)).Returns((User)null);
+
+        // Act
+        var act = () => _sessionService.CreateSession(args);
+
+        // Assert
+        act.Should().Throw<ArgumentException>();
     }
 }

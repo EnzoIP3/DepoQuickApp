@@ -19,7 +19,12 @@ public class SessionService : ISessionService
 
     public string CreateSession(CreateSessionArgs args)
     {
-        var user = _userRepository.GetUser(args.Email)!;
+        var user = _userRepository.GetUser(args.Email);
+        if (user == null)
+        {
+            throw new ArgumentException("Invalid email or password");
+        }
+
         var session = new Session(user);
         _sessionRepository.Add(session);
         return session.Id.ToString();

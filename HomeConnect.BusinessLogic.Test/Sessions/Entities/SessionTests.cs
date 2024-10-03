@@ -1,7 +1,7 @@
 using BusinessLogic.Sessions.Entities;
 using BusinessLogic.Users.Entities;
 
-namespace HomeConnect.BusinessLogic.Test.Sessions;
+namespace HomeConnect.BusinessLogic.Test.Sessions.Entities;
 
 [TestClass]
 public class SessionTests

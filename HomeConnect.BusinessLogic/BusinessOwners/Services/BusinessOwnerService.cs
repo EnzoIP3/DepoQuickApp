@@ -24,7 +24,7 @@ public class BusinessOwnerService : IBusinessOwnerService
         DeviceRepository = deviceRepository;
     }
 
-    public void CreateBusiness(string ownerEmail, string businessRut, string businessName)
+    public string CreateBusiness(string ownerEmail, string businessRut, string businessName)
     {
         var owner = VerifyOwnerExists(ownerEmail);
         EnsureOwnerDoesNotHaveBusiness(ownerEmail);
@@ -32,6 +32,7 @@ public class BusinessOwnerService : IBusinessOwnerService
 
         var business = new Business(businessRut, businessName, owner);
         BusinessRepository.Add(business);
+        return business.Rut;
     }
 
     public void CreateDevice(string name, int modelNumber, string description, string mainPhoto, List<string> secondaryPhotos, string type, Business business)

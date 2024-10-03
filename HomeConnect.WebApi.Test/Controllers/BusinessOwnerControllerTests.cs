@@ -21,7 +21,7 @@ public class BusinessOwnerControllerTests
     {
         _adminService = new Mock<IAdminService>();
         _businessOwnerService = new Mock<IBusinessOwnerService>();
-        _controller = new BusinessOwnerController(_adminService.Object);
+        _controller = new BusinessOwnerController(_adminService.Object, _businessOwnerService.Object);
     }
 
     [TestMethod]

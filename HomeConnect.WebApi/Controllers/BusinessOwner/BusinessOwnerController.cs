@@ -10,7 +10,7 @@ namespace HomeConnect.WebApi.Controllers.BusinessOwner;
 [ApiController]
 [Route("business_owners")]
 [AuthorizationFilter]
-public class BusinessOwnerController(IAdminService adminService) : ControllerBase
+public class BusinessOwnerController(IAdminService adminService, IBusinessOwnerService businessOwnerService) : ControllerBase
 {
     public CreateBusinessOwnerResponse CreateBusinessOwner(CreateBusinessOwnerRequest request)
     {
@@ -35,6 +35,15 @@ public class BusinessOwnerController(IAdminService adminService) : ControllerBas
     [Route("businesses")]
     public CreateBusinessOwnerResponse CreateBusiness([FromBody] CreateBusinessRequest request, [FromHeader] string authorization)
     {
-        throw new NotImplementedException();
+        var business = new BusinessLogic.BusinessOwners.Entities.Business
+        {
+            Name = request.Name,
+            Rut = request.Rut,
+            Owner = request.Owner,
+        };
+
+        var createdBusiness = businessOwnerService.CreateBusiness(business.Owner.Email, business.Rut, business.Name);
+
+        return new CreateBusinessOwnerResponse { Id = createdBusiness };
     }
 }

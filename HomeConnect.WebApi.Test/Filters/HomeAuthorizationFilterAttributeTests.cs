@@ -1,5 +1,7 @@
 using System.Net;
 using BusinessLogic.HomeOwners.Repositories;
+using BusinessLogic.Roles.Entities;
+using BusinessLogic.Users.Entities;
 using BusinessLogic.Users.Repositories;
 using FluentAssertions;
 using HomeConnect.WebApi.Filters;
@@ -20,6 +22,9 @@ public class HomeAuthorizationFilterAttributeTests
     private Mock<IHomeRepository> _homeRepositoryMock = null!;
     private AuthorizationFilterContext _context = null!;
     private HomeAuthorizationFilterAttribute _attribute = null;
+
+    private User _user = new User("name", "surname", "email@email.com", "Password@100",
+        new Role { Name = "HomeOwner", Permissions = new List<SystemPermission>() });
 
     [TestInitialize]
     public void Initialize()
@@ -53,5 +58,27 @@ public class HomeAuthorizationFilterAttributeTests
         concreteResponse.StatusCode.Should().Be((int)HttpStatusCode.Unauthorized);
         FilterTestsUtils.GetInnerCode(concreteResponse?.Value).Should().Be("Unauthorized");
         FilterTestsUtils.GetMessage(concreteResponse?.Value).Should().Be("You are not authenticated");
+    }
+
+    [TestMethod]
+    [DataRow("")]
+    [DataRow(null)]
+    [DataRow(" ")]
+    public void OnAuthorization_WhenHomeIdIsInvalid_ShouldReturnUnauthorizedResult(string homeId)
+    {
+        var items = new Dictionary<object, object?> { { Item.UserLogged, _user } };
+        _httpContextMock.Setup(h => h.Items).Returns(items);
+        _context.RouteData.Values.Add("homesId", homeId);
+        _attribute.OnAuthorization(_context);
+
+        var response = _context.Result;
+
+        _httpContextMock.VerifyAll();
+        response.Should().NotBeNull();
+        var concreteResponse = response as ObjectResult;
+        concreteResponse.Should().NotBeNull();
+        concreteResponse.StatusCode.Should().Be((int)HttpStatusCode.BadRequest);
+        FilterTestsUtils.GetInnerCode(concreteResponse?.Value).Should().Be("BadRequest");
+        FilterTestsUtils.GetMessage(concreteResponse?.Value).Should().Be("The home id is invalid");
     }
 }

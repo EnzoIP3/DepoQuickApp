@@ -73,6 +73,22 @@ public class BusinessOwnerController(IAdminService adminService, IBusinessOwnerS
     [Route("cameras")]
     public CreateCameraResponse CreateCamera([FromBody] CreateCameraRequest request, [FromHeader] string authorization)
     {
-        throw new NotImplementedException();
+        var camera = new Camera
+        {
+            Business = request.Business,
+            Description = request.Description,
+            MainPhoto = request.MainPhoto,
+            ModelNumber = request.ModelNumber,
+            Name = request.Name,
+            SecondaryPhotos = request.SecondaryPhotos,
+            MotionDetection = request.MotionDetection,
+            PersonDetection = request.PersonDetection,
+            IsExterior = request.IsExterior,
+            IsInterior = request.IsInterior
+        };
+
+        var createdCamera = businessOwnerService.CreateCamera(camera.Name, camera.ModelNumber, camera.Description, camera.MainPhoto, camera.SecondaryPhotos, camera.Business, camera.MotionDetection, camera.PersonDetection, camera.IsExterior, camera.IsInterior);
+
+        return new CreateCameraResponse { Id = createdCamera };
     }
 }

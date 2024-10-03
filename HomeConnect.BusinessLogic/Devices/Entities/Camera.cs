@@ -9,6 +9,9 @@ public class Camera : Device
     public bool PersonDetection { get; set; }
     public bool IsExterior { get; set; }
     public bool IsInterior { get; set; }
+    public Camera()
+    {
+    }
 
     public Camera(string name, int modelNumber, string description, string mainPhoto, List<string> secondaryPhotos, Business business,
         bool motionDetection, bool personDetection, bool isExterior, bool isInterior)

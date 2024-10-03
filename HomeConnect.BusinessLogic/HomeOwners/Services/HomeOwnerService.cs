@@ -26,10 +26,20 @@ public class HomeOwnerService : IHomeOwnerService
     public Guid CreateHome(CreateHomeArgs args)
     {
         EnsureCreateHomeModelIsValid(args);
+        EnsureAddressIsUnique(args.Address);
         var user = _userRepository.Get(Guid.Parse(args.HomeOwnerId));
         var home = new Home(user, args.Address, args.Latitude, args.Longitude, args.MaxMembers);
         _homeRepository.Add(home);
         return home.Id;
+    }
+
+    private void EnsureAddressIsUnique(string address)
+    {
+        var home = _homeRepository.GetByAddress(address);
+        if (home != null)
+        {
+            throw new ArgumentException("Address is already in use");
+        }
     }
 
     private static void EnsureCreateHomeModelIsValid(CreateHomeArgs args)

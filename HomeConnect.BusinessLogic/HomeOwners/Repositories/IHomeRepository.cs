@@ -8,4 +8,5 @@ public interface IHomeRepository
     Home Get(Guid homeId);
     Member GetMemberById(Guid memberId);
     void UpdateMember(Member member);
+    Home? GetByAddress(string argsAddress);
 }

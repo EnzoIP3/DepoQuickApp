@@ -55,6 +55,7 @@ public class HomeOwnerServiceTests
         _homeRepositoryMock.Setup(x => x.Add(It.Is<Home>(x =>
             x.Address == model.Address && x.Latitude == model.Latitude && x.Longitude == model.Longitude &&
             x.MaxMembers == model.MaxMembers && x.Owner == _user))).Callback<Home>(x => x.Id = Guid.NewGuid());
+        _homeRepositoryMock.Setup(x => x.GetByAddress(model.Address)).Returns((Home)null);
 
         // Act
         var result = _homeOwnerService.CreateHome(model);
@@ -88,6 +89,29 @@ public class HomeOwnerServiceTests
 
         // Assert
         act.Should().Throw<ArgumentException>();
+    }
+
+    [TestMethod]
+    public void CreateHome_WhenAlreadyExistsHomeInAddress_ThrowsException()
+    {
+        // Arrange
+        var model = new CreateHomeArgs
+        {
+            HomeOwnerId = _user.Id.ToString(),
+            Address = "Main St 123",
+            Latitude = 1.0,
+            Longitude = 2.0,
+            MaxMembers = 5
+        };
+        var home = new Home(_user, model.Address, model.Latitude, model.Longitude, model.MaxMembers);
+        _userRepositoryMock.Setup(x => x.Get(Guid.Parse(model.HomeOwnerId))).Returns(_user);
+        _homeRepositoryMock.Setup(x => x.GetByAddress(model.Address)).Returns(home);
+
+        // Act
+        var act = () => _homeOwnerService.CreateHome(model);
+
+        // Assert
+        act.Should().Throw<ArgumentException>().WithMessage("Address is already in use");
     }
 
     #endregion
@@ -344,6 +368,7 @@ public class HomeOwnerServiceTests
     #endregion
 
     #endregion
+
     #region UpdateMemberNotifications
     #region error
 

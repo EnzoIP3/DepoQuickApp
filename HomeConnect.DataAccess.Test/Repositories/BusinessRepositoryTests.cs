@@ -3,7 +3,7 @@ using BusinessLogic.BusinessOwners.Entities;
 using BusinessLogic.Roles.Entities;
 using BusinessLogic.Users.Entities;
 using FluentAssertions;
-using HomeConnect.DataAccess.BusinessOwners;
+using HomeConnect.DataAccess.Repositories;
 
 namespace HomeConnect.DataAccess.Test.BusinessOwners;
 
@@ -53,7 +53,7 @@ public class BusinessRepositoryTests
         };
 
         // Act
-        var result = _businessRepository.GetBusinesses(1, 2);
+        var result = _businessRepository.GetPagedData(1, 2);
 
         // Assert
         result.Data.Should().BeEquivalentTo(expected.Data);
@@ -66,7 +66,7 @@ public class BusinessRepositoryTests
         var expected = new List<Business> { _validBusiness };
 
         // Act
-        var result = _businessRepository.GetBusinesses(1, 1);
+        var result = _businessRepository.GetPagedData(1, 1);
 
         // Assert
         result.Data.Should().BeEquivalentTo(expected);
@@ -79,7 +79,7 @@ public class BusinessRepositoryTests
         var expected = new PagedData<Business>() { Data = [_validBusiness], Page = 1, PageSize = 2, TotalPages = 1 };
 
         // Act
-        var result = _businessRepository.GetBusinesses(1, 2, "John Doe");
+        var result = _businessRepository.GetPagedData(1, 2, "John Doe");
 
         // Assert
         result.Data.Should().BeEquivalentTo(expected.Data);
@@ -92,7 +92,7 @@ public class BusinessRepositoryTests
         var expected = new PagedData<Business>() { Data = [_otherBusiness], Page = 1, PageSize = 2, TotalPages = 1 };
 
         // Act
-        var result = _businessRepository.GetBusinesses(1, 2, null, "Other");
+        var result = _businessRepository.GetPagedData(1, 2, null, "Other");
 
         // Assert
         result.Data.Should().BeEquivalentTo(expected.Data);
@@ -105,7 +105,7 @@ public class BusinessRepositoryTests
         var expected = new PagedData<Business>() { Data = [_otherBusiness], Page = 1, PageSize = 2, TotalPages = 1 };
 
         // Act
-        var result = _businessRepository.GetBusinesses(1, 2, "J", "Other");
+        var result = _businessRepository.GetPagedData(1, 2, "J", "Other");
 
         // Assert
         result.Data.Should().BeEquivalentTo(expected.Data);

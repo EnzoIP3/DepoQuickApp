@@ -1,7 +1,7 @@
 using BusinessLogic.Roles.Entities;
 using BusinessLogic.Roles.Repositories;
 
-namespace HomeConnect.DataAccess.Roles;
+namespace HomeConnect.DataAccess.Repositories;
 
 public class RoleRepository : IRoleRepository
 {
@@ -14,7 +14,7 @@ public class RoleRepository : IRoleRepository
 
     public Role GetRole(string name)
     {
-        var role = _context.Roles.FirstOrDefault(r => r.Name == name);
+        Role? role = _context.Roles.FirstOrDefault(r => r.Name == name);
         EnsureRoleIsNotNull(role);
         return role!;
     }

@@ -1,7 +1,9 @@
 using BusinessLogic.Sessions.Entities;
+using BusinessLogic.Sessions.Models;
 using BusinessLogic.Sessions.Repositories;
 using BusinessLogic.Sessions.Services;
 using BusinessLogic.Users.Entities;
+using BusinessLogic.Users.Repositories;
 using FluentAssertions;
 using Moq;
 
@@ -11,13 +13,15 @@ namespace HomeConnect.BusinessLogic.Test.Sessions.Services;
 public class SessionServiceTests
 {
     private Mock<ISessionRepository> _sessionRepository = null!;
+    private Mock<IUserRepository> _userRepository = null!;
     private ISessionService _sessionService = null!;
 
     [TestInitialize]
     public void Initialize()
     {
         _sessionRepository = new Mock<ISessionRepository>();
-        _sessionService = new SessionService(_sessionRepository.Object);
+        _userRepository = new Mock<IUserRepository>();
+        _sessionService = new SessionService(_sessionRepository.Object, _userRepository.Object);
     }
 
     [TestMethod]
@@ -46,5 +50,21 @@ public class SessionServiceTests
 
         // Assert
         act.Should().Throw<ArgumentException>();
+    }
+
+    [TestMethod]
+    public void CreateSession_WithValidArguments_ShouldCreateSession()
+    {
+        // Arrange
+        var args = new CreateSessionArgs() { Email = "test@example.com", Password = "password1M@" };
+        _sessionRepository.Setup(x => x.Add(It.IsAny<Session>())).Verifiable();
+        _userRepository.Setup(x => x.GetUser(args.Email)).Returns(new User());
+
+        // Act
+        var result = _sessionService.CreateSession(args);
+
+        // Assert
+        result.Should().NotBeNullOrEmpty();
+        _sessionRepository.Verify(x => x.Add(It.IsAny<Session>()), Times.Once);
     }
 }

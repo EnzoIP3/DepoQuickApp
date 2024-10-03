@@ -53,4 +53,19 @@ public class SessionRepositoryTests
         // Assert
         result.Should().NotBeNull();
     }
+
+    [TestMethod]
+    public void Get_WithInvalidSessionId_ShouldThrowException()
+    {
+        // Arrange
+        var user = new User();
+        var session = new Session(user);
+        _sessionRepository.Add(session);
+
+        // Act
+        Action act = () => _sessionRepository.Get(Guid.NewGuid());
+
+        // Assert
+        act.Should().Throw<ArgumentException>();
+    }
 }

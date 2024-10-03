@@ -14,7 +14,16 @@ public class SessionRepository : ISessionRepository
 
     public Session Get(Guid sessionId)
     {
-        return _context.Sessions.Find(sessionId);
+        EnsureSessionExists(sessionId);
+        return _context.Sessions.Find(sessionId)!;
+    }
+
+    private void EnsureSessionExists(Guid sessionId)
+    {
+        if (_context.Sessions.Find(sessionId) == null)
+        {
+            throw new ArgumentException("Session does not exist");
+        }
     }
 
     public void Add(Session session)

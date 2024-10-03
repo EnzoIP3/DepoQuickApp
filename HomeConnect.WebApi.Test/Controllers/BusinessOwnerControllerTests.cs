@@ -116,4 +116,45 @@ public class BusinessOwnerControllerTests
         response.Should().NotBeNull();
         response.Id.Should().Be(device.Id);
     }
+
+    [TestMethod]
+    public void CreateCamera_WhenCalledWithValidRequest_ReturnsCreatedResponse()
+    {
+        // Arrange
+        var request = new CreateCameraRequest
+        {
+            Name = "Camera1",
+            ModelNumber = 123,
+            Description = "Test camera",
+            MainPhoto = "https://www.example.com/photo1.jpg",
+            SecondaryPhotos = new List<string> {},
+            MotionDetection = true,
+            PersonDetection = true,
+            IsExterior = true,
+            IsInterior = true,
+            Business = new Business()
+        };
+        var camera = new Camera
+        {
+            Name = request.Name,
+            ModelNumber = request.ModelNumber,
+            Description = request.Description,
+            MainPhoto = request.MainPhoto,
+            SecondaryPhotos = request.SecondaryPhotos,
+            MotionDetection = request.MotionDetection,
+            PersonDetection = request.PersonDetection,
+            IsExterior = request.IsExterior,
+            IsInterior = request.IsInterior,
+            Business = request.Business
+        };
+        _businessOwnerService.Setup(x => x.CreateCamera(camera.Name, camera.ModelNumber, camera.Description, camera.MainPhoto, camera.SecondaryPhotos, camera.Business, camera.MotionDetection, camera.PersonDetection, camera.IsExterior, camera.IsInterior)).Returns(camera.Id);
+
+        // Act
+        var response = _controller.CreateCamera(request, $"Bearer {camera.Id}");
+
+        // Assert
+        _businessOwnerService.VerifyAll();
+        response.Should().NotBeNull();
+        response.Id.Should().Be(camera.Id);
+    }
 }

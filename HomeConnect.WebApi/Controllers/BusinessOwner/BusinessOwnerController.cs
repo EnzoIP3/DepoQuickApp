@@ -68,4 +68,11 @@ public class BusinessOwnerController(IAdminService adminService, IBusinessOwnerS
 
         return new CreateDeviceResponse { Id = createdDevice };
     }
+
+    [HttpPost]
+    [Route("cameras")]
+    public CreateCameraResponse CreateCamera([FromBody] CreateCameraRequest request, [FromHeader] string authorization)
+    {
+        throw new NotImplementedException();
+    }
 }

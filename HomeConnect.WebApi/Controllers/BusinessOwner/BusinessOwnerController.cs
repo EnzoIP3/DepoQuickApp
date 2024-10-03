@@ -1,6 +1,7 @@
 using BusinessLogic;
 using BusinessLogic.Admins.Services;
 using BusinessLogic.BusinessOwners.Services;
+using BusinessLogic.Devices.Entities;
 using BusinessLogic.Users.Models;
 using HomeConnect.WebApi.Filters;
 using Microsoft.AspNetCore.Mvc;
@@ -33,7 +34,7 @@ public class BusinessOwnerController(IAdminService adminService, IBusinessOwnerS
 
     [HttpPost]
     [Route("businesses")]
-    public CreateBusinessOwnerResponse CreateBusiness([FromBody] CreateBusinessRequest request, [FromHeader] string authorization)
+    public CreateBusinessResponse CreateBusiness([FromBody] CreateBusinessRequest request, [FromHeader] string authorization)
     {
         var business = new BusinessLogic.BusinessOwners.Entities.Business
         {
@@ -44,6 +45,6 @@ public class BusinessOwnerController(IAdminService adminService, IBusinessOwnerS
 
         var createdBusiness = businessOwnerService.CreateBusiness(business.Owner.Email, business.Rut, business.Name);
 
-        return new CreateBusinessOwnerResponse { Id = createdBusiness };
+        return new CreateBusinessResponse { Id = createdBusiness };
     }
 }

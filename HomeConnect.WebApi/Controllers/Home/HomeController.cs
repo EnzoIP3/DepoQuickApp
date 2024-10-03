@@ -92,12 +92,18 @@ public class HomeController(IHomeOwnerService homeOwnerService) : ControllerBase
     [HttpPost("{homesId}/devices")]
     public AddDevicesResponse AddDevices([FromRoute] string homesId, AddDevicesRequest request)
     {
+        AddDevicesArgs addDevicesArgs = FromRequestToAddDevicesArgs(homesId, request);
+        homeOwnerService.AddDeviceToHome(addDevicesArgs);
+        return new AddDevicesResponse { HomeId = homesId, DeviceIds = request.DeviceIds };
+    }
+
+    private static AddDevicesArgs FromRequestToAddDevicesArgs(string homesId, AddDevicesRequest request)
+    {
         var addDevicesArgs = new AddDevicesArgs
         {
             HomeId = homesId,
             DeviceIds = request.DeviceIds
         };
-        homeOwnerService.AddDeviceToHome(addDevicesArgs);
-        return new AddDevicesResponse { HomeId = homesId, DeviceIds = request.DeviceIds };
+        return addDevicesArgs;
     }
 }

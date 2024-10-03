@@ -47,6 +47,7 @@ public class BusinessOwnerService : IBusinessOwnerService
         Business business, bool motionDetection, bool personDetection, bool isExterior, bool isInterior)
     {
         var camera = new Camera(name, modelNumber, description, mainPhoto, secondaryPhotos, business, motionDetection, personDetection, isExterior, isInterior);
+        DeviceRepository.EnsureDeviceDoesNotExist(camera);
         DeviceRepository.Add(camera);
         return default;
     }

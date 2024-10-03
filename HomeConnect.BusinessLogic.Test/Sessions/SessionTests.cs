@@ -18,4 +18,18 @@ public class SessionTests
         // Assert
         Assert.IsNotNull(session);
     }
+
+    [TestMethod]
+    public void IsExpired_WithSessionExpired_ShouldReturnTrue()
+    {
+        // Arrange
+        var user = new User();
+        var session = new Session(user) { CreatedAt = DateTime.UtcNow.AddHours(-1) };
+
+        // Act
+        var result = session.IsExpired();
+
+        // Assert
+        Assert.IsTrue(result);
+    }
 }

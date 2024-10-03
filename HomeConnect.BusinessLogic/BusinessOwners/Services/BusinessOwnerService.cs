@@ -8,7 +8,7 @@ using BusinessLogic.Users.Repositories;
 
 namespace BusinessLogic.BusinessOwners.Services;
 
-public class BusinessOwnerService
+public class BusinessOwnerService : IBusinessOwnerService
 {
     public IDeviceRepository DeviceRepository { get; init; }
     public IUserRepository UserRepository { get; init; }

@@ -32,14 +32,14 @@ public class SessionService : ISessionService
 
     public User GetUserFromSession(string sessionId)
     {
-        EnsureSessionIdIsValidGuid(sessionId);
+        EnsureIsValidGuid(sessionId);
         var session = _sessionRepository.Get(Guid.Parse(sessionId));
         return session.User;
     }
 
-    private static void EnsureSessionIdIsValidGuid(string sessionId)
+    private static void EnsureIsValidGuid(string id)
     {
-        if (!Guid.TryParse(sessionId, out _))
+        if (!Guid.TryParse(id, out _))
         {
             throw new ArgumentException("Invalid session id");
         }
@@ -47,6 +47,8 @@ public class SessionService : ISessionService
 
     public bool IsSessionExpired(string sessionId)
     {
-        throw new NotImplementedException();
+        EnsureIsValidGuid(sessionId);
+        var session = _sessionRepository.Get(Guid.Parse(sessionId));
+        return session.IsExpired();
     }
 }

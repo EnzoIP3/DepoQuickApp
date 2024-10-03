@@ -98,4 +98,18 @@ public class SessionServiceTests
         // Assert
         act.Should().Throw<ArgumentException>();
     }
+
+    [TestMethod]
+    public void IsSessionExpired_WithValidSessionId_ShouldReturnFalse()
+    {
+        // Arrange
+        var sessionId = Guid.NewGuid();
+        _sessionRepository.Setup(x => x.Get(sessionId)).Returns(new Session(new User()));
+
+        // Act
+        var result = _sessionService.IsSessionExpired(sessionId.ToString());
+
+        // Assert
+        result.Should().BeFalse();
+    }
 }

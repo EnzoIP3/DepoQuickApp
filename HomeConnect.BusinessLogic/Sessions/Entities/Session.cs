@@ -15,6 +15,6 @@ public class Session
 
     public bool IsExpired()
     {
-        throw new NotImplementedException();
+        return CreatedAt.AddHours(1) < DateTime.UtcNow;
     }
 }

@@ -317,4 +317,22 @@ public class HomeOwnerServiceTests
     #endregion
 
     #endregion
+    #region UpdateMemberNotifications
+    #region error
+
+    [TestMethod]
+    public void UpdateMemberNotifications_WhenMemberDoesNotExist_ThrowsException()
+    {
+        // Arrange
+        var nonExistentMemberId = Guid.NewGuid();
+        _homeRepositoryMock.Setup(x => x.GetMemberById(nonExistentMemberId)).Returns((Member)null);
+
+        // Act
+        var act = () => _homeOwnerService.UpdateMemberNotifications(nonExistentMemberId, true);
+
+        // Assert
+        act.Should().Throw<ArgumentException>().WithMessage("Member does not exist");
+    }
+    #endregion
+    #endregion
 }

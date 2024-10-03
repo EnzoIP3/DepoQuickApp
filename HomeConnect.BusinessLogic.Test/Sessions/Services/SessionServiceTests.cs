@@ -83,4 +83,19 @@ public class SessionServiceTests
         // Assert
         act.Should().Throw<ArgumentException>();
     }
+
+    [TestMethod]
+    public void CreateSession_WithInvalidPassword_ShouldThrowException()
+    {
+        // Arrange
+        var args = new CreateSessionArgs() { Email = "test@example.com", Password = "password" };
+        var user = new User("Name", "Surname", args.Email, "otherPassword1@", new Role());
+        _userRepository.Setup(x => x.GetUser(args.Email)).Returns(user);
+
+        // Act
+        var act = () => _sessionService.CreateSession(args);
+
+        // Assert
+        act.Should().Throw<ArgumentException>();
+    }
 }

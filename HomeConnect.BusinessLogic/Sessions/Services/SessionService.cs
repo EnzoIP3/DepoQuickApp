@@ -20,7 +20,7 @@ public class SessionService : ISessionService
     public string CreateSession(CreateSessionArgs args)
     {
         var user = _userRepository.GetUser(args.Email);
-        if (user == null)
+        if (user == null || !user.Password.Equals(args.Password))
         {
             throw new ArgumentException("Invalid email or password");
         }

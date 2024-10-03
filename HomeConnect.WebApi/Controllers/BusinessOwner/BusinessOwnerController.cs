@@ -49,7 +49,7 @@ public class BusinessOwnerController(IAdminService adminService, IBusinessOwnerS
     }
 
     [HttpPost]
-    [Route("devices")]
+    [Route("sensors")]
     public CreateDeviceResponse CreateDevice([FromBody] CreateDeviceRequest request, [FromHeader] string authorization)
     {
         var device = new Device

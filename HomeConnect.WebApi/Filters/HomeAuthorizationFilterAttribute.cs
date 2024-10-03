@@ -10,7 +10,7 @@ namespace HomeConnect.WebApi.Filters;
 [AttributeUsage(AttributeTargets.Class | AttributeTargets.Method)]
 public class HomeAuthorizationFilterAttribute(IHomeRepository homeRepository, string? permission = null) : Attribute, IAuthorizationFilter
 {
-    private string homeIdRoute = "homesId";
+    private readonly string homeIdRoute = "homesId";
     public string? Permission { get; } = permission;
 
     public void OnAuthorization(AuthorizationFilterContext context)

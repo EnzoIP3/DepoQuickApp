@@ -23,9 +23,9 @@ public class HomeAuthorizationFilterAttributeTests
     private Mock<IHomeRepository> _homeRepositoryMock = null!;
     private AuthorizationFilterContext _context = null!;
     private HomeAuthorizationFilterAttribute _attribute = null;
-    private string _homeIdRoute = "homesId";
-    private User _user = new User("name", "surname", "email@email.com", "Password@100",
-        new Role { Name = "HomeOwner", Permissions = new List<SystemPermission>() });
+    private readonly string _homeIdRoute = "homesId";
+    private readonly User _user = new User("name", "surname", "email@email.com", "Password@100",
+        new Role { Name = "HomeOwner", Permissions = [] });
 
     [TestInitialize]
     public void Initialize()
@@ -87,7 +87,7 @@ public class HomeAuthorizationFilterAttributeTests
     public void OnAuthorization_IfUserDoesNotHavePermission_ShouldReturnsForbiddenResult()
     {
         var otherUser = new User("Name2", "Surname2", "email2@email.com", "Password@100",
-            new Role { Name = "HomeOwner", Permissions = new List<SystemPermission>() });
+            new Role { Name = "HomeOwner", Permissions = [] });
         var home = new Home(otherUser, "street 123", 123.456, 123.456, 2);
         home.AddMember(new Member(_user));
         var items = new Dictionary<object, object?>

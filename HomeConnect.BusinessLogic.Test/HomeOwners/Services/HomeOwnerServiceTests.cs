@@ -195,7 +195,7 @@ public class HomeOwnerServiceTests
     {
         // Arrange
         var invitedUser = new User("name", "surname", "email1@email.com", "Password@100",
-            new Role { Name = "HomeOwner", Permissions = new List<SystemPermission>() });
+            new Role { Name = "HomeOwner", Permissions = [] });
         var home = new Home(_user, "Main St 123", 1.0, 2.0, 5);
         var member = new Member(invitedUser);
         home.AddMember(member);
@@ -433,7 +433,7 @@ public class HomeOwnerServiceTests
     public void UpdateMemberNotifications_WhenMemberHavePermissionAndRequestShouldBeNotifiedIsFalse_RemovesPermission()
     {
         // Arrange
-        var member = new Member(_user, new List<HomePermission> { new HomePermission("shouldBeNotified") });
+        var member = new Member(_user, [new HomePermission("shouldBeNotified")]);
         var memberId = member.Id;
         _homeRepositoryMock.Setup(x => x.GetMemberById(memberId)).Returns(member);
         var permissionList = new List<HomePermission>();

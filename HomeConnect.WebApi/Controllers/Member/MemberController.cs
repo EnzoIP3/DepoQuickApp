@@ -1,7 +1,6 @@
 using BusinessLogic.HomeOwners.Services;
 using HomeConnect.WebApi.Filters;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.Filters;
 
 namespace HomeConnect.WebApi.Controllers.Member;
 

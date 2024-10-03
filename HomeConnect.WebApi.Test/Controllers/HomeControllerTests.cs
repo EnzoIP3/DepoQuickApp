@@ -24,11 +24,11 @@ public class HomeControllerTests
     private Mock<HttpContext> _httpContextMock = null!;
     private Mock<IHomeOwnerService> _homeOwnerService = null!;
     private AuthorizationFilterContext _context = null!;
-    private static User _user = new User("John", "Doe", "email@email.com", "Password@100",
-    new Role { Name = "HomeOwner", Permissions = new List<SystemPermission>() });
-    private User _otherUser = new User("Jane", "Doe", "email2@email.com", "Password@100",
+    private static readonly User _user = new User("John", "Doe", "email@email.com", "Password@100",
+    new Role { Name = "HomeOwner", Permissions = [] });
+    private readonly User _otherUser = new User("Jane", "Doe", "email2@email.com", "Password@100",
         new Role { Name = "HomeOwner", Permissions = [] });
-    private Home _home = new Home(_user, "Road 123", 123.456, 456.789, 3);
+    private readonly Home _home = new Home(_user, "Road 123", 123.456, 456.789, 3);
 
     [TestInitialize]
     public void Initialize()
@@ -133,14 +133,14 @@ public class HomeControllerTests
         var businessOwner = new User("Business", "Owner", "bo@email.com", "Password@100",
             new Role { Name = "BusinessOwner", Permissions = [] });
         var business = new Business("123456789123", "business", businessOwner);
-        var sensor = new Device("sensor", 123, "a camera", "https://www.example.com/photo1.jpg", new List<string>(),
+        var sensor = new Device("sensor", 123, "a camera", "https://www.example.com/photo1.jpg", [],
             "sensor", business);
-        var camera = new Camera("camera", 123, "a camera", "https://www.example.com/photo1.jpg", new List<string>(),
+        var camera = new Camera("camera", 123, "a camera", "https://www.example.com/photo1.jpg", [],
             business, true, true, false, true);
 
         var request = new AddDevicesRequest
         {
-            DeviceIds = new List<string> { sensor.Id.ToString(), camera.Id.ToString() }
+            DeviceIds = [sensor.Id.ToString(), camera.Id.ToString()]
         };
         var items = new Dictionary<object, object?>
         {
@@ -247,12 +247,18 @@ public class HomeControllerTests
         var device1 = new OwnedDevice(_home,
             new Device
             {
-                Name = "Device1", Type = "Type1", ModelNumber = 1, MainPhoto = "https://www.example.com/photo1.jpg"
+                Name = "Device1",
+                Type = "Type1",
+                ModelNumber = 1,
+                MainPhoto = "https://www.example.com/photo1.jpg"
             });
         var device2 = new OwnedDevice(_home,
             new Device
             {
-                Name = "Device2", Type = "Type2", ModelNumber = 2, MainPhoto = "https://www.example.com/photo2.jpg"
+                Name = "Device2",
+                Type = "Type2",
+                ModelNumber = 2,
+                MainPhoto = "https://www.example.com/photo2.jpg"
             });
         var items = new Dictionary<object, object?> { { Item.UserLogged, _user } };
         _httpContextMock.Setup(h => h.Items).Returns(items);
@@ -261,8 +267,8 @@ public class HomeControllerTests
 
         var expectedResponse = new GetDevicesResponse
         {
-            Device = new List<ListDeviceInfo>
-            {
+            Device =
+            [
                 new ListDeviceInfo
                 {
                     Name = device1.Device.Name,
@@ -279,7 +285,8 @@ public class HomeControllerTests
                     Photo = device2.Device.MainPhoto,
                     IsConnected = device2.Connected
                 }
-            }
+
+            ]
         };
 
         // Act

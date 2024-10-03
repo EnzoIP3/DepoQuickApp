@@ -14,7 +14,7 @@ public class SessionRepository : ISessionRepository
 
     public Session Get(Guid sessionId)
     {
-        throw new NotImplementedException();
+        return _context.Sessions.Find(sessionId);
     }
 
     public void Add(Session session)

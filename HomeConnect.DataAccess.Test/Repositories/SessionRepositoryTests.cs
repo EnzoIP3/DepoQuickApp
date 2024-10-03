@@ -34,9 +34,23 @@ public class SessionRepositoryTests
 
         // Act
         _sessionRepository.Add(session);
-        _context.SaveChanges();
 
         // Assert
         _context.Sessions.Find(session.Id).Should().NotBeNull();
+    }
+
+    [TestMethod]
+    public void Get_WithValidSessionId_ShouldReturnSession()
+    {
+        // Arrange
+        var user = new User();
+        var session = new Session(user);
+        _sessionRepository.Add(session);
+
+        // Act
+        var result = _sessionRepository.Get(session.Id);
+
+        // Assert
+        result.Should().NotBeNull();
     }
 }

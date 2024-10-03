@@ -34,4 +34,17 @@ public class SessionServiceTests
         // Assert
         act.Should().NotThrow();
     }
+
+    [TestMethod]
+    public void GetUserFromSession_WithInvalidSessionId_ShouldThrowException()
+    {
+        // Arrange
+        const string sessionId = "not-a-guid";
+
+        // Act
+        var act = () => _sessionService.GetUserFromSession(sessionId);
+
+        // Assert
+        act.Should().Throw<ArgumentException>();
+    }
 }

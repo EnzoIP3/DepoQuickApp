@@ -75,7 +75,7 @@ public sealed class AuthenticationFilterAttribute : Attribute, IAuthorizationFil
         }) { StatusCode = (int)HttpStatusCode.InternalServerError };
     }
 
-    private User? GetUserOfAuthorization(StringValues authorization, AuthorizationFilterContext context)
+    private User GetUserOfAuthorization(StringValues authorization, AuthorizationFilterContext context)
     {
         var sessionId = ExtractSessionId(authorization);
         var sessionService = GetSessionService(context);

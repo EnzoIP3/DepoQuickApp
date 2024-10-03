@@ -127,4 +127,9 @@ public class HomeOwnerService : IHomeOwnerService
         var home = GetHome(homeId);
         return _ownedDeviceRepository.GetOwnedDevicesByHome(home);
     }
+
+    public void UpdateMemberNotifications(Guid membersId, bool requestShouldBeNotified)
+    {
+        throw new NotImplementedException();
+    }
 }

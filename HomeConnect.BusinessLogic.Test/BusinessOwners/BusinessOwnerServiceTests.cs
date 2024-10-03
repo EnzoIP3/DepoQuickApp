@@ -69,6 +69,26 @@ public class BusinessOwnerServiceTests
             b.Owner.Email == _ownerEmail)));
     }
 
+    [TestMethod]
+    public void CreateBusiness_WhenCalledWithValidRequest_ReturnsCorrectRut()
+    {
+        // Arrange
+        _userRepository.Setup(x => x.GetUser(_ownerEmail)).Returns(_owner);
+        _businessRepository.Setup(x => x.GetBusinessByOwner(_ownerEmail)).Returns((Business?)null);
+        _businessRepository.Setup(x => x.Add(It.IsAny<Business>()));
+        _businessRepository.Setup(x => x.GetBusinessByRut(_businessRut)).Returns((Business?)null);
+
+        // Act
+        var returnedRut = _businessOwnerService.CreateBusiness(_ownerEmail, _businessRut, _businessName);
+
+        // Assert
+        _businessRepository.Verify(x => x.Add(It.Is<Business>(b =>
+            b.Rut == _businessRut &&
+            b.Name == _businessName &&
+            b.Owner.Email == _ownerEmail)), Times.Once);
+        returnedRut.Should().Be(_businessRut);
+    }
+
     #endregion
 
     #region Failure

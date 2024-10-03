@@ -35,11 +35,12 @@ public class BusinessOwnerService : IBusinessOwnerService
         return business.Rut;
     }
 
-    public void CreateDevice(string name, int modelNumber, string description, string mainPhoto, List<string> secondaryPhotos, string type, Business business)
+    public Guid CreateDevice(string name, int modelNumber, string description, string mainPhoto, List<string> secondaryPhotos, string type, Business business)
     {
         var device = new Device(name, modelNumber, description, mainPhoto, secondaryPhotos, type, business);
         DeviceRepository.EnsureDeviceDoesNotExist(device);
         DeviceRepository.Add(device);
+        return device.Id;
     }
 
     private User VerifyOwnerExists(string ownerEmail)

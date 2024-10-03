@@ -1,4 +1,4 @@
-namespace HomeConnect.WebApi.Controllers.Home;
+namespace HomeConnect.WebApi.Controllers.Home.Models;
 
 public struct CreateHomeResponse
 {

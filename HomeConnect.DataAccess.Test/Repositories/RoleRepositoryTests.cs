@@ -1,8 +1,8 @@
 using BusinessLogic.Roles.Entities;
 using FluentAssertions;
-using HomeConnect.DataAccess.Roles;
+using HomeConnect.DataAccess.Repositories;
 
-namespace HomeConnect.DataAccess.Test.Roles;
+namespace HomeConnect.DataAccess.Test.Repositories;
 
 [TestClass]
 public class RoleRepositoryTests

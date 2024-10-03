@@ -1,9 +1,8 @@
 using BusinessLogic.Devices.Entities;
 using BusinessLogic.HomeOwners.Entities;
 using BusinessLogic.HomeOwners.Models;
-using BusinessLogic.Users.Entities;
 
-namespace HomeConnect.WebApi.Test.Controllers;
+namespace BusinessLogic.HomeOwners.Services;
 
 public interface IHomeOwnerService
 {

@@ -3,9 +3,9 @@ using BusinessLogic.BusinessOwners.Entities;
 using BusinessLogic.Roles.Entities;
 using BusinessLogic.Users.Entities;
 using FluentAssertions;
-using HomeConnect.DataAccess.BusinessOwners;
+using HomeConnect.DataAccess.Repositories;
 
-namespace HomeConnect.DataAccess.Test.BusinessOwners;
+namespace HomeConnect.DataAccess.Test.Repositories;
 
 [TestClass]
 public class BusinessRepositoryTests

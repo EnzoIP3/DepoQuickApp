@@ -1,6 +1,6 @@
 using BusinessLogic.Roles.Entities;
 
-namespace HomeConnect.DataAccess.Roles;
+namespace HomeConnect.DataAccess.Repositories;
 
 public class RoleRepository
 {

@@ -1,7 +1,7 @@
 using BusinessLogic.Notifications.Entities;
 using BusinessLogic.Notifications.Repositories;
 
-namespace HomeConnect.DataAccess.Notifications;
+namespace HomeConnect.DataAccess.Repositories;
 
 public class NotificationRepository : INotificationRepository
 {

@@ -1,6 +1,6 @@
 using FluentAssertions;
 
-namespace HomeConnect.BusinessLogic.Test.Users.Entities;
+namespace HomeConnect.BusinessLogic.Test.Users;
 
 [TestClass]
 public class UserTests

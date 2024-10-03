@@ -1,5 +1,5 @@
+using BusinessLogic.HomeOwners.Services;
 using HomeConnect.WebApi.Filters;
-using HomeConnect.WebApi.Test.Controllers;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Filters;
 
@@ -22,15 +22,4 @@ public class MemberController(IHomeOwnerService homeOwnerService) : ControllerBa
         };
         return response;
     }
-}
-
-public struct UpdateMemberNotificationsRequest
-{
-    public bool ShouldBeNotified { get; set; }
-}
-
-public struct UpdateMemberNotificationsResponse
-{
-    public string MemberId { get; set; }
-    public bool ShouldBeNotified { get; set; }
 }

@@ -170,6 +170,22 @@ public class BusinessOwnerServiceTests
             d.Type == Type)));
     }
 
+    [TestMethod]
+    public void CreateDevice_ReturnsCorrectId()
+    {
+        // Arrange
+        var business = new Business("RUTexample", "Business Name", _owner);
+        Device addedDevice = null;
+        _deviceRepository.Setup(x => x.EnsureDeviceDoesNotExist(It.IsAny<global::BusinessLogic.Devices.Entities.Device>()));
+        _deviceRepository.Setup(x => x.Add(It.IsAny<global::BusinessLogic.Devices.Entities.Device>())).Callback<Device>(d => addedDevice = d);
+
+        // Act
+        var returnedId = _businessOwnerService.CreateDevice(DeviceName, ModelNumber, Description, MainPhoto, secondaryPhotos, Type, business);
+
+        // Assert
+        Assert.AreEqual(addedDevice.Id, returnedId);
+    }
+
     #endregion
 
     #region Error

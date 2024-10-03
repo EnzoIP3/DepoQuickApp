@@ -129,6 +129,10 @@ public class HomeOwnerService : IHomeOwnerService
 
     public void UpdateMemberNotifications(Guid memberId, bool requestShouldBeNotified)
     {
-        throw new NotImplementedException();
+        var member = _homeRepository.GetMemberById(memberId);
+        if (member == null)
+        {
+            throw new ArgumentException("Member does not exist");
+        }
     }
 }

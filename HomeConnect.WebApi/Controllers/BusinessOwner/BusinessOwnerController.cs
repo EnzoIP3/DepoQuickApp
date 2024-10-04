@@ -33,7 +33,7 @@ public class BusinessOwnerController(IAdminService adminService, IBusinessOwnerS
 
     [HttpPost]
     [Route("businesses")]
-    public CreateBusinessResponse CreateBusiness([FromBody] CreateBusinessRequest request, [FromHeader] string authorization)
+    public CreateBusinessResponse CreateBusiness([FromBody] CreateBusinessRequest request)
     {
         var business = new BusinessLogic.BusinessOwners.Entities.Business
         {

@@ -133,7 +133,7 @@ public class BusinessOwnerControllerTests
         _businessOwnerService.Setup(x => x.CreateBusiness(_business.Owner.Email, _business.Rut, _business.Name)).Returns(_business.Rut);
 
         // Act
-        var response = _controller.CreateBusiness(_businessRequest, $"Bearer {_business.Owner.Id}");
+        var response = _controller.CreateBusiness(_businessRequest);
 
         // Assert
         _businessOwnerService.VerifyAll();

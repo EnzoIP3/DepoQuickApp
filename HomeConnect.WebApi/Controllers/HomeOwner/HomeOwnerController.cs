@@ -16,6 +16,7 @@ public class HomeOwnerController(IUserService userService) : ControllerBase
     [HttpPost]
     public CreateHomeOwnerResponse CreateHomeOwner([FromBody] CreateHomeOwnerRequest args)
     {
-        throw new NotImplementedException();
+        var user = UserService.CreateUser(new CreateUserArgs { Email = args.Email, Password = args.Password });
+        return new CreateHomeOwnerResponse { Id = user.Id.ToString() };
     }
 }

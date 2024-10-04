@@ -43,7 +43,7 @@ public class BusinessOwnerService
 
     private User VerifyOwnerExists(string ownerEmail)
     {
-        var owner = UserRepository.GetByEmail(ownerEmail);
+        var owner = UserRepository.Get(ownerEmail);
         if (owner == null)
         {
             throw new ArgumentException("Owner does not exist");

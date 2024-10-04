@@ -38,10 +38,20 @@ public class UserRepositoryTest
     #region Success
 
     [TestMethod]
-    public void Exists_WhenUserExists_ReturnsTrue()
+    public void ExistsById_WhenUserExists_ReturnsTrue()
     {
         // Act
         var result = _userRepository.Exists(_validUser.Id);
+
+        // Assert
+        result.Should().BeTrue();
+    }
+
+    [TestMethod]
+    public void ExistsByEmail_WhenUserExists_ReturnsTrue()
+    {
+        // Act
+        var result = _userRepository.Exists(_validUser.Email);
 
         // Assert
         result.Should().BeTrue();
@@ -132,19 +142,30 @@ public class UserRepositoryTest
 
     #endregion
 
-    #region GetByEmail
+    #region Get
 
     #region Success
+
+    [TestMethod]
+    public void GetById_WhenUserExists_ReturnsUser()
+    {
+        // Act
+        var result = _userRepository.Get(_validUser.Id);
+
+        // Assert
+        result.Should().NotBeNull();
+        result.Email.Should().Be(_validUser.Email);
+    }
 
     [TestMethod]
     public void GetByEmail_WhenUserExists_ReturnsUser()
     {
         // Act
-        var result = _userRepository.GetByEmail(_validUser.Email);
+        var result = _userRepository.Get(_validUser.Email);
 
         // Assert
         result.Should().NotBeNull();
-        result!.Email.Should().Be(_validUser.Email);
+        result.Email.Should().Be(_validUser.Email);
     }
 
     #endregion

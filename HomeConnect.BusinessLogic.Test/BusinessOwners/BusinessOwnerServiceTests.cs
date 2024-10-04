@@ -54,7 +54,7 @@ public class BusinessOwnerServiceTests
     public void CreateBusiness_WhenOwnerExists_CreatesBusiness()
     {
         // Arrange
-        _userRepository.Setup(x => x.GetByEmail(_ownerEmail)).Returns(_owner);
+        _userRepository.Setup(x => x.Get(_ownerEmail)).Returns(_owner);
         _businessRepository.Setup(x => x.GetBusinessByOwner(_ownerEmail)).Returns((Business?)null);
         _businessRepository.Setup(x => x.Add(It.IsAny<Business>()));
         _businessRepository.Setup(x => x.GetBusinessByRut(_businessRut)).Returns((Business?)null);
@@ -77,7 +77,7 @@ public class BusinessOwnerServiceTests
     public void CreateBusiness_WhenOwnerAlreadyHasBusiness_ThrowsException()
     {
         // Arrange
-        _userRepository.Setup(x => x.GetByEmail(_ownerEmail)).Returns(_owner);
+        _userRepository.Setup(x => x.Get(_ownerEmail)).Returns(_owner);
         _businessRepository.Setup(x => x.GetBusinessByOwner(_ownerEmail)).Returns(_existingBusiness);
 
         // Act
@@ -93,7 +93,7 @@ public class BusinessOwnerServiceTests
     {
         // Arrange
         var nonexistentEmail = "nonexistent@example.com";
-        _userRepository.Setup(x => x.GetByEmail(nonexistentEmail)).Returns((global::BusinessLogic.Users.Entities.User?)null);
+        _userRepository.Setup(x => x.Get(nonexistentEmail)).Returns((global::BusinessLogic.Users.Entities.User?)null);
 
         // Act
         Action act = () => _businessOwnerService.CreateBusiness(nonexistentEmail, _businessRut, _businessName);
@@ -107,7 +107,7 @@ public class BusinessOwnerServiceTests
     public void CreateBusiness_WhenBusinessRutAlreadyExists_ThrowsException()
     {
         // Arrange
-        _userRepository.Setup(x => x.GetByEmail(_ownerEmail)).Returns(_owner);
+        _userRepository.Setup(x => x.Get(_ownerEmail)).Returns(_owner);
         _businessRepository.Setup(x => x.GetBusinessByRut(_businessRut)).Returns(_existingBusiness);
         _businessRepository.Setup(x => x.GetBusinessByOwner(_ownerEmail)).Returns((Business?)null);
         _businessRepository.Setup(x => x.Add(It.IsAny<Business>()));

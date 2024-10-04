@@ -13,9 +13,9 @@ public class UserRepository : IUserRepository
         _context = context;
     }
 
-    public User? GetByEmail(string email)
+    public User Get(string email)
     {
-        return _context.Users.FirstOrDefault(u => u.Email == email);
+        return _context.Users.First(u => u.Email == email);
     }
 
     public void Add(User user)
@@ -27,6 +27,11 @@ public class UserRepository : IUserRepository
     public bool Exists(Guid id)
     {
         return _context.Users.Any(u => u.Id == id);
+    }
+
+    public bool Exists(string email)
+    {
+        return _context.Users.Any(u => u.Email == email);
     }
 
     public void Delete(Guid id)

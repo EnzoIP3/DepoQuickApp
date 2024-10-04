@@ -19,7 +19,7 @@ public class AuthService : IAuthService
 
     public string CreateToken(CreateTokenArgs args)
     {
-        var user = _userRepository.GetByEmail(args.Email);
+        var user = _userRepository.Get(args.Email);
         if (user == null || !user.Password.Equals(args.Password))
         {
             throw new ArgumentException("Invalid email or password");

@@ -128,4 +128,22 @@ public class DeviceControllerTests
         var okResult = response as OkObjectResult;
         okResult.Value.Should().BeEquivalentTo(new { Data = _expectedDevices, Pagination = _expectedPagination });
     }
+
+    [TestMethod]
+    public void GetDevices_WhenCalledWithValidRequestAndDeviceTypeFilter_ReturnsFilteredExpectedResponse()
+    {
+        // Arrange
+        var deviceTypeFilter = _expectedDevices.First().Type;
+        _deviceService.Setup(x => x.GetDevices(It.IsAny<int?>(), It.IsAny<int?>(), It.IsAny<string?>(), It.IsAny<int?>(), It.IsAny<string?>(), deviceTypeFilter)).Returns(_pagedList);
+
+        // Act
+        var response = _controller.GetDevices(deviceTypeFilter: deviceTypeFilter);
+
+        // Assert
+        _deviceService.Verify(x => x.GetDevices(It.IsAny<int?>(), It.IsAny<int?>(), It.IsAny<string?>(), It.IsAny<int?>(), It.IsAny<string?>(), deviceTypeFilter), Times.Once);
+        response.Should().NotBeNull();
+        response.Should().BeOfType<OkObjectResult>();
+        var okResult = response as OkObjectResult;
+        okResult.Value.Should().BeEquivalentTo(new { Data = _expectedDevices, Pagination = _expectedPagination });
+    }
 }

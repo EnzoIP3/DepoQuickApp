@@ -27,14 +27,14 @@ public class AuthorizationFilterAttribute(string? permission = null) : Attribute
         }
     }
 
-    private string BuildPermission(AuthorizationFilterContext context)
+    private static string BuildPermission(AuthorizationFilterContext context)
     {
         var action = context.RouteData.Values["action"]?.ToString()?.ToLower();
         var controller = context.RouteData.Values["controller"]?.ToString()?.ToLower();
         return $"{action}-{controller}";
     }
 
-    private void SetUnauthorizedResult(AuthorizationFilterContext context, string message)
+    private static void SetUnauthorizedResult(AuthorizationFilterContext context, string message)
     {
         context.Result =
             new ObjectResult(new { InnerCode = "Unauthorized", Message = message })
@@ -43,7 +43,7 @@ public class AuthorizationFilterAttribute(string? permission = null) : Attribute
             };
     }
 
-    private void SetForbiddenResult(AuthorizationFilterContext context, string message)
+    private static void SetForbiddenResult(AuthorizationFilterContext context, string message)
     {
         context.Result =
             new ObjectResult(new { InnerCode = "Forbidden", Message = message })

@@ -1,19 +1,19 @@
 using BusinessLogic.Users.Entities;
 
-namespace BusinessLogic.Sessions.Entities;
+namespace BusinessLogic.Tokens.Entities;
 
-public class Session
+public class Token
 {
     public static int DurationInHours { get; } = 1;
-    public Guid Id { get; set; } = Guid.NewGuid();
+    public Guid Id { get; init; } = Guid.NewGuid();
     public User User { get; } = null!;
     public DateTime CreatedAt { get; init; } = DateTime.UtcNow;
 
-    public Session()
+    public Token()
     {
     }
 
-    public Session(User user)
+    public Token(User user)
     {
         User = user;
     }

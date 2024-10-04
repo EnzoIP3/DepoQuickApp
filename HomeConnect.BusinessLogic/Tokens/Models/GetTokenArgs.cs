@@ -1,6 +1,6 @@
-namespace BusinessLogic.Sessions.Models;
+namespace BusinessLogic.Tokens.Models;
 
-public struct CreateSessionArgs
+public struct GetTokenArgs
 {
     public string Email { get; set; }
     public string Password { get; set; }

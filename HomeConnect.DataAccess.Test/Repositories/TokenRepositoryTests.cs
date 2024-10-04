@@ -1,5 +1,4 @@
-using BusinessLogic.Sessions.Entities;
-using BusinessLogic.Sessions.Repositories;
+using BusinessLogic.Tokens.Entities;
 using BusinessLogic.Users.Entities;
 using FluentAssertions;
 using HomeConnect.DataAccess.Repositories;
@@ -7,16 +6,16 @@ using HomeConnect.DataAccess.Repositories;
 namespace HomeConnect.DataAccess.Test.Repositories;
 
 [TestClass]
-public class SessionRepositoryTests
+public class TokenRepositoryTests
 {
     private readonly Context _context = DbContextBuilder.BuildTestDbContext();
-    private SessionRepository _sessionRepository = null!;
+    private TokenRepository _tokenRepository = null!;
 
     [TestInitialize]
     public void Initialize()
     {
         _context.Database.EnsureCreated();
-        _sessionRepository = new SessionRepository(_context);
+        _tokenRepository = new TokenRepository(_context);
     }
 
     [TestCleanup]
@@ -26,44 +25,44 @@ public class SessionRepositoryTests
     }
 
     [TestMethod]
-    public void Add_WithValidSession_ShouldAddSession()
+    public void Add_WithValidToken_ShouldAddToken()
     {
         // Arrange
         var user = new User();
-        var session = new Session(user);
+        var token = new Token(user);
 
         // Act
-        _sessionRepository.Add(session);
+        _tokenRepository.Add(token);
 
         // Assert
-        _context.Sessions.Find(session.Id).Should().NotBeNull();
+        _context.Tokens.Find(token.Id).Should().NotBeNull();
     }
 
     [TestMethod]
-    public void Get_WithValidSessionId_ShouldReturnSession()
+    public void Get_WithValidToken_ShouldReturnToken()
     {
         // Arrange
         var user = new User();
-        var session = new Session(user);
-        _sessionRepository.Add(session);
+        var token = new Token(user);
+        _tokenRepository.Add(token);
 
         // Act
-        var result = _sessionRepository.Get(session.Id);
+        var result = _tokenRepository.Get(token.Id);
 
         // Assert
         result.Should().NotBeNull();
     }
 
     [TestMethod]
-    public void Get_WithInvalidSessionId_ShouldThrowException()
+    public void Get_WithInvalidToken_ShouldThrowException()
     {
         // Arrange
         var user = new User();
-        var session = new Session(user);
-        _sessionRepository.Add(session);
+        var token = new Token(user);
+        _tokenRepository.Add(token);
 
         // Act
-        Action act = () => _sessionRepository.Get(Guid.NewGuid());
+        Action act = () => _tokenRepository.Get(Guid.NewGuid());
 
         // Assert
         act.Should().Throw<ArgumentException>();

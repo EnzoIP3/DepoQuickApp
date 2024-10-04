@@ -1,7 +1,6 @@
 using System.Net;
 using BusinessLogic.Roles.Entities;
-using BusinessLogic.Sessions.Repositories;
-using BusinessLogic.Sessions.Services;
+using BusinessLogic.Tokens.Services;
 using BusinessLogic.Users.Entities;
 using BusinessLogic.Users.Models;
 using FluentAssertions;
@@ -20,7 +19,7 @@ namespace HomeConnect.WebApi.Test.Filters;
 public class AuthenticationFilterTests
 {
     private Mock<HttpContext> _httpContextMock = null!;
-    private Mock<ISessionService> _sessionServiceMock = null!;
+    private Mock<ITokenService> _sessionServiceMock = null!;
     private AuthorizationFilterContext _context = null!;
     private AuthenticationFilterAttribute _attribute = null!;
 
@@ -28,7 +27,7 @@ public class AuthenticationFilterTests
     public void Initialize()
     {
         _httpContextMock = new Mock<HttpContext>(MockBehavior.Strict);
-        _sessionServiceMock = new Mock<ISessionService>(MockBehavior.Strict);
+        _sessionServiceMock = new Mock<ITokenService>(MockBehavior.Strict);
         _attribute = new AuthenticationFilterAttribute();
 
         _context = new AuthorizationFilterContext(
@@ -110,9 +109,9 @@ public class AuthenticationFilterTests
         {
             { "Authorization", $"Bearer {guid}" }
         }));
-        _httpContextMock.Setup(h => h.RequestServices.GetService(typeof(ISessionService)))
+        _httpContextMock.Setup(h => h.RequestServices.GetService(typeof(ITokenService)))
             .Returns(_sessionServiceMock.Object);
-        _sessionServiceMock.Setup(a => a.IsSessionExpired(guid)).Returns(true);
+        _sessionServiceMock.Setup(a => a.IsTokenExpired(guid)).Returns(true);
 
         _attribute.OnAuthorization(_context);
 
@@ -136,10 +135,10 @@ public class AuthenticationFilterTests
         {
             { "Authorization", $"Bearer {guid}" }
         }));
-        _sessionServiceMock.Setup(a => a.IsSessionExpired(guid)).Returns(false);
-        _httpContextMock.Setup(h => h.RequestServices.GetService(typeof(ISessionService)))
+        _sessionServiceMock.Setup(a => a.IsTokenExpired(guid)).Returns(false);
+        _httpContextMock.Setup(h => h.RequestServices.GetService(typeof(ITokenService)))
             .Returns(_sessionServiceMock.Object);
-        _sessionServiceMock.Setup(a => a.GetUserFromSession(guid)).Returns((User?)null);
+        _sessionServiceMock.Setup(a => a.GetUserFromToken(guid)).Returns((User?)null);
         _attribute.OnAuthorization(_context);
 
         var response = _context.Result;
@@ -177,11 +176,11 @@ public class AuthenticationFilterTests
         var adminRole = new Role("Admin", []);
         var user = new User(validUserModel.Name, validUserModel.Surname, validUserModel.Email, validUserModel.Password,
             adminRole);
-        _sessionServiceMock.Setup(a => a.IsSessionExpired(guid)).Returns(false);
-        _sessionServiceMock.Setup(a => a.GetUserFromSession(guid)).Returns(user);
+        _sessionServiceMock.Setup(a => a.IsTokenExpired(guid)).Returns(false);
+        _sessionServiceMock.Setup(a => a.GetUserFromToken(guid)).Returns(user);
         var items = new Dictionary<object, object> { { Item.UserLogged, user } };
         _httpContextMock.Setup(h => h.Items).Returns(items);
-        _httpContextMock.Setup(h => h.RequestServices.GetService(typeof(ISessionService)))
+        _httpContextMock.Setup(h => h.RequestServices.GetService(typeof(ITokenService)))
             .Returns(_sessionServiceMock.Object);
 
         _attribute.OnAuthorization(_context);

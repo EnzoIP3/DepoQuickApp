@@ -1,5 +1,5 @@
 using System.Net;
-using BusinessLogic.Sessions.Services;
+using BusinessLogic.Tokens.Services;
 using BusinessLogic.Users.Entities;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Filters;
@@ -32,7 +32,7 @@ public sealed class AuthenticationFilterAttribute : Attribute, IAuthorizationFil
                 return;
             }
 
-            if (IsSessionExpired(authorizationHeader, context))
+            if (IsTokenExpired(authorizationHeader, context))
             {
                 SetUnauthorizedResult(context, "ExpiredAuthorization", "The provided authorization header is expired");
                 return;
@@ -77,16 +77,16 @@ public sealed class AuthenticationFilterAttribute : Attribute, IAuthorizationFil
 
     private User GetUserOfAuthorization(StringValues authorization, AuthorizationFilterContext context)
     {
-        var sessionId = ExtractSessionId(authorization);
-        var sessionService = GetSessionService(context);
-        return sessionService.GetUserFromSession(sessionId);
+        var token = ExtractTokenFromAuthorization(authorization);
+        var tokenService = GetTokenService(context);
+        return tokenService.GetUserFromToken(token);
     }
 
-    private bool IsSessionExpired(StringValues authorizationHeader, AuthorizationFilterContext context)
+    private bool IsTokenExpired(StringValues authorizationHeader, AuthorizationFilterContext context)
     {
-        var sessionService = GetSessionService(context);
-        var sessionId = ExtractSessionId(authorizationHeader);
-        return sessionService.IsSessionExpired(sessionId);
+        var tokenService = GetTokenService(context);
+        var token = ExtractTokenFromAuthorization(authorizationHeader);
+        return tokenService.IsTokenExpired(token);
     }
 
     private bool IsAuthorizationFormatValid(StringValues authorizationHeader)
@@ -96,17 +96,17 @@ public sealed class AuthenticationFilterAttribute : Attribute, IAuthorizationFil
             return false;
         }
 
-        var sessionId = ExtractSessionId(authorizationHeader);
-        return Guid.TryParse(sessionId, out _);
+        var token = ExtractTokenFromAuthorization(authorizationHeader);
+        return Guid.TryParse(token, out _);
     }
 
-    private string ExtractSessionId(StringValues authorizationHeader)
+    private string ExtractTokenFromAuthorization(StringValues authorizationHeader)
     {
         return authorizationHeader.ToString().Substring(BearerPrefix.Length);
     }
 
-    private ISessionService GetSessionService(AuthorizationFilterContext context)
+    private ITokenService GetTokenService(AuthorizationFilterContext context)
     {
-        return context.HttpContext.RequestServices.GetRequiredService<ISessionService>();
+        return context.HttpContext.RequestServices.GetRequiredService<ITokenService>();
     }
 }

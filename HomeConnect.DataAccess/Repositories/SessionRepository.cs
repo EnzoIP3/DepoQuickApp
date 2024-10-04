@@ -18,17 +18,17 @@ public class SessionRepository : ISessionRepository
         return _context.Sessions.Find(sessionId)!;
     }
 
+    public void Add(Session session)
+    {
+        _context.Sessions.Add(session);
+        _context.SaveChanges();
+    }
+
     private void EnsureSessionExists(Guid sessionId)
     {
         if (_context.Sessions.Find(sessionId) == null)
         {
             throw new ArgumentException("Session does not exist");
         }
-    }
-
-    public void Add(Session session)
-    {
-        _context.Sessions.Add(session);
-        _context.SaveChanges();
     }
 }

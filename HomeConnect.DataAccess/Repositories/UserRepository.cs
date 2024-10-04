@@ -1,6 +1,6 @@
 using BusinessLogic.Users.Entities;
 
-namespace HomeConnect.DataAccess.Users;
+namespace HomeConnect.DataAccess.Repositories;
 
 public class UserRepository
 {
@@ -33,7 +33,7 @@ public class UserRepository
 
     public void Delete(string email)
     {
-        var user = GetUser(email);
+        User? user = GetUser(email);
         EnsureUserIsNotNull(user);
         _context.Users.Remove(user!);
         _context.SaveChanges();

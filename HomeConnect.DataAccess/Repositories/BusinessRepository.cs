@@ -2,7 +2,7 @@ using BusinessLogic;
 using BusinessLogic.BusinessOwners.Entities;
 using BusinessLogic.BusinessOwners.Repositories;
 
-namespace HomeConnect.DataAccess.BusinessOwners;
+namespace HomeConnect.DataAccess.Repositories;
 
 public class BusinessRepository : IBusinessRepository
 {
@@ -19,24 +19,11 @@ public class BusinessRepository : IBusinessRepository
         IQueryable<Business> query = _context.Businesses;
         query = FilterByOwnerFullName(fullNameFilter, query);
         query = FilterByBusinessName(nameFilter, query);
-        var businesses = PaginateBusinesses(page, pageSize, query);
-        return new PagedData<Business>()
+        List<Business> businesses = PaginateBusinesses(page, pageSize, query);
+        return new PagedData<Business>
         {
-            Data = businesses,
-            Page = page,
-            PageSize = pageSize,
-            TotalPages = CalculateTotalPages(pageSize, query)
+            Data = businesses, Page = page, PageSize = pageSize, TotalPages = CalculateTotalPages(pageSize, query)
         };
-    }
-
-    private static List<Business> PaginateBusinesses(int page, int pageSize, IQueryable<Business> query)
-    {
-        return query.Skip((page - 1) * pageSize).Take(pageSize).ToList();
-    }
-
-    private static int CalculateTotalPages(int pageSize, IQueryable<Business> query)
-    {
-        return (int)Math.Ceiling(query.Count() / (double)pageSize);
     }
 
     public Business? GetBusinessByOwner(string ownerEmail)
@@ -47,6 +34,23 @@ public class BusinessRepository : IBusinessRepository
     public Business? GetBusinessByRut(string rut)
     {
         return _context.Businesses.FirstOrDefault(b => b.Rut == rut);
+    }
+
+    public void Add(Business business)
+    {
+        EnsureBusinessDoesNotExist(business);
+        _context.Businesses.Add(business);
+        _context.SaveChanges();
+    }
+
+    private static List<Business> PaginateBusinesses(int page, int pageSize, IQueryable<Business> query)
+    {
+        return query.Skip((page - 1) * pageSize).Take(pageSize).ToList();
+    }
+
+    private static int CalculateTotalPages(int pageSize, IQueryable<Business> query)
+    {
+        return (int)Math.Ceiling(query.Count() / (double)pageSize);
     }
 
     private static IQueryable<Business> FilterByBusinessName(string? nameFilter, IQueryable<Business> query)
@@ -67,13 +71,6 @@ public class BusinessRepository : IBusinessRepository
         }
 
         return query;
-    }
-
-    public void Add(Business business)
-    {
-        EnsureBusinessDoesNotExist(business);
-        _context.Businesses.Add(business);
-        _context.SaveChanges();
     }
 
     private void EnsureBusinessDoesNotExist(Business business)

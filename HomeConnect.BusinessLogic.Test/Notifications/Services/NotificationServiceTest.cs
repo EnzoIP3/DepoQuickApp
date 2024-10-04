@@ -2,8 +2,11 @@ using BusinessLogic.BusinessOwners.Entities;
 using BusinessLogic.Devices.Entities;
 using BusinessLogic.Devices.Repositories;
 using BusinessLogic.HomeOwners.Entities;
+using BusinessLogic.Notifications.Entities;
 using BusinessLogic.Notifications.Repositories;
 using BusinessLogic.Notifications.Services;
+using BusinessLogic.Roles.Entities;
+using BusinessLogic.Users.Entities;
 using FluentAssertions;
 using HomeConnect.WebApi.Controllers.Sensor;
 using Moq;
@@ -59,5 +62,46 @@ public class NotificationServiceTest
 
         // Assert
         act.Should().Throw<ArgumentException>();
+    }
+
+    [TestMethod]
+    public void Notify_WhenCalledWithExistentDevice_ShouldCreateNotificationForEachUserWithPermissions()
+    {
+        // Arrange
+        var shouldBeNotified = new HomePermission("shouldBeNotified");
+        var role = new Role { Name = "shouldBeNotified", Permissions = new List<SystemPermission>() };
+        var owner = new User("owner", "owner", "owner@email.com", "Password@100",
+            role);
+        var member = new Member(new User("name", "surname", "email@email.com", "Password@100",
+            role), [shouldBeNotified]);
+        var otherMember = new Member(new User("name", "surname", "email@email.com", "Password@100",
+            role));
+        var home = new Home(owner, "Street 3420", 100, 100, 5);
+        home.AddMember(member);
+        home.AddMember(otherMember);
+        var device = new Device("Device", 12345, "Device description", "https://example.com/image.png",
+            [], "Sensor", new Business("Rut", "Business", owner));
+        var ownedDevice = new OwnedDevice(home, device);
+        var args = new NotificationArgs
+        {
+            HardwareId = ownedDevice.HardwareId.ToString(), Event = "Test Event", Date = DateTime.Now
+        };
+
+        _mockOwnedDeviceRepository.Setup(x => x.GetByHardwareId(args.HardwareId)).Returns(ownedDevice);
+
+        // Act
+        _notificationService.Notify(args);
+
+        // Assert
+        _mockNotificationRepository.Verify(x => x.Add(It.Is<Notification>(
+            n =>
+                n.Event == args.Event &&
+                n.OwnedDevice == ownedDevice &&
+                n.User == owner)), Times.Once);
+        _mockNotificationRepository.Verify(x => x.Add(It.Is<Notification>(
+            n =>
+                n.Event == args.Event &&
+                n.OwnedDevice == ownedDevice &&
+                n.User == member.User)), Times.Once);
     }
 }

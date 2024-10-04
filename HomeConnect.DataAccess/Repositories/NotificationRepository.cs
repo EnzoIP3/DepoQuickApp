@@ -19,6 +19,11 @@ public class NotificationRepository : INotificationRepository
         _context.SaveChanges();
     }
 
+    public List<Notification> GetNotifications(Guid userId, string? deviceFilter, DateTime? dateFilter, bool? readFilter)
+    {
+        throw new NotImplementedException();
+    }
+
     private void EnsureNotificationDoesNotExist(Notification notification)
     {
         if (_context.Notifications.Any(n => n.Id == notification.Id))

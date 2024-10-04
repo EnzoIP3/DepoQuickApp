@@ -34,9 +34,10 @@ public class NotificationService : INotificationService
         NotifyUsersWithPermission(args, home, shouldReceiveNotification, ownedDevice);
     }
 
-    public List<Notification> GetNotifications(Guid userId, string deviceFilter, DateTime dateFilter, bool readFilter)
+    public List<Notification> GetNotifications(Guid userId, string? deviceFilter = null, DateTime? dateFilter = null,
+        bool? readFilter = null)
     {
-        throw new NotImplementedException();
+        return NotificationRepository.GetNotifications(userId, deviceFilter, dateFilter, readFilter);
     }
 
     private void NotifyUsersWithPermission(NotificationArgs args, Home home, HomePermission shouldReceiveNotification,

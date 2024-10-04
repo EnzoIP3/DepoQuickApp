@@ -45,4 +45,25 @@ public class UserServiceTest
         // Assert
         _userRepository.Verify(x => x.Add(It.IsAny<User>()), Times.Once);
     }
+
+    [TestMethod]
+    public void CreateUser_WithInvalidRole_ShouldThrowException()
+    {
+        // Arrange
+        var args = new CreateUserArgs()
+        {
+            Email = "john.doe@gmail.com",
+            Password = "password1M@",
+            Name = "John",
+            Surname = "Doe",
+            Role = "Administrator"
+        };
+        _roleRepository.Setup(x => x.Exists(args.Role)).Returns(false);
+
+        // Act
+        var act = () => _userService.CreateUser(args);
+
+        // Assert
+        act.Should().Throw<ArgumentException>();
+    }
 }

@@ -75,4 +75,21 @@ public class UserServiceTest
         // Assert
         act.Should().Throw<ArgumentException>();
     }
+
+    [TestMethod]
+    public void CreateUser_WithHomeOwnerRoleAndWithoutProfilePicture_ShouldThrowException()
+    {
+        // Arrange
+        _args.Role = "HomeOwner";
+        _args.ProfilePicture = null;
+        _roleRepository.Setup(x => x.Exists(_args.Role)).Returns(true);
+        _roleRepository.Setup(x => x.Get(_args.Role)).Returns(Role.HomeOwner);
+        _userRepository.Setup(x => x.Exists(_args.Email)).Returns(false);
+
+        // Act
+        var act = () => _userService.CreateUser(_args);
+
+        // Assert
+        act.Should().Throw<ArgumentException>();
+    }
 }

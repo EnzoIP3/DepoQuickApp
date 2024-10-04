@@ -1,3 +1,4 @@
+using BusinessLogic.Roles.Entities;
 using BusinessLogic.Roles.Repositories;
 using BusinessLogic.Users.Entities;
 using BusinessLogic.Users.Models;
@@ -21,6 +22,11 @@ public class UserService : IUserService
         EnsureRoleExists(args);
         EnsureUserDoesNotExist(args);
         var role = _roleRepository.Get(args.Role);
+        if (role.Name == Role.HomeOwner.Name && args.ProfilePicture == null)
+        {
+            throw new ArgumentException("Home owners must have a profile picture");
+        }
+
         var user = new User(args.Name, args.Surname, args.Email, args.Password, role, args.ProfilePicture);
         _userRepository.Add(user);
         return user;

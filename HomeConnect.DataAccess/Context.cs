@@ -21,9 +21,9 @@ public class Context(DbContextOptions<Context> options) : DbContext(options)
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
         modelBuilder.Entity<Role>().HasData(
-            new Role("Admin", []),
-            new Role("Business Owner", []),
-            new Role("Home Owner", []));
+            Role.Admin,
+            Role.BusinessOwner,
+            Role.HomeOwner);
 
         base.OnModelCreating(modelBuilder);
     }

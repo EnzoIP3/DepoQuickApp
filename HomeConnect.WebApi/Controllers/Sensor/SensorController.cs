@@ -6,7 +6,7 @@ namespace HomeConnect.WebApi.Controllers.Sensor;
 
 [ApiController]
 [Route("sensors")]
-public class SensorController(INotificationService notificationService, IDeviceService deviceService) : ControllerBase
+public class SensorController(INotificationService notificationService, IDeviceService deviceService) : BaseDeviceController(deviceService)
 {
     [HttpPost("{hardwareId}/open")]
     public NotifyResponse NotifyOpen([FromRoute] string hardwareId)
@@ -32,12 +32,5 @@ public class SensorController(INotificationService notificationService, IDeviceS
         };
         notificationService.Notify(notificationArgs);
         return new NotifyResponse { HardwareId = hardwareId };
-    }
-
-    [HttpPost("{hardwareId}/toggle")]
-    public ConnectionResponse Toggle([FromRoute] string hardwareId)
-    {
-        var connectionState = deviceService.Toogle(hardwareId);
-        return new ConnectionResponse { ConnectionState = connectionState, HardwareId = hardwareId };
     }
 }

@@ -51,6 +51,7 @@ public class HomeOwnerServiceTests
             Longitude = 2.0,
             MaxMembers = 5
         };
+        _userRepositoryMock.Setup(x => x.Exists(Guid.Parse(model.HomeOwnerId))).Returns(true);
         _userRepositoryMock.Setup(x => x.Get(Guid.Parse(model.HomeOwnerId))).Returns(_user);
         _homeRepositoryMock.Setup(x => x.Add(It.IsAny<Home>())).Verifiable();
 
@@ -174,6 +175,27 @@ public class HomeOwnerServiceTests
             CanAddDevices = true,
             CanListDevices = true
         };
+
+        // Act
+        var act = () => _homeOwnerService.AddMemberToHome(model);
+
+        // Assert
+        act.Should().Throw<ArgumentException>();
+    }
+
+    [TestMethod]
+    public void AddMemberToHome_WhenHomeOwnerIdDoesNotExist_ThrowsException()
+    {
+        // Arrange
+        var model = new AddMemberArgs()
+        {
+            HomeId = "a99feb27-7dac-41ec-8fd2-942533868689",
+            HomeOwnerId = "a99feb27-7dac-41ec-8fd2-942533868689",
+            CanAddDevices = true,
+            CanListDevices = true
+        };
+        _userRepositoryMock.Setup(x => x.Exists(Guid.Parse(model.HomeOwnerId)))
+            .Returns(false);
 
         // Act
         var act = () => _homeOwnerService.AddMemberToHome(model);

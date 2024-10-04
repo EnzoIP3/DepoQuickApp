@@ -2,7 +2,6 @@ using System.Collections.Generic;
 using BusinessLogic;
 using BusinessLogic.BusinessOwners.Entities;
 using BusinessLogic.Devices.Entities;
-using BusinessLogic.Devices.Services;
 using FluentAssertions;
 using HomeConnect.WebApi.Controllers.Device;
 using Microsoft.AspNetCore.Mvc;
@@ -70,6 +69,24 @@ public class DeviceControllerTests
 
         // Assert
         _deviceService.VerifyAll();
+        response.Should().NotBeNull();
+        response.Should().BeOfType<OkObjectResult>();
+        var okResult = response as OkObjectResult;
+        okResult.Value.Should().BeEquivalentTo(new { Data = _expectedDevices, Pagination = _expectedPagination });
+    }
+
+    [TestMethod]
+    public void GetDevices_WhenCalledWithValidRequestAndNameFilter_ReturnsFilteredExpectedResponse()
+    {
+        // Arrange
+        var deviceNameFilter = _expectedDevices.First().Name;
+        _deviceService.Setup(x => x.GetDevices(It.IsAny<int?>(), It.IsAny<int?>(), deviceNameFilter)).Returns(_pagedList);
+
+        // Act
+        var response = _controller.GetDevices(deviceNameFilter: deviceNameFilter);
+
+        // Assert
+        _deviceService.Verify(x => x.GetDevices(It.IsAny<int?>(), It.IsAny<int?>(), deviceNameFilter), Times.Once);
         response.Should().NotBeNull();
         response.Should().BeOfType<OkObjectResult>();
         var okResult = response as OkObjectResult;

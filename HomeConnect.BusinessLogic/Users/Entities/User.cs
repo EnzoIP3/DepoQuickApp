@@ -58,7 +58,24 @@ public class User
     public Role Role { get; set; } = new Role();
     public DateOnly CreatedAt { get; set; }
 
-    public string? ProfilePicture { get; set; }
+    private readonly string? _profilePicture;
+
+    public string? ProfilePicture
+    {
+        get => _profilePicture;
+        private init
+        {
+            if (value != null)
+            {
+                if (!Uri.IsWellFormedUriString(value, UriKind.Absolute))
+                {
+                    throw new ArgumentException("Profile picture must be a valid URL.");
+                }
+            }
+
+            _profilePicture = value;
+        }
+    }
 
     public User()
     {

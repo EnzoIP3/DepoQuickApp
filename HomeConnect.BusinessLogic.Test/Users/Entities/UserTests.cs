@@ -84,6 +84,19 @@ public class UserTests
         act.Should().Throw<Exception>().WithMessage("Password must be at least 8 characters long.");
     }
 
+    [TestMethod]
+    public void Constructor_WhenProfilePictureIsNotAValidUrl_ThrowsException()
+    {
+        // Arrange
+        const string profilePicture = "not-a-url";
+
+        // Act
+        var act = () => new User(Name, Surname, Email, Password, _role, profilePicture);
+
+        // Assert
+        act.Should().Throw<ArgumentException>().WithMessage("Profile picture must be a valid URL.");
+    }
+
     #endregion
 
     #region Success
@@ -105,7 +118,7 @@ public class UserTests
     public void Constructor_WhenProfilePictureIsProvided_SetsProfilePicture()
     {
         // Arrange
-        const string profilePicture = "profile-picture.jpg";
+        const string profilePicture = "https://example.com/profile-picture.jpg";
 
         // Act
         var user = new User(Name, Surname, Email, Password, _role, profilePicture);

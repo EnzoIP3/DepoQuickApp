@@ -23,4 +23,10 @@ public class CameraController(INotificationService notificationService, IDeviceS
         notificationService.Notify(args);
         return new NotifyResponse { HardwareId = hardwareId };
     }
+
+    [HttpPost("{hardwareId}/person-detected")]
+    public NotifyResponse PersonDetected([FromRoute] string hardwareId, PersonDetectedRequest request)
+    {
+        throw new NotImplementedException();
+    }
 }

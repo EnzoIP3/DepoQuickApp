@@ -1,6 +1,7 @@
 using BusinessLogic.Devices.Entities;
 using BusinessLogic.Devices.Repositories;
 using BusinessLogic.HomeOwners.Entities;
+using BusinessLogic.Notifications.Entities;
 using BusinessLogic.Notifications.Repositories;
 using BusinessLogic.Users.Entities;
 using HomeConnect.WebApi.Controllers.Sensor;
@@ -31,6 +32,11 @@ public class NotificationService : INotificationService
         var home = ownedDevice.Home;
         var shouldReceiveNotification = new HomePermission("shouldBeNotified");
         NotifyUsersWithPermission(args, home, shouldReceiveNotification, ownedDevice);
+    }
+
+    public List<Notification> GetNotifications(Guid userId, string deviceFilter, DateTime dateFilter, bool readFilter)
+    {
+        throw new NotImplementedException();
     }
 
     private void NotifyUsersWithPermission(NotificationArgs args, Home home, HomePermission shouldReceiveNotification,

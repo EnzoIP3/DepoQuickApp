@@ -15,9 +15,10 @@ public class DeviceController : ControllerBase
     }
 
     [HttpGet]
-    public IActionResult GetDevices([FromQuery] string? deviceName = null, [FromQuery] string? device = null, [FromQuery] string? model = null, [FromQuery] string? business = null, [FromQuery] int? page = 1, [FromQuery] int? pageSize = 20, [FromQuery]  string? deviceNameFilter = null)
+    public IActionResult GetDevices([FromQuery] string? deviceName = null, [FromQuery] string? device = null, [FromQuery] string? model = null, [FromQuery] string? business = null, [FromQuery] int? page = 1,
+        [FromQuery] int? pageSize = 20, [FromQuery]  string? deviceNameFilter = null, [FromQuery] int? modelNameFilter = null)
     {
-        PagedData<BusinessLogic.Devices.Entities.Device> devices = _deviceService.GetDevices(page, pageSize, deviceNameFilter);
+        PagedData<BusinessLogic.Devices.Entities.Device> devices = _deviceService.GetDevices(page, pageSize, deviceNameFilter, modelNameFilter);
         var response = ResponseFromDevices(devices);
         return Ok(response);
     }

@@ -4,49 +4,53 @@ using BusinessLogic.BusinessOwners.Repositories;
 
 namespace HomeConnect.DataAccess.Repositories;
 
-public class BusinessRepository : IBusinessRepository
+public class BusinessRepository : PaginatedRepositoryBase<Business>, IBusinessRepository
 {
-    private readonly Context _context;
-
     public BusinessRepository(Context context)
+        : base(context)
     {
-        _context = context;
     }
 
-    public PagedData<Business> GetBusinesses(int page, int pageSize, string? fullNameFilter = null,
+    public PagedData<Business> GetPagedData(int currentPage, int pageSize, string? fullNameFilter = null,
         string? nameFilter = null)
     {
-        IQueryable<Business> query = _context.Businesses;
-        query = FilterByOwnerFullName(fullNameFilter, query);
-        query = FilterByBusinessName(nameFilter, query);
-        var businesses = PaginateBusinesses(page, pageSize, query);
-        return new PagedData<Business>()
-        {
-            Data = businesses,
-            Page = page,
-            PageSize = pageSize,
-            TotalPages = CalculateTotalPages(pageSize, query)
-        };
-    }
-
-    private static List<Business> PaginateBusinesses(int page, int pageSize, IQueryable<Business> query)
-    {
-        return query.Skip((page - 1) * pageSize).Take(pageSize).ToList();
-    }
-
-    private static int CalculateTotalPages(int pageSize, IQueryable<Business> query)
-    {
-        return (int)Math.Ceiling(query.Count() / (double)pageSize);
+        var filters = new object[2];
+        filters[0] = fullNameFilter ?? string.Empty;
+        filters[1] = nameFilter ?? string.Empty;
+        return GetAllPaged(currentPage, pageSize, filters);
     }
 
     public Business? GetBusinessByOwner(string ownerEmail)
     {
-        return _context.Businesses.FirstOrDefault(b => b.Owner.Email == ownerEmail);
+        return Context.Businesses.FirstOrDefault(b => b.Owner.Email == ownerEmail);
     }
 
     public Business? GetBusinessByRut(string rut)
     {
-        return _context.Businesses.FirstOrDefault(b => b.Rut == rut);
+        return Context.Businesses.FirstOrDefault(b => b.Rut == rut);
+    }
+
+    public void Add(Business business)
+    {
+        EnsureBusinessDoesNotExist(business);
+        Context.Businesses.Add(business);
+        Context.SaveChanges();
+    }
+
+    protected override IQueryable<Business> GetQueryable()
+    {
+        return Context.Businesses;
+    }
+
+    protected override IQueryable<Business> ApplyFilters(IQueryable<Business> query, params object[] filters)
+    {
+        var fullNameFilter = filters.Length > 0 ? filters[0] as string : null;
+        var nameFilter = filters.Length > 1 ? filters[1] as string : null;
+
+        query = FilterByOwnerFullName(fullNameFilter, query);
+        query = FilterByBusinessName(nameFilter, query);
+
+        return query;
     }
 
     private static IQueryable<Business> FilterByBusinessName(string? nameFilter, IQueryable<Business> query)
@@ -69,16 +73,9 @@ public class BusinessRepository : IBusinessRepository
         return query;
     }
 
-    public void Add(Business business)
-    {
-        EnsureBusinessDoesNotExist(business);
-        _context.Businesses.Add(business);
-        _context.SaveChanges();
-    }
-
     private void EnsureBusinessDoesNotExist(Business business)
     {
-        if (_context.Businesses.Any(b => b.Rut == business.Rut))
+        if (Context.Businesses.Any(b => b.Rut == business.Rut))
         {
             throw new ArgumentException("Business with this RUT already exists.");
         }

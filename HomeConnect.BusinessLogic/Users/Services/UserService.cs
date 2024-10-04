@@ -18,6 +18,9 @@ public class UserService : IUserService
 
     public User CreateUser(CreateUserArgs args)
     {
-        throw new NotImplementedException();
+        var role = _roleRepository.GetRole(args.Role);
+        var user = new User(args.Name, args.Surname, args.Email, args.Password, role);
+        _userRepository.Add(user);
+        return user;
     }
 }

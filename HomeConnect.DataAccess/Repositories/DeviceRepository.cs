@@ -1,3 +1,4 @@
+using BusinessLogic;
 using BusinessLogic.Devices.Entities;
 using BusinessLogic.Devices.Repositories;
 
@@ -36,5 +37,11 @@ public class DeviceRepository : IDeviceRepository
         {
             throw new ArgumentException("Device already exists.");
         }
+    }
+
+    public PagedData<Device> GetDevices(int? currentPage, int? pageSize, string? deviceNameFilter, int? modelNumberFilter,
+        string? businessNameFilter, string? deviceTypeFilter)
+    {
+        throw new NotImplementedException();
     }
 }

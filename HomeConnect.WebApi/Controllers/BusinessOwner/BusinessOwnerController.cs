@@ -1,6 +1,5 @@
 using BusinessLogic.Admins.Services;
 using BusinessLogic.BusinessOwners.Services;
-using BusinessLogic.Devices.Entities;
 using BusinessLogic.Users.Models;
 using HomeConnect.WebApi.Filters;
 using Microsoft.AspNetCore.Mvc;
@@ -51,7 +50,7 @@ public class BusinessOwnerController(IAdminService adminService, IBusinessOwnerS
     [Route("sensors")]
     public CreateDeviceResponse CreateDevice([FromBody] CreateDeviceRequest request)
     {
-        var device = new Device
+        var device = new BusinessLogic.Devices.Entities.Device
         {
             Business = request.Business,
             Description = request.Description,
@@ -72,7 +71,7 @@ public class BusinessOwnerController(IAdminService adminService, IBusinessOwnerS
     [Route("cameras")]
     public CreateCameraResponse CreateCamera([FromBody] CreateCameraRequest request)
     {
-        var camera = new Camera
+        var camera = new BusinessLogic.Devices.Entities.Camera
         {
             Business = request.Business,
             Description = request.Description,

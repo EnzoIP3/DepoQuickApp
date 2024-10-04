@@ -10,9 +10,12 @@ namespace BusinessLogic.Notifications.Services;
 public class NotificationService : INotificationService
 {
     private INotificationRepository NotificationRepository { get; init; }
-    public NotificationService(INotificationRepository notificationRepository)
+    private IOwnedDeviceRepository OwnedDeviceRepository { get; init; }
+
+    public NotificationService(INotificationRepository notificationRepository, IOwnedDeviceRepository ownedDeviceRepository)
     {
         NotificationRepository = notificationRepository;
+        OwnedDeviceRepository = ownedDeviceRepository;
     }
 
     public void CreateNotification(OwnedDevice ownedDevice, string @event, User user)
@@ -23,6 +26,10 @@ public class NotificationService : INotificationService
 
     public void Notify(NotificationArgs args)
     {
-        throw new NotImplementedException();
+        var ownedDevice = OwnedDeviceRepository.GetByHardwareId(args.HardwareId);
+        if (ownedDevice == null)
+        {
+            throw new ArgumentException("Device not found");
+        }
     }
 }

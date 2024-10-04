@@ -22,7 +22,7 @@ public class NotificationServiceTest
     {
         _mockOwnedDeviceRepository = new Mock<IOwnedDeviceRepository>();
         _mockNotificationRepository = new Mock<INotificationRepository>();
-        _notificationService = new NotificationService(_mockNotificationRepository.Object);
+        _notificationService = new NotificationService(_mockNotificationRepository.Object, _mockOwnedDeviceRepository.Object);
     }
 
     [TestMethod]

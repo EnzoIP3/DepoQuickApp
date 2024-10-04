@@ -37,6 +37,7 @@ public class UserServiceTest
             Role = "Administrator"
         };
         _userRepository.Setup(x => x.Add(It.IsAny<User>()));
+        _roleRepository.Setup(x => x.Exists(args.Role)).Returns(true);
         _roleRepository.Setup(x => x.Get(args.Role)).Returns(new Role());
 
         // Act

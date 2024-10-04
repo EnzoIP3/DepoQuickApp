@@ -18,6 +18,11 @@ public class UserService : IUserService
 
     public User CreateUser(CreateUserArgs args)
     {
+        if (!_roleRepository.Exists(args.Role))
+        {
+            throw new ArgumentException("Invalid role");
+        }
+
         var role = _roleRepository.Get(args.Role);
         var user = new User(args.Name, args.Surname, args.Email, args.Password, role);
         _userRepository.Add(user);

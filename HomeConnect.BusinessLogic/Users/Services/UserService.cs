@@ -21,7 +21,7 @@ public class UserService : IUserService
         EnsureRoleExists(args);
         EnsureUserDoesNotExist(args);
         var role = _roleRepository.Get(args.Role);
-        var user = new User(args.Name, args.Surname, args.Email, args.Password, role);
+        var user = new User(args.Name, args.Surname, args.Email, args.Password, role, args.ProfilePicture);
         _userRepository.Add(user);
         return user;
     }

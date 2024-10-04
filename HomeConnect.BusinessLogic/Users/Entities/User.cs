@@ -58,11 +58,13 @@ public class User
     public Role Role { get; set; } = new Role();
     public DateOnly CreatedAt { get; set; }
 
+    public string? ProfilePicture { get; set; }
+
     public User()
     {
     }
 
-    public User(string name, string surname, string email, string password, Role role)
+    public User(string name, string surname, string email, string password, Role role, string? profilePicture = null)
     {
         Name = name;
         Surname = surname;
@@ -70,6 +72,7 @@ public class User
         Password = password;
         CreatedAt = DateOnly.FromDateTime(DateTime.Now);
         Role = role;
+        ProfilePicture = profilePicture;
     }
 
     private static void ValidateNotEmpty(string value, string propertyName)

@@ -1,8 +1,10 @@
+using BusinessLogic.Devices.Entities;
+
 namespace BusinessLogic.Devices.Repositories;
 
 public interface IDeviceRepository
 {
-    Entities.Device Get(Guid deviceId);
-    void Add(Entities.Device device);
-    void EnsureDeviceDoesNotExist(Entities.Device device);
+    Device Get(Guid deviceId);
+    void Add(Device device);
+    void EnsureDeviceDoesNotExist(Device device);
 }

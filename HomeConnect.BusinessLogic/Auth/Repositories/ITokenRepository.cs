@@ -1,6 +1,6 @@
-using BusinessLogic.Tokens.Entities;
+using BusinessLogic.Auth.Entities;
 
-namespace BusinessLogic.Tokens.Repositories;
+namespace BusinessLogic.Auth.Repositories;
 
 public interface ITokenRepository
 {

@@ -1,6 +1,6 @@
 using BusinessLogic.Users.Entities;
 
-namespace BusinessLogic.Tokens.Entities;
+namespace BusinessLogic.Auth.Entities;
 
 public class Token
 {

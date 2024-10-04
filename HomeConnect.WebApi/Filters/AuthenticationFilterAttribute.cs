@@ -1,5 +1,5 @@
 using System.Net;
-using BusinessLogic.Tokens.Services;
+using BusinessLogic.Auth.Services;
 using BusinessLogic.Users.Entities;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Filters;
@@ -99,8 +99,8 @@ public sealed class AuthenticationFilterAttribute : Attribute, IAuthorizationFil
         return authorizationHeader.ToString().Substring(BearerPrefix.Length);
     }
 
-    private static ITokenService GetTokenService(AuthorizationFilterContext context)
+    private static IAuthService GetTokenService(AuthorizationFilterContext context)
     {
-        return context.HttpContext.RequestServices.GetRequiredService<ITokenService>();
+        return context.HttpContext.RequestServices.GetRequiredService<IAuthService>();
     }
 }

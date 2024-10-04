@@ -1,9 +1,9 @@
-using BusinessLogic.Tokens.Models;
+using BusinessLogic.Auth.Models;
 using BusinessLogic.Users.Entities;
 
-namespace BusinessLogic.Tokens.Services;
+namespace BusinessLogic.Auth.Services;
 
-public interface ITokenService
+public interface IAuthService
 {
     string CreateToken(CreateTokenArgs args);
     User GetUserFromToken(string token);

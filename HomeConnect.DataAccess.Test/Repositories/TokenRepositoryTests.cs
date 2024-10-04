@@ -1,4 +1,4 @@
-using BusinessLogic.Tokens.Entities;
+using BusinessLogic.Auth.Entities;
 using BusinessLogic.Users.Entities;
 using FluentAssertions;
 using HomeConnect.DataAccess.Repositories;

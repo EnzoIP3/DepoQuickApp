@@ -1,6 +1,6 @@
 using System.Net;
+using BusinessLogic.Auth.Services;
 using BusinessLogic.Roles.Entities;
-using BusinessLogic.Tokens.Services;
 using BusinessLogic.Users.Entities;
 using BusinessLogic.Users.Models;
 using FluentAssertions;
@@ -19,7 +19,7 @@ namespace HomeConnect.WebApi.Test.Filters;
 public class AuthenticationFilterTests
 {
     private Mock<HttpContext> _httpContextMock = null!;
-    private Mock<ITokenService> _sessionServiceMock = null!;
+    private Mock<IAuthService> _sessionServiceMock = null!;
     private AuthorizationFilterContext _context = null!;
     private AuthenticationFilterAttribute _attribute = null!;
 
@@ -27,7 +27,7 @@ public class AuthenticationFilterTests
     public void Initialize()
     {
         _httpContextMock = new Mock<HttpContext>(MockBehavior.Strict);
-        _sessionServiceMock = new Mock<ITokenService>(MockBehavior.Strict);
+        _sessionServiceMock = new Mock<IAuthService>(MockBehavior.Strict);
         _attribute = new AuthenticationFilterAttribute();
 
         _context = new AuthorizationFilterContext(
@@ -109,7 +109,7 @@ public class AuthenticationFilterTests
         {
             { "Authorization", $"Bearer {guid}" }
         }));
-        _httpContextMock.Setup(h => h.RequestServices.GetService(typeof(ITokenService)))
+        _httpContextMock.Setup(h => h.RequestServices.GetService(typeof(IAuthService)))
             .Returns(_sessionServiceMock.Object);
         _sessionServiceMock.Setup(a => a.IsTokenExpired(guid)).Returns(true);
 
@@ -154,7 +154,7 @@ public class AuthenticationFilterTests
         _sessionServiceMock.Setup(a => a.GetUserFromToken(guid)).Returns(user);
         var items = new Dictionary<object, object> { { Item.UserLogged, user } };
         _httpContextMock.Setup(h => h.Items).Returns(items);
-        _httpContextMock.Setup(h => h.RequestServices.GetService(typeof(ITokenService)))
+        _httpContextMock.Setup(h => h.RequestServices.GetService(typeof(IAuthService)))
             .Returns(_sessionServiceMock.Object);
 
         _attribute.OnAuthorization(_context);

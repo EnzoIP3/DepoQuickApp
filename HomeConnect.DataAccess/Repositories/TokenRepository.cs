@@ -1,5 +1,5 @@
-using BusinessLogic.Tokens.Entities;
-using BusinessLogic.Tokens.Repositories;
+using BusinessLogic.Auth.Entities;
+using BusinessLogic.Auth.Repositories;
 
 namespace HomeConnect.DataAccess.Repositories;
 

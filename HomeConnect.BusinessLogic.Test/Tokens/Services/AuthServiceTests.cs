@@ -1,8 +1,8 @@
+using BusinessLogic.Auth.Entities;
+using BusinessLogic.Auth.Models;
+using BusinessLogic.Auth.Repositories;
+using BusinessLogic.Auth.Services;
 using BusinessLogic.Roles.Entities;
-using BusinessLogic.Tokens.Entities;
-using BusinessLogic.Tokens.Models;
-using BusinessLogic.Tokens.Repositories;
-using BusinessLogic.Tokens.Services;
 using BusinessLogic.Users.Entities;
 using BusinessLogic.Users.Repositories;
 using FluentAssertions;
@@ -11,18 +11,18 @@ using Moq;
 namespace HomeConnect.BusinessLogic.Test.Tokens.Services;
 
 [TestClass]
-public class TokenServiceTests
+public class AuthServiceTests
 {
     private Mock<ITokenRepository> _tokenRepository = null!;
     private Mock<IUserRepository> _userRepository = null!;
-    private ITokenService _tokenService = null!;
+    private IAuthService _authService = null!;
 
     [TestInitialize]
     public void Initialize()
     {
         _tokenRepository = new Mock<ITokenRepository>();
         _userRepository = new Mock<IUserRepository>();
-        _tokenService = new TokenService(_tokenRepository.Object, _userRepository.Object);
+        _authService = new AuthService(_tokenRepository.Object, _userRepository.Object);
     }
 
     [TestMethod]
@@ -34,7 +34,7 @@ public class TokenServiceTests
         _tokenRepository.Setup(x => x.Get(token)).Returns(new Token(user));
 
         // Act
-        var act = () => _tokenService.GetUserFromToken(token.ToString());
+        var act = () => _authService.GetUserFromToken(token.ToString());
 
         // Assert
         act.Should().NotThrow();
@@ -47,7 +47,7 @@ public class TokenServiceTests
         const string token = "not-a-guid";
 
         // Act
-        var act = () => _tokenService.GetUserFromToken(token);
+        var act = () => _authService.GetUserFromToken(token);
 
         // Assert
         act.Should().Throw<ArgumentException>();
@@ -63,7 +63,7 @@ public class TokenServiceTests
         _userRepository.Setup(x => x.GetUser(args.Email)).Returns(user);
 
         // Act
-        var result = _tokenService.CreateToken(args);
+        var result = _authService.CreateToken(args);
 
         // Assert
         result.Should().NotBeNullOrEmpty();
@@ -78,7 +78,7 @@ public class TokenServiceTests
         _userRepository.Setup(x => x.GetUser(args.Email)).Returns((User)null);
 
         // Act
-        var act = () => _tokenService.CreateToken(args);
+        var act = () => _authService.CreateToken(args);
 
         // Assert
         act.Should().Throw<ArgumentException>();
@@ -93,7 +93,7 @@ public class TokenServiceTests
         _userRepository.Setup(x => x.GetUser(args.Email)).Returns(user);
 
         // Act
-        var act = () => _tokenService.CreateToken(args);
+        var act = () => _authService.CreateToken(args);
 
         // Assert
         act.Should().Throw<ArgumentException>();
@@ -107,7 +107,7 @@ public class TokenServiceTests
         _tokenRepository.Setup(x => x.Get(token)).Returns(new Token(new User()));
 
         // Act
-        var result = _tokenService.IsTokenExpired(token.ToString());
+        var result = _authService.IsTokenExpired(token.ToString());
 
         // Assert
         result.Should().BeFalse();

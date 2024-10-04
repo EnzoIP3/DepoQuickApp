@@ -1,4 +1,4 @@
-namespace BusinessLogic.Tokens.Models;
+namespace BusinessLogic.Auth.Models;
 
 public struct CreateTokenArgs
 {

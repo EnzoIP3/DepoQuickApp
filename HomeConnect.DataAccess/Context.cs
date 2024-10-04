@@ -1,8 +1,8 @@
-﻿using BusinessLogic.BusinessOwners.Entities;
+﻿using BusinessLogic.Auth.Entities;
+using BusinessLogic.BusinessOwners.Entities;
 using BusinessLogic.Devices.Entities;
 using BusinessLogic.Notifications.Entities;
 using BusinessLogic.Roles.Entities;
-using BusinessLogic.Tokens.Entities;
 using BusinessLogic.Users.Entities;
 using Microsoft.EntityFrameworkCore;
 

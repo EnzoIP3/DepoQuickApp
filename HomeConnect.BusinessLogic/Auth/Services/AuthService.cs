@@ -1,17 +1,17 @@
-using BusinessLogic.Tokens.Entities;
-using BusinessLogic.Tokens.Models;
-using BusinessLogic.Tokens.Repositories;
+using BusinessLogic.Auth.Entities;
+using BusinessLogic.Auth.Models;
+using BusinessLogic.Auth.Repositories;
 using BusinessLogic.Users.Entities;
 using BusinessLogic.Users.Repositories;
 
-namespace BusinessLogic.Tokens.Services;
+namespace BusinessLogic.Auth.Services;
 
-public class TokenService : ITokenService
+public class AuthService : IAuthService
 {
     private readonly ITokenRepository _tokenRepository;
     private readonly IUserRepository _userRepository;
 
-    public TokenService(ITokenRepository tokenRepository, IUserRepository userRepository)
+    public AuthService(ITokenRepository tokenRepository, IUserRepository userRepository)
     {
         _tokenRepository = tokenRepository;
         _userRepository = userRepository;

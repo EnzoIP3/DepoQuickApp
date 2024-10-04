@@ -51,7 +51,7 @@ public class BusinessOwnerController(IAdminService adminService, IBusinessOwnerS
     [Route("sensors")]
     public CreateDeviceResponse CreateDevice([FromBody] CreateDeviceRequest request)
     {
-        var device = new Device
+        var device = new BusinessLogic.Devices.Entities.Device
         {
             Business = request.Business,
             Description = request.Description,

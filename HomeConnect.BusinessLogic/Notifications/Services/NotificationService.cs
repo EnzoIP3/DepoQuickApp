@@ -28,6 +28,13 @@ public class NotificationService : INotificationService
     {
         var ownedDevice = OwnedDeviceRepository.GetByHardwareId(args.HardwareId);
         EnsureOwnedDeviceIsNotNull(ownedDevice);
+        var home = ownedDevice.Home;
+        var shouldReceiveNotification = new HomePermission("shouldBeNotified");
+        var usersToNotify = new List<User> { home.Owner };
+        usersToNotify.AddRange(home.Members
+            .Where(member => member.HasPermission(shouldReceiveNotification))
+            .Select(member => member.User));
+        usersToNotify.ForEach(user => CreateNotification(ownedDevice, args.Event, user));
     }
 
     private static void EnsureOwnedDeviceIsNotNull(OwnedDevice ownedDevice)

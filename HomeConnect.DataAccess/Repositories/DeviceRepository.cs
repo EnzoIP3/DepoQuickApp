@@ -40,19 +40,24 @@ public class DeviceRepository : PaginatedRepositoryBase<Device>, IDeviceReposito
         }
     }
 
-    public PagedData<Device> GetDevices(int currentPage, int? pageSize, string? deviceNameFilter, int? modelNumberFilter,
-        string? businessNameFilter, string? deviceTypeFilter)
+    public PagedData<Device> GetDevices(int currentPage, int? pageSize, string? deviceNameFilter = null,
+        int? modelNumberFilter = null, string? businessNameFilter = null, string? deviceTypeFilter = null)
     {
-        throw new NotImplementedException();
+        var filters = new object[4];
+        filters[0] = deviceNameFilter ?? string.Empty;
+        filters[1] = modelNumberFilter;
+        filters[2] = businessNameFilter ?? string.Empty;
+        filters[3] = deviceTypeFilter ?? string.Empty;
+        return GetAllPaged(currentPage, pageSize ?? 10, filters);
     }
 
     protected override IQueryable<Device> GetQueryable()
     {
-        throw new NotImplementedException();
+        return _context.Devices;
     }
 
     protected override IQueryable<Device> ApplyFilters(IQueryable<Device> query, params object[] filters)
     {
-        throw new NotImplementedException();
+        return query;
     }
 }

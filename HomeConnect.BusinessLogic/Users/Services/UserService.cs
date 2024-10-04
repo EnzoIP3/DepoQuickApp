@@ -18,19 +18,27 @@ public class UserService : IUserService
 
     public User CreateUser(CreateUserArgs args)
     {
-        if (!_roleRepository.Exists(args.Role))
-        {
-            throw new ArgumentException("Invalid role");
-        }
-
-        if (_userRepository.Exists(args.Email))
-        {
-            throw new ArgumentException("User already exists");
-        }
-
+        EnsureRoleExists(args);
+        EnsureUserDoesNotExist(args);
         var role = _roleRepository.Get(args.Role);
         var user = new User(args.Name, args.Surname, args.Email, args.Password, role);
         _userRepository.Add(user);
         return user;
+    }
+
+    private void EnsureUserDoesNotExist(CreateUserArgs args)
+    {
+        if (_userRepository.Exists(args.Email))
+        {
+            throw new ArgumentException("User already exists");
+        }
+    }
+
+    private void EnsureRoleExists(CreateUserArgs args)
+    {
+        if (!_roleRepository.Exists(args.Role))
+        {
+            throw new ArgumentException("Invalid role");
+        }
     }
 }

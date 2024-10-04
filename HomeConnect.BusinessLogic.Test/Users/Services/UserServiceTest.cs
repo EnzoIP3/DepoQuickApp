@@ -38,6 +38,7 @@ public class UserServiceTest
     {
         // Arrange
         _userRepository.Setup(x => x.Add(It.IsAny<User>()));
+        _userRepository.Setup(x => x.Exists(_args.Email)).Returns(false);
         _roleRepository.Setup(x => x.Exists(_args.Role)).Returns(true);
         _roleRepository.Setup(x => x.Get(_args.Role)).Returns(new Role());
 

@@ -30,6 +30,11 @@ public class HomeRepository : IHomeRepository
     public Home Get(Guid homeId)
     {
         Home? home = _context.Homes.FirstOrDefault(h => h.Id == homeId);
+        if (home == null)
+        {
+            throw new ArgumentException("Home does not exist");
+        }
+
         return home;
     }
 

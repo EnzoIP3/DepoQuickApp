@@ -81,5 +81,16 @@ public class HomeRepositoryTests
         result.Should().BeEquivalentTo(_home);
     }
     #endregion
+    #region Error
+    [TestMethod]
+    public void Get_WhenHomeDoesNotExist_ShouldThrowException()
+    {
+        // Act
+        var action = () => _homeRepository.Get(Guid.NewGuid());
+
+        // Assert
+        action.Should().Throw<ArgumentException>().WithMessage("Home does not exist");
+    }
+    #endregion
     #endregion
 }

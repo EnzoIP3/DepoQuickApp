@@ -62,13 +62,13 @@ public class DeviceControllerTests
     public void GetDevices_WhenCalledWithValidRequestAndNoFiltersOrPagination_ReturnsExpectedResponse()
     {
         // Arrange
-        _deviceService.Setup(x => x.GetDevices(null, null, null, null, 1, 20)).Returns(_pagedList);
+        _deviceService.Setup(x => x.GetDevices(It.IsAny<int?>(), It.IsAny<int?>(), null)).Returns(_pagedList);
 
         // Act
         var response = _controller.GetDevices();
 
         // Assert
-        _deviceService.VerifyAll();
+        _deviceService.Verify(x => x.GetDevices(It.IsAny<int?>(), It.IsAny<int?>(), null), Times.Once);
         response.Should().NotBeNull();
         response.Should().BeOfType<OkObjectResult>();
         var okResult = response as OkObjectResult;

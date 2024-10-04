@@ -23,7 +23,6 @@ public sealed class AdminServiceTests
 
     private CreateUserArgs _validCreateUserArgs = new CreateUserArgs
     {
-        Id = Guid.NewGuid().ToString(),
         Name = "name",
         Surname = "surname",
         Email = "email@email.com",
@@ -170,7 +169,6 @@ public sealed class AdminServiceTests
         // Arrange
         var businessOwnerModel = new CreateUserArgs
         {
-            Id = Guid.NewGuid().ToString(),
             Name = "name",
             Surname = "surname",
             Email = "email",
@@ -196,7 +194,6 @@ public sealed class AdminServiceTests
         // Arrange
         var businessOwnerModel = new CreateUserArgs
         {
-            Id = Guid.NewGuid().ToString(),
             Name = "name",
             Surname = "surname",
             Email = "email@email.com",

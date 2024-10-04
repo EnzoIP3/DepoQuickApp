@@ -15,7 +15,7 @@ public class SensorControllerTests
     public void TestInitialize()
     {
         _notificationServiceMock = new Mock<INotificationService>();
-        _sensorController = new SensorController();
+        _sensorController = new SensorController(_notificationServiceMock.Object);
     }
 
     [TestMethod]

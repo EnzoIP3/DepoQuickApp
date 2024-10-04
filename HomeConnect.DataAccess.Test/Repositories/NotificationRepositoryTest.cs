@@ -115,5 +115,18 @@ public class NotificationRepositoryTest
         // Assert
         result.Should().BeEquivalentTo(expectedResult);
     }
+
+    [TestMethod]
+    public void Get_WhenCalledWithDateFilter_ShouldReturnNotificationsForDate()
+    {
+        // Arrange
+        var expectedResult = new List<Notification> { _notification };
+
+        // Act
+        var result = _notificationRepository.Get(_user.Id, dateFilter: DateTime.Now);
+
+        // Assert
+        result.Should().BeEquivalentTo(expectedResult);
+    }
     #endregion
 }

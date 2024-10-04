@@ -131,35 +131,125 @@ public class UserRepositoryTest
     public void GetUsers_WhenCalled_ReturnsPaginatedUsers()
     {
         // Act
-        var result = _userRepository.GetUsers(1, 2);
+        var result = _userRepository.GetAllPaged(1, 2);
 
         // Assert
-        result.Should().HaveCount(2);
-        result.Exists(u => u.Email == ValidUserEmail).Should().BeTrue();
+        result.Data.Should().HaveCount(2);
+        result.Data.Exists(u => u.Email == ValidUserEmail).Should().BeTrue();
     }
 
     [TestMethod]
     public void GetUsers_WhenFilteredByFullName_ReturnsFilteredUsers()
     {
         // Act
-        var result = _userRepository.GetUsers(1, 10, fullNameFilter: "Jane");
+        var result = _userRepository.GetAllPaged(1, 10, fullNameFilter: "Jane");
 
         // Assert
-        result.Should().HaveCount(1);
-        result.First().Email.Should().Be("jane.doe@example.com");
+        result.Data.Should().HaveCount(1);
+        result.Data.First().Email.Should().Be("jane.doe@example.com");
     }
 
     [TestMethod]
     public void GetUsers_WhenFilteredByFullNameAndRole_ReturnsFilteredUsers()
     {
         // Act
-        var result = _userRepository.GetUsers(1, 10, "J", "Admin");
+        var result = _userRepository.GetAllPaged(1, 10, "J", "Admin");
 
         // Assert
-        result.Should().HaveCount(1);
-        result.First().Email.Should().Be(ValidUserEmail);
+        result.Data.Should().HaveCount(1);
+        result.Data.First().Email.Should().Be(ValidUserEmail);
+    }
+    #endregion
+
+    #endregion
+
+    #region Get
+    #region Success
+    [TestMethod]
+    public void Get_WhenUserExists_ReturnsUser()
+    {
+        // Act
+        var result = _userRepository.Get(_validUser.Id);
+
+        // Assert
+        result.Should().BeEquivalentTo(_validUser);
+    }
+    #endregion
+    #region Error
+    [TestMethod]
+    public void Get_WhenUserDoesNotExist_ShouldThrowException()
+    {
+        // Arrange
+        var nonExistentUserId = Guid.NewGuid();
+
+        // Act
+        Action action = () => _userRepository.Get(nonExistentUserId);
+
+        // Assert
+        action.Should().Throw<ArgumentException>();
+    }
+    #endregion
+    #endregion
+
+    #region Exists
+    #region Success
+
+    [TestMethod]
+    public void Exists_WhenUserExists_ShouldReturnTrue()
+    {
+        // Act
+        var exists = _userRepository.Exists(_validUser.Id);
+
+        // Assert
+        exists.Should().BeTrue();
     }
 
+    [TestMethod]
+    public void Exists_WhenUserDoesNotExist_ShouldReturnFalse()
+    {
+        // Arrange
+        var nonExistentUserId = Guid.NewGuid();
+
+        // Act
+        var exists = _userRepository.Exists(nonExistentUserId);
+
+        // Assert
+        exists.Should().BeFalse();
+    }
+
+    #endregion
+
+    #endregion
+
+    #region Delete
+    #region Success
+
+    [TestMethod]
+    public void Delete_WhenUserExists_ShouldDeleteUser()
+    {
+        // Act
+        _userRepository.Delete(_validUser.Id);
+
+        // Assert
+        _userRepository.Exists(_validUser.Id).Should().BeFalse();
+    }
+
+    #endregion
+
+    #region Error
+
+    [TestMethod]
+    public void Delete_WhenUserDoesNotExist_ShouldThrowException()
+    {
+        // Arrange
+        var nonExistentUserId = Guid.NewGuid();
+
+        // Act
+        Action act = () => _userRepository.Delete(nonExistentUserId);
+
+        // Assert
+        act.Should().Throw<ArgumentException>();
+    }
     #endregion
 
     #endregion

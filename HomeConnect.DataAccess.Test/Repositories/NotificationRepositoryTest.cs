@@ -56,6 +56,7 @@ public class NotificationRepositoryTest
 
     #region Add
 
+    #region Success
     [TestMethod]
     public void Add_WhenNotificationDoesNotExist_ShouldAddNotification()
     {
@@ -76,6 +77,10 @@ public class NotificationRepositoryTest
         _context.Notifications.Should().Contain(notification);
     }
 
+    #endregion
+
+    #region Error
+
     [TestMethod]
     public void Add_WhenNotificationExists_ShouldThrowInvalidOperationException()
     {
@@ -86,6 +91,7 @@ public class NotificationRepositoryTest
         act.Should().Throw<InvalidOperationException>();
     }
 
+    #endregion
     #endregion
 
     #region Get

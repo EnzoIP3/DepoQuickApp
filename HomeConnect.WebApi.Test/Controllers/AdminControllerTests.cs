@@ -21,6 +21,7 @@ public class AdminControllerTests
         _controller = new AdminController(_adminService.Object);
     }
 
+    #region CreateAdmin
     [TestMethod]
     public void CreateAdmin_WhenCalledWithValidRequest_ReturnsCreatedResponse()
     {
@@ -51,7 +52,9 @@ public class AdminControllerTests
         response.Should().NotBeNull();
         response.Id.Should().Be(guid.ToString());
     }
+    #endregion
 
+    #region DeleteAdmin
     [TestMethod]
     public void DeleteAdmin_WhenCalledWithValidRequest_ReturnsNoContentResponse()
     {
@@ -67,4 +70,5 @@ public class AdminControllerTests
         response.Should().NotBeNull();
         response.Should().BeOfType<NoContentResult>();
     }
+    #endregion
 }

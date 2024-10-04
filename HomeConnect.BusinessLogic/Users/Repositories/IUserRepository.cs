@@ -7,5 +7,7 @@ public interface IUserRepository
     Entities.User Get(Guid id);
     bool Exists(Guid id);
     void Delete(Guid id);
-    PagedData<Entities.User> GetUsers(int currentPage, int pageSize, string? fullNameFilter = null, string? roleFilter = null);
+
+    PagedData<Entities.User> GetAllPaged(int currentPage, int pageSize, string? fullNameFilter = null,
+        string? roleFilter = null);
 }

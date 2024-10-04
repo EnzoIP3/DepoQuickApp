@@ -24,7 +24,7 @@ public class AdminService : IAdminService
     public Guid Create(CreateUserArgs args)
     {
         ValidateAdminModel(args);
-        EnsureUserEmailIsUnique(Guid.Parse(args.Id));
+        EnsureUserEmailIsUnique(args.Email);
         var role = RoleRepository.GetRole(args.Role);
         var admin = new User(args.Name, args.Surname, args.Email, args.Password, role);
         UserRepository.Add(admin);
@@ -49,9 +49,9 @@ public class AdminService : IAdminService
         }
     }
 
-    private void EnsureUserEmailIsUnique(Guid id)
+    private void EnsureUserEmailIsUnique(string email)
     {
-        if (UserRepository.Exists(id))
+        if (UserRepository.Exists(email))
         {
             throw new Exception("User already exists.");
         }
@@ -67,14 +67,15 @@ public class AdminService : IAdminService
 
     public Guid CreateBusinessOwner(CreateUserArgs args)
     {
-        EnsureUserEmailIsUnique(Guid.Parse(args.Id));
+        EnsureUserEmailIsUnique(args.Email);
         var role = RoleRepository.GetRole(args.Role);
         var user = new User(args.Name, args.Surname, args.Email, args.Password, role);
         UserRepository.Add(user);
         return user.Id;
     }
 
-    public PagedData<GetUsersArgs> GetUsers(int? currentPage = null, int? pageSize = null, string? fullNameFilter = null,
+    public PagedData<GetUsersArgs> GetUsers(int? currentPage = null, int? pageSize = null,
+        string? fullNameFilter = null,
         string? roleFilter = null)
     {
         currentPage ??= 1;
@@ -91,10 +92,7 @@ public class AdminService : IAdminService
         }).ToList();
         return new PagedData<GetUsersArgs>
         {
-            Data = data,
-            Page = users.Page,
-            PageSize = users.PageSize,
-            TotalPages = users.TotalPages
+            Data = data, Page = users.Page, PageSize = users.PageSize, TotalPages = users.TotalPages
         };
     }
 
@@ -114,10 +112,7 @@ public class AdminService : IAdminService
         }).ToList();
         return new PagedData<GetBusinessesArgs>
         {
-            Data = data,
-            Page = businesses.Page,
-            PageSize = businesses.PageSize,
-            TotalPages = businesses.TotalPages
+            Data = data, Page = businesses.Page, PageSize = businesses.PageSize, TotalPages = businesses.TotalPages
         };
     }
 }

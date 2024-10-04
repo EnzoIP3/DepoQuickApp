@@ -44,10 +44,13 @@ public sealed class AdminServiceTests
         _adminService = new AdminService(_userRepository.Object, _businessRepository.Object, _roleRepository.Object);
         var adminRole = new global::BusinessLogic.Roles.Entities.Role("Admin", []);
         var businessOwnerRole = new global::BusinessLogic.Roles.Entities.Role("Business Owner", []);
-        _validUser = new global::BusinessLogic.Users.Entities.User(_validCreateUserArgs.Name, _validCreateUserArgs.Surname, _validCreateUserArgs.Email,
+        _validUser = new global::BusinessLogic.Users.Entities.User(_validCreateUserArgs.Name,
+            _validCreateUserArgs.Surname, _validCreateUserArgs.Email,
             _validCreateUserArgs.Password, adminRole);
-        _owner = new global::BusinessLogic.Users.Entities.User("name", "surname", "email@email.com", "Password#100", businessOwnerRole);
-        _otherOwner = new global::BusinessLogic.Users.Entities.User("name2", "surname2", "email2@email.com", "Password2#100", businessOwnerRole);
+        _owner = new global::BusinessLogic.Users.Entities.User("name", "surname", "email@email.com", "Password#100",
+            businessOwnerRole);
+        _otherOwner = new global::BusinessLogic.Users.Entities.User("name2", "surname2", "email2@email.com",
+            "Password2#100", businessOwnerRole);
     }
 
     #region Create
@@ -58,7 +61,7 @@ public sealed class AdminServiceTests
     public void Create_WhenAlreadyExists_ThrowsException()
     {
         // Arrange
-        _userRepository.Setup(x => x.Exists(It.IsAny<Guid>())).Returns(true);
+        _userRepository.Setup(x => x.Exists(It.IsAny<string>())).Returns(true);
 
         // Act
         var act = () => _adminService.Create(_validCreateUserArgs);
@@ -95,9 +98,10 @@ public sealed class AdminServiceTests
     public void Create_WhenArgumentsAreValid_CreatesAdmin()
     {
         // Arrange
-        _userRepository.Setup(x => x.Exists(It.IsAny<Guid>())).Returns(false);
+        _userRepository.Setup(x => x.Exists(It.IsAny<string>())).Returns(false);
         _userRepository.Setup(x => x.Add(It.IsAny<global::BusinessLogic.Users.Entities.User>()));
-        _roleRepository.Setup(x => x.GetRole(It.IsAny<string>())).Returns(new global::BusinessLogic.Roles.Entities.Role("Admin", []));
+        _roleRepository.Setup(x => x.GetRole(It.IsAny<string>()))
+            .Returns(new global::BusinessLogic.Roles.Entities.Role("Admin", []));
 
         // Act
         _adminService.Create(_validCreateUserArgs);
@@ -173,7 +177,7 @@ public sealed class AdminServiceTests
             Password = "password",
             Role = "BusinessOwner"
         };
-        _userRepository.Setup(x => x.Exists(It.IsAny<Guid>())).Returns(true);
+        _userRepository.Setup(x => x.Exists(It.IsAny<string>())).Returns(true);
 
         // Act
         var act = () => _adminService.CreateBusinessOwner(businessOwnerModel);
@@ -199,9 +203,10 @@ public sealed class AdminServiceTests
             Password = "Password#100",
             Role = "Business Owner"
         };
-        _userRepository.Setup(x => x.Exists(It.IsAny<Guid>())).Returns(false);
+        _userRepository.Setup(x => x.Exists(It.IsAny<string>())).Returns(false);
         _userRepository.Setup(x => x.Add(It.IsAny<global::BusinessLogic.Users.Entities.User>()));
-        _roleRepository.Setup(x => x.GetRole(It.IsAny<string>())).Returns(new global::BusinessLogic.Roles.Entities.Role(businessOwnerModel.Role, []));
+        _roleRepository.Setup(x => x.GetRole(It.IsAny<string>()))
+            .Returns(new global::BusinessLogic.Roles.Entities.Role(businessOwnerModel.Role, []));
 
         // Act
         _adminService.CreateBusinessOwner(businessOwnerModel);
@@ -251,17 +256,11 @@ public sealed class AdminServiceTests
         };
         var pagedList = new PagedData<global::BusinessLogic.Users.Entities.User>
         {
-            Data = users,
-            Page = _defaultCurrentPage,
-            PageSize = _defaultPageSize,
-            TotalPages = 1
+            Data = users, Page = _defaultCurrentPage, PageSize = _defaultPageSize, TotalPages = 1
         };
         var pagedResponse = new PagedData<GetUsersArgs>
         {
-            Data = userList,
-            Page = _defaultCurrentPage,
-            PageSize = _defaultPageSize,
-            TotalPages = 1
+            Data = userList, Page = _defaultCurrentPage, PageSize = _defaultPageSize, TotalPages = 1
         };
         _userRepository.Setup(x => x.GetUsers(_defaultCurrentPage, _defaultPageSize, null, null)).Returns(pagedList);
 
@@ -305,17 +304,11 @@ public sealed class AdminServiceTests
         };
         var pagedList = new PagedData<global::BusinessLogic.Users.Entities.User>
         {
-            Data = users,
-            Page = _defaultCurrentPage,
-            PageSize = _defaultPageSize,
-            TotalPages = 1
+            Data = users, Page = _defaultCurrentPage, PageSize = _defaultPageSize, TotalPages = 1
         };
         var pagedResponse = new PagedData<GetUsersArgs>
         {
-            Data = userList,
-            Page = _defaultCurrentPage,
-            PageSize = _defaultPageSize,
-            TotalPages = 1
+            Data = userList, Page = _defaultCurrentPage, PageSize = _defaultPageSize, TotalPages = 1
         };
         _userRepository.Setup(x => x.GetUsers(_defaultCurrentPage, _defaultPageSize, null, null)).Returns(pagedList);
 
@@ -351,17 +344,11 @@ public sealed class AdminServiceTests
         var filter = "name surname";
         var pagedList = new PagedData<global::BusinessLogic.Users.Entities.User>
         {
-            Data = [users[0]],
-            Page = _defaultCurrentPage,
-            PageSize = _defaultPageSize,
-            TotalPages = 1
+            Data = [users[0]], Page = _defaultCurrentPage, PageSize = _defaultPageSize, TotalPages = 1
         };
         var pagedResponse = new PagedData<GetUsersArgs>
         {
-            Data = userList,
-            Page = _defaultCurrentPage,
-            PageSize = _defaultPageSize,
-            TotalPages = 1
+            Data = userList, Page = _defaultCurrentPage, PageSize = _defaultPageSize, TotalPages = 1
         };
         _userRepository.Setup(x => x.GetUsers(_defaultCurrentPage, _defaultPageSize, filter, null))
             .Returns(pagedList);
@@ -398,17 +385,11 @@ public sealed class AdminServiceTests
         var filter = "BusinessOwner";
         var pagedList = new PagedData<global::BusinessLogic.Users.Entities.User>
         {
-            Data = [users[1]],
-            Page = _defaultCurrentPage,
-            PageSize = _defaultPageSize,
-            TotalPages = 1
+            Data = [users[1]], Page = _defaultCurrentPage, PageSize = _defaultPageSize, TotalPages = 1
         };
         var pagedResponse = new PagedData<GetUsersArgs>
         {
-            Data = userList,
-            Page = _defaultCurrentPage,
-            PageSize = _defaultPageSize,
-            TotalPages = 1
+            Data = userList, Page = _defaultCurrentPage, PageSize = _defaultPageSize, TotalPages = 1
         };
         _userRepository.Setup(x => x.GetUsers(_defaultCurrentPage, _defaultPageSize, null, filter))
             .Returns(pagedList);
@@ -458,17 +439,11 @@ public sealed class AdminServiceTests
         };
         var pagedList = new PagedData<Business>
         {
-            Data = businesses,
-            Page = _defaultCurrentPage,
-            PageSize = _defaultPageSize,
-            TotalPages = 1
+            Data = businesses, Page = _defaultCurrentPage, PageSize = _defaultPageSize, TotalPages = 1
         };
         var pagedResponse = new PagedData<GetBusinessesArgs>
         {
-            Data = businessList,
-            Page = _defaultCurrentPage,
-            PageSize = _defaultPageSize,
-            TotalPages = 1
+            Data = businessList, Page = _defaultCurrentPage, PageSize = _defaultPageSize, TotalPages = 1
         };
         _businessRepository.Setup(x => x.GetBusinesses(_defaultCurrentPage, _defaultPageSize, null, null))
             .Returns(pagedList);
@@ -477,7 +452,8 @@ public sealed class AdminServiceTests
         var result = _adminService.GetBusinesses(_defaultCurrentPage, _defaultPageSize);
 
         // Assert
-        result.Should().BeEquivalentTo(pagedResponse, options => options.ComparingByMembers<PagedData<GetBusinessesArgs>>());
+        result.Should().BeEquivalentTo(pagedResponse,
+            options => options.ComparingByMembers<PagedData<GetBusinessesArgs>>());
         _businessRepository.Verify(x => x.GetBusinesses(
             It.Is<int>(a => a == _defaultCurrentPage),
             It.Is<int>(a => a == _defaultPageSize),
@@ -512,17 +488,11 @@ public sealed class AdminServiceTests
         };
         var pagedList = new PagedData<Business>
         {
-            Data = businesses,
-            Page = _defaultCurrentPage,
-            PageSize = _defaultPageSize,
-            TotalPages = 1
+            Data = businesses, Page = _defaultCurrentPage, PageSize = _defaultPageSize, TotalPages = 1
         };
         var pagedResponse = new PagedData<GetBusinessesArgs>
         {
-            Data = businessList,
-            Page = _defaultCurrentPage,
-            PageSize = _defaultPageSize,
-            TotalPages = 1
+            Data = businessList, Page = _defaultCurrentPage, PageSize = _defaultPageSize, TotalPages = 1
         };
         _businessRepository.Setup(x => x.GetBusinesses(_defaultCurrentPage, _defaultPageSize, null, null))
             .Returns(pagedList);
@@ -531,7 +501,8 @@ public sealed class AdminServiceTests
         var result = _adminService.GetBusinesses();
 
         // Assert
-        result.Should().BeEquivalentTo(pagedResponse, options => options.ComparingByMembers<PagedData<GetBusinessesArgs>>());
+        result.Should().BeEquivalentTo(pagedResponse,
+            options => options.ComparingByMembers<PagedData<GetBusinessesArgs>>());
         _businessRepository.Verify(x => x.GetBusinesses(
             It.Is<int>(a => a == _defaultCurrentPage),
             It.Is<int>(a => a == _defaultPageSize),
@@ -560,17 +531,11 @@ public sealed class AdminServiceTests
         var filter = $"{_owner.Name} {_owner.Surname}";
         var pagedList = new PagedData<Business>
         {
-            Data = [businesses[0]],
-            Page = _defaultCurrentPage,
-            PageSize = _defaultPageSize,
-            TotalPages = 1
+            Data = [businesses[0]], Page = _defaultCurrentPage, PageSize = _defaultPageSize, TotalPages = 1
         };
         var pagedResponse = new PagedData<GetBusinessesArgs>
         {
-            Data = businessList,
-            Page = _defaultCurrentPage,
-            PageSize = _defaultPageSize,
-            TotalPages = 1
+            Data = businessList, Page = _defaultCurrentPage, PageSize = _defaultPageSize, TotalPages = 1
         };
         _businessRepository.Setup(x => x.GetBusinesses(_defaultCurrentPage, _defaultPageSize, filter, null))
             .Returns(pagedList);
@@ -579,7 +544,8 @@ public sealed class AdminServiceTests
         var result = _adminService.GetBusinesses(fullNameFilter: filter);
 
         // Assert
-        result.Should().BeEquivalentTo(pagedResponse, options => options.ComparingByMembers<PagedData<GetBusinessesArgs>>());
+        result.Should().BeEquivalentTo(pagedResponse,
+            options => options.ComparingByMembers<PagedData<GetBusinessesArgs>>());
         _businessRepository.Verify(x => x.GetBusinesses(
             It.Is<int>(a => a == _defaultCurrentPage),
             It.Is<int>(a => a == _defaultPageSize),
@@ -608,17 +574,11 @@ public sealed class AdminServiceTests
         var filter = "name2";
         var pagedList = new PagedData<Business>
         {
-            Data = [businesses[1]],
-            Page = _defaultCurrentPage,
-            PageSize = _defaultPageSize,
-            TotalPages = 1
+            Data = [businesses[1]], Page = _defaultCurrentPage, PageSize = _defaultPageSize, TotalPages = 1
         };
         var pagedResponse = new PagedData<GetBusinessesArgs>
         {
-            Data = businessList,
-            Page = _defaultCurrentPage,
-            PageSize = _defaultPageSize,
-            TotalPages = 1
+            Data = businessList, Page = _defaultCurrentPage, PageSize = _defaultPageSize, TotalPages = 1
         };
         _businessRepository.Setup(x => x.GetBusinesses(_defaultCurrentPage, _defaultPageSize, null, filter))
             .Returns(pagedList);
@@ -627,7 +587,8 @@ public sealed class AdminServiceTests
         var result = _adminService.GetBusinesses(nameFilter: filter);
 
         // Assert
-        result.Should().BeEquivalentTo(pagedResponse, options => options.ComparingByMembers<PagedData<GetBusinessesArgs>>());
+        result.Should().BeEquivalentTo(pagedResponse,
+            options => options.ComparingByMembers<PagedData<GetBusinessesArgs>>());
         _businessRepository.Verify(x => x.GetBusinesses(
             It.Is<int>(a => a == _defaultCurrentPage),
             It.Is<int>(a => a == _defaultPageSize),

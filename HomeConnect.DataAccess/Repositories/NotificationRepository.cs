@@ -21,7 +21,7 @@ public class NotificationRepository : INotificationRepository
 
     public List<Notification> Get(Guid userId, string? deviceFilter = null, DateTime? dateFilter= null, bool? readFilter= null)
     {
-        throw new NotImplementedException();
+        return _context.Notifications.ToList().Where(n => n.User.Id == userId).ToList();
     }
 
     private void EnsureNotificationDoesNotExist(Notification notification)

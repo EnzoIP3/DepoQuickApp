@@ -82,4 +82,20 @@ public class NotificationRepositoryTest
     }
 
     #endregion
+
+    #region Get
+
+    [TestMethod]
+    public void Get_WhenCalledWithNoFilters_ShouldReturnAllNotifications()
+    {
+        // Arrange
+        var expectedResult = new List<Notification> { _notification, _otherNotification };
+
+        // Act
+        var result = _notificationRepository.Get(_user.Id);
+
+        // Assert
+        result.Should().BeEquivalentTo(expectedResult);
+    }
+    #endregion
 }

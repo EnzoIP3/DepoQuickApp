@@ -23,7 +23,7 @@ public class BaseDeviceControllerTests
     {
         // Arrange
         var hardwareId = "hardwareId";
-        _deviceServiceMock.Setup(x => x.Toogle(hardwareId)).Returns(true);
+        _deviceServiceMock.Setup(x => x.Toggle(hardwareId)).Returns(true);
 
         // Act
         var result = _deviceController.Toggle(hardwareId);

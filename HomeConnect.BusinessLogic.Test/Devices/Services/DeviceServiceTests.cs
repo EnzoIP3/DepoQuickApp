@@ -20,7 +20,7 @@ public class DeviceServiceTests
     public void Toogle_WhenHardwareIdIsInvalid_ShouldThrowArgumentException(string id)
     {
         // Act
-        var act = () => _deviceService.Toogle(id);
+        var act = () => _deviceService.Toggle(id);
 
         // Assert
         act.Should().Throw<ArgumentException>().WithMessage("Hardware ID is invalid");

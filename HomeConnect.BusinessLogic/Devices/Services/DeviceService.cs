@@ -4,7 +4,7 @@ namespace BusinessLogic.Devices.Services;
 
 public class DeviceService() : IDeviceService
 {
-    public bool Toogle(string hardwareId)
+    public bool Toggle(string hardwareId)
     {
         EnsureHardwareIdIsValid(hardwareId);
         return false;

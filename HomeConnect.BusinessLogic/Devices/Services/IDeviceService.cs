@@ -2,5 +2,5 @@ namespace BusinessLogic.Devices.Services;
 
 public interface IDeviceService
 {
-    bool Toogle(string hardwareId);
+    bool Toggle(string hardwareId);
 }

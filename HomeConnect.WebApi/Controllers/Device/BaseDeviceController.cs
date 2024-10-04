@@ -9,7 +9,7 @@ public class BaseDeviceController(IDeviceService deviceService) : ControllerBase
     [HttpPost("{hardwareId}/toggle")]
     public virtual ConnectionResponse Toggle([FromRoute] string hardwareId)
     {
-        var connectionState = deviceService.Toogle(hardwareId);
+        var connectionState = deviceService.Toggle(hardwareId);
         return new ConnectionResponse { ConnectionState = connectionState, HardwareId = hardwareId };
     }
 }

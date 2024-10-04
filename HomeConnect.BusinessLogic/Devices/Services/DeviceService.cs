@@ -2,12 +2,13 @@ using BusinessLogic.Devices.Repositories;
 
 namespace BusinessLogic.Devices.Services;
 
-public class DeviceService() : IDeviceService
+public class DeviceService(IOwnedDeviceRepository ownedDeviceRepository) : IDeviceService
 {
     public bool Toggle(string hardwareId)
     {
         EnsureHardwareIdIsValid(hardwareId);
-        return false;
+        var connectionState = ownedDeviceRepository.ToggleConnection(hardwareId);
+        return connectionState;
     }
 
     private void EnsureHardwareIdIsValid(string hardwareId)

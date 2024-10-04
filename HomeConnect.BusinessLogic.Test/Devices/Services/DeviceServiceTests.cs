@@ -16,7 +16,7 @@ public class DeviceServiceTests
     public void TestInitialize()
     {
         _ownedDeviceRepositoryMock = new Mock<IOwnedDeviceRepository>();
-        _deviceService = new DeviceService();
+        _deviceService = new DeviceService(_ownedDeviceRepositoryMock.Object);
     }
 
     [TestMethod]

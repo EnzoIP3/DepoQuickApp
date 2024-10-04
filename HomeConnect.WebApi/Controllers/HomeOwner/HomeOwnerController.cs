@@ -1,3 +1,4 @@
+using BusinessLogic.Roles.Entities;
 using BusinessLogic.Users.Models;
 using BusinessLogic.Users.Services;
 using HomeConnect.WebApi.Controllers.HomeOwner.Models;
@@ -11,12 +12,18 @@ namespace HomeConnect.WebApi.Controllers.HomeOwner;
 [AuthorizationFilter]
 public class HomeOwnerController(IUserService userService) : ControllerBase
 {
-    public IUserService UserService { get; } = userService;
-
     [HttpPost]
     public CreateHomeOwnerResponse CreateHomeOwner([FromBody] CreateHomeOwnerRequest args)
     {
-        var user = UserService.CreateUser(new CreateUserArgs { Email = args.Email, Password = args.Password });
+        var user = userService.CreateUser(new CreateUserArgs
+        {
+            Name = args.Name,
+            Surname = args.Surname,
+            Email = args.Email,
+            Password = args.Password,
+            Role = Role.HomeOwner.Name,
+            ProfilePicture = args.ProfilePicture
+        });
         return new CreateHomeOwnerResponse { Id = user.Id.ToString() };
     }
 }

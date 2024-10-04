@@ -1,3 +1,4 @@
+using BusinessLogic.Roles.Entities;
 using BusinessLogic.Users.Entities;
 using BusinessLogic.Users.Models;
 using BusinessLogic.Users.Services;
@@ -17,7 +18,7 @@ public class HomeOwnerControllerTests
     [TestInitialize]
     public void Initialize()
     {
-        _userService = new Mock<IUserService>();
+        _userService = new Mock<IUserService>(MockBehavior.Strict);
         _controller = new HomeOwnerController(_userService.Object);
     }
 
@@ -25,8 +26,24 @@ public class HomeOwnerControllerTests
     public void CreateHomeOwner_WithValidRequest_ShouldReturnCreatedResponse()
     {
         // Arrange
-        var request = new CreateHomeOwnerRequest { Email = "email", Password = "password" };
-        var args = new CreateUserArgs { Email = request.Email, Password = request.Password };
+        var request =
+            new CreateHomeOwnerRequest
+            {
+                Name = "Name",
+                Surname = "Surname",
+                Email = "email",
+                Password = "password",
+                ProfilePicture = "profilePicture"
+            };
+        var args = new CreateUserArgs
+        {
+            Name = request.Name,
+            Surname = request.Surname,
+            Email = request.Email,
+            Password = request.Password,
+            ProfilePicture = request.ProfilePicture,
+            Role = Role.HomeOwner.Name
+        };
         var user = new User();
         _userService.Setup(x => x.CreateUser(args)).Returns(user);
 

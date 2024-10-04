@@ -68,7 +68,7 @@ public class DeviceControllerTests
         var response = _controller.GetDevices();
 
         // Assert
-        _deviceService.Verify(x => x.GetDevices(It.IsAny<int?>(), It.IsAny<int?>(), null), Times.Once);
+        _deviceService.Verify(x => x.GetDevices(It.IsAny<int?>(), It.IsAny<int?>(), null, null), Times.Once);
         response.Should().NotBeNull();
         response.Should().BeOfType<OkObjectResult>();
         var okResult = response as OkObjectResult;
@@ -80,13 +80,13 @@ public class DeviceControllerTests
     {
         // Arrange
         var deviceNameFilter = _expectedDevices.First().Name;
-        _deviceService.Setup(x => x.GetDevices(It.IsAny<int?>(), It.IsAny<int?>(), deviceNameFilter)).Returns(_pagedList);
+        _deviceService.Setup(x => x.GetDevices(It.IsAny<int?>(), It.IsAny<int?>(), deviceNameFilter, null)).Returns(_pagedList);
 
         // Act
         var response = _controller.GetDevices(deviceNameFilter: deviceNameFilter);
 
         // Assert
-        _deviceService.Verify(x => x.GetDevices(It.IsAny<int?>(), It.IsAny<int?>(), deviceNameFilter), Times.Once);
+        _deviceService.Verify(x => x.GetDevices(It.IsAny<int?>(), It.IsAny<int?>(), deviceNameFilter, null), Times.Once);
         response.Should().NotBeNull();
         response.Should().BeOfType<OkObjectResult>();
         var okResult = response as OkObjectResult;

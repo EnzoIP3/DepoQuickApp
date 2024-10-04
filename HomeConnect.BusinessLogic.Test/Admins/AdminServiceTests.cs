@@ -99,7 +99,7 @@ public sealed class AdminServiceTests
         // Arrange
         _userRepository.Setup(x => x.Exists(It.IsAny<string>())).Returns(false);
         _userRepository.Setup(x => x.Add(It.IsAny<global::BusinessLogic.Users.Entities.User>()));
-        _roleRepository.Setup(x => x.GetRole(It.IsAny<string>()))
+        _roleRepository.Setup(x => x.Get(It.IsAny<string>()))
             .Returns(new global::BusinessLogic.Roles.Entities.Role("Admin", []));
 
         // Act
@@ -202,7 +202,7 @@ public sealed class AdminServiceTests
         };
         _userRepository.Setup(x => x.Exists(It.IsAny<string>())).Returns(false);
         _userRepository.Setup(x => x.Add(It.IsAny<global::BusinessLogic.Users.Entities.User>()));
-        _roleRepository.Setup(x => x.GetRole(It.IsAny<string>()))
+        _roleRepository.Setup(x => x.Get(It.IsAny<string>()))
             .Returns(new global::BusinessLogic.Roles.Entities.Role(businessOwnerModel.Role, []));
 
         // Act

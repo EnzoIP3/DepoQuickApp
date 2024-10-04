@@ -25,7 +25,7 @@ public class AdminService : IAdminService
     {
         ValidateAdminModel(args);
         EnsureUserEmailIsUnique(args.Email);
-        var role = RoleRepository.GetRole(args.Role);
+        var role = RoleRepository.Get(args.Role);
         var admin = new User(args.Name, args.Surname, args.Email, args.Password, role);
         UserRepository.Add(admin);
         return admin.Id;
@@ -68,7 +68,7 @@ public class AdminService : IAdminService
     public Guid CreateBusinessOwner(CreateUserArgs args)
     {
         EnsureUserEmailIsUnique(args.Email);
-        var role = RoleRepository.GetRole(args.Role);
+        var role = RoleRepository.Get(args.Role);
         var user = new User(args.Name, args.Surname, args.Email, args.Password, role);
         UserRepository.Add(user);
         return user.Id;

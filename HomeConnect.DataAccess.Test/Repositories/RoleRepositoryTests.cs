@@ -2,7 +2,7 @@ using BusinessLogic.Roles.Entities;
 using FluentAssertions;
 using HomeConnect.DataAccess.Repositories;
 
-namespace HomeConnect.DataAccess.Test.Roles;
+namespace HomeConnect.DataAccess.Test.Repositories;
 
 [TestClass]
 public class RoleRepositoryTests
@@ -30,7 +30,7 @@ public class RoleRepositoryTests
     public void GetRole_WhenRoleExists_ShouldReturnRole()
     {
         // Act
-        var result = _roleRepository.GetRole("Role");
+        var result = _roleRepository.Get("Role");
 
         // Assert
         result.Name.Should().Be("Role");
@@ -40,9 +40,19 @@ public class RoleRepositoryTests
     public void GetRole_WhenRoleDoesNotExist_ShouldThrowException()
     {
         // Act
-        Action action = () => _roleRepository.GetRole("Role2");
+        Action action = () => _roleRepository.Get("Role2");
 
         // Assert
         action.Should().Throw<ArgumentException>();
+    }
+
+    [TestMethod]
+    public void Exists_WhenRoleExists_ShouldReturnTrue()
+    {
+        // Act
+        var result = _roleRepository.Exists("Role");
+
+        // Assert
+        result.Should().BeTrue();
     }
 }

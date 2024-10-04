@@ -29,6 +29,7 @@ public class NotificationRepositoryTest
         _context.Database.EnsureDeleted();
     }
 
+    #region Add
     [TestMethod]
     public void Add_WhenNotificationDoesNotExist_ShouldAddNotification()
     {
@@ -68,4 +69,5 @@ public class NotificationRepositoryTest
         Action act = () => _notificationRepository.Add(notification);
         act.Should().Throw<InvalidOperationException>();
     }
+    #endregion
 }

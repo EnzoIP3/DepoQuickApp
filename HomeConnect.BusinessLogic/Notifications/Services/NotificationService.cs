@@ -37,7 +37,7 @@ public class NotificationService : INotificationService
     public List<Notification> GetNotifications(Guid userId, string? deviceFilter = null, DateTime? dateFilter = null,
         bool? readFilter = null)
     {
-        return NotificationRepository.GetNotifications(userId, deviceFilter, dateFilter, readFilter);
+        return NotificationRepository.Get(userId, deviceFilter, dateFilter, readFilter);
     }
 
     private void NotifyUsersWithPermission(NotificationArgs args, Home home, HomePermission shouldReceiveNotification,

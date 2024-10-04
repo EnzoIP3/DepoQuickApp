@@ -19,7 +19,7 @@ public class NotificationRepository : INotificationRepository
         _context.SaveChanges();
     }
 
-    public List<Notification> GetNotifications(Guid userId, string? deviceFilter, DateTime? dateFilter, bool? readFilter)
+    public List<Notification> Get(Guid userId, string? deviceFilter, DateTime? dateFilter, bool? readFilter)
     {
         throw new NotImplementedException();
     }

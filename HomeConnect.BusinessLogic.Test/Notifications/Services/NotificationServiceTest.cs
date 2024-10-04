@@ -141,7 +141,7 @@ public class NotificationServiceTest
                         new Business())),
                 new User("name2", "surname2", "email2@email.com", "Password@100", new Role()))
         };
-        _mockNotificationRepository.Setup(x => x.GetNotifications(userId, deviceFilter, dateFilter, readFilter))
+        _mockNotificationRepository.Setup(x => x.Get(userId, deviceFilter, dateFilter, readFilter))
             .Returns(notifications);
 
         // Act

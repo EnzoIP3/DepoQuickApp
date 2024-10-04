@@ -8,7 +8,6 @@ using FluentAssertions;
 using HomeConnect.WebApi.Controllers.Business;
 using Microsoft.AspNetCore.Mvc;
 using Moq;
-using System.Collections.Generic;
 
 namespace HomeConnect.WebApi.Test.Controllers;
 
@@ -34,12 +33,12 @@ public class BusinessControllerTests
         _role = new Role("BusinessOwner", []);
         _user = new User("Name", "Surname", "email@email.com", "Password@100", _role);
         _otherUser = new User("Name1", "Surname1", "email1@email.com", "Password@100", _role);
-        _businesses = new List<Business>
-        {
+        _businesses =
+        [
             new Business("123456789123", "Business 1", _user), new Business("123456789124", "Business 2", _otherUser),
-        };
-        _expectedBusinesses = new List<GetBusinessesArgs>
-        {
+        ];
+        _expectedBusinesses =
+        [
             new GetBusinessesArgs()
             {
                 Name = _businesses[0].Name,
@@ -54,7 +53,8 @@ public class BusinessControllerTests
                 OwnerEmail = _otherUser.Email,
                 Rut = _businesses[1].Rut,
             }
-        };
+
+        ];
         _expectedPagination = new Pagination { Page = 1, PageSize = 10, TotalPages = 1 };
         _pagedList = new PagedData<GetBusinessesArgs>
         {

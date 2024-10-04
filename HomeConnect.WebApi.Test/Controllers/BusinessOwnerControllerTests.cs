@@ -66,7 +66,7 @@ public class BusinessOwnerControllerTests
             ModelNumber = 123,
             Description = "Test device",
             MainPhoto = "https://www.example.com/photo1.jpg",
-            SecondaryPhotos = new List<string> {},
+            SecondaryPhotos = [],
             Type = "Camera",
             Business = new Business()
         };
@@ -86,7 +86,7 @@ public class BusinessOwnerControllerTests
             ModelNumber = 123,
             Description = "Test camera",
             MainPhoto = "https://www.example.com/photo1.jpg",
-            SecondaryPhotos = new List<string> {},
+            SecondaryPhotos = [],
             MotionDetection = true,
             PersonDetection = true,
             IsExterior = true,

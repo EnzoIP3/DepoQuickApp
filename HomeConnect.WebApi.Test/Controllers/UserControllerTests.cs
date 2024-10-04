@@ -29,8 +29,8 @@ public class UserControllerTests
 
         _user = new User("Name", "Surname", "email@email.com", "Password@100", new Role("Admin", []));
         _otherUser = new User("Name1", "Surname1", "email1@email.com", "Password@100", new Role("BusinessOwner", []));
-        _expectedUsers = new List<GetUsersArgs>
-        {
+        _expectedUsers =
+        [
             new GetUsersArgs()
             {
                 Name = _user.Name,
@@ -47,7 +47,8 @@ public class UserControllerTests
                 Role = _otherUser.Role.Name,
                 CreatedAt = _otherUser.CreatedAt
             }
-        };
+
+        ];
         _expectedPagination = new Pagination { Page = 1, PageSize = 10, TotalPages = 1 };
         _pagedList = new PagedData<GetUsersArgs>
         {

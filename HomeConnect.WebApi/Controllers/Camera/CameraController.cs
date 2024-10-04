@@ -1,4 +1,5 @@
 using BusinessLogic.Devices.Services;
+using HomeConnect.WebApi.Controllers.Device;
 using Microsoft.AspNetCore.Mvc;
 
 namespace HomeConnect.WebApi.Controllers.Camera;

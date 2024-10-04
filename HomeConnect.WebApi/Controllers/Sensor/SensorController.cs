@@ -1,5 +1,7 @@
 using BusinessLogic.Devices.Services;
 using BusinessLogic.Notifications.Services;
+using HomeConnect.WebApi.Controllers.Device;
+using HomeConnect.WebApi.Controllers.Device.Models;
 using Microsoft.AspNetCore.Mvc;
 
 namespace HomeConnect.WebApi.Controllers.Sensor;

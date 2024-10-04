@@ -1,8 +1,8 @@
 using BusinessLogic.Devices.Services;
-using HomeConnect.WebApi.Controllers.Sensor;
+using HomeConnect.WebApi.Controllers.Device.Models;
 using Microsoft.AspNetCore.Mvc;
 
-namespace HomeConnect.WebApi.Controllers;
+namespace HomeConnect.WebApi.Controllers.Device;
 
 public class BaseDeviceController(IDeviceService deviceService) : ControllerBase
 {

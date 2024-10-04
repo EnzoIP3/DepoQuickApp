@@ -52,5 +52,20 @@ public class HomeRepositoryTests
         _context.Homes.Should().Contain(home);
     }
     #endregion
+
+    #region Error
+    [TestMethod]
+    public void Add_WhenHomeExists_ThrowsException()
+    {
+        // Arrange
+        var home = new Home(_homeOwner, "Main St 123", 12.5, 12.5, 5);
+
+        // Act
+        var action = () => _homeRepository.Add(home);
+
+        // Assert
+        action.Should().Throw<ArgumentException>().WithMessage("Home already exists");
+    }
+    #endregion
     #endregion
 }

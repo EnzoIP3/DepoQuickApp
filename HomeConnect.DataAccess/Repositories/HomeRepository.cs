@@ -14,8 +14,17 @@ public class HomeRepository : IHomeRepository
 
     public void Add(Home home)
     {
+        EnsureHomeDoesNotExist(home);
         _context.Homes.Add(home);
         _context.SaveChanges();
+    }
+
+    private void EnsureHomeDoesNotExist(Home home)
+    {
+        if (_context.Homes.Any(h => h.Address == home.Address))
+        {
+            throw new ArgumentException("Home already exists");
+        }
     }
 
     public Home Get(Guid homeId)

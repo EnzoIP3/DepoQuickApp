@@ -237,7 +237,7 @@ public class HomeOwnerServiceTests
     {
         // Arrange
         var home = new Home(_user, "Main St 123", 1.0, 2.0, 5);
-        var device = new global::BusinessLogic.Devices.Entities.Device("Sensor", 1, "A sensor",
+        var device = new Device("Sensor", 1, "A sensor",
             "https://example.com/image.png", [], "Sensor", new Business());
         var camera = new Camera("Camera", 2, "A camera", "https://example.com/image.png", [], new Business(), true,
             true, true, true);
@@ -343,7 +343,7 @@ public class HomeOwnerServiceTests
     {
         // Arrange
         var home = new Home(_user, "Main St 123", 1.0, 2.0, 5);
-        var sensor = new global::BusinessLogic.Devices.Entities.Device("Sensor", 1, "A sensor",
+        var sensor = new Device("Sensor", 1, "A sensor",
             "https://example.com/image.png", [], "Sensor", new Business());
         var camera = new Camera("Camera", 2, "A camera", "https://example.com/image.png", [], new Business(), true,
             true, true, true);

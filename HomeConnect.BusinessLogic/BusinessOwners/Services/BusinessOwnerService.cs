@@ -10,46 +10,43 @@ namespace BusinessLogic.BusinessOwners.Services;
 
 public class BusinessOwnerService
 {
-    public IDeviceRepository DeviceRepository { get; init; }
-    public IUserRepository UserRepository { get; init; }
-    public IBusinessRepository BusinessRepository { get; init; }
-    public IRoleRepository RoleRepository { get; init; }
+    private IDeviceRepository DeviceRepository { get; init; }
+    private IUserRepository UserRepository { get; init; }
+    private IBusinessRepository BusinessRepository { get; init; }
 
     public BusinessOwnerService(IUserRepository userRepository, IBusinessRepository businessRepository,
-        IRoleRepository roleRepository, IDeviceRepository deviceRepository)
+        IDeviceRepository deviceRepository)
     {
         UserRepository = userRepository;
         BusinessRepository = businessRepository;
-        RoleRepository = roleRepository;
         DeviceRepository = deviceRepository;
     }
 
     public void CreateBusiness(string ownerEmail, string businessRut, string businessName)
     {
-        var owner = VerifyOwnerExists(ownerEmail);
+        EnsureOwnerExists(ownerEmail);
         EnsureOwnerDoesNotHaveBusiness(ownerEmail);
         EnsureBusinessRutDoesNotExist(businessRut);
 
+        var owner = UserRepository.Get(ownerEmail);
         var business = new Business(businessRut, businessName, owner);
         BusinessRepository.Add(business);
     }
 
-    public void CreateDevice(string name, int modelNumber, string description, string mainPhoto, List<string> secondaryPhotos, string type, Business business)
+    public void CreateDevice(string name, int modelNumber, string description, string mainPhoto,
+        List<string> secondaryPhotos, string type, Business business)
     {
         var device = new Device(name, modelNumber, description, mainPhoto, secondaryPhotos, type, business);
         DeviceRepository.EnsureDeviceDoesNotExist(device);
         DeviceRepository.Add(device);
     }
 
-    private User VerifyOwnerExists(string ownerEmail)
+    private void EnsureOwnerExists(string ownerEmail)
     {
-        var owner = UserRepository.Get(ownerEmail);
-        if (owner == null)
+        if (!UserRepository.Exists(ownerEmail))
         {
             throw new ArgumentException("Owner does not exist");
         }
-
-        return owner;
     }
 
     private void EnsureOwnerDoesNotHaveBusiness(string ownerEmail)
@@ -57,7 +54,7 @@ public class BusinessOwnerService
         var existingBusiness = BusinessRepository.GetBusinessByOwner(ownerEmail);
         if (existingBusiness != null)
         {
-            throw new InvalidOperationException("Owner already has a business");
+            throw new ArgumentException("Owner already has a business");
         }
     }
 

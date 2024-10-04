@@ -23,6 +23,11 @@ public class UserService : IUserService
             throw new ArgumentException("Invalid role");
         }
 
+        if (_userRepository.Exists(args.Email))
+        {
+            throw new ArgumentException("User already exists");
+        }
+
         var role = _roleRepository.Get(args.Role);
         var user = new User(args.Name, args.Surname, args.Email, args.Password, role);
         _userRepository.Add(user);

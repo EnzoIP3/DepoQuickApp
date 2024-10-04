@@ -26,9 +26,18 @@ public class HomeOwnerService
     public void CreateHome(CreateHomeArgs args)
     {
         EnsureCreateHomeModelIsValid(args);
+        EnsureUserExists(args.HomeOwnerId);
         var user = _userRepository.Get(Guid.Parse(args.HomeOwnerId));
         var home = new Home(user, args.Address, args.Latitude, args.Longitude, args.MaxMembers);
         _homeRepository.Add(home);
+    }
+
+    private void EnsureUserExists(string homeOwnerId)
+    {
+        if (!_userRepository.Exists(Guid.Parse(homeOwnerId)))
+        {
+            throw new ArgumentException("User does not exist");
+        }
     }
 
     private static void EnsureCreateHomeModelIsValid(CreateHomeArgs args)

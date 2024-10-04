@@ -19,7 +19,10 @@ public class HomeOwnerServiceTests
     private Mock<IOwnedDeviceRepository> _ownedDeviceRepositoryMock = null!;
     private Mock<IDeviceRepository> _deviceRepositoryMock = null!;
     private HomeOwnerService _homeOwnerService = null!;
-    private readonly global::BusinessLogic.Users.Entities.User _user = new global::BusinessLogic.Users.Entities.User("John", "Doe", "test@example.com", "12345678@My", new global::BusinessLogic.Roles.Entities.Role());
+
+    private readonly global::BusinessLogic.Users.Entities.User _user =
+        new global::BusinessLogic.Users.Entities.User("John", "Doe", "test@example.com", "12345678@My",
+            new global::BusinessLogic.Roles.Entities.Role());
 
     [TestInitialize]
     public void Initialize()
@@ -84,6 +87,28 @@ public class HomeOwnerServiceTests
         act.Should().Throw<ArgumentException>();
     }
 
+    [TestMethod]
+    public void CreateHome_WhenHomeOwnerDoesNotExist_ThrowsException()
+    {
+        // Arrange
+        var model = new CreateHomeArgs
+        {
+            HomeOwnerId = "a99feb27-7dac-41ec-8fd2-942533868689",
+            Address = "Main St 123",
+            Latitude = 1.0,
+            Longitude = 2.0,
+            MaxMembers = 5
+        };
+        _userRepositoryMock.Setup(x => x.Exists(Guid.Parse(model.HomeOwnerId)))
+            .Returns(false);
+
+        // Act
+        var act = () => _homeOwnerService.CreateHome(model);
+
+        // Assert
+        act.Should().Throw<ArgumentException>();
+    }
+
     #endregion
 
     #endregion
@@ -96,7 +121,8 @@ public class HomeOwnerServiceTests
     public void AddMemberToHome_WhenArgumentsAreValid_AddsMember()
     {
         // Arrange
-        var invitedUser = new global::BusinessLogic.Users.Entities.User("Jane", "Doe", "jane@doe.com", "12345678@My", new global::BusinessLogic.Roles.Entities.Role());
+        var invitedUser = new global::BusinessLogic.Users.Entities.User("Jane", "Doe", "jane@doe.com", "12345678@My",
+            new global::BusinessLogic.Roles.Entities.Role());
         var home = new Home(_user, "Main St 123", 1.0, 2.0, 5);
         var model = new AddMemberArgs
         {
@@ -127,10 +153,7 @@ public class HomeOwnerServiceTests
         // Arrange
         var model = new AddMemberArgs()
         {
-            HomeId = homeId,
-            HomeOwnerId = homeOwnerId,
-            CanAddDevices = true,
-            CanListDevices = true
+            HomeId = homeId, HomeOwnerId = homeOwnerId, CanAddDevices = true, CanListDevices = true
         };
 
         // Act
@@ -172,13 +195,13 @@ public class HomeOwnerServiceTests
     {
         // Arrange
         var home = new Home(_user, "Main St 123", 1.0, 2.0, 5);
-        var device = new global::BusinessLogic.Devices.Entities.Device("Sensor", 1, "A sensor", "https://example.com/image.png", [], "Sensor", new Business());
+        var device = new global::BusinessLogic.Devices.Entities.Device("Sensor", 1, "A sensor",
+            "https://example.com/image.png", [], "Sensor", new Business());
         var camera = new Camera("Camera", 2, "A camera", "https://example.com/image.png", [], new Business(), true,
             true, true, true);
         var addDeviceModel = new AddDevicesArgs
         {
-            HomeId = home.Id.ToString(),
-            DeviceIds = [device.Id.ToString(), camera.Id.ToString()]
+            HomeId = home.Id.ToString(), DeviceIds = [device.Id.ToString(), camera.Id.ToString()]
         };
         _deviceRepositoryMock.Setup(x => x.Get(device.Id)).Returns(device);
         _deviceRepositoryMock.Setup(x => x.Get(camera.Id)).Returns(camera);
@@ -236,7 +259,8 @@ public class HomeOwnerServiceTests
     {
         // Arrange
         var home = new Home(_user, "Main St 123", 1.0, 2.0, 5);
-        var member = new Member(new global::BusinessLogic.Users.Entities.User("Jane", "Doe", "test@example.com", "12345678@My", new global::BusinessLogic.Roles.Entities.Role()));
+        var member = new Member(new global::BusinessLogic.Users.Entities.User("Jane", "Doe", "test@example.com",
+            "12345678@My", new global::BusinessLogic.Roles.Entities.Role()));
         home.AddMember(member);
         _homeRepositoryMock.Setup(x => x.Get(home.Id)).Returns(home);
 
@@ -277,7 +301,8 @@ public class HomeOwnerServiceTests
     {
         // Arrange
         var home = new Home(_user, "Main St 123", 1.0, 2.0, 5);
-        var sensor = new global::BusinessLogic.Devices.Entities.Device("Sensor", 1, "A sensor", "https://example.com/image.png", [], "Sensor", new Business());
+        var sensor = new global::BusinessLogic.Devices.Entities.Device("Sensor", 1, "A sensor",
+            "https://example.com/image.png", [], "Sensor", new Business());
         var camera = new Camera("Camera", 2, "A camera", "https://example.com/image.png", [], new Business(), true,
             true, true, true);
         var ownedDevices =

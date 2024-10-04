@@ -132,6 +132,7 @@ public class HomeOwnerServiceTests
             CanAddDevices = true,
             CanListDevices = true
         };
+        _userRepositoryMock.Setup(x => x.Exists(Guid.Parse(model.HomeOwnerId))).Returns(true);
         _userRepositoryMock.Setup(x => x.Get(Guid.Parse(model.HomeOwnerId))).Returns(invitedUser);
         _homeRepositoryMock.Setup(x => x.Get(Guid.Parse(model.HomeId))).Returns(home);
 
@@ -172,6 +173,25 @@ public class HomeOwnerServiceTests
         {
             HomeId = "invalid-guid",
             HomeOwnerId = "a99feb27-7dac-41ec-8fd2-942533868689",
+            CanAddDevices = true,
+            CanListDevices = true
+        };
+
+        // Act
+        var act = () => _homeOwnerService.AddMemberToHome(model);
+
+        // Assert
+        act.Should().Throw<ArgumentException>();
+    }
+
+    [TestMethod]
+    public void AddMemberToHome_WhenHomeOwnerIdIsNotAGuid_ThrowsException()
+    {
+        // Arrange
+        var model = new AddMemberArgs()
+        {
+            HomeId = "a99feb27-7dac-41ec-8fd2-942533868689",
+            HomeOwnerId = "invalid-guid",
             CanAddDevices = true,
             CanListDevices = true
         };

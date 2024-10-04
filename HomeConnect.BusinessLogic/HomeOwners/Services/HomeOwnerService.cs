@@ -52,6 +52,7 @@ public class HomeOwnerService
     {
         EnsureAddMemberModelIsValid(args);
         EnsureGuidIsValid(args.HomeId);
+        EnsureGuidIsValid(args.HomeOwnerId);
         EnsureUserExists(args.HomeOwnerId);
         var user = _userRepository.Get(Guid.Parse(args.HomeOwnerId));
         var home = _homeRepository.Get(Guid.Parse(args.HomeId));

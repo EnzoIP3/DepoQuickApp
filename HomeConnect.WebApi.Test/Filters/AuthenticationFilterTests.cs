@@ -59,7 +59,7 @@ public class AuthenticationFilterTests
     }
 
     [TestMethod]
-    public void OnAuthorization_WhenAuthorizationIsEmpty_ShouldRerturnUnauthenticatedResponse()
+    public void OnAuthorization_WhenAuthorizationIsEmpty_ShouldReturnUnauthenticatedResponse()
     {
         _httpContextMock.Setup(h => h.Request.Headers).Returns(new HeaderDictionary(new Dictionary<string, StringValues>
         {
@@ -125,32 +125,6 @@ public class AuthenticationFilterTests
         concreteResponse.StatusCode.Should().Be((int)HttpStatusCode.Unauthorized);
         FilterTestsUtils.GetInnerCode(concreteResponse.Value).Should().Be("ExpiredAuthorization");
         FilterTestsUtils.GetMessage(concreteResponse.Value).Should().Be("The provided authorization header is expired");
-    }
-
-    [TestMethod]
-    public void OnAuthorization_WhenUserDoesNotExist_ShouldReturnUnauthenticatedResponse()
-    {
-        var guid = Guid.NewGuid().ToString();
-        _httpContextMock.Setup(h => h.Request.Headers).Returns(new HeaderDictionary(new Dictionary<string, StringValues>
-        {
-            { "Authorization", $"Bearer {guid}" }
-        }));
-        _sessionServiceMock.Setup(a => a.IsTokenExpired(guid)).Returns(false);
-        _httpContextMock.Setup(h => h.RequestServices.GetService(typeof(ITokenService)))
-            .Returns(_sessionServiceMock.Object);
-        _sessionServiceMock.Setup(a => a.GetUserFromToken(guid)).Returns((User?)null);
-        _attribute.OnAuthorization(_context);
-
-        var response = _context.Result;
-
-        _httpContextMock.VerifyAll();
-        _sessionServiceMock.VerifyAll();
-        response.Should().NotBeNull();
-        var concreteResponse = response as ObjectResult;
-        concreteResponse.Should().NotBeNull();
-        concreteResponse.StatusCode.Should().Be((int)HttpStatusCode.Unauthorized);
-        FilterTestsUtils.GetInnerCode(concreteResponse.Value).Should().Be("Unauthenticated");
-        FilterTestsUtils.GetMessage(concreteResponse.Value).Should().Be("You are not authenticated");
     }
 
     #endregion

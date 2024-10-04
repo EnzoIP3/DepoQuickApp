@@ -29,7 +29,8 @@ public class HomeRepository : IHomeRepository
 
     public Home Get(Guid homeId)
     {
-        throw new NotImplementedException();
+        Home? home = _context.Homes.FirstOrDefault(h => h.Id == homeId);
+        return home;
     }
 
     public Member GetMemberById(Guid memberId)

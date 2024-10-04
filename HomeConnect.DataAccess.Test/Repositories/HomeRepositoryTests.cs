@@ -68,4 +68,18 @@ public class HomeRepositoryTests
     }
     #endregion
     #endregion
+
+    #region Get
+    #region Success
+    [TestMethod]
+    public void Get_WhenHomeExists_ReturnsHome()
+    {
+        // Act
+        var result = _homeRepository.Get(_home.Id);
+
+        // Assert
+        result.Should().BeEquivalentTo(_home);
+    }
+    #endregion
+    #endregion
 }

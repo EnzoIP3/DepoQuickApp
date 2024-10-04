@@ -15,7 +15,7 @@ public class CameraControllerTests
     public void TestInitialize()
     {
         _deviceServiceMock = new Mock<IDeviceService>();
-        _cameraController = new CameraController();
+        _cameraController = new CameraController(_deviceServiceMock.Object);
     }
 
     [TestMethod]

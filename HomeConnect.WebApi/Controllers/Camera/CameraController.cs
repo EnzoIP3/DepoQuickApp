@@ -6,11 +6,12 @@ namespace HomeConnect.WebApi.Controllers.Camera;
 
 [ApiController]
 [Route("cameras")]
-public class CameraController() : ControllerBase
+public class CameraController(IDeviceService deviceService) : ControllerBase
 {
     [HttpPost("{hardwareId}/toggle")]
     public ConnectionResponse Toggle([FromRoute] string hardwareId)
     {
-        throw new NotImplementedException();
+        var connectionState = deviceService.Toogle(hardwareId);
+        return new ConnectionResponse { ConnectionState = connectionState, HardwareId = hardwareId };
     }
 }

@@ -19,7 +19,7 @@ public class SensorControllerTests
     }
 
     [TestMethod]
-    public void Notify_WithHardwareId_ReturnsNotifyResponse()
+    public void NotifyOpen_WithHardwareId_ReturnsNotifyResponse()
     {
         // Arrange
         var hardwareId = "hardwareId";
@@ -32,7 +32,7 @@ public class SensorControllerTests
         _notificationServiceMock.Setup(x => x.Notify(args));
 
         // Act
-        var result = _sensorController.Notify(hardwareId);
+        var result = _sensorController.NotifyOpen(hardwareId);
 
         // Assert
         result.Should().NotBeNull();

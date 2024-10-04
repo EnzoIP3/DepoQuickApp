@@ -8,7 +8,7 @@ namespace HomeConnect.WebApi.Controllers.Sensor;
 public class SensorController(INotificationService notificationService) : ControllerBase
 {
     [HttpPost("{hardwareId}/open")]
-    public NotifyResponse Notify([FromRoute] string hardwareId)
+    public NotifyResponse NotifyOpen([FromRoute] string hardwareId)
     {
         var notificationArgs = new NotificationArgs
         {

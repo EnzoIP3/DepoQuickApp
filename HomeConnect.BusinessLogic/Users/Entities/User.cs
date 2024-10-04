@@ -12,6 +12,7 @@ public class User
     private readonly string _password = string.Empty;
 
     public Guid Id { get; init; } = Guid.NewGuid();
+    public string ProfilePhoto { get; set; } = string.Empty;
     public string Name
     {
         get => _name;

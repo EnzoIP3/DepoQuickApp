@@ -8,7 +8,7 @@ using BusinessLogic.Users.Repositories;
 using FluentAssertions;
 using Moq;
 
-namespace HomeConnect.BusinessLogic.Test.BusinessOwners.Services;
+namespace HomeConnect.BusinessLogic.Test.BusinessOwners;
 
 [TestClass]
 public class BusinessOwnerServiceTests

@@ -1,7 +1,7 @@
 using BusinessLogic.BusinessOwners.Entities;
 using FluentAssertions;
 
-namespace HomeConnect.BusinessLogic.Test.Devices.Entities;
+namespace HomeConnect.BusinessLogic.Test.Devices;
 
 [TestClass]
 public class DeviceTest

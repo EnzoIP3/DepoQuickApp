@@ -7,7 +7,7 @@ using BusinessLogic.Users.Entities;
 using FluentAssertions;
 using HomeConnect.DataAccess.Repositories;
 
-namespace HomeConnect.DataAccess.Test.Notifications;
+namespace HomeConnect.DataAccess.Test.Repositories;
 
 [TestClass]
 public class NotificationRepositoryTest

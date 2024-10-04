@@ -50,11 +50,11 @@ public class Member
     public void DeletePermission(HomePermission permission)
     {
         EnsurePermissionExists(permission);
-        HomePermissions.Remove(permission);
+        HomePermissions.RemoveAll(p => p.Value == permission.Value);
     }
 
     public bool HasPermission(HomePermission permission)
     {
-        return HomePermissions.Contains(permission);
+        return HomePermissions.Any(p => p.Value == permission.Value);
     }
 }

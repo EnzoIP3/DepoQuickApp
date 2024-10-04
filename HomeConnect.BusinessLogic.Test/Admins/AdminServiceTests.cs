@@ -9,7 +9,7 @@ using BusinessLogic.Users.Repositories;
 using FluentAssertions;
 using Moq;
 
-namespace HomeConnect.BusinessLogic.Test.Admins.Services;
+namespace HomeConnect.BusinessLogic.Test.Admins;
 
 [TestClass]
 public sealed class AdminServiceTests

@@ -26,7 +26,7 @@ public class DeviceControllerTests
     public void Initialize()
     {
         _deviceService = new Mock<IDeviceService>();
-        _controller = new DeviceController();
+        _controller = new DeviceController(_deviceService.Object);
 
         _device = new Device()
         {

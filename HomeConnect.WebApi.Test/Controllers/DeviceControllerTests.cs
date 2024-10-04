@@ -62,13 +62,13 @@ public class DeviceControllerTests
     public void GetDevices_WhenCalledWithValidRequestAndNoFiltersOrPagination_ReturnsExpectedResponse()
     {
         // Arrange
-        _deviceService.Setup(x => x.GetDevices(It.IsAny<int?>(), It.IsAny<int?>(), null, null, null)).Returns(_pagedList);
+        _deviceService.Setup(x => x.GetDevices(It.IsAny<int?>(), It.IsAny<int?>(), null, null, null, null)).Returns(_pagedList);
 
         // Act
         var response = _controller.GetDevices();
 
         // Assert
-        _deviceService.Verify(x => x.GetDevices(It.IsAny<int?>(), It.IsAny<int?>(), null, null, null), Times.Once);
+        _deviceService.Verify(x => x.GetDevices(It.IsAny<int?>(), It.IsAny<int?>(), null, null, null, null), Times.Once);
         response.Should().NotBeNull();
         response.Should().BeOfType<OkObjectResult>();
         var okResult = response as OkObjectResult;
@@ -80,13 +80,13 @@ public class DeviceControllerTests
     {
         // Arrange
         var deviceNameFilter = _expectedDevices.First().Name;
-        _deviceService.Setup(x => x.GetDevices(It.IsAny<int?>(), It.IsAny<int?>(), deviceNameFilter, null, null)).Returns(_pagedList);
+        _deviceService.Setup(x => x.GetDevices(It.IsAny<int?>(), It.IsAny<int?>(), deviceNameFilter, null, null, null)).Returns(_pagedList);
 
         // Act
         var response = _controller.GetDevices(deviceNameFilter: deviceNameFilter);
 
         // Assert
-        _deviceService.Verify(x => x.GetDevices(It.IsAny<int?>(), It.IsAny<int?>(), deviceNameFilter, null, null), Times.Once);
+        _deviceService.Verify(x => x.GetDevices(It.IsAny<int?>(), It.IsAny<int?>(), deviceNameFilter, null, null, null), Times.Once);
         response.Should().NotBeNull();
         response.Should().BeOfType<OkObjectResult>();
         var okResult = response as OkObjectResult;
@@ -98,13 +98,13 @@ public class DeviceControllerTests
     {
         // Arrange
         var modelNameFilter = _expectedDevices.First().ModelNumber;
-        _deviceService.Setup(x => x.GetDevices(It.IsAny<int?>(), It.IsAny<int?>(), null, modelNameFilter, null)).Returns(_pagedList);
+        _deviceService.Setup(x => x.GetDevices(It.IsAny<int?>(), It.IsAny<int?>(), null, modelNameFilter, null, null)).Returns(_pagedList);
 
         // Act
         var response = _controller.GetDevices(modelNameFilter: modelNameFilter);
 
         // Assert
-        _deviceService.Verify(x => x.GetDevices(It.IsAny<int?>(), It.IsAny<int?>(), null, modelNameFilter, null), Times.Once);
+        _deviceService.Verify(x => x.GetDevices(It.IsAny<int?>(), It.IsAny<int?>(), null, modelNameFilter, null, null), Times.Once);
         response.Should().NotBeNull();
         response.Should().BeOfType<OkObjectResult>();
         var okResult = response as OkObjectResult;
@@ -116,13 +116,13 @@ public class DeviceControllerTests
     {
         // Arrange
         var businessNameFilter = _expectedDevices.First().Business.Name;
-        _deviceService.Setup(x => x.GetDevices(It.IsAny<int?>(), It.IsAny<int?>(), null, null, businessNameFilter)).Returns(_pagedList);
+        _deviceService.Setup(x => x.GetDevices(It.IsAny<int?>(), It.IsAny<int?>(), null, null, businessNameFilter, null)).Returns(_pagedList);
 
         // Act
         var response = _controller.GetDevices(businessNameFilter: businessNameFilter);
 
         // Assert
-        _deviceService.Verify(x => x.GetDevices(It.IsAny<int?>(), It.IsAny<int?>(), null, null, businessNameFilter), Times.Once);
+        _deviceService.Verify(x => x.GetDevices(It.IsAny<int?>(), It.IsAny<int?>(), null, null, businessNameFilter, null), Times.Once);
         response.Should().NotBeNull();
         response.Should().BeOfType<OkObjectResult>();
         var okResult = response as OkObjectResult;

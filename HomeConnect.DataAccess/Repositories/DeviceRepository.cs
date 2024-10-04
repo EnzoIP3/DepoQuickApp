@@ -1,6 +1,6 @@
 using BusinessLogic.Devices.Entities;
 
-namespace HomeConnect.DataAccess.Devices;
+namespace HomeConnect.DataAccess.Repositories;
 
 public class DeviceRepository
 {

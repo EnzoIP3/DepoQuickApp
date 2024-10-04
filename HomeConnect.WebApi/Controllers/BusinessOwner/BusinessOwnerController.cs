@@ -49,7 +49,7 @@ public class BusinessOwnerController(IAdminService adminService, IBusinessOwnerS
 
     [HttpPost]
     [Route("sensors")]
-    public CreateDeviceResponse CreateDevice([FromBody] CreateDeviceRequest request, [FromHeader] string authorization)
+    public CreateDeviceResponse CreateDevice([FromBody] CreateDeviceRequest request)
     {
         var device = new Device
         {
@@ -70,7 +70,7 @@ public class BusinessOwnerController(IAdminService adminService, IBusinessOwnerS
 
     [HttpPost]
     [Route("cameras")]
-    public CreateCameraResponse CreateCamera([FromBody] CreateCameraRequest request, [FromHeader] string authorization)
+    public CreateCameraResponse CreateCamera([FromBody] CreateCameraRequest request)
     {
         var camera = new Camera
         {

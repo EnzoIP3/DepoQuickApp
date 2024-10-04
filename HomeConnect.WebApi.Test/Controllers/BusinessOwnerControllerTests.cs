@@ -150,7 +150,7 @@ public class BusinessOwnerControllerTests
         _businessOwnerService.Setup(x => x.CreateDevice(_device.Name, _device.ModelNumber, _device.Description, _device.MainPhoto, _device.SecondaryPhotos, _device.Type, _device.Business)).Returns(_device.Id);
 
         // Act
-        var response = _controller.CreateDevice(_deviceRequest, $"Bearer {_device.Id}");
+        var response = _controller.CreateDevice(_deviceRequest);
 
         // Assert
         _businessOwnerService.VerifyAll();
@@ -165,7 +165,7 @@ public class BusinessOwnerControllerTests
         _businessOwnerService.Setup(x => x.CreateCamera(_camera.Name, _camera.ModelNumber, _camera.Description, _camera.MainPhoto, _camera.SecondaryPhotos, _camera.Business, _camera.MotionDetection, _camera.PersonDetection, _camera.IsExterior, _camera.IsInterior)).Returns(_camera.Id);
 
         // Act
-        var response = _controller.CreateCamera(_cameraRequest, $"Bearer {_camera.Id}");
+        var response = _controller.CreateCamera(_cameraRequest);
 
         // Assert
         _businessOwnerService.VerifyAll();

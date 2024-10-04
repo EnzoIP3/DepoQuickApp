@@ -18,6 +18,23 @@ public class DeviceController : ControllerBase
     [HttpGet]
     public IActionResult GetDevices([FromQuery] string? deviceName = null, [FromQuery] string? device = null, [FromQuery] string? model = null, [FromQuery] string? business = null, [FromQuery] int? page = 1, [FromQuery] int? pageSize = 20)
     {
-        throw new NotImplementedException();
+        PagedData<BusinessLogic.Devices.Entities.Device> devices = _deviceService.GetDevices(deviceName, device, model, business, page, pageSize);
+        var response = ResponseFromDevices(devices);
+        return Ok(response);
+    }
+
+    private static object ResponseFromDevices(PagedData<BusinessLogic.Devices.Entities.Device> devices)
+    {
+        var response = new
+        {
+            devices.Data,
+            Pagination = new Pagination
+            {
+                Page = devices.Page,
+                PageSize = devices.PageSize,
+                TotalPages = devices.TotalPages
+            }
+        };
+        return response;
     }
 }

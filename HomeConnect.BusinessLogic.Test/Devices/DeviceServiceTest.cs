@@ -1,6 +1,7 @@
 using BusinessLogic;
 using BusinessLogic.BusinessOwners.Entities;
 using BusinessLogic.Devices.Entities;
+using BusinessLogic.Devices.Models;
 using BusinessLogic.Devices.Repositories;
 using BusinessLogic.Devices.Services;
 using BusinessLogic.Users.Entities;
@@ -13,44 +14,62 @@ namespace HomeConnect.BusinessLogic.Test.Devices;
 public sealed class DeviceServiceTest
 {
     [TestMethod]
-    public void GetDevices_WhenCalled_ReturnsDeviceList()
+public void GetDevices_WhenCalled_ReturnsDeviceList()
+{
+    // Arrange
+    var user1 = new global::BusinessLogic.Users.Entities.User("name", "surname", "email1@email.com", "Password#100", new global::BusinessLogic.Roles.Entities.Role());
+    var user2 = new global::BusinessLogic.Users.Entities.User("name", "surname", "email2@email.com", "Password#100", new global::BusinessLogic.Roles.Entities.Role());
+    var _validDevice = new global::BusinessLogic.Devices.Entities.Device("Device1", 12345, "Device description1", "https://example1.com/image.png",
+        [], "Sensor", new Business("Rut1", "Business", user1));
+    var _otherDevice = new global::BusinessLogic.Devices.Entities.Device("Device2", 12345, "Device description2", "https://example2.com/image.png",
+        [], "Sensor", new Business("Rut2", "Business", user2)); // Ensure User.Email is null
+
+    var devices = new List<Device> { _validDevice, _otherDevice };
+
+    var _defaultCurrentPage = 1;
+    var _defaultPageSize = 10;
+
+    var pagedDeviceList = new PagedData<Device>
     {
-        // Arrange
-        var _validDevice = new global::BusinessLogic.Devices.Entities.Device("Device1", 12345, "Device description1", "https://example1.com/image.png",
-            [], "Sensor", new Business("Rut1", "Business1", new User()));
+        Data = devices,
+        Page = _defaultCurrentPage,
+        PageSize = _defaultPageSize,
+        TotalPages = 1
+    };
 
-        var _otherDevice = new global::BusinessLogic.Devices.Entities.Device("Device2", 12345, "Device description2", "https://2.com/image.png",
-            [], "Sensor", new Business("Rut2", "Business2", new User()));
+    var _deviceRepository = new Mock<IDeviceRepository>();
+    _deviceRepository.Setup(x => x.GetDevices(_defaultCurrentPage, _defaultPageSize, null, null, null, null)).Returns(pagedDeviceList);
 
-        var devices = new List<Device> { _validDevice, _otherDevice };
+    var _deviceService = new DeviceService(_deviceRepository.Object);
 
-        var _defaultCurrentPage = 1;
-        var _defaultPageSize = 10;
+    // Act
+    var result = _deviceService.GetDevices(_defaultCurrentPage, _defaultPageSize, null, null, null, null);
 
-        var pagedList = new PagedData<Device>
+    // Assert
+    var expectedPagedDeviceArgsList = new PagedData<GetDevicesArgs>
+    {
+        Data = devices.Select(d => new GetDevicesArgs
         {
-            Data = devices,
-            Page = _defaultCurrentPage,
-            PageSize = _defaultPageSize,
-            TotalPages = 1
-        };
+            Name = d.Name,
+            ModelNumber = d.ModelNumber,
+            Description = d.Description,
+            MainPhoto = d.MainPhoto,
+            Type = d.Type,
+            BusinessName = d.Business.Name,
+            OwnerEmail = d.Business.Owner.Email
+        }).ToList(),
+        Page = _defaultCurrentPage,
+        PageSize = _defaultPageSize,
+        TotalPages = 1
+    };
 
-        var _deviceRepository = new Mock<IDeviceRepository>();
-        _deviceRepository.Setup(x => x.GetDevices(_defaultCurrentPage, _defaultPageSize, null, null, null, null)).Returns(pagedList);
-
-        var _deviceService = new DeviceService(_deviceRepository.Object);
-
-        // Act
-        var result = _deviceService.GetDevices(_defaultCurrentPage, _defaultPageSize, null, null, null, null);
-
-        // Assert
-        result.Should().BeEquivalentTo(pagedList, options => options.ComparingByMembers<PagedData<Device>>());
-        _deviceRepository.Verify(x => x.GetDevices(
-            It.Is<int>(a => a == _defaultCurrentPage),
-            It.Is<int>(a => a == _defaultPageSize),
-            It.Is<string>(a => true),
-            It.Is<int?>(a => true),
-            It.Is<string>(a => true),
-            It.Is<string>(a => true)));
+    result.Should().BeEquivalentTo(expectedPagedDeviceArgsList, options => options.ComparingByMembers<PagedData<GetDevicesArgs>>());
+    _deviceRepository.Verify(x => x.GetDevices(
+        It.Is<int>(a => a == _defaultCurrentPage),
+        It.Is<int>(a => a == _defaultPageSize),
+        It.Is<string>(a => true),
+        It.Is<int?>(a => true),
+        It.Is<string>(a => true),
+        It.Is<string>(a => true)));
     }
 }

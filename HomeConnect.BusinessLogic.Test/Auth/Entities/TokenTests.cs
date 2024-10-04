@@ -2,7 +2,7 @@ using BusinessLogic.Auth.Entities;
 using BusinessLogic.Users.Entities;
 using FluentAssertions;
 
-namespace HomeConnect.BusinessLogic.Test.Tokens.Entities;
+namespace HomeConnect.BusinessLogic.Test.Auth.Entities;
 
 [TestClass]
 public class TokenTests

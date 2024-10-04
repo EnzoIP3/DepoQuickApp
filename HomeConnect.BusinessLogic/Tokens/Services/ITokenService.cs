@@ -5,7 +5,7 @@ namespace BusinessLogic.Tokens.Services;
 
 public interface ITokenService
 {
-    string GetToken(GetTokenArgs args);
+    string CreateToken(CreateTokenArgs args);
     User GetUserFromToken(string token);
     bool IsTokenExpired(string token);
 }

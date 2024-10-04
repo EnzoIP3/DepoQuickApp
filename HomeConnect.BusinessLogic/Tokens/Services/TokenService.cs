@@ -17,7 +17,7 @@ public class TokenService : ITokenService
         _userRepository = userRepository;
     }
 
-    public string GetToken(GetTokenArgs args)
+    public string CreateToken(CreateTokenArgs args)
     {
         var user = _userRepository.GetUser(args.Email);
         if (user == null || !user.Password.Equals(args.Password))

@@ -54,16 +54,16 @@ public class TokenServiceTests
     }
 
     [TestMethod]
-    public void GetToken_WithValidArguments_ShouldCreateToken()
+    public void CreateToken_WithValidArguments_ShouldCreateToken()
     {
         // Arrange
-        var args = new GetTokenArgs() { Email = "test@example.com", Password = "password1M@" };
+        var args = new CreateTokenArgs() { Email = "test@example.com", Password = "password1M@" };
         var user = new User("Name", "Surname", args.Email, args.Password, new Role());
         _tokenRepository.Setup(x => x.Add(It.IsAny<Token>())).Verifiable();
         _userRepository.Setup(x => x.GetUser(args.Email)).Returns(user);
 
         // Act
-        var result = _tokenService.GetToken(args);
+        var result = _tokenService.CreateToken(args);
 
         // Assert
         result.Should().NotBeNullOrEmpty();
@@ -71,29 +71,29 @@ public class TokenServiceTests
     }
 
     [TestMethod]
-    public void GetToken_WithNonExistingEmail_ShouldThrowException()
+    public void CreateToken_WithNonExistingEmail_ShouldThrowException()
     {
         // Arrange
-        var args = new GetTokenArgs() { Email = "test@example.com", Password = "password1M@" };
+        var args = new CreateTokenArgs() { Email = "test@example.com", Password = "password1M@" };
         _userRepository.Setup(x => x.GetUser(args.Email)).Returns((User)null);
 
         // Act
-        var act = () => _tokenService.GetToken(args);
+        var act = () => _tokenService.CreateToken(args);
 
         // Assert
         act.Should().Throw<ArgumentException>();
     }
 
     [TestMethod]
-    public void GetToken_WithInvalidPassword_ShouldThrowException()
+    public void CreateToken_WithInvalidPassword_ShouldThrowException()
     {
         // Arrange
-        var args = new GetTokenArgs() { Email = "test@example.com", Password = "password" };
+        var args = new CreateTokenArgs() { Email = "test@example.com", Password = "password" };
         var user = new User("Name", "Surname", args.Email, "otherPassword1@", new Role());
         _userRepository.Setup(x => x.GetUser(args.Email)).Returns(user);
 
         // Act
-        var act = () => _tokenService.GetToken(args);
+        var act = () => _tokenService.CreateToken(args);
 
         // Assert
         act.Should().Throw<ArgumentException>();

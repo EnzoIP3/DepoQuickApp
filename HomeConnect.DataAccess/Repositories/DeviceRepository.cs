@@ -4,11 +4,12 @@ using BusinessLogic.Devices.Repositories;
 
 namespace HomeConnect.DataAccess.Repositories;
 
-public class DeviceRepository : IDeviceRepository
+public class DeviceRepository : PaginatedRepositoryBase<Device>, IDeviceRepository
 {
     private readonly Context _context;
 
     public DeviceRepository(Context context)
+        : base(context)
     {
         _context = context;
     }
@@ -39,8 +40,18 @@ public class DeviceRepository : IDeviceRepository
         }
     }
 
-    public PagedData<Device> GetDevices(int? currentPage, int? pageSize, string? deviceNameFilter, int? modelNumberFilter,
+    public PagedData<Device> GetDevices(int currentPage, int? pageSize, string? deviceNameFilter, int? modelNumberFilter,
         string? businessNameFilter, string? deviceTypeFilter)
+    {
+        throw new NotImplementedException();
+    }
+
+    protected override IQueryable<Device> GetQueryable()
+    {
+        throw new NotImplementedException();
+    }
+
+    protected override IQueryable<Device> ApplyFilters(IQueryable<Device> query, params object[] filters)
     {
         throw new NotImplementedException();
     }

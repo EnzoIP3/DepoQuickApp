@@ -119,4 +119,25 @@ public class DeviceRepositoryTests
     #endregion
 
     #endregion
+
+    #region GetDevices
+
+    #region Success
+    [TestMethod]
+    public void GetDevices_WhenCalled_ReturnsPaginatedDevices()
+    {
+        // Act
+        var result = _deviceRepository.GetDevices(1, 2, null, null, null, null);
+
+        // Assert
+        result.Data.Should().HaveCount(1);
+        result.Data.Exists(d => d.Id == _validDevice.Id).Should().BeTrue();
+    }
+    #endregion
+
+    #region Error
+
+    #endregion
+
+    #endregion
 }

@@ -131,4 +131,23 @@ public class UserRepositoryTest
     #endregion
 
     #endregion
+
+    #region GetByEmail
+
+    #region Success
+
+    [TestMethod]
+    public void GetByEmail_WhenUserExists_ReturnsUser()
+    {
+        // Act
+        var result = _userRepository.GetByEmail(_validUser.Email);
+
+        // Assert
+        result.Should().NotBeNull();
+        result!.Email.Should().Be(_validUser.Email);
+    }
+
+    #endregion
+
+    #endregion
 }

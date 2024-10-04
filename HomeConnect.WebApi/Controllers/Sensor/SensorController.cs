@@ -13,18 +13,31 @@ public class SensorController(INotificationService notificationService, IDeviceS
     [HttpPost("{hardwareId}/open")]
     public NotifyResponse NotifyOpen([FromRoute] string hardwareId)
     {
+        NotificationArgs notificationArgs = CreateOpenNotificationArgs(hardwareId);
+        notificationService.Notify(notificationArgs);
+        return new NotifyResponse { HardwareId = hardwareId };
+    }
+
+    private static NotificationArgs CreateOpenNotificationArgs(string hardwareId)
+    {
         var notificationArgs = new NotificationArgs
         {
             HardwareId = hardwareId,
             Date = DateTime.Now,
             Event = "open"
         };
-        notificationService.Notify(notificationArgs);
-        return new NotifyResponse { HardwareId = hardwareId };
+        return notificationArgs;
     }
 
     [HttpPost("{hardwareId}/close")]
     public NotifyResponse NotifyClose([FromRoute] string hardwareId)
+    {
+        NotificationArgs notificationArgs = CreateCloseNotificationArgs(hardwareId);
+        notificationService.Notify(notificationArgs);
+        return new NotifyResponse { HardwareId = hardwareId };
+    }
+
+    private static NotificationArgs CreateCloseNotificationArgs(string hardwareId)
     {
         var notificationArgs = new NotificationArgs
         {
@@ -32,7 +45,6 @@ public class SensorController(INotificationService notificationService, IDeviceS
             Date = DateTime.Now,
             Event = "close"
         };
-        notificationService.Notify(notificationArgs);
-        return new NotifyResponse { HardwareId = hardwareId };
+        return notificationArgs;
     }
 }

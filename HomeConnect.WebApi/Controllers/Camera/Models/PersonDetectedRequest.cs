@@ -1,4 +1,4 @@
-namespace HomeConnect.WebApi.Controllers.Camera;
+namespace HomeConnect.WebApi.Controllers.Camera.Models;
 
 public struct PersonDetectedRequest
 {

@@ -2,6 +2,7 @@ using BusinessLogic.Devices.Services;
 using BusinessLogic.Notifications.Services;
 using FluentAssertions;
 using HomeConnect.WebApi.Controllers.Camera;
+using HomeConnect.WebApi.Controllers.Camera.Models;
 using HomeConnect.WebApi.Controllers.Sensor;
 using Moq;
 

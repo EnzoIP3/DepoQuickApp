@@ -1,5 +1,6 @@
 ﻿using BusinessLogic.BusinessOwners.Entities;
 using BusinessLogic.Devices.Entities;
+using BusinessLogic.HomeOwners.Entities;
 using BusinessLogic.Notifications.Entities;
 using BusinessLogic.Roles.Entities;
 using BusinessLogic.Users.Entities;
@@ -15,6 +16,7 @@ public class Context(DbContextOptions<Context> options) : DbContext(options)
     public DbSet<Device> Devices { get; set; } = null!;
     public DbSet<Notification> Notifications { get; set; } = null!;
     public DbSet<Business> Businesses { get; set; } = null!;
+    public DbSet<Home> Homes { get; set; } = null!;
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {

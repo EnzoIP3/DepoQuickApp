@@ -1,8 +1,10 @@
+using BusinessLogic;
 using BusinessLogic.Users.Entities;
+using BusinessLogic.Users.Repositories;
 
 namespace HomeConnect.DataAccess.Repositories;
 
-public class UserRepository
+public class UserRepository : IUserRepository
 {
     private readonly Context _context;
 
@@ -11,56 +13,50 @@ public class UserRepository
         _context = context;
     }
 
+    public User? GetByEmail(string email)
+    {
+        throw new NotImplementedException();
+    }
+
     public void Add(User user)
     {
-        EnsureUserDoesNotExist(user);
         _context.Users.Add(user);
         _context.SaveChanges();
     }
 
-    private void EnsureUserDoesNotExist(User user)
+    public bool Exists(Guid id)
     {
-        if (Exists(user.Email))
-        {
-            throw new ArgumentException("User with this email already exists.");
-        }
+        return _context.Users.Any(u => u.Id == id);
     }
 
-    public bool Exists(string email)
+    public void Delete(Guid id)
     {
-        return _context.Users.Any(u => u.Email == email);
-    }
-
-    public void Delete(string email)
-    {
-        User? user = GetUser(email);
-        EnsureUserIsNotNull(user);
-        _context.Users.Remove(user!);
+        var user = Get(id);
+        _context.Users.Remove(user);
         _context.SaveChanges();
     }
 
-    public User? GetUser(string email)
+    public User Get(Guid id)
     {
-        return _context.Users.FirstOrDefault(u => u.Email == email);
+        return _context.Users.First(u => u.Id == id);
     }
 
-    private static void EnsureUserIsNotNull(User? user)
-    {
-        if (user == null)
-        {
-            throw new ArgumentException("User does not exist");
-        }
-    }
-
-    public List<User> GetUsers(int currentPage, int pageSize, string? fullNameFilter = null, string? roleFilter = null)
+    public PagedData<User> GetUsers(int currentPage, int pageSize, string? fullNameFilter = null,
+        string? roleFilter = null)
     {
         IQueryable<User> query = _context.Users;
         query = FilterByFullName(fullNameFilter, query);
         query = FilterByRole(roleFilter, query);
-        return query
-            .Skip((currentPage - 1) * pageSize)
-            .Take(pageSize)
-            .ToList();
+        return new PagedData<User>()
+        {
+            Data = query
+                .Skip((currentPage - 1) * pageSize)
+                .Take(pageSize)
+                .ToList(),
+            Page = currentPage,
+            PageSize = pageSize,
+            TotalPages = (int)Math.Ceiling(query.Count() / (double)pageSize)
+        };
     }
 
     private static IQueryable<User> FilterByRole(string? roleFilter, IQueryable<User> query)

@@ -3,12 +3,11 @@ using BusinessLogic.Users.Entities;
 using FluentAssertions;
 using HomeConnect.DataAccess.Repositories;
 
-namespace HomeConnect.DataAccess.Test.Users;
+namespace HomeConnect.DataAccess.Test.Repositories;
 
 [TestClass]
 public class UserRepositoryTest
 {
-    private const string ValidUserEmail = "john.doe@example.com";
     private readonly Context _context = DbContextBuilder.BuildTestDbContext();
     private UserRepository _userRepository = null!;
     private User _validUser = null!;
@@ -21,7 +20,7 @@ public class UserRepositoryTest
         var adminRole = _context.Roles.First(r => r.Name == "Admin");
         var businessOwnerRole = _context.Roles.First(r => r.Name == "Business Owner");
         _userRepository = new UserRepository(_context);
-        _validUser = new User("John", "Doe", ValidUserEmail, "Password#100", adminRole);
+        _validUser = new User("John", "Doe", "john.doe@example.com", "Password#100", adminRole);
         _otherUser = new User("Jane", "Doe", "jane.doe@example.com", "Password#200", businessOwnerRole);
         _context.Users.Add(_validUser);
         _context.Users.Add(_otherUser);
@@ -42,7 +41,7 @@ public class UserRepositoryTest
     public void Exists_WhenUserExists_ReturnsTrue()
     {
         // Act
-        var result = _userRepository.Exists("john.doe@example.com");
+        var result = _userRepository.Exists(_validUser.Id);
 
         // Assert
         result.Should().BeTrue();
@@ -64,27 +63,10 @@ public class UserRepositoryTest
 
         // Act
         _userRepository.Add(user);
-        var exists = _userRepository.Exists(user.Email);
+        var exists = _userRepository.Exists(user.Id);
 
         // Assert
         exists.Should().BeTrue();
-    }
-
-    #endregion
-
-    #region Error
-
-    [TestMethod]
-    public void Add_WhenUserAlreadyExists_ThrowsException()
-    {
-        // Arrange
-        var user = new User("John", "Doe", ValidUserEmail, "12345678M@", new Role("Role", []));
-
-        // Act
-        var act = () => _userRepository.Add(user);
-
-        // Assert
-        act.Should().Throw<ArgumentException>();
     }
 
     #endregion
@@ -99,24 +81,10 @@ public class UserRepositoryTest
     public void Delete_WhenUserExists_DeletesUser()
     {
         // Act
-        _userRepository.Delete(ValidUserEmail);
+        _userRepository.Delete(_validUser.Id);
 
         // Assert
-        _userRepository.Exists(ValidUserEmail).Should().BeFalse();
-    }
-
-    #endregion
-
-    #region Error
-
-    [TestMethod]
-    public void Delete_WhenUserDoesNotExist_ThrowsException()
-    {
-        // Act
-        var act = () => _userRepository.Delete("nonexistent@example.com");
-
-        // Assert
-        act.Should().Throw<ArgumentException>();
+        _userRepository.Exists(_validUser.Id).Should().BeFalse();
     }
 
     #endregion
@@ -134,8 +102,8 @@ public class UserRepositoryTest
         var result = _userRepository.GetUsers(1, 2);
 
         // Assert
-        result.Should().HaveCount(2);
-        result.Exists(u => u.Email == ValidUserEmail).Should().BeTrue();
+        result.Data.Should().HaveCount(2);
+        result.Data.Exists(u => u.Email == _validUser.Email).Should().BeTrue();
     }
 
     [TestMethod]
@@ -145,8 +113,8 @@ public class UserRepositoryTest
         var result = _userRepository.GetUsers(1, 10, fullNameFilter: "Jane");
 
         // Assert
-        result.Should().HaveCount(1);
-        result.First().Email.Should().Be("jane.doe@example.com");
+        result.Data.Should().HaveCount(1);
+        result.Data.First().Email.Should().Be("jane.doe@example.com");
     }
 
     [TestMethod]
@@ -156,8 +124,8 @@ public class UserRepositoryTest
         var result = _userRepository.GetUsers(1, 10, "J", "Admin");
 
         // Assert
-        result.Should().HaveCount(1);
-        result.First().Email.Should().Be(ValidUserEmail);
+        result.Data.Should().HaveCount(1);
+        result.Data.First().Email.Should().Be(_validUser.Email);
     }
 
     #endregion

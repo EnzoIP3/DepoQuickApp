@@ -60,7 +60,7 @@ public class AuthServiceTests
         var args = new CreateTokenArgs() { Email = "test@example.com", Password = "password1M@" };
         var user = new User("Name", "Surname", args.Email, args.Password, new Role());
         _tokenRepository.Setup(x => x.Add(It.IsAny<Token>())).Verifiable();
-        _userRepository.Setup(x => x.GetUser(args.Email)).Returns(user);
+        _userRepository.Setup(x => x.GetByEmail(args.Email)).Returns(user);
 
         // Act
         var result = _authService.CreateToken(args);
@@ -75,7 +75,7 @@ public class AuthServiceTests
     {
         // Arrange
         var args = new CreateTokenArgs() { Email = "test@example.com", Password = "password1M@" };
-        _userRepository.Setup(x => x.GetUser(args.Email)).Returns((User)null);
+        _userRepository.Setup(x => x.GetByEmail(args.Email)).Returns((User)null);
 
         // Act
         var act = () => _authService.CreateToken(args);
@@ -90,7 +90,7 @@ public class AuthServiceTests
         // Arrange
         var args = new CreateTokenArgs() { Email = "test@example.com", Password = "password" };
         var user = new User("Name", "Surname", args.Email, "otherPassword1@", new Role());
-        _userRepository.Setup(x => x.GetUser(args.Email)).Returns(user);
+        _userRepository.Setup(x => x.GetByEmail(args.Email)).Returns(user);
 
         // Act
         var act = () => _authService.CreateToken(args);

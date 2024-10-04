@@ -27,6 +27,11 @@ public class NotificationService : INotificationService
     public void Notify(NotificationArgs args)
     {
         var ownedDevice = OwnedDeviceRepository.GetByHardwareId(args.HardwareId);
+        EnsureOwnedDeviceIsNotNull(ownedDevice);
+    }
+
+    private static void EnsureOwnedDeviceIsNotNull(OwnedDevice ownedDevice)
+    {
         if (ownedDevice == null)
         {
             throw new ArgumentException("Device not found");

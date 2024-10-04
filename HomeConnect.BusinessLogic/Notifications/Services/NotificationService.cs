@@ -1,4 +1,6 @@
 using BusinessLogic.Devices.Entities;
+using BusinessLogic.Devices.Repositories;
+using BusinessLogic.HomeOwners.Entities;
 using BusinessLogic.Notifications.Repositories;
 using BusinessLogic.Users.Entities;
 using HomeConnect.WebApi.Controllers.Sensor;
@@ -8,7 +10,6 @@ namespace BusinessLogic.Notifications.Services;
 public class NotificationService : INotificationService
 {
     private INotificationRepository NotificationRepository { get; init; }
-
     public NotificationService(INotificationRepository notificationRepository)
     {
         NotificationRepository = notificationRepository;

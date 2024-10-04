@@ -1,8 +1,11 @@
 using BusinessLogic.BusinessOwners.Entities;
 using BusinessLogic.Devices.Entities;
+using BusinessLogic.Devices.Repositories;
 using BusinessLogic.HomeOwners.Entities;
 using BusinessLogic.Notifications.Repositories;
 using BusinessLogic.Notifications.Services;
+using FluentAssertions;
+using HomeConnect.WebApi.Controllers.Sensor;
 using Moq;
 
 namespace HomeConnect.BusinessLogic.Test.Notifications.Services;
@@ -12,10 +15,12 @@ namespace HomeConnect.BusinessLogic.Test.Notifications.Services;
 public class NotificationServiceTest
 {
     private Mock<INotificationRepository> _mockNotificationRepository = null!;
+    private Mock<IOwnedDeviceRepository> _mockOwnedDeviceRepository = null!;
     private NotificationService _notificationService = null!;
     [TestInitialize]
     public void TestInitialize()
     {
+        _mockOwnedDeviceRepository = new Mock<IOwnedDeviceRepository>();
         _mockNotificationRepository = new Mock<INotificationRepository>();
         _notificationService = new NotificationService(_mockNotificationRepository.Object);
     }
@@ -39,5 +44,20 @@ public class NotificationServiceTest
             n.Event == @event &&
             n.User == user &&
             n.OwnedDevice == ownedDevice)), Times.Once);
+    }
+
+    [TestMethod]
+    public void Notify_WhenCalledWithNonExistentDevice_ShouldThrowArgumentException()
+    {
+        // Arrange
+        var id = Guid.NewGuid();
+        var args = new NotificationArgs { HardwareId = id.ToString(), Event = "Test Event", Date = DateTime.Now };
+        _mockOwnedDeviceRepository.Setup(x => x.GetByHardwareId(id.ToString())).Returns((OwnedDevice)null);
+
+        // Act
+        var act = () => _notificationService.Notify(args);
+
+        // Assert
+        act.Should().Throw<ArgumentException>();
     }
 }

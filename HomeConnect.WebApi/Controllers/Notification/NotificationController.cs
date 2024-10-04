@@ -1,4 +1,3 @@
-using BusinessLogic.Notifications.Repositories;
 using BusinessLogic.Notifications.Services;
 using HomeConnect.WebApi.Filters;
 using Microsoft.AspNetCore.Mvc;

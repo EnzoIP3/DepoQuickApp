@@ -14,7 +14,7 @@ public class NotificationRepositoryTest
 {
     private readonly Context _context = DbContextBuilder.BuildTestDbContext();
     private NotificationRepository _notificationRepository = null!;
-    private static Role _role = null!;
+    private static readonly Role _role = null!;
     private static User _user = null!;
     private Business _business = null!;
     private Device _sensor = null!;

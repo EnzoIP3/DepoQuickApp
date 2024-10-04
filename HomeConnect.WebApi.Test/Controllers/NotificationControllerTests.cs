@@ -1,6 +1,5 @@
 using BusinessLogic.Devices.Entities;
 using BusinessLogic.Notifications.Entities;
-using BusinessLogic.Notifications.Repositories;
 using BusinessLogic.Notifications.Services;
 using BusinessLogic.Roles.Entities;
 using BusinessLogic.Users.Entities;
@@ -64,7 +63,7 @@ public class NotificationControllerTests
         };
         _httpContextMock.SetupGet(h => h.Items).Returns(items);
         _notificationService.Setup(n => n.GetNotifications(user.Id, request.Device, request.DateCreated, request.Read))
-            .Returns(new List<Notification> { notification });
+            .Returns([notification]);
 
         // Act
         var response = _notificationController.GetNotifications(request, _context);

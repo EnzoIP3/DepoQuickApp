@@ -1,4 +1,3 @@
-using System.Security.Cryptography.X509Certificates;
 using BusinessLogic.Devices.Repositories;
 using BusinessLogic.Devices.Services;
 using FluentAssertions;

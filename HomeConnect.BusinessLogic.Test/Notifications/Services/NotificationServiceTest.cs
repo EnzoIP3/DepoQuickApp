@@ -20,8 +20,8 @@ public class NotificationServiceTest
     private Mock<INotificationRepository> _mockNotificationRepository = null!;
     private Mock<IOwnedDeviceRepository> _mockOwnedDeviceRepository = null!;
     private NotificationService _notificationService = null!;
-    private static Role _role = new Role { Name = "HomeOwner", Permissions = new List<SystemPermission>() };
-    private User _user = new User("owner", "owner", "owner@email.com", "Password@100", _role);
+    private static readonly Role _role = new Role { Name = "HomeOwner", Permissions = [] };
+    private readonly User _user = new User("owner", "owner", "owner@email.com", "Password@100", _role);
 
     [TestInitialize]
     public void TestInitialize()
@@ -95,7 +95,9 @@ public class NotificationServiceTest
         var ownedDevice = new OwnedDevice(home, device);
         var args = new NotificationArgs
         {
-            HardwareId = ownedDevice.HardwareId.ToString(), Event = "Test Event", Date = DateTime.Now
+            HardwareId = ownedDevice.HardwareId.ToString(),
+            Event = "Test Event",
+            Date = DateTime.Now
         };
 
         _mockOwnedDeviceRepository.Setup(x => x.GetByHardwareId(args.HardwareId)).Returns(ownedDevice);

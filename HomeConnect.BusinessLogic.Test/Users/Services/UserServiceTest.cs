@@ -16,6 +16,15 @@ public class UserServiceTest
     private Mock<IRoleRepository> _roleRepository = null!;
     private IUserService _userService = null!;
 
+    private CreateUserArgs _args = new CreateUserArgs()
+    {
+        Email = "john.doe@gmail.com",
+        Password = "password1M@",
+        Name = "John",
+        Surname = "Doe",
+        Role = "Administrator"
+    };
+
     [TestInitialize]
     public void Initialize()
     {
@@ -28,20 +37,12 @@ public class UserServiceTest
     public void CreateUser_WithValidArguments_ShouldCreateUser()
     {
         // Arrange
-        var args = new CreateUserArgs()
-        {
-            Email = "john.doe@gmail.com",
-            Password = "password1M@",
-            Name = "John",
-            Surname = "Doe",
-            Role = "Administrator"
-        };
         _userRepository.Setup(x => x.Add(It.IsAny<User>()));
-        _roleRepository.Setup(x => x.Exists(args.Role)).Returns(true);
-        _roleRepository.Setup(x => x.Get(args.Role)).Returns(new Role());
+        _roleRepository.Setup(x => x.Exists(_args.Role)).Returns(true);
+        _roleRepository.Setup(x => x.Get(_args.Role)).Returns(new Role());
 
         // Act
-        _userService.CreateUser(args);
+        _userService.CreateUser(_args);
 
         // Assert
         _userRepository.Verify(x => x.Add(It.IsAny<User>()), Times.Once);
@@ -51,18 +52,24 @@ public class UserServiceTest
     public void CreateUser_WithInvalidRole_ShouldThrowException()
     {
         // Arrange
-        var args = new CreateUserArgs()
-        {
-            Email = "john.doe@gmail.com",
-            Password = "password1M@",
-            Name = "John",
-            Surname = "Doe",
-            Role = "Administrator"
-        };
-        _roleRepository.Setup(x => x.Exists(args.Role)).Returns(false);
+        _roleRepository.Setup(x => x.Exists(_args.Role)).Returns(false);
 
         // Act
-        var act = () => _userService.CreateUser(args);
+        var act = () => _userService.CreateUser(_args);
+
+        // Assert
+        act.Should().Throw<ArgumentException>();
+    }
+
+    [TestMethod]
+    public void CreateUser_WithAlreadyExistingUser_ShouldThrowException()
+    {
+        // Arrange
+        _roleRepository.Setup(x => x.Exists(_args.Role)).Returns(true);
+        _userRepository.Setup(x => x.Exists(_args.Email)).Returns(true);
+
+        // Act
+        var act = () => _userService.CreateUser(_args);
 
         // Assert
         act.Should().Throw<ArgumentException>();

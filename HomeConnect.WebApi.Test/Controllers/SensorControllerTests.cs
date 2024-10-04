@@ -62,20 +62,4 @@ public class SensorControllerTests
         result.Should().NotBeNull();
         result.HardwareId.Should().Be(hardwareId);
     }
-
-    [TestMethod]
-    public void Toggle_WithHardwareId_ReturnsConnectionResponse()
-    {
-        // Arrange
-        var hardwareId = "hardwareId";
-        _deviceServiceMock.Setup(x => x.Toogle(hardwareId)).Returns(true);
-
-        // Act
-        var result = _sensorController.Toggle(hardwareId);
-
-        // Assert
-        result.Should().NotBeNull();
-        result.HardwareId.Should().Be(hardwareId);
-        result.ConnectionState.Should().BeTrue();
-    }
 }

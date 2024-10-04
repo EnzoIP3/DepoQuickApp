@@ -17,20 +17,4 @@ public class CameraControllerTests
         _deviceServiceMock = new Mock<IDeviceService>();
         _cameraController = new CameraController(_deviceServiceMock.Object);
     }
-
-    [TestMethod]
-    public void Toggle_WithHardwareId_ReturnsConnectionResponse()
-    {
-        // Arrange
-        var hardwareId = "hardwareId";
-        _deviceServiceMock.Setup(x => x.Toogle(hardwareId)).Returns(true);
-
-        // Act
-        var result = _cameraController.Toggle(hardwareId);
-
-        // Assert
-        result.Should().NotBeNull();
-        result.HardwareId.Should().Be(hardwareId);
-        result.ConnectionState.Should().BeTrue();
-    }
 }

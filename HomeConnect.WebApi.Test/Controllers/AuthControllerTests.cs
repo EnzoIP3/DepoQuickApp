@@ -4,7 +4,7 @@ using BusinessLogic.Auth.Services;
 using BusinessLogic.Users.Entities;
 using FluentAssertions;
 using HomeConnect.WebApi.Controllers.Auth;
-using HomeConnect.WebApi.Controllers.Business.Models;
+using HomeConnect.WebApi.Controllers.Auth.Models;
 using Moq;
 
 namespace HomeConnect.WebApi.Test.Controllers;

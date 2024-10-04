@@ -1,4 +1,4 @@
-namespace HomeConnect.WebApi.Controllers.Business.Models;
+namespace HomeConnect.WebApi.Controllers.Auth.Models;
 
 public struct CreateTokenResponse
 {

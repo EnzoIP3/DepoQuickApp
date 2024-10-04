@@ -19,4 +19,17 @@ public class SensorController(INotificationService notificationService) : Contro
         notificationService.Notify(notificationArgs);
         return new NotifyResponse { HardwareId = hardwareId };
     }
+
+    [HttpPost("{hardwareId}/close")]
+    public NotifyResponse NotifyClose([FromRoute] string hardwareId)
+    {
+        var notificationArgs = new NotificationArgs
+        {
+            HardwareId = hardwareId,
+            Date = DateTime.Now,
+            Event = "close"
+        };
+        notificationService.Notify(notificationArgs);
+        return new NotifyResponse { HardwareId = hardwareId };
+    }
 }

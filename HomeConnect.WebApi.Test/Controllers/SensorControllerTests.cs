@@ -38,4 +38,25 @@ public class SensorControllerTests
         result.Should().NotBeNull();
         result.HardwareId.Should().Be(hardwareId);
     }
+
+    [TestMethod]
+    public void NotifyClose_WithHardwareId_ReturnsNotifyResponse()
+    {
+        // Arrange
+        var hardwareId = "hardwareId";
+        var args = new NotificationArgs
+        {
+            HardwareId = hardwareId,
+            Date = DateTime.Now,
+            Event = "close"
+        };
+        _notificationServiceMock.Setup(x => x.Notify(args));
+
+        // Act
+        var result = _sensorController.NotifyOpen(hardwareId);
+
+        // Assert
+        result.Should().NotBeNull();
+        result.HardwareId.Should().Be(hardwareId);
+    }
 }

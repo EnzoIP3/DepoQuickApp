@@ -20,6 +20,8 @@ public class NotificationServiceTest
     private Mock<INotificationRepository> _mockNotificationRepository = null!;
     private Mock<IOwnedDeviceRepository> _mockOwnedDeviceRepository = null!;
     private NotificationService _notificationService = null!;
+    private static Role _role = new Role { Name = "HomeOwner", Permissions = new List<SystemPermission>() };
+    private User _user = new User("owner", "owner", "owner@email.com", "Password@100", _role);
 
     [TestInitialize]
     public void TestInitialize()
@@ -80,13 +82,11 @@ public class NotificationServiceTest
     {
         // Arrange
         var shouldBeNotified = new HomePermission("shouldBeNotified");
-        var role = new Role { Name = "shouldBeNotified", Permissions = new List<SystemPermission>() };
         var owner = new User("owner", "owner", "owner@email.com", "Password@100",
-            role);
-        var member = new Member(new User("name", "surname", "email@email.com", "Password@100",
-            role), [shouldBeNotified]);
+            _role);
+        var member = new Member(_user, [shouldBeNotified]);
         var otherMember = new Member(new User("name", "surname", "email@email.com", "Password@100",
-            role));
+            _role));
         var home = new Home(owner, "Street 3420", 100, 100, 5);
         home.AddMember(member);
         home.AddMember(otherMember);
@@ -131,12 +131,12 @@ public class NotificationServiceTest
         var notifications = new List<Notification>
         {
             new Notification(Guid.NewGuid(), DateTime.Now, false, "Test Event", new OwnedDevice(
-                    new Home(new User(), "Street 3420", 100, 100, 5),
+                    new Home(_user, "Street 3420", 100, 100, 5),
                     new Device("Device", 12345, "Device description", "https://example.com/image.png", [], "Sensor",
                         new Business())),
                 new User("name", "surname", "email@email.com", "Password@100", new Role())),
             new Notification(Guid.NewGuid(), DateTime.Now, false, "Test Event", new OwnedDevice(
-                    new Home(new User(), "Street 3420", 100, 100, 5),
+                    new Home(_user, "Street 3420", 100, 100, 5),
                     new Device("Device", 12345, "Device description", "https://example.com/image.png", [], "Sensor",
                         new Business())),
                 new User("name2", "surname2", "email2@email.com", "Password@100", new Role()))

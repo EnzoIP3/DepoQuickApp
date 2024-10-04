@@ -26,7 +26,7 @@ public class NotificationControllerTests
     public void Initialize()
     {
         _notificationService = new Mock<INotificationService>();
-        _notificationController = new NotificationController();
+        _notificationController = new NotificationController(_notificationService.Object);
         _httpContextMock = new Mock<HttpContext>(MockBehavior.Strict);
         _context = new AuthorizationFilterContext(
             new ActionContext(

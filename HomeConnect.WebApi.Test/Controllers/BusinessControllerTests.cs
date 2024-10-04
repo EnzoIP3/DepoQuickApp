@@ -35,7 +35,8 @@ public class BusinessControllerTests
         _otherUser = new User("Name1", "Surname1", "email1@email.com", "Password@100", _role);
         _businesses =
         [
-            new Business("123456789123", "Business 1", _user), new Business("123456789124", "Business 2", _otherUser),
+            new Business("123456789123", "Business 1", _user),
+            new Business("123456789124", "Business 2", _otherUser),
         ];
         _expectedBusinesses =
         [

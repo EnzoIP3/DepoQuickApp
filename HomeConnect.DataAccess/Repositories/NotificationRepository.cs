@@ -25,6 +25,7 @@ public class NotificationRepository : INotificationRepository
             .Where(n => n.OwnedDevice.Home.Owner.Id == userId)
             .Where(n => deviceFilter == null || n.OwnedDevice.Device.Type == deviceFilter)
             .Where(n => dateFilter == null || n.Date.Date == dateFilter.Value.Date)
+            .Where(n => readFilter == null || n.Read == readFilter)
             .ToList();
     }
 

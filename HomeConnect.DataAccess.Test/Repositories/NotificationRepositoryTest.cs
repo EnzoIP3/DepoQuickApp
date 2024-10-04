@@ -128,5 +128,18 @@ public class NotificationRepositoryTest
         // Assert
         result.Should().BeEquivalentTo(expectedResult);
     }
+
+    [TestMethod]
+    public void Get_WhenCalledWithReadFilter_ShouldReturnNotificationsAlreadyRead()
+    {
+        // Arrange
+        var expectedResult = new List<Notification> { _notification };
+
+        // Act
+        var result = _notificationRepository.Get(_user.Id, readFilter: true);
+
+        // Assert
+        result.Should().BeEquivalentTo(expectedResult);
+    }
     #endregion
 }

@@ -30,6 +30,12 @@ public class NotificationService : INotificationService
         EnsureOwnedDeviceIsNotNull(ownedDevice);
         var home = ownedDevice.Home;
         var shouldReceiveNotification = new HomePermission("shouldBeNotified");
+        NotifyUsersWithPermission(args, home, shouldReceiveNotification, ownedDevice);
+    }
+
+    private void NotifyUsersWithPermission(NotificationArgs args, Home home, HomePermission shouldReceiveNotification,
+        OwnedDevice ownedDevice)
+    {
         var usersToNotify = new List<User> { home.Owner };
         usersToNotify.AddRange(home.Members
             .Where(member => member.HasPermission(shouldReceiveNotification))

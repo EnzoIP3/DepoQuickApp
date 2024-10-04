@@ -19,7 +19,7 @@ public class CameraControllerTests
     {
         _deviceServiceMock = new Mock<IDeviceService>();
         _notificationServiceMock = new Mock<INotificationService>();
-        _cameraController = new CameraController(_deviceServiceMock.Object);
+        _cameraController = new CameraController(_notificationServiceMock.Object, _deviceServiceMock.Object);
     }
 
     [TestMethod]

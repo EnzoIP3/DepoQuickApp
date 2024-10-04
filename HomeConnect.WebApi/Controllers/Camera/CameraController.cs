@@ -9,11 +9,18 @@ namespace HomeConnect.WebApi.Controllers.Camera;
 
 [ApiController]
 [Route("cameras")]
-public class CameraController(IDeviceService deviceService) : BaseDeviceController(deviceService)
+public class CameraController(INotificationService notificationService, IDeviceService deviceService) : BaseDeviceController(deviceService)
 {
     [HttpPost("{hardwareId}/movement-detected")]
     public NotifyResponse MovementDetected([FromRoute] string hardwareId)
     {
-        throw new NotImplementedException();
+        var args = new NotificationArgs
+        {
+            HardwareId = hardwareId,
+            Date = DateTime.Now,
+            Event = "movement-detected"
+        };
+        notificationService.Notify(args);
+        return new NotifyResponse { HardwareId = hardwareId };
     }
 }

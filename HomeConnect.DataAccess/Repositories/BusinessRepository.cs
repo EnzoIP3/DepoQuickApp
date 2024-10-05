@@ -42,7 +42,7 @@ public class BusinessRepository : PaginatedRepositoryBase<Business>, IBusinessRe
 
     public bool ExistsByOwnerId(Guid ownerId)
     {
-        throw new NotImplementedException();
+        return Context.Businesses.Any(b => b.Owner.Id == ownerId);
     }
 
     public void Add(Business business)

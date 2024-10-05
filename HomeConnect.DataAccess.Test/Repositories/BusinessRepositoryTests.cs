@@ -232,4 +232,21 @@ public class BusinessRepositoryTests
     }
 
     #endregion
+
+    #region ExistsByOwnerId
+
+    [TestMethod]
+    public void ExistsByOwnerId_WhenBusinessExists_ReturnsTrue()
+    {
+        // Arrange
+        var ownerId = _validUser.Id;
+
+        // Act
+        var result = _businessRepository.ExistsByOwnerId(ownerId);
+
+        // Assert
+        result.Should().BeTrue();
+    }
+
+    #endregion
 }

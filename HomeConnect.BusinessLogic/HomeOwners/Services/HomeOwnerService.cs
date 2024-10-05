@@ -191,7 +191,7 @@ public class HomeOwnerService : IHomeOwnerService
 
     private void EnsureMemberExists(Guid memberId)
     {
-        if(!_homeRepository.ExistsMember(memberId))
+        if (!_homeRepository.ExistsMember(memberId))
         {
             throw new ArgumentException("Member does not exist");
         }

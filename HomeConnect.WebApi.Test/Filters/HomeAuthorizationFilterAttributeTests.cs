@@ -1,6 +1,5 @@
 using System.Net;
 using BusinessLogic.HomeOwners.Entities;
-using BusinessLogic.HomeOwners.Repositories;
 using BusinessLogic.HomeOwners.Services;
 using BusinessLogic.Roles.Entities;
 using BusinessLogic.Users.Entities;

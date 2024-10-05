@@ -1,6 +1,5 @@
 using System.Net;
 using BusinessLogic.HomeOwners.Entities;
-using BusinessLogic.HomeOwners.Repositories;
 using BusinessLogic.HomeOwners.Services;
 using BusinessLogic.Users.Entities;
 using Microsoft.AspNetCore.Mvc;

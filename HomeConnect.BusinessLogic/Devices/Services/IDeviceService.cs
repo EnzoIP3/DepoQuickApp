@@ -4,5 +4,5 @@ using BusinessLogic.Devices.Models;
 
 public interface IDeviceService
     {
-        PagedData<GetDevicesArgs> GetDevices(int? currentPage, int? pageSize, string? deviceNameFilter, int? modelNumberFilter, string? businessNameFilter, string? deviceTypeFilter);
+        PagedData<Device> GetDevices(int? currentPage, int? pageSize, string? deviceNameFilter, int? modelNumberFilter, string? businessNameFilter, string? deviceTypeFilter);
     }

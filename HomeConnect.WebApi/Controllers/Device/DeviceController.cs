@@ -1,5 +1,6 @@
 using BusinessLogic;
 using BusinessLogic.Devices.Models;
+using HomeConnect.WebApi.Controllers.Device.Models;
 using Microsoft.AspNetCore.Mvc;
 
 namespace HomeConnect.WebApi.Controllers.Device;
@@ -16,15 +17,14 @@ public class DeviceController : ControllerBase
     }
 
     [HttpGet]
-    public IActionResult GetDevices([FromQuery] string? deviceName = null, [FromQuery] string? device = null, [FromQuery] string? model = null, [FromQuery] string? business = null, [FromQuery] int? page = 1,
-        [FromQuery] int? pageSize = 20, [FromQuery]  string? deviceNameFilter = null, [FromQuery] int? modelNameFilter = null, [FromQuery] string? businessNameFilter = null, [FromQuery] string? deviceTypeFilter = null)
+    public IActionResult GetDevices([FromQuery] DeviceQueryParameters parameters)
     {
-        PagedData<GetDevicesArgs> devices = _deviceService.GetDevices(page, pageSize, deviceNameFilter, modelNameFilter, businessNameFilter, deviceTypeFilter);
+        PagedData<BusinessLogic.Devices.Entities.Device> devices = _deviceService.GetDevices(parameters.Page, parameters.PageSize, parameters.DeviceNameFilter, parameters.ModelNameFilter, parameters.BusinessNameFilter, parameters.DeviceTypeFilter);
         var response = ResponseFromDevices(devices);
         return Ok(response);
     }
 
-    private static object ResponseFromDevices(PagedData<GetDevicesArgs> devices)
+    private static object ResponseFromDevices(PagedData<BusinessLogic.Devices.Entities.Device> devices)
     {
         var response = new
         {

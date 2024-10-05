@@ -7,4 +7,5 @@ public interface IDeviceService
 {
     PagedData<Device> GetDevices(GetDeviceArgs parameters);
     bool Toggle(string hardwareId);
+    IEnumerable<string> GetAllDeviceTypes();
 }

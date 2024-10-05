@@ -33,6 +33,11 @@ public class DeviceService : IDeviceService
         return connectionState;
     }
 
+    public IEnumerable<string> GetAllDeviceTypes()
+    {
+        throw new NotImplementedException();
+    }
+
     private void EnsureOwnedDeviceExists(string hardwareId)
     {
         if (!OwnedDeviceRepository.Exists(hardwareId))

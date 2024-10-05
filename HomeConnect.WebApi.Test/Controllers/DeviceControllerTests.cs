@@ -133,4 +133,22 @@ public class DeviceControllerTests
         var okResult = response as OkObjectResult;
         okResult.Value.Should().BeEquivalentTo(new { Data = _expectedDevices, Pagination = _expectedPagination });
     }
+
+    [TestMethod]
+    public void GetDeviceTypes_WhenCalled_ReturnsExpectedResponse()
+    {
+        // Arrange
+        var expectedDeviceTypes = new List<string> { "Sensor", "Camera" };
+        _deviceService.Setup(x => x.GetAllDeviceTypes()).Returns(expectedDeviceTypes);
+
+        // Act
+        var response = _controller.GetDeviceTypes();
+
+        // Assert
+        _deviceService.Verify(x => x.GetAllDeviceTypes(), Times.Once);
+        response.Should().NotBeNull();
+        response.Should().BeOfType<OkObjectResult>();
+        var okResult = response as OkObjectResult;
+        okResult.Value.Should().BeEquivalentTo(expectedDeviceTypes);
+    }
 }

@@ -38,4 +38,10 @@ public class DeviceController : ControllerBase
         };
         return response;
     }
+
+    [HttpGet("device-types")]
+    public IActionResult GetDeviceTypes()
+    {
+        throw new NotImplementedException();
+    }
 }

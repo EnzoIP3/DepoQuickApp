@@ -10,6 +10,7 @@ using HomeConnect.WebApi.Controllers.Businesses;
 using HomeConnect.WebApi.Controllers.Businesses.Models;
 using HomeConnect.WebApi.Controllers.BusinessOwner;
 using HomeConnect.WebApi.Controllers.BusinessOwner.Models;
+using HomeConnect.WebApi.Controllers.Camera.Models;
 using Moq;
 
 namespace HomeConnect.WebApi.Test.Controllers;
@@ -29,8 +30,6 @@ public class BusinessOwnerControllerTests
     private CreateDeviceArgs _deviceArgs;
     private Device _device = null!;
     private CreateCameraRequest _cameraRequest;
-    private CreateCameraArgs _cameraArgs;
-    private Camera _camera = null!;
 
     [TestInitialize]
     public void Initialize()
@@ -97,32 +96,6 @@ public class BusinessOwnerControllerTests
             IsInterior = true,
             BusinessRut = "306869575"
         };
-        _cameraArgs = new CreateCameraArgs
-        {
-            Name = _cameraRequest.Name,
-            ModelNumber = _cameraRequest.ModelNumber,
-            Description = _cameraRequest.Description,
-            MainPhoto = _cameraRequest.MainPhoto,
-            SecondaryPhotos = _cameraRequest.SecondaryPhotos,
-            MotionDetection = _cameraRequest.MotionDetection,
-            PersonDetection = _cameraRequest.PersonDetection,
-            IsExterior = _cameraRequest.IsExterior,
-            IsInterior = _cameraRequest.IsInterior,
-            BusinessRut = _cameraRequest.BusinessRut
-        };
-        _camera = new Camera
-        {
-            Name = _cameraRequest.Name,
-            ModelNumber = _cameraRequest.ModelNumber,
-            Description = _cameraRequest.Description,
-            MainPhoto = _cameraRequest.MainPhoto,
-            SecondaryPhotos = _cameraRequest.SecondaryPhotos,
-            MotionDetection = _cameraRequest.MotionDetection,
-            PersonDetection = _cameraRequest.PersonDetection,
-            IsExterior = _cameraRequest.IsExterior,
-            IsInterior = _cameraRequest.IsInterior,
-            Business = _business
-        };
     }
 
     #region CreateBusinessOwner
@@ -159,21 +132,6 @@ public class BusinessOwnerControllerTests
         _businessOwnerService.VerifyAll();
         response.Should().NotBeNull();
         response.Id.Should().Be(_device.Id);
-    }
-
-    [TestMethod]
-    public void CreateCamera_WhenCalledWithValidRequest_ReturnsCreatedResponse()
-    {
-        // Arrange
-        _businessOwnerService.Setup(x => x.CreateCamera(_cameraArgs)).Returns(_camera.Id);
-
-        // Act
-        var response = _controller.CreateCamera(_cameraRequest);
-
-        // Assert
-        _businessOwnerService.VerifyAll();
-        response.Should().NotBeNull();
-        response.Id.Should().Be(_camera.Id);
     }
 
     #endregion

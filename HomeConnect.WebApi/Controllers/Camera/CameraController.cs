@@ -1,3 +1,5 @@
+using BusinessLogic.BusinessOwners.Models;
+using BusinessLogic.BusinessOwners.Services;
 using BusinessLogic.Devices.Services;
 using BusinessLogic.Notifications.Services;
 using HomeConnect.WebApi.Controllers.Camera.Models;
@@ -10,8 +12,34 @@ namespace HomeConnect.WebApi.Controllers.Camera;
 
 [ApiController]
 [Route("cameras")]
-public class CameraController(INotificationService notificationService, IDeviceService deviceService) : BaseDeviceController(deviceService)
+public class CameraController(
+    INotificationService notificationService,
+    IDeviceService deviceService,
+    IBusinessOwnerService businessOwnerService)
+    : BaseDeviceController(deviceService)
 {
+    [HttpPost]
+    public CreateCameraResponse CreateCamera([FromBody] CreateCameraRequest request)
+    {
+        var args = new CreateCameraArgs()
+        {
+            Name = request.Name,
+            BusinessRut = request.BusinessRut,
+            Description = request.Description,
+            IsExterior = request.IsExterior,
+            IsInterior = request.IsInterior,
+            MainPhoto = request.MainPhoto,
+            ModelNumber = request.ModelNumber,
+            MotionDetection = request.MotionDetection,
+            PersonDetection = request.PersonDetection,
+            SecondaryPhotos = request.SecondaryPhotos
+        };
+
+        var createdCamera = businessOwnerService.CreateCamera(args);
+
+        return new CreateCameraResponse { Id = createdCamera };
+    }
+
     [HttpPost("{hardwareId}/movement-detected")]
     public NotifyResponse MovementDetected([FromRoute] string hardwareId)
     {
@@ -22,12 +50,7 @@ public class CameraController(INotificationService notificationService, IDeviceS
 
     private static NotificationArgs CreateMovementDetectedNotificationArgs(string hardwareId)
     {
-        var args = new NotificationArgs
-        {
-            HardwareId = hardwareId,
-            Date = DateTime.Now,
-            Event = "movement-detected"
-        };
+        var args = new NotificationArgs { HardwareId = hardwareId, Date = DateTime.Now, Event = "movement-detected" };
         return args;
     }
 
@@ -43,9 +66,7 @@ public class CameraController(INotificationService notificationService, IDeviceS
     {
         var args = new NotificationArgs
         {
-            HardwareId = hardwareId,
-            Date = DateTime.Now,
-            Event = $"person detected with id: {userId}",
+            HardwareId = hardwareId, Date = DateTime.Now, Event = $"person detected with id: {userId}",
         };
         return args;
     }

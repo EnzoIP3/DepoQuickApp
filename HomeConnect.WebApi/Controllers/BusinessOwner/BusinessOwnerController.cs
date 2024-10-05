@@ -5,6 +5,7 @@ using BusinessLogic.BusinessOwners.Services;
 using BusinessLogic.Users.Models;
 using HomeConnect.WebApi.Controllers.Businesses;
 using HomeConnect.WebApi.Controllers.BusinessOwner.Models;
+using HomeConnect.WebApi.Controllers.Camera.Models;
 using HomeConnect.WebApi.Filters;
 using Microsoft.AspNetCore.Mvc;
 
@@ -50,28 +51,5 @@ public class BusinessOwnerController(IAdminService adminService, IBusinessOwnerS
         var createdDevice = businessOwnerService.CreateDevice(args);
 
         return new CreateDeviceResponse { Id = createdDevice };
-    }
-
-    [HttpPost]
-    [Route("cameras")]
-    public CreateCameraResponse CreateCamera([FromBody] CreateCameraRequest request)
-    {
-        var args = new CreateCameraArgs()
-        {
-            Name = request.Name,
-            BusinessRut = request.BusinessRut,
-            Description = request.Description,
-            IsExterior = request.IsExterior,
-            IsInterior = request.IsInterior,
-            MainPhoto = request.MainPhoto,
-            ModelNumber = request.ModelNumber,
-            MotionDetection = request.MotionDetection,
-            PersonDetection = request.PersonDetection,
-            SecondaryPhotos = request.SecondaryPhotos
-        };
-
-        var createdCamera = businessOwnerService.CreateCamera(args);
-
-        return new CreateCameraResponse { Id = createdCamera };
     }
 }

@@ -161,6 +161,20 @@ public class DeviceRepositoryTests
         result.Data.First().ModelNumber.Should().Be(1234567);
     }
 
+    [TestMethod]
+    public void GetDevices_WhenFilteredByBusinessName_ReturnsFilteredDevices()
+    {
+        // Arrange
+        var businessNameFilter = "BusinessValid2";
+
+        // Act
+        var result = _deviceRepository.GetDevices(1, 10, null, null, businessNameFilter);
+
+        // Assert
+        result.Data.Should().HaveCount(1);
+        result.Data[0].Business.Name.Should().Be(businessNameFilter);
+    }
+
     #endregion
 
     #region Error

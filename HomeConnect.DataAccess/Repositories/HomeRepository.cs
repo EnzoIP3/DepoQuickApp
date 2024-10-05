@@ -58,7 +58,19 @@ public class HomeRepository : IHomeRepository
 
     public void UpdateMember(Member member)
     {
-        throw new NotImplementedException();
+        Member? memberToUpdate = null;
+        Home? home = _context.Homes.Include(home => home.Members).FirstOrDefault(m => m.Members.Any(h => h.Id == member.Id));
+        if (home != null)
+        {
+            memberToUpdate = home.Members.FirstOrDefault(m => m.Id == member.Id);
+        }
+
+        if (home == null || memberToUpdate == null)
+        {
+            throw new ArgumentException("Member does not exist");
+        }
+
+        _context.SaveChanges();
     }
 
     public Home? GetByAddress(string argsAddress)

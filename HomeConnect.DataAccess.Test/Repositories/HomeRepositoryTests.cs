@@ -123,4 +123,21 @@ public class HomeRepositoryTests
     }
     #endregion
     #endregion
+
+    #region UpdateMember
+    #region Error
+    [TestMethod]
+    public void UpdateMember_WhenMemberDoesNotExist_ShouldThrowException()
+    {
+        // Arrange
+        var member = new Member(_homeOwner);
+
+        // Act
+        var action = () => _homeRepository.UpdateMember(member);
+
+        // Assert
+        action.Should().Throw<ArgumentException>().WithMessage("Member does not exist");
+    }
+    #endregion
+    #endregion
 }

@@ -1,4 +1,5 @@
 using System.Net;
+using BusinessLogic.Auth.Exceptions;
 using FluentAssertions;
 using HomeConnect.WebApi.Filters;
 using Microsoft.AspNetCore.Http;
@@ -80,6 +81,23 @@ public class ExceptionFilterTests
         concreteResponse.Should().NotBeNull();
         concreteResponse!.StatusCode.Should().Be((int)HttpStatusCode.Conflict);
         FilterTestsUtils.GetInnerCode(concreteResponse.Value).Should().Be("Conflict");
+        FilterTestsUtils.GetMessage(concreteResponse.Value).Should().Be(exceptionMessage);
+    }
+
+    [TestMethod]
+    public void OnException_WhenExceptionIsAuthException_ShouldResponseUnauthorized()
+    {
+        var exceptionMessage = "Unauthorized";
+        _context.Exception = new AuthException(exceptionMessage);
+        _attribute.OnException(_context);
+
+        var response = _context.Result;
+
+        response.Should().NotBeNull();
+        var concreteResponse = response as ObjectResult;
+        concreteResponse.Should().NotBeNull();
+        concreteResponse!.StatusCode.Should().Be((int)HttpStatusCode.Unauthorized);
+        FilterTestsUtils.GetInnerCode(concreteResponse.Value).Should().Be("Unauthorized");
         FilterTestsUtils.GetMessage(concreteResponse.Value).Should().Be(exceptionMessage);
     }
 }

@@ -1,4 +1,5 @@
 using System.Net;
+using BusinessLogic.Auth.Exceptions;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Filters;
 
@@ -21,6 +22,13 @@ public class ExceptionFilter : IExceptionFilter
                 ex => new ObjectResult(new { InnerCode = "Conflict", ex.Message })
                 {
                     StatusCode = (int)HttpStatusCode.Conflict
+                }
+            },
+            {
+                typeof(AuthException),
+                ex => new ObjectResult(new { InnerCode = "Unauthorized", ex.Message })
+                {
+                    StatusCode = (int)HttpStatusCode.Unauthorized
                 }
             }
         };

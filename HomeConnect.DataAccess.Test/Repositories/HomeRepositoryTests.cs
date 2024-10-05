@@ -157,4 +157,28 @@ public class HomeRepositoryTests
     }
     #endregion
     #endregion
+
+    #region GetByAddress
+    #region Success
+    [TestMethod]
+    public void GetByAddress_WhenHomeDoesNotExist_ReturnsNull()
+    {
+        // Act
+        var result = _homeRepository.GetByAddress("Main St 456");
+
+        // Assert
+        result.Should().BeNull();
+    }
+
+    [TestMethod]
+    public void GetByAddress_WhenHomeExists_ReturnsHome()
+    {
+        // Act
+        var result = _homeRepository.GetByAddress("Main St 123");
+
+        // Assert
+        result.Should().BeEquivalentTo(_home);
+    }
+    #endregion
+    #endregion
 }

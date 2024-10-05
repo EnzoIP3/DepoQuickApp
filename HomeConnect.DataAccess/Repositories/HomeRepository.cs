@@ -76,6 +76,6 @@ public class HomeRepository : IHomeRepository
 
     public Home? GetByAddress(string argsAddress)
     {
-        throw new NotImplementedException();
+        return _context.Homes.FirstOrDefault(h => h.Address == argsAddress);
     }
 }

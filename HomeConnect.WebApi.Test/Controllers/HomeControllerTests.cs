@@ -233,7 +233,7 @@ public class HomeControllerTests
             new Device
             {
                 Name = "Device1",
-                Type = "Type1",
+                Type = DeviceType.Sensor,
                 ModelNumber = 1,
                 MainPhoto = "https://www.example.com/photo1.jpg"
             });
@@ -241,7 +241,7 @@ public class HomeControllerTests
             new Device
             {
                 Name = "Device2",
-                Type = "Type2",
+                Type = DeviceType.Camera,
                 ModelNumber = 2,
                 MainPhoto = "https://www.example.com/photo2.jpg"
             });
@@ -257,7 +257,7 @@ public class HomeControllerTests
                 new ListDeviceInfo
                 {
                     Name = device1.Device.Name,
-                    Type = device1.Device.Type,
+                    Type = device1.Device.Type.ToString(),
                     ModelNumber = device1.Device.ModelNumber,
                     Photo = device1.Device.MainPhoto,
                     IsConnected = device1.Connected
@@ -265,7 +265,7 @@ public class HomeControllerTests
                 new ListDeviceInfo
                 {
                     Name = device2.Device.Name,
-                    Type = device2.Device.Type,
+                    Type = device2.Device.Type.ToString(),
                     ModelNumber = device2.Device.ModelNumber,
                     Photo = device2.Device.MainPhoto,
                     IsConnected = device2.Connected

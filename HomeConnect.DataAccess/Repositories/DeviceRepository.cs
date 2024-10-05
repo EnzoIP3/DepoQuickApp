@@ -105,7 +105,14 @@ public class DeviceRepository : PaginatedRepositoryBase<Device>, IDeviceReposito
     {
         if (!string.IsNullOrEmpty(deviceTypeFilter))
         {
-            query = query.Where(d => d.Type.Contains(deviceTypeFilter));
+            if (Enum.TryParse(deviceTypeFilter, out DeviceType deviceType))
+            {
+                query = query.Where(d => d.Type == deviceType);
+            }
+            else
+            {
+                throw new ArgumentException("Invalid device type filter");
+            }
         }
 
         return query;

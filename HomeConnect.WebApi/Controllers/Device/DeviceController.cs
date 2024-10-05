@@ -38,4 +38,11 @@ public class DeviceController : ControllerBase
         };
         return response;
     }
+
+    [HttpGet("device-types")]
+    public IActionResult GetDeviceTypes()
+    {
+        var deviceTypes = _deviceService.GetAllDeviceTypes();
+        return Ok(deviceTypes);
+    }
 }

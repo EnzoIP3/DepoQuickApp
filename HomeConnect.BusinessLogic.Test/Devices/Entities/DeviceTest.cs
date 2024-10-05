@@ -1,4 +1,5 @@
 using BusinessLogic.BusinessOwners.Entities;
+using BusinessLogic.Devices.Entities;
 using FluentAssertions;
 
 namespace HomeConnect.BusinessLogic.Test.Devices;
@@ -23,7 +24,7 @@ public class DeviceTest
     public void Constructor_WhenArgumentsAreValid_CreatesInstance()
     {
         // Act
-        var act = () => new global::BusinessLogic.Devices.Entities.Device(Name, ModelNumber, Description, MainPhoto, secondaryPhotos, Type, business);
+        var act = () => new global::BusinessLogic.Devices.Entities.Device(Name, ModelNumber, Description, MainPhoto, secondaryPhotos, DeviceType.Camera.ToString(), business);
 
         // Assert
         act.Should().NotThrow();
@@ -34,15 +35,14 @@ public class DeviceTest
     #region Error
 
     [TestMethod]
-    [DataRow("", 123, "Description", "https://www.example.com/photo1.jpg", "Camera")]
-    [DataRow("Name", 0, "", "https://www.example.com/photo1.jpg", "Camera")]
-    [DataRow("Name", 0, "Description", "", "Camera")]
-    [DataRow("Name", 0, "Description", "https://www.example.com/photo1.jpg", "")]
+    [DataRow("", 123, "Description", "https://www.example.com/photo1.jpg", DeviceType.Camera)]
+    [DataRow("Name", 123, "", "https://www.example.com/photo1.jpg", DeviceType.Camera)]
+    [DataRow("Name", 123, "Description", "", DeviceType.Camera)]
     public void Constructor_WhenArgumentsAreBlank_ThrowsException(string name, int modelNumber, string description,
-        string mainPhoto, string type)
+        string mainPhoto, DeviceType type)
     {
         // Act
-        var act = () => new global::BusinessLogic.Devices.Entities.Device(name, modelNumber, description, mainPhoto, [], type, business);
+        var act = () => new global::BusinessLogic.Devices.Entities.Device(name, modelNumber, description, mainPhoto, [], type.ToString(), business);
 
         // Assert
         act.Should().Throw<ArgumentException>();

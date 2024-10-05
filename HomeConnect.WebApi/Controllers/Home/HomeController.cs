@@ -91,7 +91,7 @@ public class HomeController(IHomeOwnerService homeOwnerService) : ControllerBase
         var deviceInfos = devices.Select(d => new ListDeviceInfo
         {
             Name = d.Device.Name,
-            Type = d.Device.Type,
+            Type = d.Device.Type.ToString(),
             ModelNumber = d.Device.ModelNumber,
             Photo = d.Device.MainPhoto,
             IsConnected = d.Connected

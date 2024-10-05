@@ -10,4 +10,5 @@ public interface IHomeRepository
     void UpdateMember(Member member);
     Home? GetByAddress(string argsAddress);
     bool Exists(Guid homeId);
+    bool ExistsMember(Guid memberId);
 }

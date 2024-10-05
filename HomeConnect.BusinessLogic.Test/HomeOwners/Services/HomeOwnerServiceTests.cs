@@ -402,7 +402,7 @@ public class HomeOwnerServiceTests
     {
         // Arrange
         var nonExistentMemberId = Guid.NewGuid();
-        _homeRepositoryMock.Setup(x => x.GetMemberById(nonExistentMemberId)).Returns((Member)null);
+        _homeRepositoryMock.Setup(x => x.ExistsMember(nonExistentMemberId)).Returns(false);
 
         // Act
         var act = () => _homeOwnerService.UpdateMemberNotifications(nonExistentMemberId, true);
@@ -420,6 +420,7 @@ public class HomeOwnerServiceTests
         // Arrange
         var member = new Member(_user);
         var memberId = member.Id;
+        _homeRepositoryMock.Setup(x => x.ExistsMember(memberId)).Returns(true);
         _homeRepositoryMock.Setup(x => x.GetMemberById(memberId)).Returns(member);
         var permissionList = new List<HomePermission> { new HomePermission("shouldBeNotified") };
 
@@ -441,6 +442,7 @@ public class HomeOwnerServiceTests
         // Arrange
         var member = new Member(_user, [new HomePermission("shouldBeNotified")]);
         var memberId = member.Id;
+        _homeRepositoryMock.Setup(x => x.ExistsMember(memberId)).Returns(true);
         _homeRepositoryMock.Setup(x => x.GetMemberById(memberId)).Returns(member);
         var permissionList = new List<HomePermission>();
 

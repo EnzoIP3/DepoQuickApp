@@ -83,4 +83,9 @@ public class HomeRepository : IHomeRepository
     {
         return _context.Homes.Any(h => h.Id == homeId);
     }
+
+    public bool ExistsMember(Guid memberId)
+    {
+        throw new NotImplementedException();
+    }
 }

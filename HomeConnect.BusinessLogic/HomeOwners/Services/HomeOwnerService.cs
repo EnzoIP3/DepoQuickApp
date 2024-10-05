@@ -172,15 +172,15 @@ public class HomeOwnerService : IHomeOwnerService
 
     public void UpdateMemberNotifications(Guid memberId, bool requestShouldBeNotified)
     {
+        EnsureMemberExists(memberId);
         var member = _homeRepository.GetMemberById(memberId);
-        EnsureMemberExists(member);
         var hasPermission = member.HasPermission(new HomePermission("shouldBeNotified"));
         ChangeMemberPermissions(requestShouldBeNotified, hasPermission, member);
     }
 
-    private static void EnsureMemberExists(Member member)
+    private void EnsureMemberExists(Guid memberId)
     {
-        if (member == null)
+        if(!_homeRepository.ExistsMember(memberId))
         {
             throw new ArgumentException("Member does not exist");
         }

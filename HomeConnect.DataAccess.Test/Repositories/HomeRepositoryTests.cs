@@ -125,6 +125,23 @@ public class HomeRepositoryTests
     #endregion
 
     #region UpdateMember
+    #region Success
+    [TestMethod]
+    public void UpdateMember_WhenMemberExists_UpdatesMember()
+    {
+        // Arrange
+        var member = _home.Members.First();
+        member.HomePermissions = [new HomePermission("ExamplePermission")];
+
+        // Act
+        _homeRepository.UpdateMember(member);
+
+        // Assert
+        _context.Homes.Should().Contain(h =>
+            h.Members.Any(m => m.Id == member.Id && m.HomePermissions.
+                Any(hp => hp.Value == "ExamplePermission")));
+    }
+    #endregion
     #region Error
     [TestMethod]
     public void UpdateMember_WhenMemberDoesNotExist_ShouldThrowException()

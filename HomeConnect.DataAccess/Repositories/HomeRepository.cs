@@ -70,6 +70,7 @@ public class HomeRepository : IHomeRepository
             throw new ArgumentException("Member does not exist");
         }
 
+        memberToUpdate.HomePermissions = member.HomePermissions;
         _context.SaveChanges();
     }
 

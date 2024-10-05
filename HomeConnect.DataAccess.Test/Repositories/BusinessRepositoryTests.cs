@@ -215,4 +215,21 @@ public class BusinessRepositoryTests
     }
 
     #endregion
+
+    #region GetByOwnerId
+
+    [TestMethod]
+    public void GetByOwnerId_WhenBusinessExists_ReturnsBusiness()
+    {
+        // Arrange
+        var expected = _validBusiness;
+
+        // Act
+        var result = _businessRepository.GetByOwnerId(_validUser.Id);
+
+        // Assert
+        result.Should().BeEquivalentTo(expected);
+    }
+
+    #endregion
 }

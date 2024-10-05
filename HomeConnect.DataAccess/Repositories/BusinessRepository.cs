@@ -37,7 +37,7 @@ public class BusinessRepository : PaginatedRepositoryBase<Business>, IBusinessRe
 
     public Business GetByOwnerId(Guid ownerId)
     {
-        throw new NotImplementedException();
+        return Context.Businesses.First(b => b.Owner.Id == ownerId);
     }
 
     public bool ExistsByOwnerId(Guid ownerId)

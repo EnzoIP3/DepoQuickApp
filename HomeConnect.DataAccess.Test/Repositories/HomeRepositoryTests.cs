@@ -111,17 +111,6 @@ public class HomeRepositoryTests
         result.Should().BeEquivalentTo(_member);
     }
     #endregion
-    #region Error
-    [TestMethod]
-    public void GetMemberById_WhenMemberDoesNotExist_ShouldThrowException()
-    {
-        // Act
-        var action = () => _homeRepository.GetMemberById(Guid.NewGuid());
-
-        // Assert
-        action.Should().Throw<ArgumentException>().WithMessage("Member does not exist");
-    }
-    #endregion
     #endregion
 
     #region UpdateMember
@@ -140,20 +129,6 @@ public class HomeRepositoryTests
         _context.Homes.Should().Contain(h =>
             h.Members.Any(m => m.Id == member.Id && m.HomePermissions.
                 Any(hp => hp.Value == "ExamplePermission")));
-    }
-    #endregion
-    #region Error
-    [TestMethod]
-    public void UpdateMember_WhenMemberDoesNotExist_ShouldThrowException()
-    {
-        // Arrange
-        var member = new Member(_homeOwner);
-
-        // Act
-        var action = () => _homeRepository.UpdateMember(member);
-
-        // Assert
-        action.Should().Throw<ArgumentException>().WithMessage("Member does not exist");
     }
     #endregion
     #endregion

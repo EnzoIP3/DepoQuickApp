@@ -41,36 +41,16 @@ public class HomeRepository : IHomeRepository
 
     public Member GetMemberById(Guid memberId)
     {
-        Home? home = _context.Homes.Include(home => home.Members).FirstOrDefault(m => m.Members.Any(h => h.Id == memberId));
-        Member? member = null;
-        if (home != null)
-        {
-            member = home?.Members.FirstOrDefault(m => m.Id == memberId);
-        }
-
-        if (home == null || member == null)
-        {
-            throw new ArgumentException("Member does not exist");
-        }
-
+        Home home = _context.Homes.Include(home => home.Members).FirstOrDefault(m => m.Members.Any(h => h.Id == memberId));
+        Member member = home!.Members.FirstOrDefault(m => m.Id == memberId);
         return member;
     }
 
     public void UpdateMember(Member member)
     {
-        Member? memberToUpdate = null;
-        Home? home = _context.Homes.Include(home => home.Members).FirstOrDefault(m => m.Members.Any(h => h.Id == member.Id));
-        if (home != null)
-        {
-            memberToUpdate = home.Members.FirstOrDefault(m => m.Id == member.Id);
-        }
-
-        if (home == null || memberToUpdate == null)
-        {
-            throw new ArgumentException("Member does not exist");
-        }
-
-        memberToUpdate.HomePermissions = member.HomePermissions;
+        Home home = _context.Homes.Include(home => home.Members).FirstOrDefault(m => m.Members.Any(h => h.Id == member.Id));
+        Member memberToUpdate = home.Members.FirstOrDefault(m => m.Id == member.Id);
+        memberToUpdate!.HomePermissions = member.HomePermissions;
         _context.SaveChanges();
     }
 

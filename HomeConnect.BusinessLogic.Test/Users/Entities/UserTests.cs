@@ -2,7 +2,7 @@ using BusinessLogic.Roles.Entities;
 using BusinessLogic.Users.Entities;
 using FluentAssertions;
 
-namespace HomeConnect.BusinessLogic.Test.Users;
+namespace HomeConnect.BusinessLogic.Test.Users.Entities;
 
 [TestClass]
 public class UserTests

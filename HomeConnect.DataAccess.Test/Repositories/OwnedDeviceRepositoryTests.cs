@@ -67,4 +67,16 @@ public class OwnedDeviceRepositoryTests
         _context.OwnedDevices.Should().Contain(newOwnedDevice);
     }
     #endregion
+
+    #region GetOwnedDevicesByHome
+    [TestMethod]
+    public void GetOwnedDevicesByHome_WhenHomeExists_ReturnsOwnedDevices()
+    {
+        // Act
+        var result = _ownedDeviceRepository.GetOwnedDevicesByHome(_home);
+
+        // Assert
+        result.Should().Contain(_ownedDevice);
+    }
+    #endregion
 }

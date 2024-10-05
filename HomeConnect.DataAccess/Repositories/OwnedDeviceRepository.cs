@@ -21,6 +21,6 @@ public class OwnedDeviceRepository : IOwnedDeviceRepository
 
     public IEnumerable<OwnedDevice> GetOwnedDevicesByHome(Home home)
     {
-        throw new NotImplementedException();
+        return _context.OwnedDevices.Where(od => od.Home == home);
     }
 }

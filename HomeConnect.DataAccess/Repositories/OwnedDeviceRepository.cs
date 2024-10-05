@@ -40,6 +40,6 @@ public class OwnedDeviceRepository : IOwnedDeviceRepository
 
     public bool Exists(string hardwareId)
     {
-        throw new NotImplementedException();
+        return _context.OwnedDevices.Any(od => od.HardwareId == Guid.Parse(hardwareId));
     }
 }

@@ -103,4 +103,16 @@ public class OwnedDeviceRepositoryTests
         result.Should().BeTrue();
     }
     #endregion
+
+    #region Exists
+    [TestMethod]
+    public void Exists_WhenOwnedDeviceExists_ReturnsTrue()
+    {
+        // Act
+        var result = _ownedDeviceRepository.Exists(_ownedDevice.HardwareId.ToString());
+
+        // Assert
+        result.Should().BeTrue();
+    }
+    #endregion
 }

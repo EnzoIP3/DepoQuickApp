@@ -275,6 +275,33 @@ public class BusinessOwnerServiceTests
         _deviceRepository.Verify(x => x.Add(It.IsAny<Device>()), Times.Never);
     }
 
+    [TestMethod]
+    public void CreateDevice_WhenBusinessDoesNotExist_ThrowsException()
+    {
+        // Arrange
+        var args = new CreateDeviceArgs
+        {
+            BusinessRut = "RUTexample",
+            Name = DeviceName,
+            ModelNumber = ModelNumber,
+            Description = Description,
+            MainPhoto = MainPhoto,
+            SecondaryPhotos = _secondaryPhotos,
+            Type = Type
+        };
+        _deviceRepository.Setup(x =>
+            x.EnsureDeviceDoesNotExist(It.IsAny<Device>()));
+        _deviceRepository.Setup(x => x.Add(It.IsAny<Device>()));
+        _businessRepository.Setup(x => x.Exists(args.BusinessRut)).Returns(false);
+
+        // Act
+        Action act = () => _businessOwnerService.CreateDevice(args);
+
+        // Assert
+        act.Should().Throw<ArgumentException>().WithMessage("Business does not exist");
+        _deviceRepository.Verify(x => x.Add(It.IsAny<Device>()), Times.Never);
+    }
+
     #endregion
 
     #endregion

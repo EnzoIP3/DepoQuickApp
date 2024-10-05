@@ -63,26 +63,51 @@ public class DeviceRepository : PaginatedRepositoryBase<Device>, IDeviceReposito
         var businessNameFilter = filters.Length > 2 ? filters[2] as string : null;
         var deviceTypeFilter = filters.Length > 3 ? filters[3] as string : null;
 
+        query = FilterByDeviceName(deviceNameFilter, query);
+        query = FilterByModelNumber(modelNumberFilter, query);
+        query = FilterByBusinessName(businessNameFilter, query);
+        query = FilterByDeviceType(deviceTypeFilter, query);
+
+        return query;
+    }
+
+    private static IQueryable<Device> FilterByDeviceName(string? deviceNameFilter, IQueryable<Device> query)
+    {
         if (!string.IsNullOrEmpty(deviceNameFilter))
         {
             query = query.Where(d => d.Name == deviceNameFilter);
         }
 
+        return query;
+    }
+
+    private static IQueryable<Device> FilterByModelNumber(int? modelNumberFilter, IQueryable<Device> query)
+    {
         if (modelNumberFilter.HasValue)
         {
             query = query.Where(d => d.ModelNumber == modelNumberFilter.Value);
         }
 
+        return query;
+    }
+
+    private static IQueryable<Device> FilterByBusinessName(string? businessNameFilter, IQueryable<Device> query)
+    {
         if (!string.IsNullOrEmpty(businessNameFilter))
         {
             query = query.Where(d => d.Business.Name.Contains(businessNameFilter));
         }
 
+        return query;
+    }
+
+    private static IQueryable<Device> FilterByDeviceType(string? deviceTypeFilter, IQueryable<Device> query)
+    {
         if (!string.IsNullOrEmpty(deviceTypeFilter))
         {
             query = query.Where(d => d.Type.Contains(deviceTypeFilter));
         }
 
-        return query;
-    }
+        return query;
+    }
 }

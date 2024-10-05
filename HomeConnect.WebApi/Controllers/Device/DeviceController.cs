@@ -1,12 +1,14 @@
 using BusinessLogic;
 using BusinessLogic.Devices.Models;
 using BusinessLogic.Devices.Services;
+using HomeConnect.WebApi.Filters;
 using Microsoft.AspNetCore.Mvc;
 
 namespace HomeConnect.WebApi.Controllers.Device;
 
-[Route("v1/[controller]")]
+[Route("devices")]
 [ApiController]
+[AuthenticationFilter]
 public class DeviceController : ControllerBase
 {
     private readonly IDeviceService _deviceService;
@@ -31,18 +33,9 @@ public class DeviceController : ControllerBase
             devices.Data,
             Pagination = new Pagination
             {
-                Page = devices.Page,
-                PageSize = devices.PageSize,
-                TotalPages = devices.TotalPages
+                Page = devices.Page, PageSize = devices.PageSize, TotalPages = devices.TotalPages
             }
         };
         return response;
-    }
-
-    [HttpGet("device-types")]
-    public IActionResult GetDeviceTypes()
-    {
-        var deviceTypes = _deviceService.GetAllDeviceTypes();
-        return Ok(deviceTypes);
     }
 }

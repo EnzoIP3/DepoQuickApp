@@ -46,10 +46,7 @@ public class BusinessRepositoryTests
         // Arrange
         var expected = new PagedData<Business>()
         {
-            Data = [_validBusiness, _otherBusiness],
-            Page = 1,
-            PageSize = 2,
-            TotalPages = 1
+            Data = [_validBusiness, _otherBusiness], Page = 1, PageSize = 2, TotalPages = 1
         };
 
         // Act
@@ -158,7 +155,7 @@ public class BusinessRepositoryTests
         var expected = _validBusiness;
 
         // Act
-        var result = _businessRepository.GetBusinessByOwner(_validUser.Email);
+        var result = _businessRepository.GetBusinessByOwnerId(_validUser.Email);
 
         // Assert
         result.Should().BeEquivalentTo(expected);
@@ -171,7 +168,7 @@ public class BusinessRepositoryTests
         var nonExistentOwnerEmail = "nonexistent@example.com";
 
         // Act
-        var result = _businessRepository.GetBusinessByOwner(nonExistentOwnerEmail);
+        var result = _businessRepository.GetBusinessByOwnerId(nonExistentOwnerEmail);
 
         // Assert
         result.Should().BeNull();
@@ -192,13 +189,64 @@ public class BusinessRepositoryTests
         var expected = _validBusiness;
 
         // Act
-        var result = _businessRepository.GetBusinessByRut(_validBusiness.Rut);
+        var result = _businessRepository.Get(_validBusiness.Rut);
 
         // Assert
         result.Should().BeEquivalentTo(expected);
     }
 
     #endregion
+
+    #endregion
+
+    #region Exists
+
+    [TestMethod]
+    public void Exists_WhenBusinessExists_ReturnsTrue()
+    {
+        // Arrange
+        var rut = _validBusiness.Rut;
+
+        // Act
+        var result = _businessRepository.Exists(rut);
+
+        // Assert
+        result.Should().BeTrue();
+    }
+
+    #endregion
+
+    #region GetByOwnerId
+
+    [TestMethod]
+    public void GetByOwnerId_WhenBusinessExists_ReturnsBusiness()
+    {
+        // Arrange
+        var expected = _validBusiness;
+
+        // Act
+        var result = _businessRepository.GetByOwnerId(_validUser.Id);
+
+        // Assert
+        result.Should().BeEquivalentTo(expected);
+    }
+
+    #endregion
+
+    #region ExistsByOwnerId
+
+    [TestMethod]
+    public void ExistsByOwnerId_WhenBusinessExists_ReturnsTrue()
+    {
+        // Arrange
+        var ownerId = _validUser.Id;
+
+        // Act
+        var result = _businessRepository.ExistsByOwnerId(ownerId);
+
+        // Assert
+        result.Should().BeTrue();
+    }
 
     #endregion
 }

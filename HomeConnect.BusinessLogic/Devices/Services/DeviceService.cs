@@ -7,8 +7,17 @@ public class DeviceService(IOwnedDeviceRepository ownedDeviceRepository) : IDevi
     public bool Toggle(string hardwareId)
     {
         EnsureHardwareIdIsValid(hardwareId);
+        EnsureOwnedDeviceExists(hardwareId);
         var connectionState = ownedDeviceRepository.ToggleConnection(hardwareId);
         return connectionState;
+    }
+
+    private void EnsureOwnedDeviceExists(string hardwareId)
+    {
+        if (!ownedDeviceRepository.Exists(hardwareId))
+        {
+            throw new ArgumentException("Owned device does not exist");
+        }
     }
 
     private void EnsureHardwareIdIsValid(string hardwareId)

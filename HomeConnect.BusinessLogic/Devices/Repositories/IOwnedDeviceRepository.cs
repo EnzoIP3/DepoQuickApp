@@ -9,4 +9,5 @@ public interface IOwnedDeviceRepository
     IEnumerable<OwnedDevice> GetOwnedDevicesByHome(Home home);
     bool ToggleConnection(string hardwareId);
     OwnedDevice GetByHardwareId(string hardwareId);
+    bool Exists(string hardwareId);
 }

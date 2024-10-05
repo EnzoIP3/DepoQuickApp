@@ -20,14 +20,29 @@ public class BusinessRepository : PaginatedRepositoryBase<Business>, IBusinessRe
         return GetAllPaged(currentPage, pageSize, filters);
     }
 
-    public Business? GetBusinessByOwner(string ownerEmail)
+    public Business? GetBusinessByOwnerId(string ownerEmail)
     {
         return Context.Businesses.FirstOrDefault(b => b.Owner.Email == ownerEmail);
     }
 
-    public Business? GetBusinessByRut(string rut)
+    public Business Get(string rut)
     {
-        return Context.Businesses.FirstOrDefault(b => b.Rut == rut);
+        return Context.Businesses.First(b => b.Rut == rut);
+    }
+
+    public bool Exists(string rut)
+    {
+        return Context.Businesses.Any(b => b.Rut == rut);
+    }
+
+    public Business GetByOwnerId(Guid ownerId)
+    {
+        return Context.Businesses.First(b => b.Owner.Id == ownerId);
+    }
+
+    public bool ExistsByOwnerId(Guid ownerId)
+    {
+        return Context.Businesses.Any(b => b.Owner.Id == ownerId);
     }
 
     public void Add(Business business)

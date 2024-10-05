@@ -1,6 +1,12 @@
 using BusinessLogic.Admins.Services;
+using BusinessLogic.BusinessOwners.Entities;
+using BusinessLogic.BusinessOwners.Models;
 using BusinessLogic.BusinessOwners.Services;
 using BusinessLogic.Users.Models;
+using HomeConnect.WebApi.Controllers.Businesses;
+using HomeConnect.WebApi.Controllers.BusinessOwner.Models;
+using HomeConnect.WebApi.Controllers.Camera.Models;
+using HomeConnect.WebApi.Controllers.Sensor.Models;
 using HomeConnect.WebApi.Filters;
 using Microsoft.AspNetCore.Mvc;
 
@@ -9,7 +15,8 @@ namespace HomeConnect.WebApi.Controllers.BusinessOwner;
 [ApiController]
 [Route("business_owners")]
 [AuthenticationFilter]
-public class BusinessOwnerController(IAdminService adminService, IBusinessOwnerService businessOwnerService) : ControllerBase
+public class BusinessOwnerController(IAdminService adminService)
+    : ControllerBase
 {
     [HttpPost]
     [AuthorizationFilter("create-business-owner")]

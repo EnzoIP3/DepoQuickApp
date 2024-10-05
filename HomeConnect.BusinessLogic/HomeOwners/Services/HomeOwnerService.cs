@@ -67,7 +67,7 @@ public class HomeOwnerService : IHomeOwnerService
         EnsureGuidIsValid(args.HomeOwnerId);
         EnsureUserExists(args.HomeOwnerId);
         var user = _userRepository.Get(Guid.Parse(args.HomeOwnerId));
-        var home = _homeRepository.Get(Guid.Parse(args.HomeId));
+        var home = GetHome(Guid.Parse(args.HomeId));
         var permissions = new List<HomePermission>();
 
         if (args.CanAddDevices)
@@ -87,7 +87,7 @@ public class HomeOwnerService : IHomeOwnerService
 
     private void EnsureMemberIsNotAlreadyAdded(AddMemberArgs args)
     {
-        var home = GetHome(args.HomeId);
+        var home = GetHome(Guid.Parse(args.HomeId));
         if (home.Members.Any(m => m.User.Id.ToString() == args.HomeOwnerId))
         {
             throw new ArgumentException("Member is already added to the home");
@@ -113,11 +113,25 @@ public class HomeOwnerService : IHomeOwnerService
     public void AddDeviceToHome(AddDevicesArgs addDevicesArgs)
     {
         ValidateAddDeviceModel(addDevicesArgs);
-        var home = GetHome(addDevicesArgs.HomeId);
+        var home = GetHome(Guid.Parse(addDevicesArgs.HomeId));
         EnsureDevicesAreNotAdded(addDevicesArgs.DeviceIds, home);
 
         var devices = GetDevices(addDevicesArgs.DeviceIds);
         AddDevicesToHome(home, devices);
+    }
+
+    public Home GetHome(Guid homeId)
+    {
+        EnsureHomeExists(homeId);
+        return _homeRepository.Get(homeId);
+    }
+
+    private void EnsureHomeExists(Guid homeId)
+    {
+        if (!_homeRepository.Exists(homeId))
+        {
+            throw new ArgumentException("Home does not exist");
+        }
     }
 
     private void EnsureDevicesAreNotAdded(IEnumerable<string> argsDeviceIds, Home home)
@@ -138,11 +152,6 @@ public class HomeOwnerService : IHomeOwnerService
         EnsureGuidsAreValid(addDevicesArgs.DeviceIds);
     }
 
-    private Home GetHome(string homeId)
-    {
-        return _homeRepository.Get(Guid.Parse(homeId));
-    }
-
     private List<Device> GetDevices(IEnumerable<string> deviceIds)
     {
         return deviceIds.Select(id => _deviceRepository.Get(Guid.Parse(id))).ToList();
@@ -161,28 +170,28 @@ public class HomeOwnerService : IHomeOwnerService
     public List<Member> GetHomeMembers(string homeId)
     {
         EnsureGuidIsValid(homeId);
-        var home = GetHome(homeId);
+        var home = GetHome(Guid.Parse(homeId));
         return home.Members;
     }
 
     public IEnumerable<OwnedDevice> GetHomeDevices(string homeId)
     {
         EnsureGuidIsValid(homeId);
-        var home = GetHome(homeId);
+        var home = GetHome(Guid.Parse(homeId));
         return _ownedDeviceRepository.GetOwnedDevicesByHome(home);
     }
 
     public void UpdateMemberNotifications(Guid memberId, bool requestShouldBeNotified)
     {
+        EnsureMemberExists(memberId);
         var member = _homeRepository.GetMemberById(memberId);
-        EnsureMemberExists(member);
         var hasPermission = member.HasPermission(new HomePermission("shouldBeNotified"));
         ChangeMemberPermissions(requestShouldBeNotified, hasPermission, member);
     }
 
-    private static void EnsureMemberExists(Member member)
+    private void EnsureMemberExists(Guid memberId)
     {
-        if (member == null)
+        if (!_homeRepository.ExistsMember(memberId))
         {
             throw new ArgumentException("Member does not exist");
         }

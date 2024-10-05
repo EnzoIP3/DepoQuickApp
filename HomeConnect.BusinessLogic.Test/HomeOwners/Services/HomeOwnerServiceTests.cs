@@ -165,6 +165,7 @@ public class HomeOwnerServiceTests
         };
         _userRepositoryMock.Setup(x => x.Exists(Guid.Parse(model.HomeOwnerId))).Returns(true);
         _userRepositoryMock.Setup(x => x.Get(Guid.Parse(model.HomeOwnerId))).Returns(invitedUser);
+        _homeRepositoryMock.Setup(x => x.Exists(Guid.Parse(model.HomeId))).Returns(true);
         _homeRepositoryMock.Setup(x => x.Get(Guid.Parse(model.HomeId))).Returns(home);
 
         // Act
@@ -230,6 +231,7 @@ public class HomeOwnerServiceTests
             CanAddDevices = true,
             CanListDevices = true
         };
+        _homeRepositoryMock.Setup(x => x.Exists(Guid.Parse(model.HomeId))).Returns(true);
         _homeRepositoryMock.Setup(x => x.Get(Guid.Parse(model.HomeId)))
             .Returns(new Home());
 
@@ -251,6 +253,7 @@ public class HomeOwnerServiceTests
             CanAddDevices = true,
             CanListDevices = true
         };
+        _homeRepositoryMock.Setup(x => x.Exists(Guid.Parse(model.HomeId))).Returns(true);
         _homeRepositoryMock.Setup(x => x.Get(Guid.Parse(model.HomeId)))
             .Returns(new Home());
         _userRepositoryMock.Setup(x => x.Exists(Guid.Parse(model.HomeOwnerId)))
@@ -279,6 +282,7 @@ public class HomeOwnerServiceTests
             CanAddDevices = true,
             CanListDevices = true
         };
+        _homeRepositoryMock.Setup(x => x.Exists(home.Id)).Returns(true);
         _homeRepositoryMock.Setup(x => x.Get(home.Id)).Returns(home);
 
         // Act
@@ -312,6 +316,7 @@ public class HomeOwnerServiceTests
         };
         _deviceRepositoryMock.Setup(x => x.Get(device.Id)).Returns(device);
         _deviceRepositoryMock.Setup(x => x.Get(camera.Id)).Returns(camera);
+        _homeRepositoryMock.Setup(x => x.Exists(home.Id)).Returns(true);
         _homeRepositoryMock.Setup(x => x.Get(home.Id)).Returns(home);
         _ownedDeviceRepositoryMock.Setup(x => x.Add(It.IsAny<OwnedDevice>())).Verifiable();
         _ownedDeviceRepositoryMock.Setup(x => x.GetOwnedDevicesByHome(home)).Returns(new List<OwnedDevice>());
@@ -363,6 +368,7 @@ public class HomeOwnerServiceTests
         Device camera = new Camera("Camera", 2, "A camera", "https://example.com/image.png", [], new Business(), true,
             true, true, true);
         var deviceIdList = new List<string> { device.Id.ToString(), camera.Id.ToString() };
+        _homeRepositoryMock.Setup(x => x.Exists(home.Id)).Returns(true);
         _homeRepositoryMock.Setup(x => x.Get(home.Id)).Returns(home);
         _ownedDeviceRepositoryMock.Setup(x => x.GetOwnedDevicesByHome(home))
             .Returns(new List<OwnedDevice> { new OwnedDevice(home, device) });
@@ -396,6 +402,7 @@ public class HomeOwnerServiceTests
         var member = new Member(new global::BusinessLogic.Users.Entities.User("Jane", "Doe", "test@example.com",
             "12345678@My", new global::BusinessLogic.Roles.Entities.Role()));
         home.AddMember(member);
+        _homeRepositoryMock.Setup(x => x.Exists(home.Id)).Returns(true);
         _homeRepositoryMock.Setup(x => x.Get(home.Id)).Returns(home);
 
         // Act
@@ -441,6 +448,7 @@ public class HomeOwnerServiceTests
             true, true, true);
         var ownedDevices =
             new List<OwnedDevice>() { new OwnedDevice(home, sensor), new OwnedDevice(home, camera) };
+        _homeRepositoryMock.Setup(x => x.Exists(home.Id)).Returns(true);
         _homeRepositoryMock.Setup(x => x.Get(home.Id)).Returns(home);
         _ownedDeviceRepositoryMock.Setup(x => x.GetOwnedDevicesByHome(home)).Returns(ownedDevices);
 
@@ -481,7 +489,7 @@ public class HomeOwnerServiceTests
     {
         // Arrange
         var nonExistentMemberId = Guid.NewGuid();
-        _homeRepositoryMock.Setup(x => x.GetMemberById(nonExistentMemberId)).Returns((Member)null);
+        _homeRepositoryMock.Setup(x => x.ExistsMember(nonExistentMemberId)).Returns(false);
 
         // Act
         var act = () => _homeOwnerService.UpdateMemberNotifications(nonExistentMemberId, true);
@@ -501,6 +509,7 @@ public class HomeOwnerServiceTests
         // Arrange
         var member = new Member(_user);
         var memberId = member.Id;
+        _homeRepositoryMock.Setup(x => x.ExistsMember(memberId)).Returns(true);
         _homeRepositoryMock.Setup(x => x.GetMemberById(memberId)).Returns(member);
         var permissionList = new List<HomePermission> { new HomePermission("shouldBeNotified") };
 
@@ -522,6 +531,7 @@ public class HomeOwnerServiceTests
         // Arrange
         var member = new Member(_user, [new HomePermission("shouldBeNotified")]);
         var memberId = member.Id;
+        _homeRepositoryMock.Setup(x => x.ExistsMember(memberId)).Returns(true);
         _homeRepositoryMock.Setup(x => x.GetMemberById(memberId)).Returns(member);
         var permissionList = new List<HomePermission>();
 
@@ -539,5 +549,39 @@ public class HomeOwnerServiceTests
 
     #endregion
 
+    #endregion
+
+    #region GetHome
+    #region error
+    [TestMethod]
+    public void GetHome_WhenHomeDoesNotExist_ThrowsException()
+    {
+        // Arrange
+        var nonExistentHomeId = Guid.NewGuid();
+        _homeRepositoryMock.Setup(x => x.Exists(nonExistentHomeId)).Returns(false);
+
+        // Act
+        var act = () => _homeOwnerService.GetHome(nonExistentHomeId);
+
+        // Assert
+        act.Should().Throw<ArgumentException>().WithMessage("Home does not exist");
+    }
+    #endregion
+    #region success
+    [TestMethod]
+    public void GetHome_WhenHomeExists_ReturnsHome()
+    {
+        // Arrange
+        var home = new Home(_user, "Main St 123", 1.0, 2.0, 5);
+        _homeRepositoryMock.Setup(x => x.Exists(home.Id)).Returns(true);
+        _homeRepositoryMock.Setup(x => x.Get(home.Id)).Returns(home);
+
+        // Act
+        var result = _homeOwnerService.GetHome(home.Id);
+
+        // Assert
+        result.Should().Be(home);
+    }
+    #endregion
     #endregion
 }

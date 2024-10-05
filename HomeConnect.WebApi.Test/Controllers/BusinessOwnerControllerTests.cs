@@ -6,6 +6,8 @@ using BusinessLogic.Devices.Entities;
 using BusinessLogic.Users.Entities;
 using BusinessLogic.Users.Models;
 using FluentAssertions;
+using HomeConnect.WebApi.Controllers.Businesses;
+using HomeConnect.WebApi.Controllers.Businesses.Models;
 using HomeConnect.WebApi.Controllers.BusinessOwner;
 using HomeConnect.WebApi.Controllers.BusinessOwner.Models;
 using Moq;
@@ -22,7 +24,6 @@ public class BusinessOwnerControllerTests
     private CreateUserArgs _userModel;
     private Guid _guid;
     private CreateBusinessRequest _businessRequest;
-    private CreateBusinessArgs _businessArgs;
     private Business _business = null!;
     private CreateDeviceRequest _deviceRequest;
     private CreateDeviceArgs _deviceArgs;
@@ -52,10 +53,6 @@ public class BusinessOwnerControllerTests
         _guid = Guid.NewGuid();
         var user = new User();
         _businessRequest = new CreateBusinessRequest { Name = "OSE", Rut = "306869575", OwnerId = user.Id.ToString() };
-        _businessArgs = new CreateBusinessArgs
-        {
-            Name = _businessRequest.Name, Rut = _businessRequest.Rut, OwnerId = _businessRequest.OwnerId
-        };
         _business = new Business { Name = _businessRequest.Name, Rut = _businessRequest.Rut, Owner = user };
         _deviceRequest = new CreateDeviceRequest
         {
@@ -143,25 +140,6 @@ public class BusinessOwnerControllerTests
         _adminService.VerifyAll();
         response.Should().NotBeNull();
         response.Id.Should().Be(_guid.ToString());
-    }
-
-    #endregion
-
-    #region CreateBusiness
-
-    [TestMethod]
-    public void CreateBusiness_WhenCalledWithValidRequest_ReturnsCreatedResponse()
-    {
-        // Arrange
-        _businessOwnerService.Setup(x => x.CreateBusiness(_businessArgs)).Returns(_business.Rut);
-
-        // Act
-        var response = _controller.CreateBusiness(_businessRequest);
-
-        // Assert
-        _businessOwnerService.VerifyAll();
-        response.Should().NotBeNull();
-        response.Rut.Should().Be(_business.Rut);
     }
 
     #endregion

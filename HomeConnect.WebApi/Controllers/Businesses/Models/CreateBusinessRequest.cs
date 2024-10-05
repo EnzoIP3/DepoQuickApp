@@ -1,4 +1,4 @@
-namespace HomeConnect.WebApi.Controllers.BusinessOwner.Models;
+namespace HomeConnect.WebApi.Controllers.Businesses.Models;
 
 public struct CreateBusinessRequest
 {

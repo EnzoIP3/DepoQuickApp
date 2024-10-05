@@ -162,17 +162,19 @@ public class DeviceRepositoryTests
     }
 
     [TestMethod]
-    public void GetDevices_WhenFilteredByBusinessName_ReturnsFilteredDevices()
+    [DataRow("Camera")]
+    [DataRow("Sensor")]
+    public void GetDevices_WhenFilteredByDeviceType_ReturnsFilteredDevices(string deviceTypeFilter)
     {
         // Arrange
-        var businessNameFilter = "BusinessValid2";
+        DeviceType deviceType = Enum.Parse<DeviceType>(deviceTypeFilter);
 
         // Act
-        var result = _deviceRepository.GetDevices(1, 10, null, null, businessNameFilter);
+        var result = _deviceRepository.GetDevices(1, 2, null, null, null, deviceType.ToString());
 
         // Assert
         result.Data.Should().HaveCount(1);
-        result.Data[0].Business.Name.Should().Be(businessNameFilter);
+        result.Data.Exists(d => d.Type == deviceType).Should().BeTrue();
     }
 
     [TestMethod]

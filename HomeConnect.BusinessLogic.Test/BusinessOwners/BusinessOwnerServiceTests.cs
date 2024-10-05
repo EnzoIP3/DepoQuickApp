@@ -191,7 +191,7 @@ public class BusinessOwnerServiceTests
             Description = Description,
             MainPhoto = MainPhoto,
             SecondaryPhotos = _secondaryPhotos,
-            Type = Type
+            Type = DeviceType.Camera.ToString() // Use a valid DeviceType enum value
         };
         _deviceRepository.Setup(x =>
             x.EnsureDeviceDoesNotExist(It.IsAny<Device>()));
@@ -210,7 +210,7 @@ public class BusinessOwnerServiceTests
             d.Description == Description &&
             d.MainPhoto == MainPhoto &&
             d.SecondaryPhotos.SequenceEqual(_secondaryPhotos) &&
-            d.Type == Type)));
+            d.Type.ToString() == DeviceType.Camera.ToString()))); // Use a valid DeviceType enum value
     }
 
     [TestMethod]
@@ -225,7 +225,7 @@ public class BusinessOwnerServiceTests
             Description = Description,
             MainPhoto = MainPhoto,
             SecondaryPhotos = _secondaryPhotos,
-            Type = Type
+            Type = DeviceType.Camera.ToString()
         };
         var addedDevice = new Device();
         _deviceRepository.Setup(x =>
@@ -266,7 +266,7 @@ public class BusinessOwnerServiceTests
             Description = Description,
             MainPhoto = MainPhoto,
             SecondaryPhotos = _secondaryPhotos,
-            Type = Type
+            Type = DeviceType.Camera.ToString()
         };
 
         // Act

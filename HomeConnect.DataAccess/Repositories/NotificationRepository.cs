@@ -1,3 +1,4 @@
+using BusinessLogic.Devices.Entities;
 using BusinessLogic.Notifications.Entities;
 using BusinessLogic.Notifications.Repositories;
 
@@ -21,9 +22,22 @@ public class NotificationRepository : INotificationRepository
 
     public List<Notification> Get(Guid userId, string? deviceFilter = null, DateTime? dateFilter = null, bool? readFilter = null)
     {
+        DeviceType? deviceTypeFilter = null;
+        if (!string.IsNullOrEmpty(deviceFilter))
+        {
+            if (Enum.TryParse(deviceFilter, out DeviceType deviceType))
+            {
+                deviceTypeFilter = deviceType;
+            }
+            else
+            {
+                throw new ArgumentException("Invalid device type filter");
+            }
+        }
+
         return _context.Notifications
             .Where(n => n.OwnedDevice.Home.Owner.Id == userId)
-            .Where(n => deviceFilter == null || n.OwnedDevice.Device.Type == deviceFilter)
+            .Where(n => deviceTypeFilter == null || n.OwnedDevice.Device.Type == deviceTypeFilter)
             .Where(n => dateFilter == null || n.Date.Date == dateFilter.Value.Date)
             .Where(n => readFilter == null || n.Read == readFilter)
             .ToList();

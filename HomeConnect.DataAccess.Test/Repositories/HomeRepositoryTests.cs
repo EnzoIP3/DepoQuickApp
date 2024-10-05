@@ -181,4 +181,16 @@ public class HomeRepositoryTests
     }
     #endregion
     #endregion
+
+    #region Exists
+    [TestMethod]
+    public void Exists_WhenHomeExists_ReturnsTrue()
+    {
+        // Act
+        var result = _homeRepository.Exists(_home.Id);
+
+        // Assert
+        result.Should().BeTrue();
+    }
+    #endregion
 }

@@ -78,4 +78,9 @@ public class HomeRepository : IHomeRepository
     {
         return _context.Homes.FirstOrDefault(h => h.Address == argsAddress);
     }
+
+    public bool Exists(Guid homeId)
+    {
+        return _context.Homes.Any(h => h.Id == homeId);
+    }
 }

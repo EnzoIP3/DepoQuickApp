@@ -20,12 +20,21 @@ public class AuthService : IAuthService
 
     public string CreateToken(CreateTokenArgs args)
     {
+        EnsureEmailIsNotEmpty(args.Email);
         EnsureUserExists(args.Email);
         var user = _userRepository.GetByEmail(args.Email);
         ValidatePassword(args, user);
         var session = new Token(user);
         _tokenRepository.Add(session);
         return session.Id.ToString();
+    }
+
+    private void EnsureEmailIsNotEmpty(string email)
+    {
+        if (string.IsNullOrWhiteSpace(email))
+        {
+            throw new ArgumentException("Email is required.");
+        }
     }
 
     private void EnsureUserExists(string email)

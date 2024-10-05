@@ -103,6 +103,19 @@ public class AuthServiceTests
     }
 
     [TestMethod]
+    public void CreateToken_WithMissingEmail_ShouldThrowException()
+    {
+        // Arrange
+        var args = new CreateTokenArgs() { Password = "password1M@" };
+
+        // Act
+        var act = () => _authService.CreateToken(args);
+
+        // Assert
+        act.Should().Throw<ArgumentException>();
+    }
+
+    [TestMethod]
     public void IsTokenExpired_WithValidToken_ShouldReturnFalse()
     {
         // Arrange

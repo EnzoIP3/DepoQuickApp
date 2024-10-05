@@ -6,6 +6,7 @@ using BusinessLogic.Devices.Services;
 using FluentAssertions;
 using HomeConnect.WebApi.Controllers.Device;
 using HomeConnect.WebApi.Controllers.DeviceTypes;
+using HomeConnect.WebApi.Controllers.DeviceTypes.Models;
 using Microsoft.AspNetCore.Mvc;
 using Moq;
 
@@ -36,9 +37,7 @@ public class DeviceTypesControllerTests
 
         // Assert
         _deviceService.Verify(x => x.GetAllDeviceTypes(), Times.Once);
-        response.Should().NotBeNull();
-        response.Should().BeOfType<OkObjectResult>();
-        var okResult = response as OkObjectResult;
-        okResult.Value.Should().BeEquivalentTo(expectedDeviceTypes);
+        response.Should().BeOfType<GetDeviceTypesResponse>();
+        response.DeviceTypes.Should().BeEquivalentTo(expectedDeviceTypes);
     }
 }

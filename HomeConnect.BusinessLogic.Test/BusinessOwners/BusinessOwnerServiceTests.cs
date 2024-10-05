@@ -157,6 +157,20 @@ public class BusinessOwnerServiceTests
         _businessRepository.Verify(x => x.Add(It.IsAny<Business>()), Times.Never);
     }
 
+    [TestMethod]
+    public void CreateBusiness_WhenOwnerIdIsNotGuid_ThrowsException()
+    {
+        // Arrange
+        var args = new CreateBusinessArgs { OwnerId = "not-a-guid", Rut = _businessRut, Name = _businessName };
+
+        // Act
+        Action act = () => _businessOwnerService.CreateBusiness(args);
+
+        // Assert
+        act.Should().Throw<ArgumentException>().WithMessage("Owner does not exist");
+        _businessRepository.Verify(x => x.Add(It.IsAny<Business>()), Times.Never);
+    }
+
     #endregion
 
     #endregion

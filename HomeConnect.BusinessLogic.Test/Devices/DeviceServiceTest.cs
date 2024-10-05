@@ -1,7 +1,6 @@
 using BusinessLogic;
 using BusinessLogic.BusinessOwners.Entities;
 using BusinessLogic.Devices.Entities;
-using BusinessLogic.Devices.Models;
 using BusinessLogic.Devices.Repositories;
 using BusinessLogic.Devices.Services;
 using BusinessLogic.Users.Entities;

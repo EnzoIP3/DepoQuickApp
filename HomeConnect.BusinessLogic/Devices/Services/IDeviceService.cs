@@ -1,6 +1,5 @@
 using BusinessLogic;
 using BusinessLogic.Devices.Entities;
-using BusinessLogic.Devices.Models;
 
 public interface IDeviceService
     {

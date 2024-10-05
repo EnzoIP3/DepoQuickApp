@@ -2,7 +2,6 @@ using System.Collections.Generic;
 using BusinessLogic;
 using BusinessLogic.BusinessOwners.Entities;
 using BusinessLogic.Devices.Entities;
-using BusinessLogic.Devices.Models;
 using FluentAssertions;
 using HomeConnect.WebApi.Controllers.Device;
 using HomeConnect.WebApi.Controllers.Device.Models;

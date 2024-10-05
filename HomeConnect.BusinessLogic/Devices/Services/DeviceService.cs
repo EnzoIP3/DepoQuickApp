@@ -1,5 +1,4 @@
 using BusinessLogic.Devices.Entities;
-using BusinessLogic.Devices.Models;
 using BusinessLogic.Devices.Repositories;
 
 namespace BusinessLogic.Devices.Services;

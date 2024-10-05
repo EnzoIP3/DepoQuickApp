@@ -26,7 +26,11 @@ public class OwnedDeviceRepository : IOwnedDeviceRepository
 
     public bool ToggleConnection(string hardwareId)
     {
-        throw new NotImplementedException();
+        OwnedDevice ownedDevice = _context.OwnedDevices.FirstOrDefault(od => od.HardwareId == Guid.Parse(hardwareId));
+        var desiredState = !ownedDevice.Device.ConnectionState;
+        ownedDevice.Device.ConnectionState = desiredState;
+        _context.SaveChanges();
+        return desiredState;
     }
 
     public OwnedDevice GetByHardwareId(string hardwareId)

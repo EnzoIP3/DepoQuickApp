@@ -91,4 +91,16 @@ public class OwnedDeviceRepositoryTests
         result.Should().BeEquivalentTo(_ownedDevice);
     }
     #endregion
+
+    #region ToggleConnection
+    [TestMethod]
+    public void ToggleConnection_WhenOwnedDeviceExists_TogglesConnection()
+    {
+        // Act
+        var result = _ownedDeviceRepository.ToggleConnection(_ownedDevice.HardwareId.ToString());
+
+        // Assert
+        result.Should().BeTrue();
+    }
+    #endregion
 }

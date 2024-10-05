@@ -41,18 +41,11 @@ public class DeviceServiceTests
 
         _devices = [validDevice, otherDevice];
 
-        _parameters = new GetDeviceArgs
-        {
-            Page = 1,
-            PageSize = 10
-        };
+        _parameters = new GetDeviceArgs { Page = 1, PageSize = 10 };
 
         _pagedDeviceList = new PagedData<Device>
         {
-            Data = _devices,
-            Page = _parameters.Page ?? 1,
-            PageSize = _parameters.PageSize ?? 10,
-            TotalPages = 1
+            Data = _devices, Page = _parameters.Page ?? 1, PageSize = _parameters.PageSize ?? 10, TotalPages = 1
         };
     }
 
@@ -101,7 +94,9 @@ public class DeviceServiceTests
     public void GetDevices_WhenCalled_ReturnsDeviceList()
     {
         // Arrange
-        _deviceRepository.Setup(x => x.GetDevices(_parameters.Page ?? 1, _parameters.PageSize ?? 10, _parameters.DeviceNameFilter, _parameters.ModelNumberFilter, _parameters.BusinessNameFilter, _parameters.DeviceTypeFilter)).Returns(_pagedDeviceList);
+        _deviceRepository.Setup(x => x.GetDevices(_parameters.Page ?? 1, _parameters.PageSize ?? 10,
+            _parameters.DeviceNameFilter, _parameters.ModelNumberFilter, _parameters.BusinessNameFilter,
+            _parameters.DeviceTypeFilter)).Returns(_pagedDeviceList);
 
         // Act
         var result = _deviceService.GetDevices(_parameters);
@@ -109,13 +104,11 @@ public class DeviceServiceTests
         // Assert
         var expectedPagedDeviceList = new PagedData<Device>
         {
-            Data = _devices,
-            Page = _parameters.Page ?? 1,
-            PageSize = _parameters.PageSize ?? 10,
-            TotalPages = 1
+            Data = _devices, Page = _parameters.Page ?? 1, PageSize = _parameters.PageSize ?? 10, TotalPages = 1
         };
 
-        result.Should().BeEquivalentTo(expectedPagedDeviceList, options => options.ComparingByMembers<PagedData<Device>>());
+        result.Should().BeEquivalentTo(expectedPagedDeviceList,
+            options => options.ComparingByMembers<PagedData<Device>>());
         _deviceRepository.Verify(x => x.GetDevices(
             It.Is<int>(a => a == _parameters.Page),
             It.Is<int>(a => a == _parameters.PageSize),
@@ -129,25 +122,12 @@ public class DeviceServiceTests
     public void GetAllDeviceTypes_WhenCalled_ReturnsDeviceTypes()
     {
         // Arrange
-        var expectedDeviceTypes = new List<string> { "Sensor", "Camera" };
-        _deviceRepository.Setup(x => x.GetDevices(It.IsAny<int>(), It.IsAny<int>(), It.IsAny<string>(), It.IsAny<int?>(), It.IsAny<string>(), It.IsAny<string>())).Returns(new PagedData<Device>
-        {
-            Data =
-            [
-                new Device { Type = DeviceType.Sensor },
-                new Device { Type = DeviceType.Camera },
-                new Device { Type = DeviceType.Sensor }
-            ],
-            Page = 1,
-            PageSize = 3,
-            TotalPages = 1
-        });
+        var expectedDeviceTypes = Enum.GetNames(typeof(DeviceType));
 
         // Act
         var result = _deviceService.GetAllDeviceTypes();
 
         // Assert
-        _deviceRepository.Verify(x => x.GetDevices(It.IsAny<int>(), It.IsAny<int>(), It.IsAny<string>(), It.IsAny<int?>(), It.IsAny<string>(), It.IsAny<string>()), Times.Once);
         result.Should().BeEquivalentTo(expectedDeviceTypes);
     }
 }

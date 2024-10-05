@@ -1,3 +1,4 @@
+using BusinessLogic.HomeOwners.Entities;
 using BusinessLogic.HomeOwners.Models;
 using BusinessLogic.HomeOwners.Services;
 using BusinessLogic.Roles.Entities;
@@ -83,6 +84,7 @@ public class HomeController(IHomeOwnerService homeOwnerService) : ControllerBase
 
     [HttpGet("{homesId}/devices")]
     [AuthorizationFilter(SystemPermission.GetDevices)]
+    [HomeAuthorizationFilter(HomePermission.GetDevices)]
     public GetDevicesResponse GetDevices([FromRoute] string homesId, AuthorizationFilterContext context)
     {
         var userLoggedIn = context.HttpContext.Items[Item.UserLogged];
@@ -100,6 +102,7 @@ public class HomeController(IHomeOwnerService homeOwnerService) : ControllerBase
 
     [HttpPost("{homesId}/devices")]
     [AuthorizationFilter(SystemPermission.AddDevice)]
+    [HomeAuthorizationFilter(HomePermission.AddDevices)]
     public AddDevicesResponse AddDevices([FromRoute] string homesId, AddDevicesRequest request)
     {
         AddDevicesArgs addDevicesArgs = FromRequestToAddDevicesArgs(homesId, request);

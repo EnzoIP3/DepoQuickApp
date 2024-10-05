@@ -24,10 +24,13 @@ public class HomeControllerTests
     private Mock<HttpContext> _httpContextMock = null!;
     private Mock<IHomeOwnerService> _homeOwnerService = null!;
     private AuthorizationFilterContext _context = null!;
+
     private static readonly User _user = new User("John", "Doe", "email@email.com", "Password@100",
-    new Role { Name = "HomeOwner", Permissions = [] });
+        new Role { Name = "HomeOwner", Permissions = [] });
+
     private readonly User _otherUser = new User("Jane", "Doe", "email2@email.com", "Password@100",
         new Role { Name = "HomeOwner", Permissions = [] });
+
     private readonly Home _home = new Home(_user, "Road 123", 123.456, 456.789, 3);
 
     [TestInitialize]
@@ -45,24 +48,16 @@ public class HomeControllerTests
     }
 
     #region CreateHome
+
     [TestMethod]
     public void CreateHome_WhenCalledWithValidRequest_ReturnsCreatedResponse()
     {
         // Arrange
         var request = new CreateHomeRequest
         {
-            Address = "Road 123",
-            Latitude = 123.456,
-            Longitude = 456.789,
-            MaxMembers = 3
+            Address = "Road 123", Latitude = 123.456, Longitude = 456.789, MaxMembers = 3
         };
-        var items = new Dictionary<object, object?>
-        {
-            {
-                Item.UserLogged,
-                _user
-            }
-        };
+        var items = new Dictionary<object, object?> { { Item.UserLogged, _user } };
         _httpContextMock.Setup(h => h.Items).Returns(items);
         var home = new Home(_user, request.Address, request.Latitude, request.Longitude, request.MaxMembers);
         var args = new CreateHomeArgs
@@ -83,9 +78,11 @@ public class HomeControllerTests
         response.Should().NotBeNull();
         response.Id.Should().Be(home.Id.ToString());
     }
+
     #endregion
 
     #region AddMember
+
     [TestMethod]
     public void AddMember_WhenCalledWithValidRequest_ReturnsCreatedResponse()
     {
@@ -97,13 +94,7 @@ public class HomeControllerTests
             CanAddDevices = true,
             CanListDevices = false
         };
-        var items = new Dictionary<object, object?>
-        {
-            {
-                Item.UserLogged,
-                _user
-            }
-        };
+        var items = new Dictionary<object, object?> { { Item.UserLogged, _user } };
         _httpContextMock.Setup(h => h.Items).Returns(items);
         var args = new AddMemberArgs
         {
@@ -123,7 +114,9 @@ public class HomeControllerTests
         response.HomeId.Should().Be(_home.Id.ToString());
         response.MemberId.Should().Be(_user.Id.ToString());
     }
+
     #endregion
+
     #region AddDevices
 
     [TestMethod]
@@ -138,23 +131,10 @@ public class HomeControllerTests
         var camera = new Camera("camera", 123, "a camera", "https://www.example.com/photo1.jpg", [],
             business, true, true, false, true);
 
-        var request = new AddDevicesRequest
-        {
-            DeviceIds = [sensor.Id.ToString(), camera.Id.ToString()]
-        };
-        var items = new Dictionary<object, object?>
-        {
-            {
-                Item.UserLogged,
-                _user
-            }
-        };
+        var request = new AddDevicesRequest { DeviceIds = [sensor.Id.ToString(), camera.Id.ToString()] };
+        var items = new Dictionary<object, object?> { { Item.UserLogged, _user } };
         _httpContextMock.Setup(h => h.Items).Returns(items);
-        var args = new AddDevicesArgs
-        {
-            HomeId = _home.Id.ToString(),
-            DeviceIds = request.DeviceIds
-        };
+        var args = new AddDevicesArgs { HomeId = _home.Id.ToString(), DeviceIds = request.DeviceIds };
         _homeOwnerService.Setup(x => x.AddDeviceToHome(args));
 
         // Act
@@ -166,6 +146,7 @@ public class HomeControllerTests
         response.DeviceIds.Should().BeEquivalentTo(request.DeviceIds);
         response.HomeId.Should().Be(_home.Id.ToString());
     }
+
     #endregion
 
     #region GetMembers
@@ -247,18 +228,12 @@ public class HomeControllerTests
         var device1 = new OwnedDevice(_home,
             new Device
             {
-                Name = "Device1",
-                Type = "Type1",
-                ModelNumber = 1,
-                MainPhoto = "https://www.example.com/photo1.jpg"
+                Name = "Device1", Type = "Type1", ModelNumber = 1, MainPhoto = "https://www.example.com/photo1.jpg"
             });
         var device2 = new OwnedDevice(_home,
             new Device
             {
-                Name = "Device2",
-                Type = "Type2",
-                ModelNumber = 2,
-                MainPhoto = "https://www.example.com/photo2.jpg"
+                Name = "Device2", Type = "Type2", ModelNumber = 2, MainPhoto = "https://www.example.com/photo2.jpg"
             });
         var items = new Dictionary<object, object?> { { Item.UserLogged, _user } };
         _httpContextMock.Setup(h => h.Items).Returns(items);
@@ -299,5 +274,6 @@ public class HomeControllerTests
         response.Device.Should().HaveCount(2);
         response.Device.Should().BeEquivalentTo(expectedResponse.Device);
     }
+
     #endregion
 }

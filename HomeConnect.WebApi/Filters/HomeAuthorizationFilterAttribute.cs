@@ -8,9 +8,9 @@ using Microsoft.AspNetCore.Mvc.Filters;
 namespace HomeConnect.WebApi.Filters;
 
 [AttributeUsage(AttributeTargets.Class | AttributeTargets.Method)]
-public class HomeAuthorizationFilterAttribute(IHomeOwnerService homeOwnerService, string? permission = null) : Attribute, IAuthorizationFilter
+public class HomeAuthorizationFilterAttribute(string? permission = null) : Attribute, IAuthorizationFilter
 {
-    private readonly string homeIdRoute = "homesId";
+    private const string HomeIdRoute = "homesId";
     public string? Permission { get; } = permission;
 
     public void OnAuthorization(AuthorizationFilterContext context)
@@ -20,32 +20,27 @@ public class HomeAuthorizationFilterAttribute(IHomeOwnerService homeOwnerService
 
         if (userIsNotIdentified)
         {
-            context.Result = new ObjectResult(new
-            {
-                InnerCode = "Unauthorized",
-                Message = "You are not authenticated"
-            })
-            {
-                StatusCode = (int)HttpStatusCode.Unauthorized
-            };
+            context.Result =
+                new ObjectResult(new { InnerCode = "Unauthorized", Message = "You are not authenticated" })
+                {
+                    StatusCode = (int)HttpStatusCode.Unauthorized
+                };
             return;
         }
 
-        var homeId = context.RouteData.Values[homeIdRoute]?.ToString();
+        var homeId = context.RouteData.Values[HomeIdRoute]?.ToString();
         var homeIsNotIdentified = !Guid.TryParse(homeId, out var homeIdParsed);
         if (homeIsNotIdentified)
         {
-            context.Result = new ObjectResult(new
-            {
-                InnerCode = "BadRequest",
-                Message = "The home id is invalid"
-            })
-            {
-                StatusCode = (int)HttpStatusCode.BadRequest
-            };
+            context.Result =
+                new ObjectResult(new { InnerCode = "BadRequest", Message = "The home id is invalid" })
+                {
+                    StatusCode = (int)HttpStatusCode.BadRequest
+                };
             return;
         }
 
+        var homeOwnerService = GetHomeOwnerService(context);
         var home = homeOwnerService.GetHome(homeIdParsed);
         var userLoggedMap = (User)userLoggedIn;
         var permission = BuildPermission(context);
@@ -56,18 +51,20 @@ public class HomeAuthorizationFilterAttribute(IHomeOwnerService homeOwnerService
         {
             context.Result = new ObjectResult(new
             {
-                InnerCode = "Forbidden",
-                Message = $"Missing permission: {permission.Value}"
-            })
-            {
-                StatusCode = (int)HttpStatusCode.Forbidden
-            };
+                InnerCode = "Forbidden", Message = $"Missing permission: {permission.Value}"
+            }) { StatusCode = (int)HttpStatusCode.Forbidden };
         }
     }
 
     private HomePermission BuildPermission(AuthorizationFilterContext context)
     {
-        var name = $"{context.RouteData.Values["action"].ToString().ToLower()}-{context.RouteData.Values["controller"].ToString().ToLower()}";
+        var name =
+            $"{context.RouteData.Values["action"].ToString().ToLower()}-{context.RouteData.Values["controller"].ToString().ToLower()}";
         return new HomePermission(name);
+    }
+
+    private static IHomeOwnerService GetHomeOwnerService(AuthorizationFilterContext context)
+    {
+        return context.HttpContext.RequestServices.GetRequiredService<IHomeOwnerService>();
     }
 }

@@ -33,7 +33,7 @@ public class HomeAuthorizationFilterAttributeTests
         _httpContextMock = new Mock<HttpContext>(MockBehavior.Strict);
         _homeOwnerServiceMock = new Mock<IHomeOwnerService>(MockBehavior.Strict);
         _userRepositoryMock = new Mock<IUserRepository>(MockBehavior.Strict);
-        _attribute = new HomeAuthorizationFilterAttribute(_homeOwnerServiceMock.Object, "some-permission");
+        _attribute = new HomeAuthorizationFilterAttribute("some-permission");
 
         _context = new AuthorizationFilterContext(
             new ActionContext(
@@ -99,6 +99,8 @@ public class HomeAuthorizationFilterAttributeTests
         };
         _httpContextMock.Setup(h => h.Items).Returns(items);
         _homeOwnerServiceMock.Setup(h => h.GetHome(home.Id)).Returns(home);
+        _httpContextMock.Setup(h => h.RequestServices.GetService(typeof(IHomeOwnerService)))
+            .Returns(_homeOwnerServiceMock.Object);
 
         var routeData = new RouteData();
         routeData.Values["action"] = "SomeAction";

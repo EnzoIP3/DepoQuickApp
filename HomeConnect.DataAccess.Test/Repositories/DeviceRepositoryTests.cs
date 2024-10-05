@@ -25,7 +25,7 @@ public class DeviceRepositoryTests
         _role = new Role();
         _validUser = new User("John", "Doe", "johhnDoe@example.com", "Password#100", _role);
         _validDevice = new Device("DeviceValid", 123456, "Device description", "https://example.com/image.png",
-            [], "Sensor", new Business("123456", "BusinessValid", _validUser));
+            [], "Camera", new Business("123456", "BusinessValid", _validUser));
         _secondValidDevice = new Device("DeviceValid2", 1234567, "Device description", "https://example2.com/image.png",
             [], "Sensor", new Business("1234567", "BusinessValid2", _validUser));
         _context.Add(_validDevice);
@@ -173,6 +173,20 @@ public class DeviceRepositoryTests
         // Assert
         result.Data.Should().HaveCount(1);
         result.Data[0].Business.Name.Should().Be(businessNameFilter);
+    }
+
+    [TestMethod]
+    public void GetDevices_WhenFilteredByDeviceType_ReturnsFilteredDevices()
+    {
+        // Arrange
+        var deviceTypeFilter = "Sensor";
+
+        // Act
+        var result = _deviceRepository.GetDevices(1, 2, null, null, null, deviceTypeFilter);
+
+        // Assert
+        result.Data.Should().HaveCount(1);
+        result.Data.Exists(d => d.Id == _secondValidDevice.Id).Should().BeTrue();
     }
 
     #endregion

@@ -13,6 +13,7 @@ public class DeviceRepositoryTests
     private readonly Context _context = DbContextBuilder.BuildTestDbContext();
     private DeviceRepository _deviceRepository = null!;
     private Device _validDevice = null!;
+    private Device _secondValidDevice = null!;
     private User _validUser = null!;
     private Role _role = null!;
 
@@ -25,6 +26,8 @@ public class DeviceRepositoryTests
         _validUser = new User("John", "Doe", "johhnDoe@example.com", "Password#100", _role);
         _validDevice = new Device("DeviceValid", 123456, "Device description", "https://example.com/image.png",
             [], "Sensor", new Business("123456", "BusinessValid", _validUser));
+        _secondValidDevice = new Device("DeviceValid2", 1234567, "Device description", "https://example2.com/image.png",
+            [], "Sensor", new Business("1234567", "BusinessValid2", _validUser));
         _context.Add(_validDevice);
         _context.SaveChanges();
     }
@@ -133,6 +136,18 @@ public class DeviceRepositoryTests
         result.Data.Should().HaveCount(1);
         result.Data.Exists(d => d.Id == _validDevice.Id).Should().BeTrue();
     }
+
+    [TestMethod]
+    public void GetDevices_WhenFilteredByDeviceName_ReturnsFilteredDevices()
+    {
+        // Act
+        var result = _deviceRepository.GetDevices(1, 10, "DeviceValid");
+
+        // Assert
+        result.Data.Should().HaveCount(1);
+        result.Data.First().Name.Should().Be("DeviceValid");
+    }
+
     #endregion
 
     #region Error

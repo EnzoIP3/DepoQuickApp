@@ -35,7 +35,8 @@ public class DeviceService : IDeviceService
 
     public IEnumerable<string> GetAllDeviceTypes()
     {
-        throw new NotImplementedException();
+        var devices = DeviceRepository.GetDevices(1, int.MaxValue, null, null, null, null).Data;
+        return devices.Select(device => device.Type).Distinct();
     }
 
     private void EnsureOwnedDeviceExists(string hardwareId)

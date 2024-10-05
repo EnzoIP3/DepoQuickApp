@@ -23,4 +23,14 @@ public class OwnedDeviceRepository : IOwnedDeviceRepository
     {
         return _context.OwnedDevices.Where(od => od.Home == home);
     }
+
+    public bool ToggleConnection(string hardwareId)
+    {
+        throw new NotImplementedException();
+    }
+
+    public OwnedDevice GetByHardwareId(string hardwareId)
+    {
+        throw new NotImplementedException();
+    }
 }

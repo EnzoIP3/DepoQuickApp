@@ -25,8 +25,8 @@ public class OwnedDeviceRepositoryTests
     {
         _context.Database.EnsureCreated();
 
-        var homeOwnerRole = new Role { Name = "HomeOwner", Permissions = new List<SystemPermission>() };
-        var businessOwnerRole = new Role { Name = "BusinessOwner", Permissions = new List<SystemPermission>() };
+        var homeOwnerRole = _context.Roles.First(r => r.Name == "HomeOwner");
+        var businessOwnerRole = _context.Roles.First(r => r.Name == "BusinessOwner");
 
         _homeOwner = new User("John", "Doe", "email@email.com", "Password#100", homeOwnerRole);
         _businessOwner = new User("Jane", "Doe", "email2@email.com", "Password#100", businessOwnerRole);

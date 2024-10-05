@@ -21,7 +21,7 @@ public class HomeRepositoryTests
     {
         _context.Database.EnsureCreated();
 
-        var homeOwnerRole = new Role { Name = "HomeOwner", Permissions = new List<SystemPermission>() };
+        var homeOwnerRole = _context.Roles.First(r => r.Name == "HomeOwner");
         _homeOwner = new User("John", "Doe", "email@email.com", "Password#100", homeOwnerRole);
         _otherOwner = new User("Jane", "Doe", "email2@email.com", "Password#100", homeOwnerRole);
         _home = new Home(_homeOwner, "Main St 123", 12.5, 12.5, 5);

@@ -231,6 +231,7 @@ public class HomeOwnerServiceTests
             CanAddDevices = true,
             CanListDevices = true
         };
+        _homeRepositoryMock.Setup(x => x.Exists(Guid.Parse(model.HomeId))).Returns(true);
         _homeRepositoryMock.Setup(x => x.Get(Guid.Parse(model.HomeId)))
             .Returns(new Home());
 
@@ -252,6 +253,7 @@ public class HomeOwnerServiceTests
             CanAddDevices = true,
             CanListDevices = true
         };
+        _homeRepositoryMock.Setup(x => x.Exists(Guid.Parse(model.HomeId))).Returns(true);
         _homeRepositoryMock.Setup(x => x.Get(Guid.Parse(model.HomeId)))
             .Returns(new Home());
         _userRepositoryMock.Setup(x => x.Exists(Guid.Parse(model.HomeOwnerId)))

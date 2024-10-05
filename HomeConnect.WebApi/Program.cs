@@ -1,4 +1,5 @@
 using System.Diagnostics.CodeAnalysis;
+using BusinessLogic.Admins.Services;
 using BusinessLogic.Auth.Repositories;
 using BusinessLogic.Auth.Services;
 using BusinessLogic.BusinessOwners.Repositories;
@@ -51,6 +52,7 @@ services.AddScoped<IAuthService, AuthService>();
 services.AddScoped<IUserService, UserService>();
 services.AddScoped<IHomeOwnerService, HomeOwnerService>();
 services.AddScoped<IDeviceService, DeviceService>();
+services.AddScoped<IAdminService, AdminService>();
 
 var app = builder.Build();
 

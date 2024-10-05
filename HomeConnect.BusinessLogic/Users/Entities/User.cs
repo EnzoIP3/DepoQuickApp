@@ -35,7 +35,7 @@ public class User
     public string Email
     {
         get => _email;
-        private init
+        init
         {
             ValidateNotEmpty(value, nameof(Email));
             ValidateEmailFormat(value);
@@ -46,7 +46,7 @@ public class User
     public string Password
     {
         get => _password;
-        private init
+        init
         {
             ValidateNotEmpty(value, nameof(Password));
             ValidatePassword(value);
@@ -54,6 +54,7 @@ public class User
         }
     }
 
+    public string RoleName { get; set; } = string.Empty;
     public Role Role { get; set; } = new Role();
     public DateOnly CreatedAt { get; set; }
 

@@ -61,6 +61,22 @@ public class Context(DbContextOptions<Context> options) : DbContext(options)
                 new { RolesName = Role.BusinessOwner, PermissionsValue = SystemPermission.CreateCamera },
                 new { RolesName = Role.BusinessOwner, PermissionsValue = SystemPermission.CreateSensor }));
 
+        modelBuilder.Entity<User>()
+            .HasOne(u => u.Role)
+            .WithMany()
+            .HasForeignKey("RoleName");
+
+        modelBuilder.Entity<User>().HasData(new
+        {
+            Id = Guid.Parse("f1b3b3b3-3b3b-3b3b-3b3b-3b3b3b3b3b3b"),
+            Name = "Administrator",
+            Surname = "Account",
+            Email = "admin@admin.com",
+            Password = "Admin123@",
+            RoleName = "Admin",
+            CreatedAt = new DateOnly(2024, 1, 1)
+        });
+
         base.OnModelCreating(modelBuilder);
     }
 }

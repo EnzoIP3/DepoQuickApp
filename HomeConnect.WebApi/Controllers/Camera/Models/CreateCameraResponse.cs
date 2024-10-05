@@ -1,4 +1,4 @@
-namespace HomeConnect.WebApi.Controllers.BusinessOwner;
+namespace HomeConnect.WebApi.Controllers.Camera.Models;
 
 public struct CreateCameraResponse
 {

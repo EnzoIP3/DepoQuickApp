@@ -1,8 +1,8 @@
-namespace HomeConnect.WebApi.Controllers.BusinessOwner;
+namespace HomeConnect.WebApi.Controllers.Camera.Models;
 
 public struct CreateCameraRequest
 {
-    public BusinessLogic.BusinessOwners.Entities.Business Business { get; set; }
+    public string BusinessRut { get; set; }
     public string Description { get; set; }
     public string MainPhoto { get; set; }
     public int ModelNumber { get; set; }

@@ -42,7 +42,7 @@ public class HomeOwnerControllerTests
             Email = request.Email,
             Password = request.Password,
             ProfilePicture = request.ProfilePicture,
-            Role = Role.HomeOwner.Name
+            Role = Role.HomeOwner
         };
         var user = new User();
         _userService.Setup(x => x.CreateUser(args)).Returns(user);

@@ -4,6 +4,7 @@ using BusinessLogic.BusinessOwners.Models;
 using BusinessLogic.BusinessOwners.Services;
 using BusinessLogic.Users.Models;
 using HomeConnect.WebApi.Controllers.Businesses;
+using HomeConnect.WebApi.Controllers.Businesses.Models;
 using HomeConnect.WebApi.Controllers.BusinessOwner.Models;
 using HomeConnect.WebApi.Controllers.Camera.Models;
 using HomeConnect.WebApi.Controllers.Sensor.Models;
@@ -31,71 +32,8 @@ public class BusinessOwnerController(IAdminService adminService)
     {
         var userModel = new CreateUserArgs
         {
-            Name = request.Name,
-            Surname = request.Surname,
-            Email = request.Email,
-            Password = request.Password
+            Name = request.Name, Surname = request.Surname, Email = request.Email, Password = request.Password
         };
         return userModel;
-    }
-
-    [HttpPost]
-    [Route("businesses")]
-    public CreateBusinessResponse CreateBusiness([FromBody] CreateBusinessRequest request)
-    {
-        var business = new BusinessLogic.BusinessOwners.Entities.Business
-        {
-            Name = request.Name,
-            Rut = request.Rut,
-            Owner = request.Owner,
-        };
-
-        var createdBusiness = businessOwnerService.CreateBusiness(business.Owner.Email, business.Rut, business.Name);
-
-        return new CreateBusinessResponse { Id = createdBusiness };
-    }
-
-    [HttpPost]
-    [Route("sensors")]
-    public CreateDeviceResponse CreateDevice([FromBody] CreateDeviceRequest request)
-    {
-        var device = new BusinessLogic.Devices.Entities.Device
-        {
-            Business = request.Business,
-            Description = request.Description,
-            MainPhoto = request.MainPhoto,
-            ModelNumber = request.ModelNumber,
-            Name = request.Name,
-            SecondaryPhotos = request.SecondaryPhotos,
-            Type = request.Type,
-            Id = request.Id
-        };
-
-        var createdDevice = businessOwnerService.CreateDevice(device.Name, device.ModelNumber, device.Description, device.MainPhoto, device.SecondaryPhotos, device.Type, device.Business);
-
-        return new CreateDeviceResponse { Id = createdDevice };
-    }
-
-    [HttpPost]
-    [Route("cameras")]
-    public CreateCameraResponse CreateCamera([FromBody] CreateCameraRequest request)
-    {
-        var camera = new BusinessLogic.Devices.Entities.Camera
-        {
-            Business = request.Business,
-            Description = request.Description,
-            MainPhoto = request.MainPhoto,
-            ModelNumber = request.ModelNumber,
-            Name = request.Name,
-            SecondaryPhotos = request.SecondaryPhotos,
-            MotionDetection = request.MotionDetection,
-            PersonDetection = request.PersonDetection,
-            IsExterior = request.IsExterior,
-            IsInterior = request.IsInterior
-        };
-
-        var createdCamera = businessOwnerService.CreateCamera(camera.Name, camera.ModelNumber, camera.Description, camera.MainPhoto, camera.SecondaryPhotos, camera.Business, camera.MotionDetection, camera.PersonDetection, camera.IsExterior, camera.IsInterior);
-
-        return new CreateCameraResponse { Id = createdCamera };
     }
 }

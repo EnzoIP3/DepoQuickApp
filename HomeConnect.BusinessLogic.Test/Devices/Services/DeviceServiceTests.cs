@@ -39,7 +39,7 @@ public class DeviceServiceTests
         otherDevice = new Device("Device2", 12345, "Device description2", "https://example2.com/image.png",
             [], "Sensor", new Business("Rut2", "Business", user2));
 
-        _devices = new List<Device> { validDevice, otherDevice };
+        _devices = [validDevice, otherDevice];
 
         _parameters = new GetDeviceArgs
         {
@@ -132,12 +132,12 @@ public class DeviceServiceTests
         var expectedDeviceTypes = new List<string> { "Sensor", "Camera" };
         _deviceRepository.Setup(x => x.GetDevices(It.IsAny<int>(), It.IsAny<int>(), It.IsAny<string>(), It.IsAny<int?>(), It.IsAny<string>(), It.IsAny<string>())).Returns(new PagedData<Device>
         {
-            Data = new List<Device>
-            {
+            Data =
+            [
                 new Device { Type = DeviceType.Sensor },
                 new Device { Type = DeviceType.Camera },
                 new Device { Type = DeviceType.Sensor }
-            },
+            ],
             Page = 1,
             PageSize = 3,
             TotalPages = 1

@@ -1,5 +1,6 @@
 using BusinessLogic.Devices.Entities;
 using BusinessLogic.Devices.Repositories;
+using HomeConnect.WebApi.Controllers.Devices.Models;
 
 namespace BusinessLogic.Devices.Services;
 
@@ -12,11 +13,11 @@ public class DeviceService : IDeviceService
         DeviceRepository = deviceRepository;
     }
 
-    public PagedData<Device> GetDevices(int? currentPage = null, int? pageSize = null, string deviceNameFilter = null, int? modelNumberFilter = null, string businessNameFilter = null, string deviceTypeFilter = null)
+    public PagedData<Device> GetDevices(DeviceQueryParameters parameters)
     {
-        currentPage ??= 1;
-        pageSize ??= 10;
-        var devices = DeviceRepository.GetDevices((int)currentPage, (int)pageSize, deviceNameFilter, modelNumberFilter, businessNameFilter, deviceTypeFilter);
+        parameters.Page ??= 1;
+        parameters.PageSize ??= 10;
+        var devices = DeviceRepository.GetDevices((int)parameters.Page, (int)parameters.PageSize, parameters.DeviceNameFilter, parameters.ModelNumberFilter, parameters.BusinessNameFilter, parameters.DeviceTypeFilter);
         return devices;
     }
 }

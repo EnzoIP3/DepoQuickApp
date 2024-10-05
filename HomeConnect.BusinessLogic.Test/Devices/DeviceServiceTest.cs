@@ -5,6 +5,7 @@ using BusinessLogic.Devices.Repositories;
 using BusinessLogic.Devices.Services;
 using BusinessLogic.Users.Entities;
 using FluentAssertions;
+using HomeConnect.WebApi.Controllers.Devices.Models;
 using Moq;
 
 namespace HomeConnect.BusinessLogic.Test.Devices;
@@ -25,41 +26,43 @@ public void GetDevices_WhenCalled_ReturnsDeviceList()
 
     var devices = new List<Device> { _validDevice, _otherDevice };
 
-    var _defaultCurrentPage = 1;
-    var _defaultPageSize = 10;
+    var parameters = new DeviceQueryParameters
+    {
+        Page = 1,
+        PageSize = 10
+    };
 
     var pagedDeviceList = new PagedData<Device>
     {
         Data = devices,
-        Page = _defaultCurrentPage,
-        PageSize = _defaultPageSize,
+        Page = parameters.Page ?? 1,
+        PageSize = parameters.PageSize ?? 10,
         TotalPages = 1
     };
 
     var _deviceRepository = new Mock<IDeviceRepository>();
-    _deviceRepository.Setup(x => x.GetDevices(_defaultCurrentPage, _defaultPageSize, null, null, null, null)).Returns(pagedDeviceList);
-
+    _deviceRepository.Setup(x => x.GetDevices(parameters.Page ?? 1, parameters.PageSize ?? 10, parameters.DeviceNameFilter, parameters.ModelNumberFilter, parameters.BusinessNameFilter, parameters.DeviceTypeFilter)).Returns(pagedDeviceList);
     var _deviceService = new DeviceService(_deviceRepository.Object);
 
     // Act
-    var result = _deviceService.GetDevices(_defaultCurrentPage, _defaultPageSize, null, null, null, null);
+    var result = _deviceService.GetDevices(parameters);
 
     // Assert
     var expectedPagedDeviceList = new PagedData<Device>
     {
         Data = devices,
-        Page = _defaultCurrentPage,
-        PageSize = _defaultPageSize,
+        Page = parameters.Page ?? 1,
+        PageSize = parameters.PageSize ?? 10,
         TotalPages = 1
     };
 
     result.Should().BeEquivalentTo(expectedPagedDeviceList, options => options.ComparingByMembers<PagedData<Device>>());
     _deviceRepository.Verify(x => x.GetDevices(
-        It.Is<int>(a => a == _defaultCurrentPage),
-        It.Is<int>(a => a == _defaultPageSize),
-        It.Is<string>(a => a == null),
-        It.Is<int?>(a => a == null),
-        It.Is<string>(a => a == null),
-        It.Is<string>(a => a == null)), Times.Once);
+        It.Is<int>(a => a == parameters.Page),
+        It.Is<int>(a => a == parameters.PageSize),
+        It.Is<string>(a => a == parameters.DeviceNameFilter),
+        It.Is<int?>(a => a == parameters.ModelNumberFilter),
+        It.Is<string>(a => a == parameters.BusinessNameFilter),
+        It.Is<string>(a => a == parameters.DeviceTypeFilter)), Times.Once);
 }
 }

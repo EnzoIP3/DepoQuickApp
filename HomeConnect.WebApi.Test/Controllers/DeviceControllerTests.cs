@@ -4,7 +4,7 @@ using BusinessLogic.BusinessOwners.Entities;
 using BusinessLogic.Devices.Entities;
 using FluentAssertions;
 using HomeConnect.WebApi.Controllers.Device;
-using HomeConnect.WebApi.Controllers.Device.Models;
+using HomeConnect.WebApi.Controllers.Devices.Models;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Moq;

@@ -14,6 +14,9 @@ public record SystemPermission
     public const string AddDevice = "add-device";
     public const string GetDevices = "get-devices";
     public const string GetMembers = "get-members";
+    public const string CreateBusiness = "create-business";
+    public const string CreateCamera = "create-camera";
+    public const string CreateSensor = "create-sensor";
 
     [Key]
     public string Value { get; init; }

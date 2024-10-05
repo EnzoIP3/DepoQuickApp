@@ -26,6 +26,7 @@ public class BusinessController(IAdminService adminService, IBusinessOwnerServic
     }
 
     [HttpPost]
+    [AuthorizationFilter(SystemPermission.CreateBusiness)]
     public CreateBusinessResponse CreateBusiness([FromBody] CreateBusinessRequest request)
     {
         var args = new CreateBusinessArgs() { Name = request.Name, OwnerId = request.OwnerId, Rut = request.Rut };

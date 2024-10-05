@@ -38,7 +38,10 @@ public class Context(DbContextOptions<Context> options) : DbContext(options)
             new SystemPermission(SystemPermission.AddMember, Role.HomeOwner),
             new SystemPermission(SystemPermission.AddDevice, Role.HomeOwner),
             new SystemPermission(SystemPermission.GetDevices, Role.HomeOwner),
-            new SystemPermission(SystemPermission.GetMembers, Role.HomeOwner));
+            new SystemPermission(SystemPermission.GetMembers, Role.HomeOwner),
+            new SystemPermission(SystemPermission.CreateBusiness, Role.BusinessOwner),
+            new SystemPermission(SystemPermission.CreateCamera, Role.BusinessOwner),
+            new SystemPermission(SystemPermission.CreateSensor, Role.BusinessOwner));
 
         base.OnModelCreating(modelBuilder);
     }

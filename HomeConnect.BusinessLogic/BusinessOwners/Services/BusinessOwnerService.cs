@@ -23,11 +23,7 @@ public class BusinessOwnerService : IBusinessOwnerService
 
     public string CreateBusiness(CreateBusinessArgs args)
     {
-        if (Guid.TryParse(args.OwnerId, out _) == false)
-        {
-            throw new ArgumentException("Owner does not exist");
-        }
-
+        EnsureIsValidGuid(args.OwnerId);
         EnsureOwnerExists(Guid.Parse(args.OwnerId));
         EnsureOwnerDoesNotHaveBusiness(Guid.Parse(args.OwnerId));
         EnsureBusinessRutDoesNotExist(args.Rut);
@@ -35,6 +31,14 @@ public class BusinessOwnerService : IBusinessOwnerService
         var business = new Business(args.Rut, args.Name, owner);
         BusinessRepository.Add(business);
         return business.Rut;
+    }
+
+    private static void EnsureIsValidGuid(string id)
+    {
+        if (Guid.TryParse(id, out _) == false)
+        {
+            throw new ArgumentException("Owner does not exist");
+        }
     }
 
     public Guid CreateDevice(CreateDeviceArgs args)

@@ -54,7 +54,9 @@ public class CameraControllerTests
         var request = new PersonDetectedRequest { UserId = "userId" };
         var args = new NotificationArgs
         {
-            HardwareId = hardwareId, Date = DateTime.Now, Event = $"person detected with id: {request.UserId}"
+            HardwareId = hardwareId,
+            Date = DateTime.Now,
+            Event = $"person detected with id: {request.UserId}"
         };
         _notificationServiceMock.Setup(x => x.Notify(args));
 

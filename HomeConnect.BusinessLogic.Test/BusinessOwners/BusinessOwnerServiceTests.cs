@@ -227,7 +227,7 @@ public class BusinessOwnerServiceTests
             SecondaryPhotos = _secondaryPhotos,
             Type = Type
         };
-        Device addedDevice = new Device();
+        var addedDevice = new Device();
         _deviceRepository.Setup(x =>
             x.EnsureDeviceDoesNotExist(It.IsAny<Device>()));
         _deviceRepository.Setup(x => x.Add(It.IsAny<Device>()))
@@ -372,7 +372,7 @@ public class BusinessOwnerServiceTests
             IsExterior = false,
             IsInterior = true
         };
-        Camera addedCamera = new Camera();
+        var addedCamera = new Camera();
         _deviceRepository.Setup(x =>
             x.EnsureDeviceDoesNotExist(It.IsAny<Device>()));
         _deviceRepository.Setup(x => x.Add(It.IsAny<Device>()))

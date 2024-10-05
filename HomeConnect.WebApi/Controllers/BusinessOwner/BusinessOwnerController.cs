@@ -1,12 +1,6 @@
 using BusinessLogic.Admins.Services;
-using BusinessLogic.BusinessOwners.Entities;
-using BusinessLogic.BusinessOwners.Models;
-using BusinessLogic.BusinessOwners.Services;
 using BusinessLogic.Users.Models;
-using HomeConnect.WebApi.Controllers.Businesses;
 using HomeConnect.WebApi.Controllers.BusinessOwner.Models;
-using HomeConnect.WebApi.Controllers.Camera.Models;
-using HomeConnect.WebApi.Controllers.Sensor.Models;
 using HomeConnect.WebApi.Filters;
 using Microsoft.AspNetCore.Mvc;
 
@@ -29,7 +23,10 @@ public class BusinessOwnerController(IAdminService adminService)
     {
         var userModel = new CreateUserArgs
         {
-            Name = request.Name, Surname = request.Surname, Email = request.Email, Password = request.Password
+            Name = request.Name,
+            Surname = request.Surname,
+            Email = request.Email,
+            Password = request.Password
         };
         return userModel;
     }

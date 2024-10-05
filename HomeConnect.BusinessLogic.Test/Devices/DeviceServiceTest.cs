@@ -3,6 +3,8 @@ using BusinessLogic.BusinessOwners.Entities;
 using BusinessLogic.Devices.Entities;
 using BusinessLogic.Devices.Repositories;
 using BusinessLogic.Devices.Services;
+using BusinessLogic.Roles.Entities;
+using BusinessLogic.Users.Entities;
 using FluentAssertions;
 using HomeConnect.WebApi.Controllers.Devices.Models;
 using Moq;
@@ -16,11 +18,11 @@ public sealed class DeviceServiceTest
     public void GetDevices_WhenCalled_ReturnsDeviceList()
     {
         // Arrange
-        var user1 = new global::BusinessLogic.Users.Entities.User("name", "surname", "email1@email.com", "Password#100", new global::BusinessLogic.Roles.Entities.Role());
-        var user2 = new global::BusinessLogic.Users.Entities.User("name", "surname", "email2@email.com", "Password#100", new global::BusinessLogic.Roles.Entities.Role());
-        var validDevice = new global::BusinessLogic.Devices.Entities.Device("Device1", 12345, "Device description1", "https://example1.com/image.png",
+        var user1 = new User("name", "surname", "email1@email.com", "Password#100", new Role());
+        var user2 = new User("name", "surname", "email2@email.com", "Password#100", new Role());
+        var validDevice = new Device("Device1", 12345, "Device description1", "https://example1.com/image.png",
             [], "Sensor", new Business("Rut1", "Business", user1));
-        var otherDevice = new global::BusinessLogic.Devices.Entities.Device("Device2", 12345, "Device description2", "https://example2.com/image.png",
+        var otherDevice = new Device("Device2", 12345, "Device description2", "https://example2.com/image.png",
             [], "Sensor", new Business("Rut2", "Business", user2));
 
         var devices = new List<Device> { validDevice, otherDevice };

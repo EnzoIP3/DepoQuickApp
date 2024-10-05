@@ -74,24 +74,15 @@ public class AdminService : IAdminService
         return user.Id;
     }
 
-    public PagedData<GetUsersArgs> GetUsers(int? currentPage = null, int? pageSize = null, string? fullNameFilter = null,
+    public PagedData<User> GetUsers(int? currentPage = null, int? pageSize = null, string? fullNameFilter = null,
         string? roleFilter = null)
     {
         currentPage ??= 1;
         pageSize ??= 10;
         var users = UserRepository.GetAllPaged((int)currentPage, (int)pageSize, fullNameFilter, roleFilter);
-        var data = users.Data.Select(x => new GetUsersArgs
+        return new PagedData<User>
         {
-            Id = x.Id.ToString(),
-            Name = x.Name,
-            Surname = x.Surname,
-            FullName = $"{x.Name} {x.Surname}",
-            Role = x.Role.Name,
-            CreatedAt = x.CreatedAt
-        }).ToList();
-        return new PagedData<GetUsersArgs>
-        {
-            Data = data,
+            Data = users.Data,
             Page = users.Page,
             PageSize = users.PageSize,
             TotalPages = users.TotalPages

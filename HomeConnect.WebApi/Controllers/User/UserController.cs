@@ -20,7 +20,7 @@ public class UserController(IAdminService adminService) : ControllerBase
         return Ok(response);
     }
 
-    private static object ResponseFromUsers(PagedData<GetUsersArgs> users)
+    private static object ResponseFromUsers(PagedData<BusinessLogic.Users.Entities.User> users)
     {
         var response = new
         {

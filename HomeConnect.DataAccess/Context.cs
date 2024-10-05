@@ -17,6 +17,7 @@ public class Context(DbContextOptions<Context> options) : DbContext(options)
     public DbSet<Notification> Notifications { get; set; } = null!;
     public DbSet<Business> Businesses { get; set; } = null!;
     public DbSet<Home> Homes { get; set; } = null!;
+    public DbSet<OwnedDevice> OwnedDevices { get; set; } = null!;
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {

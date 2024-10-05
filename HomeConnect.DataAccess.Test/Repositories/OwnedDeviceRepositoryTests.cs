@@ -79,4 +79,16 @@ public class OwnedDeviceRepositoryTests
         result.Should().Contain(_ownedDevice);
     }
     #endregion
+
+    #region GetByHardwareId
+    [TestMethod]
+    public void GetByHardwareId_WhenOwnedDeviceExists_ReturnsOwnedDevice()
+    {
+        // Act
+        var result = _ownedDeviceRepository.GetByHardwareId(_ownedDevice.HardwareId.ToString());
+
+        // Assert
+        result.Should().BeEquivalentTo(_ownedDevice);
+    }
+    #endregion
 }

@@ -31,6 +31,6 @@ public class OwnedDeviceRepository : IOwnedDeviceRepository
 
     public OwnedDevice GetByHardwareId(string hardwareId)
     {
-        throw new NotImplementedException();
+        return _context.OwnedDevices.FirstOrDefault(od => od.HardwareId == Guid.Parse(hardwareId));
     }
 }

@@ -1,13 +1,16 @@
+using BusinessLogic.Users.Entities;
+
 namespace BusinessLogic.Users.Repositories;
 
 public interface IUserRepository
 {
-    Entities.User? GetUser(string email);
-    void Add(Entities.User user);
-    Entities.User Get(Guid id);
+    void Add(User user);
+    User Get(Guid id);
+    User Get(string email);
     bool Exists(Guid id);
+    bool Exists(string email);
     void Delete(Guid id);
 
-    PagedData<Entities.User> GetAllPaged(int currentPage, int pageSize, string? fullNameFilter = null,
+    PagedData<User> GetAllPaged(int currentPage, int pageSize, string? fullNameFilter = null,
         string? roleFilter = null);
 }

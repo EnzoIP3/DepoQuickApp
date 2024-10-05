@@ -27,6 +27,7 @@ public class HomeOwnerService : IHomeOwnerService
     {
         EnsureCreateHomeModelIsValid(args);
         EnsureAddressIsUnique(args.Address);
+        EnsureUserExists(args.HomeOwnerId);
         var user = _userRepository.Get(Guid.Parse(args.HomeOwnerId));
         var home = new Home(user, args.Address, args.Latitude, args.Longitude, args.MaxMembers);
         _homeRepository.Add(home);
@@ -39,6 +40,14 @@ public class HomeOwnerService : IHomeOwnerService
         if (home != null)
         {
             throw new ArgumentException("Address is already in use");
+        }
+    }
+
+    private void EnsureUserExists(string homeOwnerId)
+    {
+        if (!_userRepository.Exists(Guid.Parse(homeOwnerId)))
+        {
+            throw new ArgumentException("User does not exist");
         }
     }
 
@@ -55,6 +64,8 @@ public class HomeOwnerService : IHomeOwnerService
         EnsureAddMemberModelIsValid(args);
         EnsureGuidIsValid(args.HomeId);
         EnsureMemberIsNotAlreadyAdded(args);
+        EnsureGuidIsValid(args.HomeOwnerId);
+        EnsureUserExists(args.HomeOwnerId);
         var user = _userRepository.Get(Guid.Parse(args.HomeOwnerId));
         var home = _homeRepository.Get(Guid.Parse(args.HomeId));
         var permissions = new List<HomePermission>();

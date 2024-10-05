@@ -24,8 +24,8 @@ public class AdminService : IAdminService
     public Guid Create(CreateUserArgs args)
     {
         ValidateAdminModel(args);
-        EnsureUserEmailIsUnique(Guid.Parse(args.Id));
-        var role = RoleRepository.GetRole(args.Role);
+        EnsureUserEmailIsUnique(args.Email);
+        var role = RoleRepository.Get(args.Role);
         var admin = new User(args.Name, args.Surname, args.Email, args.Password, role);
         UserRepository.Add(admin);
         return admin.Id;
@@ -37,7 +37,7 @@ public class AdminService : IAdminService
         UserRepository.Delete(id);
     }
 
-    private void ValidateAdminModel(CreateUserArgs args)
+    private static void ValidateAdminModel(CreateUserArgs args)
     {
         if (string.IsNullOrWhiteSpace(args.Name) ||
             string.IsNullOrWhiteSpace(args.Surname) ||
@@ -49,9 +49,9 @@ public class AdminService : IAdminService
         }
     }
 
-    private void EnsureUserEmailIsUnique(Guid id)
+    private void EnsureUserEmailIsUnique(string email)
     {
-        if (UserRepository.Exists(id))
+        if (UserRepository.Exists(email))
         {
             throw new Exception("User already exists.");
         }
@@ -67,14 +67,15 @@ public class AdminService : IAdminService
 
     public Guid CreateBusinessOwner(CreateUserArgs args)
     {
-        EnsureUserEmailIsUnique(Guid.Parse(args.Id));
-        var role = RoleRepository.GetRole(args.Role);
+        EnsureUserEmailIsUnique(args.Email);
+        var role = RoleRepository.Get(args.Role);
         var user = new User(args.Name, args.Surname, args.Email, args.Password, role);
         UserRepository.Add(user);
         return user.Id;
     }
 
-    public PagedData<GetUsersArgs> GetUsers(int? currentPage = null, int? pageSize = null, string? fullNameFilter = null,
+    public PagedData<GetUsersArgs> GetUsers(int? currentPage = null, int? pageSize = null,
+        string? fullNameFilter = null,
         string? roleFilter = null)
     {
         currentPage ??= 1;

@@ -4,6 +4,10 @@ namespace BusinessLogic.Roles.Entities;
 
 public class Role
 {
+    public static Role Admin = new Role("Admin", []);
+    public static Role HomeOwner = new Role("HomeOwner", []);
+    public static Role BusinessOwner = new Role("BusinessOwner", []);
+
     [Key]
     public string Name { get; init; } = string.Empty;
     public List<SystemPermission> Permissions { get; init; } = [];

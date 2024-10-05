@@ -1,4 +1,5 @@
-﻿using BusinessLogic.BusinessOwners.Entities;
+﻿using BusinessLogic.Auth.Entities;
+using BusinessLogic.BusinessOwners.Entities;
 using BusinessLogic.Devices.Entities;
 using BusinessLogic.Notifications.Entities;
 using BusinessLogic.Roles.Entities;
@@ -15,13 +16,14 @@ public class Context(DbContextOptions<Context> options) : DbContext(options)
     public DbSet<Device> Devices { get; set; } = null!;
     public DbSet<Notification> Notifications { get; set; } = null!;
     public DbSet<Business> Businesses { get; set; } = null!;
+    public DbSet<Token> Tokens { get; set; } = null!;
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
         modelBuilder.Entity<Role>().HasData(
-            new Role("Admin", []),
-            new Role("Business Owner", []),
-            new Role("Home Owner", []));
+            Role.Admin,
+            Role.BusinessOwner,
+            Role.HomeOwner);
 
         base.OnModelCreating(modelBuilder);
     }

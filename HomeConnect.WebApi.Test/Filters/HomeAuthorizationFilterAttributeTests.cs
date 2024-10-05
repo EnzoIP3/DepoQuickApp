@@ -1,6 +1,7 @@
 using System.Net;
 using BusinessLogic.HomeOwners.Entities;
 using BusinessLogic.HomeOwners.Repositories;
+using BusinessLogic.HomeOwners.Services;
 using BusinessLogic.Roles.Entities;
 using BusinessLogic.Users.Entities;
 using BusinessLogic.Users.Repositories;
@@ -20,7 +21,7 @@ public class HomeAuthorizationFilterAttributeTests
 {
     private Mock<HttpContext> _httpContextMock = null!;
     private Mock<IUserRepository> _userRepositoryMock = null!;
-    private Mock<IHomeRepository> _homeRepositoryMock = null!;
+    private Mock<IHomeOwnerService> _homeOwnerServiceMock = null!;
     private AuthorizationFilterContext _context = null!;
     private HomeAuthorizationFilterAttribute _attribute = null;
     private readonly string _homeIdRoute = "homesId";
@@ -31,9 +32,9 @@ public class HomeAuthorizationFilterAttributeTests
     public void Initialize()
     {
         _httpContextMock = new Mock<HttpContext>(MockBehavior.Strict);
-        _homeRepositoryMock = new Mock<IHomeRepository>(MockBehavior.Strict);
+        _homeOwnerServiceMock = new Mock<IHomeOwnerService>(MockBehavior.Strict);
         _userRepositoryMock = new Mock<IUserRepository>(MockBehavior.Strict);
-        _attribute = new HomeAuthorizationFilterAttribute(_homeRepositoryMock.Object, "some-permission");
+        _attribute = new HomeAuthorizationFilterAttribute(_homeOwnerServiceMock.Object, "some-permission");
 
         _context = new AuthorizationFilterContext(
             new ActionContext(
@@ -98,7 +99,7 @@ public class HomeAuthorizationFilterAttributeTests
             }
         };
         _httpContextMock.Setup(h => h.Items).Returns(items);
-        _homeRepositoryMock.Setup(h => h.Get(home.Id)).Returns(home);
+        _homeOwnerServiceMock.Setup(h => h.GetHome(home.Id)).Returns(home);
 
         var routeData = new RouteData();
         routeData.Values["action"] = "SomeAction";

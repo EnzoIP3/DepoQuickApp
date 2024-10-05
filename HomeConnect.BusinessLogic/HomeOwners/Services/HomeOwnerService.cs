@@ -109,6 +109,11 @@ public class HomeOwnerService : IHomeOwnerService
         AddDevicesToHome(home, devices);
     }
 
+    public Home GetHome(Guid homeId)
+    {
+        throw new NotImplementedException();
+    }
+
     private void EnsureDevicesAreNotAdded(IEnumerable<string> argsDeviceIds, Home home)
     {
         var deviceIds = argsDeviceIds.ToList();

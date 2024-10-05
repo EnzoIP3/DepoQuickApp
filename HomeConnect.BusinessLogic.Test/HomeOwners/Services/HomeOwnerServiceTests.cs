@@ -136,6 +136,7 @@ public class HomeOwnerServiceTests
             CanListDevices = true
         };
         _userRepositoryMock.Setup(x => x.Get(Guid.Parse(model.HomeOwnerId))).Returns(invitedUser);
+        _homeRepositoryMock.Setup(x => x.Exists(Guid.Parse(model.HomeId))).Returns(true);
         _homeRepositoryMock.Setup(x => x.Get(Guid.Parse(model.HomeId))).Returns(home);
 
         // Act
@@ -206,6 +207,7 @@ public class HomeOwnerServiceTests
             CanAddDevices = true,
             CanListDevices = true
         };
+        _homeRepositoryMock.Setup(x => x.Exists(home.Id)).Returns(true);
         _homeRepositoryMock.Setup(x => x.Get(home.Id)).Returns(home);
 
         // Act
@@ -238,6 +240,7 @@ public class HomeOwnerServiceTests
         };
         _deviceRepositoryMock.Setup(x => x.Get(device.Id)).Returns(device);
         _deviceRepositoryMock.Setup(x => x.Get(camera.Id)).Returns(camera);
+        _homeRepositoryMock.Setup(x => x.Exists(home.Id)).Returns(true);
         _homeRepositoryMock.Setup(x => x.Get(home.Id)).Returns(home);
         _ownedDeviceRepositoryMock.Setup(x => x.Add(It.IsAny<OwnedDevice>())).Verifiable();
         _ownedDeviceRepositoryMock.Setup(x => x.GetOwnedDevicesByHome(home)).Returns(new List<OwnedDevice>());
@@ -289,6 +292,7 @@ public class HomeOwnerServiceTests
         Device camera = new Camera("Camera", 2, "A camera", "https://example.com/image.png", [], new Business(), true,
             true, true, true);
         var deviceIdList = new List<string> { device.Id.ToString(), camera.Id.ToString() };
+        _homeRepositoryMock.Setup(x => x.Exists(home.Id)).Returns(true);
         _homeRepositoryMock.Setup(x => x.Get(home.Id)).Returns(home);
         _ownedDeviceRepositoryMock.Setup(x => x.GetOwnedDevicesByHome(home)).Returns(new List<OwnedDevice> { new OwnedDevice(home, device) });
 
@@ -313,6 +317,7 @@ public class HomeOwnerServiceTests
         var home = new Home(_user, "Main St 123", 1.0, 2.0, 5);
         var member = new Member(new global::BusinessLogic.Users.Entities.User("Jane", "Doe", "test@example.com", "12345678@My", new global::BusinessLogic.Roles.Entities.Role()));
         home.AddMember(member);
+        _homeRepositoryMock.Setup(x => x.Exists(home.Id)).Returns(true);
         _homeRepositoryMock.Setup(x => x.Get(home.Id)).Returns(home);
 
         // Act
@@ -357,6 +362,7 @@ public class HomeOwnerServiceTests
             true, true, true);
         var ownedDevices =
             new List<OwnedDevice>() { new OwnedDevice(home, sensor), new OwnedDevice(home, camera) };
+        _homeRepositoryMock.Setup(x => x.Exists(home.Id)).Returns(true);
         _homeRepositoryMock.Setup(x => x.Get(home.Id)).Returns(home);
         _ownedDeviceRepositoryMock.Setup(x => x.GetOwnedDevicesByHome(home)).Returns(ownedDevices);
 

@@ -25,9 +25,24 @@ public class BusinessRepository : PaginatedRepositoryBase<Business>, IBusinessRe
         return Context.Businesses.FirstOrDefault(b => b.Owner.Email == ownerEmail);
     }
 
-    public Business? Get(string rut)
+    public Business Get(string rut)
     {
-        return Context.Businesses.FirstOrDefault(b => b.Rut == rut);
+        return Context.Businesses.First(b => b.Rut == rut);
+    }
+
+    public bool Exists(string rut)
+    {
+        return Context.Businesses.Any(b => b.Rut == rut);
+    }
+
+    public Business GetByOwnerId(Guid ownerId)
+    {
+        throw new NotImplementedException();
+    }
+
+    public bool ExistsByOwnerId(Guid ownerId)
+    {
+        throw new NotImplementedException();
     }
 
     public void Add(Business business)

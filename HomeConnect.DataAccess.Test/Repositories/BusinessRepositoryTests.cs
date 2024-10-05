@@ -46,10 +46,7 @@ public class BusinessRepositoryTests
         // Arrange
         var expected = new PagedData<Business>()
         {
-            Data = [_validBusiness, _otherBusiness],
-            Page = 1,
-            PageSize = 2,
-            TotalPages = 1
+            Data = [_validBusiness, _otherBusiness], Page = 1, PageSize = 2, TotalPages = 1
         };
 
         // Act
@@ -199,6 +196,23 @@ public class BusinessRepositoryTests
     }
 
     #endregion
+
+    #endregion
+
+    #region Exists
+
+    [TestMethod]
+    public void Exists_WhenBusinessExists_ReturnsTrue()
+    {
+        // Arrange
+        var rut = _validBusiness.Rut;
+
+        // Act
+        var result = _businessRepository.Exists(rut);
+
+        // Assert
+        result.Should().BeTrue();
+    }
 
     #endregion
 }

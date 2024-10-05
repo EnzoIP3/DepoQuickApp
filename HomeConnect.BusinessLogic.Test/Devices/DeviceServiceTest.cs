@@ -67,4 +67,34 @@ public sealed class DeviceServiceTest
             It.Is<string>(a => a == parameters.BusinessNameFilter),
             It.Is<string>(a => a == parameters.DeviceTypeFilter)), Times.Once);
     }
+
+    [TestMethod]
+    public void GetAllDeviceTypes_WhenCalled_ReturnsDeviceTypes()
+    {
+        // Arrange
+        var deviceRepository = new Mock<IDeviceRepository>();
+        var ownedDeviceRepository = new Mock<IOwnedDeviceRepository>();
+        var expectedDeviceTypes = new List<string> { "Sensor", "Camera" };
+        deviceRepository.Setup(x => x.GetDevices(It.IsAny<int>(), It.IsAny<int>(), It.IsAny<string>(), It.IsAny<int?>(), It.IsAny<string>(), It.IsAny<string>())).Returns(new PagedData<Device>
+        {
+            Data = new List<Device>
+            {
+                new Device { Type = "Sensor" },
+                new Device { Type = "Camera" },
+                new Device { Type = "Sensor" }
+            },
+            Page = 1,
+            PageSize = 3,
+            TotalPages = 1
+        });
+
+        var deviceService = new DeviceService(deviceRepository.Object, ownedDeviceRepository.Object);
+
+        // Act
+        var result = deviceService.GetAllDeviceTypes();
+
+        // Assert
+        deviceRepository.Verify(x => x.GetDevices(It.IsAny<int>(), It.IsAny<int>(), It.IsAny<string>(), It.IsAny<int?>(), It.IsAny<string>(), It.IsAny<string>()), Times.Once);
+        result.Should().BeEquivalentTo(expectedDeviceTypes);
+    }
 }

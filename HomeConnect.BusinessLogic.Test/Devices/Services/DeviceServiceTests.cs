@@ -35,6 +35,7 @@ public class DeviceServiceTests
     {
         // Arrange
         var hardwareId = Guid.NewGuid().ToString();
+        _ownedDeviceRepositoryMock.Setup(x => x.Exists(hardwareId)).Returns(true);
         _ownedDeviceRepositoryMock.Setup(x => x.ToggleConnection(hardwareId)).Returns(true);
 
         // Act

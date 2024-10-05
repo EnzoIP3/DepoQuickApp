@@ -4,7 +4,7 @@ using BusinessLogic.Users.Entities;
 using FluentAssertions;
 using HomeConnect.DataAccess.Repositories;
 
-namespace HomeConnect.DataAccess.Test.Devices;
+namespace HomeConnect.DataAccess.Test.Repositories;
 
 [TestClass]
 public class DeviceRepositoryTests
@@ -26,6 +26,10 @@ public class DeviceRepositoryTests
         _context.Database.EnsureDeleted();
     }
 
+    #region Add
+
+    #region Success
+
     [TestMethod]
     public void Add_WhenDeviceDoesNotExist_ShouldAddDevice()
     {
@@ -40,6 +44,10 @@ public class DeviceRepositoryTests
         // Assert
         _context.Devices.Should().Contain(device);
     }
+
+    #endregion
+
+    #region Error
 
     [TestMethod]
     public void Add_WhenDeviceExists_ShouldThrowException()
@@ -56,4 +64,50 @@ public class DeviceRepositoryTests
         // Assert
         act.Should().Throw<ArgumentException>();
     }
+
+    #endregion
+
+    #endregion
+
+    #region Get
+
+    #region Success
+
+    [TestMethod]
+    public void Get_WhenDeviceExists_ShouldReturnDevice()
+    {
+        // Arrange
+        var business = new Business("12345", "Business", new User());
+        var device = new Device("Device", 12345, "Device description", "https://example.com/image.png",
+            [], "Sensor", business);
+        _deviceRepository.Add(device);
+        _context.SaveChanges();
+
+        // Act
+        var result = _deviceRepository.Get(device.Id);
+
+        // Assert
+        result.Should().BeEquivalentTo(device);
+    }
+
+    #endregion
+
+    #region Error
+
+    [TestMethod]
+    public void Get_WhenDeviceDoesNotExist_ShouldThrowArgumentException()
+    {
+        // Arrange
+        var nonExistentDeviceId = Guid.NewGuid();
+
+        // Act
+        Action act = () => _deviceRepository.Get(nonExistentDeviceId);
+
+        // Assert
+        act.Should().Throw<ArgumentException>();
+    }
+
+    #endregion
+
+    #endregion
 }

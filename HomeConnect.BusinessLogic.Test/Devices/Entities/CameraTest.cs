@@ -2,7 +2,7 @@ using BusinessLogic.BusinessOwners.Entities;
 using BusinessLogic.Devices.Entities;
 using FluentAssertions;
 
-namespace HomeConnect.BusinessLogic.Test.Devices.Entities;
+namespace HomeConnect.BusinessLogic.Test.Devices;
 
 [TestClass]
 public class CameraTest

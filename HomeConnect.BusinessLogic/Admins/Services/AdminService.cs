@@ -37,7 +37,7 @@ public class AdminService : IAdminService
         UserRepository.Delete(id);
     }
 
-    private void ValidateAdminModel(CreateUserArgs args)
+    private static void ValidateAdminModel(CreateUserArgs args)
     {
         if (string.IsNullOrWhiteSpace(args.Name) ||
             string.IsNullOrWhiteSpace(args.Surname) ||
@@ -80,7 +80,7 @@ public class AdminService : IAdminService
     {
         currentPage ??= 1;
         pageSize ??= 10;
-        var users = UserRepository.GetUsers((int)currentPage, (int)pageSize, fullNameFilter, roleFilter);
+        var users = UserRepository.GetAllPaged((int)currentPage, (int)pageSize, fullNameFilter, roleFilter);
         var data = users.Data.Select(x => new GetUsersArgs
         {
             Id = x.Id.ToString(),
@@ -101,7 +101,7 @@ public class AdminService : IAdminService
     {
         currentPage ??= 1;
         pageSize ??= 10;
-        var businesses = BusinessRepository.GetBusinesses((int)currentPage, (int)pageSize, fullNameFilter,
+        var businesses = BusinessRepository.GetPagedData((int)currentPage, (int)pageSize, fullNameFilter,
             nameFilter);
         var data = businesses.Data.Select(x => new GetBusinessesArgs
         {

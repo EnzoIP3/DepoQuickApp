@@ -3,7 +3,7 @@ using BusinessLogic.Devices.Entities;
 using BusinessLogic.HomeOwners.Entities;
 using FluentAssertions;
 
-namespace HomeConnect.BusinessLogic.Test.Devices.Entities;
+namespace HomeConnect.BusinessLogic.Test.Devices;
 
 [TestClass]
 public class OwnedDeviceTests

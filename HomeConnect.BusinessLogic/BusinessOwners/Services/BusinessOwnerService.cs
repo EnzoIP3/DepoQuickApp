@@ -8,7 +8,7 @@ using BusinessLogic.Users.Repositories;
 
 namespace BusinessLogic.BusinessOwners.Services;
 
-public class BusinessOwnerService
+public class BusinessOwnerService : IBusinessOwnerService
 {
     private IDeviceRepository DeviceRepository { get; init; }
     private IUserRepository UserRepository { get; init; }
@@ -22,7 +22,7 @@ public class BusinessOwnerService
         DeviceRepository = deviceRepository;
     }
 
-    public void CreateBusiness(string ownerEmail, string businessRut, string businessName)
+    public string CreateBusiness(string ownerEmail, string businessRut, string businessName)
     {
         EnsureOwnerExists(ownerEmail);
         EnsureOwnerDoesNotHaveBusiness(ownerEmail);
@@ -31,14 +31,24 @@ public class BusinessOwnerService
         var owner = UserRepository.Get(ownerEmail);
         var business = new Business(businessRut, businessName, owner);
         BusinessRepository.Add(business);
+        return business.Rut;
     }
 
-    public void CreateDevice(string name, int modelNumber, string description, string mainPhoto,
-        List<string> secondaryPhotos, string type, Business business)
+    public Guid CreateDevice(string name, int modelNumber, string description, string mainPhoto, List<string> secondaryPhotos, string type, Business business)
     {
         var device = new Device(name, modelNumber, description, mainPhoto, secondaryPhotos, type, business);
         DeviceRepository.EnsureDeviceDoesNotExist(device);
         DeviceRepository.Add(device);
+        return device.Id;
+    }
+
+    public Guid CreateCamera(string name, int modelNumber, string description, string mainPhoto, List<string> secondaryPhotos,
+        Business business, bool motionDetection, bool personDetection, bool isExterior, bool isInterior)
+    {
+        var camera = new Camera(name, modelNumber, description, mainPhoto, secondaryPhotos, business, motionDetection, personDetection, isExterior, isInterior);
+        DeviceRepository.EnsureDeviceDoesNotExist(camera);
+        DeviceRepository.Add(camera);
+        return camera.Id;
     }
 
     private void EnsureOwnerExists(string ownerEmail)

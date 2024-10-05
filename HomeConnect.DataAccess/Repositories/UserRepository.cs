@@ -4,13 +4,23 @@ using BusinessLogic.Users.Repositories;
 
 namespace HomeConnect.DataAccess.Repositories;
 
-public class UserRepository : IUserRepository
+public class UserRepository : PaginatedRepositoryBase<User>, IUserRepository
 {
     private readonly Context _context;
 
     public UserRepository(Context context)
+        : base(context)
     {
         _context = context;
+    }
+
+    public PagedData<User> GetAllPaged(int currentPage, int pageSize, string? fullNameFilter = null,
+        string? roleFilter = null)
+    {
+        var filters = new object[2];
+        filters[0] = fullNameFilter ?? string.Empty;
+        filters[1] = roleFilter ?? string.Empty;
+        return GetAllPaged(currentPage, pageSize, filters);
     }
 
     public User Get(string email)
@@ -46,22 +56,20 @@ public class UserRepository : IUserRepository
         return _context.Users.First(u => u.Id == id);
     }
 
-    public PagedData<User> GetUsers(int currentPage, int pageSize, string? fullNameFilter = null,
-        string? roleFilter = null)
+    protected override IQueryable<User> GetQueryable()
     {
-        IQueryable<User> query = _context.Users;
+        return _context.Users;
+    }
+
+    protected override IQueryable<User> ApplyFilters(IQueryable<User> query, params object[] filters)
+    {
+        var fullNameFilter = filters.Length > 0 ? filters[0] as string : null;
+        var roleFilter = filters.Length > 1 ? filters[1] as string : null;
+
         query = FilterByFullName(fullNameFilter, query);
         query = FilterByRole(roleFilter, query);
-        return new PagedData<User>()
-        {
-            Data = query
-                .Skip((currentPage - 1) * pageSize)
-                .Take(pageSize)
-                .ToList(),
-            Page = currentPage,
-            PageSize = pageSize,
-            TotalPages = (int)Math.Ceiling(query.Count() / (double)pageSize)
-        };
+
+        return query;
     }
 
     private static IQueryable<User> FilterByRole(string? roleFilter, IQueryable<User> query)

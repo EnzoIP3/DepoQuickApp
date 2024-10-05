@@ -110,7 +110,7 @@ public class UserRepositoryTest
     public void GetUsers_WhenCalled_ReturnsPaginatedUsers()
     {
         // Act
-        var result = _userRepository.GetUsers(1, 2);
+        var result = _userRepository.GetAllPaged(1, 2);
 
         // Assert
         result.Data.Should().HaveCount(2);
@@ -121,7 +121,7 @@ public class UserRepositoryTest
     public void GetUsers_WhenFilteredByFullName_ReturnsFilteredUsers()
     {
         // Act
-        var result = _userRepository.GetUsers(1, 10, fullNameFilter: "Jane");
+        var result = _userRepository.GetAllPaged(1, 10, fullNameFilter: "Jane");
 
         // Assert
         result.Data.Should().HaveCount(1);
@@ -132,7 +132,7 @@ public class UserRepositoryTest
     public void GetUsers_WhenFilteredByFullNameAndRole_ReturnsFilteredUsers()
     {
         // Act
-        var result = _userRepository.GetUsers(1, 10, "J", "Role 1");
+        var result = _userRepository.GetAllPaged(1, 10, "J", "Role 1");
 
         // Assert
         result.Data.Should().HaveCount(1);
@@ -167,6 +167,55 @@ public class UserRepositoryTest
         // Assert
         result.Should().NotBeNull();
         result.Email.Should().Be(_validUser.Email);
+    }
+
+    #endregion
+
+    #endregion
+
+    #region Exists
+
+    #region Success
+
+    [TestMethod]
+    public void Exists_WhenUserExists_ShouldReturnTrue()
+    {
+        // Act
+        var exists = _userRepository.Exists(_validUser.Id);
+
+        // Assert
+        exists.Should().BeTrue();
+    }
+
+    [TestMethod]
+    public void Exists_WhenUserDoesNotExist_ShouldReturnFalse()
+    {
+        // Arrange
+        var nonExistentUserId = Guid.NewGuid();
+
+        // Act
+        var exists = _userRepository.Exists(nonExistentUserId);
+
+        // Assert
+        exists.Should().BeFalse();
+    }
+
+    #endregion
+
+    #endregion
+
+    #region Delete
+
+    #region Success
+
+    [TestMethod]
+    public void Delete_WhenUserExists_ShouldDeleteUser()
+    {
+        // Act
+        _userRepository.Delete(_validUser.Id);
+
+        // Assert
+        _userRepository.Exists(_validUser.Id).Should().BeFalse();
     }
 
     #endregion

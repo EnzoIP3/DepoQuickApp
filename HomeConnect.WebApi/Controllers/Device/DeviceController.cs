@@ -42,6 +42,7 @@ public class DeviceController : ControllerBase
     [HttpGet("device-types")]
     public IActionResult GetDeviceTypes()
     {
-        throw new NotImplementedException();
+        var deviceTypes = _deviceService.GetAllDeviceTypes();
+        return Ok(deviceTypes);
     }
 }

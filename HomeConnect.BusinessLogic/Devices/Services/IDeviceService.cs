@@ -4,5 +4,5 @@ using HomeConnect.WebApi.Controllers.Devices.Models;
 
 public interface IDeviceService
 {
-    PagedData<Device> GetDevices(DeviceQueryParameters parameters);
+    PagedData<Device> GetDevices(GetDeviceArgs parameters);
 }

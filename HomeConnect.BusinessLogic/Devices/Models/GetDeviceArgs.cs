@@ -1,6 +1,6 @@
 namespace HomeConnect.WebApi.Controllers.Devices.Models;
 
-public class DeviceQueryParameters
+public class GetDeviceArgs
 {
     public int? Page { get; set; } = 1;
     public int? PageSize { get; set; } = 20;

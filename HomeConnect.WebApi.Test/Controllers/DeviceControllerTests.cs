@@ -43,7 +43,7 @@ public class DeviceControllerTests
     public void GetDevices_WhenCalledWithValidRequestAndNoFiltersOrPagination_ReturnsExpectedResponse()
     {
         // Arrange
-        var parameters = new DeviceQueryParameters();
+        var parameters = new GetDeviceArgs();
         _deviceService.Setup(x => x.GetDevices(parameters)).Returns(_pagedList);
 
         // Act
@@ -62,7 +62,7 @@ public class DeviceControllerTests
     {
         // Arrange
         var deviceNameFilter = _expectedDevices.First().Name;
-        var parameters = new DeviceQueryParameters { DeviceNameFilter = deviceNameFilter };
+        var parameters = new GetDeviceArgs { DeviceNameFilter = deviceNameFilter };
         _deviceService.Setup(x => x.GetDevices(parameters)).Returns(_pagedList);
 
         // Act
@@ -81,7 +81,7 @@ public class DeviceControllerTests
     {
         // Arrange
         var modelNameFilter = _expectedDevices.First().ModelNumber;
-        var parameters = new DeviceQueryParameters { ModelNumberFilter = modelNameFilter };
+        var parameters = new GetDeviceArgs { ModelNumberFilter = modelNameFilter };
         _deviceService.Setup(x => x.GetDevices(parameters)).Returns(_pagedList);
 
         // Act
@@ -100,7 +100,7 @@ public class DeviceControllerTests
     {
         // Arrange
         var businessNameFilter = _expectedDevices.First().Business.Name;
-        var parameters = new DeviceQueryParameters { BusinessNameFilter = businessNameFilter };
+        var parameters = new GetDeviceArgs { BusinessNameFilter = businessNameFilter };
         _deviceService.Setup(x => x.GetDevices(parameters)).Returns(_pagedList);
 
         // Act
@@ -119,7 +119,7 @@ public class DeviceControllerTests
     {
         // Arrange
         var deviceTypeFilter = _expectedDevices.First().Type;
-        var parameters = new DeviceQueryParameters { DeviceTypeFilter = deviceTypeFilter };
+        var parameters = new GetDeviceArgs { DeviceTypeFilter = deviceTypeFilter };
         _deviceService.Setup(x => x.GetDevices(parameters)).Returns(_pagedList);
 
         // Act

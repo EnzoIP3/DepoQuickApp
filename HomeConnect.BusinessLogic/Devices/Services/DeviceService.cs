@@ -13,7 +13,7 @@ public class DeviceService : IDeviceService
         DeviceRepository = deviceRepository;
     }
 
-    public PagedData<Device> GetDevices(DeviceQueryParameters parameters)
+    public PagedData<Device> GetDevices(GetDeviceArgs parameters)
     {
         parameters.Page ??= 1;
         parameters.PageSize ??= 10;

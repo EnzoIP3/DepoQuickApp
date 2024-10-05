@@ -16,7 +16,7 @@ public class DeviceController : ControllerBase
     }
 
     [HttpGet]
-    public IActionResult GetDevices([FromQuery] DeviceQueryParameters parameters)
+    public IActionResult GetDevices([FromQuery] GetDeviceArgs parameters)
     {
         PagedData<BusinessLogic.Devices.Entities.Device> devices = _deviceService.GetDevices(parameters);
         var response = ResponseFromDevices(devices);

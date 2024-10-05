@@ -25,7 +25,7 @@ public sealed class DeviceServiceTest
 
         var devices = new List<Device> { validDevice, otherDevice };
 
-        var parameters = new DeviceQueryParameters
+        var parameters = new GetDeviceArgs
         {
             Page = 1,
             PageSize = 10

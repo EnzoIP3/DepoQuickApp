@@ -39,7 +39,7 @@ public class HomeOwnerService : IHomeOwnerService
         var home = _homeRepository.GetByAddress(address);
         if (home != null)
         {
-            throw new ArgumentException("Address is already in use");
+            throw new InvalidOperationException("Address is already in use.");
         }
     }
 
@@ -47,7 +47,7 @@ public class HomeOwnerService : IHomeOwnerService
     {
         if (!_userRepository.Exists(Guid.Parse(homeOwnerId)))
         {
-            throw new ArgumentException("User does not exist");
+            throw new ArgumentException("User does not exist.");
         }
     }
 
@@ -55,7 +55,7 @@ public class HomeOwnerService : IHomeOwnerService
     {
         if (string.IsNullOrWhiteSpace(args.HomeOwnerId) || string.IsNullOrWhiteSpace(args.Address))
         {
-            throw new ArgumentException("All arguments are required");
+            throw new ArgumentException("All arguments are required.");
         }
     }
 
@@ -90,7 +90,7 @@ public class HomeOwnerService : IHomeOwnerService
         var home = GetHome(Guid.Parse(args.HomeId));
         if (home.Members.Any(m => m.User.Id.ToString() == args.HomeOwnerId))
         {
-            throw new ArgumentException("Member is already added to the home");
+            throw new ArgumentException("Member is already added to the home.");
         }
     }
 
@@ -98,7 +98,7 @@ public class HomeOwnerService : IHomeOwnerService
     {
         if (!Guid.TryParse(homeId, out _))
         {
-            throw new ArgumentException("HomeId must be a valid guid");
+            throw new ArgumentException("Home ID must be a valid GUID.");
         }
     }
 
@@ -106,7 +106,7 @@ public class HomeOwnerService : IHomeOwnerService
     {
         if (string.IsNullOrWhiteSpace(args.HomeId) || string.IsNullOrWhiteSpace(args.HomeOwnerId))
         {
-            throw new ArgumentException("All arguments are required");
+            throw new ArgumentException("All arguments are required.");
         }
     }
 
@@ -130,7 +130,7 @@ public class HomeOwnerService : IHomeOwnerService
     {
         if (!_homeRepository.Exists(homeId))
         {
-            throw new ArgumentException("Home does not exist");
+            throw new ArgumentException("Home does not exist.");
         }
     }
 
@@ -142,7 +142,7 @@ public class HomeOwnerService : IHomeOwnerService
         var duplicateDevices = deviceIds.Intersect(ownedDeviceIds).ToList();
         if (duplicateDevices.Any())
         {
-            throw new ArgumentException(
+            throw new InvalidOperationException(
                 $"Devices with ids {string.Join(", ", duplicateDevices)} are already added to the home");
         }
     }
@@ -194,7 +194,7 @@ public class HomeOwnerService : IHomeOwnerService
     {
         if (!_homeRepository.ExistsMember(memberId))
         {
-            throw new ArgumentException("Member does not exist");
+            throw new ArgumentException("Member does not exist.");
         }
     }
 

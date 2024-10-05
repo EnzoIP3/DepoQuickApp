@@ -96,7 +96,7 @@ public class Device
     {
         if (!Uri.IsWellFormedUriString(photoUrl, UriKind.Absolute))
         {
-            throw new ArgumentException($"{photoUrl} is not a valid image URL");
+            throw new ArgumentException($"{photoUrl} is not a valid image URL.");
         }
     }
 

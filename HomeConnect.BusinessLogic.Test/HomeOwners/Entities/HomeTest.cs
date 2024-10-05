@@ -106,7 +106,7 @@ public class HomeTest
         var act = () => home.AddMember(member);
 
         // Assert
-        act.Should().Throw<ArgumentException>();
+        act.Should().Throw<InvalidOperationException>();
     }
 
     [TestMethod]

@@ -138,7 +138,7 @@ public class HomeOwnerServiceTests
         var act = () => _homeOwnerService.CreateHome(model);
 
         // Assert
-        act.Should().Throw<ArgumentException>().WithMessage("Address is already in use");
+        act.Should().Throw<InvalidOperationException>().WithMessage("Address is already in use.");
     }
 
     #endregion
@@ -289,7 +289,7 @@ public class HomeOwnerServiceTests
         var act = () => _homeOwnerService.AddMemberToHome(args);
 
         // Assert
-        act.Should().Throw<ArgumentException>().WithMessage("Member is already added to the home");
+        act.Should().Throw<ArgumentException>().WithMessage("Member is already added to the home.");
     }
 
     #endregion
@@ -382,7 +382,7 @@ public class HomeOwnerServiceTests
             });
 
         // Assert
-        act.Should().Throw<ArgumentException>()
+        act.Should().Throw<InvalidOperationException>()
             .WithMessage($"Devices with ids {device.Id.ToString()} are already added to the home");
     }
 
@@ -495,7 +495,7 @@ public class HomeOwnerServiceTests
         var act = () => _homeOwnerService.UpdateMemberNotifications(nonExistentMemberId, true);
 
         // Assert
-        act.Should().Throw<ArgumentException>().WithMessage("Member does not exist");
+        act.Should().Throw<ArgumentException>().WithMessage("Member does not exist.");
     }
 
     #endregion
@@ -564,7 +564,7 @@ public class HomeOwnerServiceTests
         var act = () => _homeOwnerService.GetHome(nonExistentHomeId);
 
         // Assert
-        act.Should().Throw<ArgumentException>().WithMessage("Home does not exist");
+        act.Should().Throw<ArgumentException>().WithMessage("Home does not exist.");
     }
     #endregion
     #region success

@@ -73,7 +73,7 @@ public class UserServiceTest
         var act = () => _userService.CreateUser(_args);
 
         // Assert
-        act.Should().Throw<ArgumentException>();
+        act.Should().Throw<InvalidOperationException>();
     }
 
     [TestMethod]

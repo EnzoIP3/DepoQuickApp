@@ -29,7 +29,7 @@ public class DeviceServiceTests
         var act = () => _deviceService.Toggle(id);
 
         // Assert
-        act.Should().Throw<ArgumentException>().WithMessage("Hardware ID is invalid");
+        act.Should().Throw<ArgumentException>().WithMessage("Hardware ID is invalid.");
     }
 
     [TestMethod]
@@ -58,6 +58,6 @@ public class DeviceServiceTests
         var act = () => _deviceService.Toggle(hardwareId);
 
         // Assert
-        act.Should().Throw<ArgumentException>().WithMessage("Owned device does not exist");
+        act.Should().Throw<ArgumentException>().WithMessage("Owned device does not exist.");
     }
 }

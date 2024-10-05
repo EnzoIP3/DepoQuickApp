@@ -37,7 +37,7 @@ public class DeviceService : IDeviceService
     {
         if (!OwnedDeviceRepository.Exists(hardwareId))
         {
-            throw new ArgumentException("Owned device does not exist");
+            throw new ArgumentException("Owned device does not exist.");
         }
     }
 
@@ -45,7 +45,7 @@ public class DeviceService : IDeviceService
     {
         if (string.IsNullOrWhiteSpace(hardwareId) || !Guid.TryParse(hardwareId, out _))
         {
-            throw new ArgumentException("Hardware ID is invalid");
+            throw new ArgumentException("Hardware ID is invalid.");
         }
     }
 }

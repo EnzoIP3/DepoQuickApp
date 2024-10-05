@@ -35,7 +35,7 @@ public class Member
     {
         if (HasPermission(permission))
         {
-            throw new InvalidOperationException("Permission is already added");
+            throw new InvalidOperationException("That permission is already added.");
         }
     }
 
@@ -43,7 +43,7 @@ public class Member
     {
         if (!HasPermission(permission))
         {
-            throw new InvalidOperationException("Permission does not exist");
+            throw new ArgumentException("That permission does not exist");
         }
     }
 

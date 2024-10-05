@@ -31,7 +31,7 @@ public class AuthService : IAuthService
     {
         if (!_userRepository.ExistsByEmail(email))
         {
-            throw new ArgumentException("Invalid email or password");
+            throw new ArgumentException("Invalid email or password.");
         }
     }
 
@@ -39,7 +39,7 @@ public class AuthService : IAuthService
     {
         if (!user.Password.Equals(args.Password))
         {
-            throw new ArgumentException("Invalid email or password");
+            throw new ArgumentException("Invalid email or password.");
         }
     }
 
@@ -54,7 +54,7 @@ public class AuthService : IAuthService
     {
         if (!Guid.TryParse(id, out _))
         {
-            throw new ArgumentException("Invalid session id");
+            throw new ArgumentException("Token is not a valid GUID.");
         }
     }
 

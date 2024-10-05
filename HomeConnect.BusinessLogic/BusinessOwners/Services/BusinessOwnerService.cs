@@ -37,7 +37,7 @@ public class BusinessOwnerService : IBusinessOwnerService
     {
         if (Guid.TryParse(id, out _) == false)
         {
-            throw new ArgumentException("Owner does not exist");
+            throw new ArgumentException("The business owner ID is not a valid GUID.");
         }
     }
 
@@ -67,7 +67,7 @@ public class BusinessOwnerService : IBusinessOwnerService
     {
         if (!BusinessRepository.Exists(rut))
         {
-            throw new ArgumentException("Business does not exist");
+            throw new ArgumentException("That business does not exist.");
         }
     }
 
@@ -75,7 +75,7 @@ public class BusinessOwnerService : IBusinessOwnerService
     {
         if (!UserRepository.Exists(ownerId))
         {
-            throw new ArgumentException("Owner does not exist");
+            throw new ArgumentException("That business owner does not exist.");
         }
     }
 
@@ -83,7 +83,7 @@ public class BusinessOwnerService : IBusinessOwnerService
     {
         if (BusinessRepository.ExistsByOwnerId(ownerId))
         {
-            throw new ArgumentException("Owner already has a business");
+            throw new InvalidOperationException("Owner already has a business.");
         }
     }
 
@@ -91,7 +91,7 @@ public class BusinessOwnerService : IBusinessOwnerService
     {
         if (BusinessRepository.Exists(businessRut))
         {
-            throw new ArgumentException("Business with this RUT already exists");
+            throw new InvalidOperationException("There is already a business with this RUT.");
         }
     }
 }

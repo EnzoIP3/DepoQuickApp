@@ -45,7 +45,7 @@ public class Home
         var parts = address.Split(' ');
         if (parts.Length < 2)
         {
-            throw new ArgumentException("Address must be road and number");
+            throw new ArgumentException("Address must be road and number.");
         }
     }
 
@@ -54,7 +54,7 @@ public class Home
         var parts = address.Split(' ');
         if (!parts.Last().All(char.IsDigit))
         {
-            throw new ArgumentException("Address must be road and number");
+            throw new ArgumentException("Address must be road and number.");
         }
     }
 
@@ -63,7 +63,7 @@ public class Home
         var parts = address.Split(' ');
         if (!parts.Any(part => part.All(char.IsLetter)))
         {
-            throw new ArgumentException("Address must be road and number");
+            throw new ArgumentException("Address must be road and number.");
         }
     }
 
@@ -79,7 +79,7 @@ public class Home
     {
         if (Members.Count >= MaxMembers)
         {
-            throw new InvalidOperationException("Home is full");
+            throw new InvalidOperationException("This home is already full.");
         }
     }
 
@@ -87,7 +87,7 @@ public class Home
     {
         if (Members.Any(m => m == member))
         {
-            throw new ArgumentException("Member is already added");
+            throw new InvalidOperationException("The member is already added to this home.");
         }
     }
 
@@ -95,7 +95,7 @@ public class Home
     {
         if (member.User == Owner)
         {
-            throw new ArgumentException("Owner cannot be added as member");
+            throw new ArgumentException("Owner cannot be added as member.");
         }
     }
 }

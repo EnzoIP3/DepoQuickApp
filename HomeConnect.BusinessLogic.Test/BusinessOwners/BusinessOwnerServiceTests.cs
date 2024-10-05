@@ -119,7 +119,7 @@ public class BusinessOwnerServiceTests
         Action act = () => _businessOwnerService.CreateBusiness(args);
 
         // Assert
-        act.Should().Throw<ArgumentException>().WithMessage("Owner already has a business");
+        act.Should().Throw<InvalidOperationException>().WithMessage("Owner already has a business.");
         _businessRepository.Verify(x => x.Add(It.IsAny<Business>()), Times.Never);
     }
 
@@ -134,7 +134,7 @@ public class BusinessOwnerServiceTests
         Action act = () => _businessOwnerService.CreateBusiness(args);
 
         // Assert
-        act.Should().Throw<ArgumentException>().WithMessage("Owner does not exist");
+        act.Should().Throw<ArgumentException>().WithMessage("That business owner does not exist.");
         _businessRepository.Verify(x => x.Add(It.IsAny<Business>()), Times.Never);
     }
 
@@ -153,7 +153,7 @@ public class BusinessOwnerServiceTests
         Action act = () => _businessOwnerService.CreateBusiness(args);
 
         // Assert
-        act.Should().Throw<ArgumentException>().WithMessage("Business with this RUT already exists");
+        act.Should().Throw<InvalidOperationException>().WithMessage("There is already a business with this RUT.");
         _businessRepository.Verify(x => x.Add(It.IsAny<Business>()), Times.Never);
     }
 
@@ -167,7 +167,7 @@ public class BusinessOwnerServiceTests
         Action act = () => _businessOwnerService.CreateBusiness(args);
 
         // Assert
-        act.Should().Throw<ArgumentException>().WithMessage("Owner does not exist");
+        act.Should().Throw<ArgumentException>().WithMessage("The business owner ID is not a valid GUID.");
         _businessRepository.Verify(x => x.Add(It.IsAny<Business>()), Times.Never);
     }
 
@@ -301,7 +301,7 @@ public class BusinessOwnerServiceTests
         Action act = () => _businessOwnerService.CreateDevice(args);
 
         // Assert
-        act.Should().Throw<ArgumentException>().WithMessage("Business does not exist");
+        act.Should().Throw<ArgumentException>().WithMessage("That business does not exist.");
         _deviceRepository.Verify(x => x.Add(It.IsAny<Device>()), Times.Never);
     }
 
@@ -451,7 +451,7 @@ public class BusinessOwnerServiceTests
         Action act = () => _businessOwnerService.CreateCamera(args);
 
         // Assert
-        act.Should().Throw<ArgumentException>().WithMessage("Business does not exist");
+        act.Should().Throw<ArgumentException>().WithMessage("That business does not exist.");
         _deviceRepository.Verify(x => x.Add(It.IsAny<Device>()), Times.Never);
     }
 

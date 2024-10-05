@@ -32,7 +32,7 @@ public class UserService : IUserService
     {
         if (role.Name == Role.HomeOwner && args.ProfilePicture == null)
         {
-            throw new ArgumentException("Home owners must have a profile picture");
+            throw new ArgumentException("Home owners must have a profile picture.");
         }
     }
 
@@ -40,7 +40,7 @@ public class UserService : IUserService
     {
         if (_userRepository.ExistsByEmail(args.Email))
         {
-            throw new ArgumentException("User already exists");
+            throw new InvalidOperationException("User already exists.");
         }
     }
 
@@ -48,7 +48,7 @@ public class UserService : IUserService
     {
         if (!_roleRepository.Exists(args.Role))
         {
-            throw new ArgumentException("Invalid role");
+            throw new ArgumentException("Invalid role.");
         }
     }
 }

@@ -67,7 +67,7 @@ public sealed class AdminServiceTests
         Func<Guid> act = () => _adminService.Create(_validCreateUserArgs);
 
         // Assert
-        act.Should().Throw<Exception>().WithMessage("User already exists.");
+        act.Should().Throw<InvalidOperationException>().WithMessage("An user with that email already exists.");
     }
 
     [TestMethod]
@@ -87,7 +87,7 @@ public sealed class AdminServiceTests
         Func<Guid> act = () => _adminService.Create(invalidUserModel);
 
         // Assert
-        act.Should().Throw<ArgumentException>().WithMessage("Invalid input data.");
+        act.Should().Throw<ArgumentException>().WithMessage("All arguments are required.");
     }
 
     #endregion
@@ -182,7 +182,7 @@ public sealed class AdminServiceTests
         Func<Guid> act = () => _adminService.CreateBusinessOwner(businessOwnerModel);
 
         // Assert
-        act.Should().Throw<Exception>().WithMessage("User already exists.");
+        act.Should().Throw<InvalidOperationException>().WithMessage("An user with that email already exists.");
     }
 
     #endregion

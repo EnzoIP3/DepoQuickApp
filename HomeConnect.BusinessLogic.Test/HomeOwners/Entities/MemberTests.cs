@@ -120,7 +120,7 @@ public class MemberTests
         var act = () => member.DeletePermission(permission);
 
         // Assert
-        act.Should().Throw<InvalidOperationException>();
+        act.Should().Throw<ArgumentException>();
     }
 
     #endregion

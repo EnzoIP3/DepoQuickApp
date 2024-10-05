@@ -16,6 +16,13 @@ public class ExceptionFilter : IExceptionFilter
                     StatusCode = (int)HttpStatusCode.BadRequest
                 }
             },
+            {
+                typeof(InvalidOperationException),
+                ex => new ObjectResult(new { InnerCode = "Conflict", ex.Message })
+                {
+                    StatusCode = (int)HttpStatusCode.Conflict
+                }
+            }
         };
 
     public void OnException(ExceptionContext context)

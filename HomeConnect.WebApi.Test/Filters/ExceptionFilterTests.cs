@@ -65,4 +65,21 @@ public class ExceptionFilterTests
         FilterTestsUtils.GetInnerCode(concreteResponse.Value).Should().Be("BadRequest");
         FilterTestsUtils.GetMessage(concreteResponse.Value).Should().Be(exceptionMessage);
     }
+
+    [TestMethod]
+    public void OnException_WhenExceptionIsInvalidOperationException_ShouldResponseConflict()
+    {
+        var exceptionMessage = "Invalid operation";
+        _context.Exception = new InvalidOperationException(exceptionMessage);
+        _attribute.OnException(_context);
+
+        var response = _context.Result;
+
+        response.Should().NotBeNull();
+        var concreteResponse = response as ObjectResult;
+        concreteResponse.Should().NotBeNull();
+        concreteResponse!.StatusCode.Should().Be((int)HttpStatusCode.Conflict);
+        FilterTestsUtils.GetInnerCode(concreteResponse.Value).Should().Be("Conflict");
+        FilterTestsUtils.GetMessage(concreteResponse.Value).Should().Be(exceptionMessage);
+    }
 }

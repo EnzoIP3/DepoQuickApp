@@ -39,7 +39,7 @@ public class NotificationService : INotificationService
     {
         if (!OwnedDeviceRepository.Exists(argsHardwareId))
         {
-            throw new ArgumentException("Owned device does not exist");
+            throw new ArgumentException("Owned device does not exist.");
         }
     }
 
@@ -63,7 +63,7 @@ public class NotificationService : INotificationService
     {
         if (ownedDevice == null)
         {
-            throw new ArgumentException("Device not found");
+            throw new KeyNotFoundException("Device was not found.");
         }
     }
 }

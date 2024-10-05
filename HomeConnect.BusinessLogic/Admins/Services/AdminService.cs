@@ -45,7 +45,7 @@ public class AdminService : IAdminService
             string.IsNullOrWhiteSpace(args.Password) ||
             string.IsNullOrWhiteSpace(args.Role))
         {
-            throw new ArgumentException("Invalid input data.");
+            throw new ArgumentException("All arguments are required.");
         }
     }
 
@@ -53,7 +53,7 @@ public class AdminService : IAdminService
     {
         if (UserRepository.ExistsByEmail(email))
         {
-            throw new Exception("User already exists.");
+            throw new InvalidOperationException("An user with that email already exists.");
         }
     }
 
@@ -61,7 +61,7 @@ public class AdminService : IAdminService
     {
         if (!UserRepository.Exists(id))
         {
-            throw new Exception("Admin does not exist.");
+            throw new InvalidOperationException("Admin does not exist.");
         }
     }
 

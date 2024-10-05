@@ -29,6 +29,7 @@ public class DeviceRepositoryTests
         _secondValidDevice = new Device("DeviceValid2", 1234567, "Device description", "https://example2.com/image.png",
             [], "Sensor", new Business("1234567", "BusinessValid2", _validUser));
         _context.Add(_validDevice);
+        _context.Add(_secondValidDevice);
         _context.SaveChanges();
     }
 
@@ -146,6 +147,17 @@ public class DeviceRepositoryTests
         // Assert
         result.Data.Should().HaveCount(1);
         result.Data.First().Name.Should().Be("DeviceValid");
+    }
+
+    [TestMethod]
+    public void GetDevices_WhenFilteredByModelNumber_ReturnsFilteredDevices()
+    {
+        // Act
+        var result = _deviceRepository.GetDevices(1, 10, null, 1234567);
+
+        // Assert
+        result.Data.Should().HaveCount(1);
+        result.Data.First().ModelNumber.Should().Be(1234567);
     }
 
     #endregion

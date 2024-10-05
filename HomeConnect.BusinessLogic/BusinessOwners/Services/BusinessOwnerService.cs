@@ -23,6 +23,11 @@ public class BusinessOwnerService : IBusinessOwnerService
 
     public string CreateBusiness(CreateBusinessArgs args)
     {
+        if (Guid.TryParse(args.OwnerId, out _) == false)
+        {
+            throw new ArgumentException("Owner does not exist");
+        }
+
         EnsureOwnerExists(Guid.Parse(args.OwnerId));
         EnsureOwnerDoesNotHaveBusiness(Guid.Parse(args.OwnerId));
         EnsureBusinessRutDoesNotExist(args.Rut);

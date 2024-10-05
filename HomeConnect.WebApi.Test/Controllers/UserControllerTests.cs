@@ -29,7 +29,7 @@ public class UserControllerTests
 
         _user = new User("Name", "Surname", "email@email.com", "Password@100", new Role("Admin", []));
         _otherUser = new User("Name1", "Surname1", "email1@email.com", "Password@100", new Role("BusinessOwner", []));
-        _expectedUsers = new List<User> { _user, _otherUser };
+        _expectedUsers = [_user, _otherUser];
         _expectedPagination = new Pagination { Page = 1, PageSize = 10, TotalPages = 1 };
         _pagedList = new PagedData<User>
         {

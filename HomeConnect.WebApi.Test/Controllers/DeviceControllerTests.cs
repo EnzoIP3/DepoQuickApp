@@ -1,4 +1,3 @@
-using System.Collections.Generic;
 using BusinessLogic;
 using BusinessLogic.BusinessOwners.Entities;
 using BusinessLogic.Devices.Entities;
@@ -6,7 +5,6 @@ using FluentAssertions;
 using HomeConnect.WebApi.Controllers.Device;
 using HomeConnect.WebApi.Controllers.Devices.Models;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Moq;
 
 namespace HomeConnect.WebApi.Test.Controllers;
@@ -30,7 +28,7 @@ public class DeviceControllerTests
 
         _device = new Device("example1", 123, "example description 1", "https://www.example.com/photo1.jpg", [], "Sensor", new Business());
         _otherDevice = new Device("example1", 1234, "example description 2", "https://www.example.com/photo2.jpg", [], "Camera", new Business());
-        _expectedDevices = new List<Device> { _device, _otherDevice };
+        _expectedDevices = [_device, _otherDevice];
         _expectedPagination = new Pagination { Page = 1, PageSize = 10, TotalPages = 1 };
         _pagedList = new PagedData<Device>
         {

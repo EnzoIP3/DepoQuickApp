@@ -111,5 +111,16 @@ public class HomeRepositoryTests
         result.Should().BeEquivalentTo(_member);
     }
     #endregion
+    #region Error
+    [TestMethod]
+    public void GetMemberById_WhenMemberDoesNotExist_ShouldThrowException()
+    {
+        // Act
+        var action = () => _homeRepository.GetMemberById(Guid.NewGuid());
+
+        // Assert
+        action.Should().Throw<ArgumentException>().WithMessage("Member does not exist");
+    }
+    #endregion
     #endregion
 }

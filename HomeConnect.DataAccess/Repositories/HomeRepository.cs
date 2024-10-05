@@ -41,8 +41,18 @@ public class HomeRepository : IHomeRepository
 
     public Member GetMemberById(Guid memberId)
     {
-        Home? home = _context.Homes.Include(h => h.Members).FirstOrDefault(h => h.Members.Any(m => m.Id == memberId));
-        Member? member = home?.Members.FirstOrDefault(m => m.Id == memberId);
+        Home? home = _context.Homes.Include(home => home.Members).FirstOrDefault(m => m.Members.Any(h => h.Id == memberId));
+        Member? member = null;
+        if (home != null)
+        {
+            member = home?.Members.FirstOrDefault(m => m.Id == memberId);
+        }
+
+        if (home == null || member == null)
+        {
+            throw new ArgumentException("Member does not exist");
+        }
+
         return member;
     }
 

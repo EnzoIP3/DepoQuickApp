@@ -11,7 +11,11 @@ public class Role
         new SystemPermission("get-all-businesses")
     ]);
 
-    public static Role HomeOwner = new Role("HomeOwner", []);
+    public static Role HomeOwner = new Role("HomeOwner", [
+        new SystemPermission("create-home"), new SystemPermission("add-member"), new SystemPermission("add-device"),
+        new SystemPermission("get-devices"), new SystemPermission("get-members")
+    ]);
+
     public static Role BusinessOwner = new Role("BusinessOwner", []);
 
     [Key] public string Name { get; init; } = string.Empty;

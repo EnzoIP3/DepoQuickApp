@@ -13,6 +13,7 @@ namespace HomeConnect.WebApi.Controllers.Home;
 public class HomeController(IHomeOwnerService homeOwnerService) : ControllerBase
 {
     [HttpPost]
+    [AuthorizationFilter("create-home")]
     public CreateHomeResponse CreateHome([FromBody] CreateHomeRequest request, AuthorizationFilterContext context)
     {
         var userLoggedIn = context.HttpContext.Items[Item.UserLogged];
@@ -22,6 +23,7 @@ public class HomeController(IHomeOwnerService homeOwnerService) : ControllerBase
     }
 
     [HttpPost("{homesId}/members")]
+    [AuthorizationFilter("add-member")]
     public AddMemberResponse AddMember([FromRoute] string homesId, [FromBody] AddMemberRequest request,
         AuthorizationFilterContext context)
     {
@@ -58,6 +60,7 @@ public class HomeController(IHomeOwnerService homeOwnerService) : ControllerBase
     }
 
     [HttpGet("{homesId}/members")]
+    [AuthorizationFilter("get-members")]
     public GetMembersResponse GetMembers([FromRoute] string homesId, AuthorizationFilterContext context)
     {
         var userLoggedIn = context.HttpContext.Items[Item.UserLogged];
@@ -78,6 +81,7 @@ public class HomeController(IHomeOwnerService homeOwnerService) : ControllerBase
     }
 
     [HttpGet("{homesId}/devices")]
+    [AuthorizationFilter("get-devices")]
     public GetDevicesResponse GetDevices([FromRoute] string homesId, AuthorizationFilterContext context)
     {
         var userLoggedIn = context.HttpContext.Items[Item.UserLogged];
@@ -94,6 +98,7 @@ public class HomeController(IHomeOwnerService homeOwnerService) : ControllerBase
     }
 
     [HttpPost("{homesId}/devices")]
+    [AuthorizationFilter("add-device")]
     public AddDevicesResponse AddDevices([FromRoute] string homesId, AddDevicesRequest request)
     {
         AddDevicesArgs addDevicesArgs = FromRequestToAddDevicesArgs(homesId, request);

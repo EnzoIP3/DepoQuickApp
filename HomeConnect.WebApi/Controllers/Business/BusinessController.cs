@@ -9,17 +9,24 @@ namespace HomeConnect.WebApi.Controllers.Business;
 [ApiController]
 [Route("businesses")]
 [AuthorizationFilter]
-public class BusinessController(IAdminService adminService) : ControllerBase
+public class BusinessController : ControllerBase
 {
+    private readonly IAdminService _adminService;
+
+    public BusinessController(IAdminService adminService)
+    {
+        _adminService = adminService;
+    }
+
     public IActionResult GetBusinesses([FromQuery] int? currentPage = null, [FromQuery] int? pageSize = null,
         [FromQuery] string? nameFilter = null, [FromQuery] string? ownerFilter = null)
     {
-        var businesses = adminService.GetBusinesses(currentPage, pageSize, nameFilter, ownerFilter);
+        var businesses = _adminService.GetBusinesses(currentPage, pageSize, nameFilter, ownerFilter);
         var response = ResponseFromBusinesses(businesses);
         return Ok(response);
     }
 
-    private static object ResponseFromBusinesses(PagedData<GetBusinessesArgs> businesses)
+    private static object ResponseFromBusinesses(PagedData<BusinessLogic.BusinessOwners.Entities.Business> businesses)
     {
         var response = new
         {

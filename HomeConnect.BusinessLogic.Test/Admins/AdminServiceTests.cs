@@ -346,33 +346,9 @@ public sealed class AdminServiceTests
         {
             new Business("123456789123", "name", _owner), new Business("123456789456", "name2", _otherOwner)
         };
-        var businessList = new List<GetBusinessesArgs>
-        {
-            new GetBusinessesArgs
-            {
-                Name = "name",
-                OwnerEmail = _owner.Email,
-                OwnerFullName = $"{_owner.Name} {_owner.Surname}",
-                Rut = "123456789123"
-            },
-            new GetBusinessesArgs
-            {
-                Name = "name2",
-                OwnerEmail = _otherOwner.Email,
-                OwnerFullName = $"{_otherOwner.Name} {_otherOwner.Surname}",
-                Rut = "123456789456"
-            }
-        };
         var pagedList = new PagedData<Business>
         {
             Data = businesses,
-            Page = _defaultCurrentPage,
-            PageSize = _defaultPageSize,
-            TotalPages = 1
-        };
-        var pagedResponse = new PagedData<GetBusinessesArgs>
-        {
-            Data = businessList,
             Page = _defaultCurrentPage,
             PageSize = _defaultPageSize,
             TotalPages = 1
@@ -384,7 +360,7 @@ public sealed class AdminServiceTests
         var result = _adminService.GetBusinesses(_defaultCurrentPage, _defaultPageSize);
 
         // Assert
-        result.Should().BeEquivalentTo(pagedResponse, options => options.ComparingByMembers<PagedData<GetBusinessesArgs>>());
+        result.Should().BeEquivalentTo(pagedList, options => options.ComparingByMembers<PagedData<Business>>());
         _businessRepository.Verify(x => x.GetPagedData(
             It.Is<int>(a => a == _defaultCurrentPage),
             It.Is<int>(a => a == _defaultPageSize),
@@ -400,33 +376,9 @@ public sealed class AdminServiceTests
         {
             new Business("123456789123", "name", _owner), new Business("123456789456", "name2", _otherOwner)
         };
-        var businessList = new List<GetBusinessesArgs>
-        {
-            new GetBusinessesArgs
-            {
-                Name = "name",
-                OwnerEmail = _owner.Email,
-                OwnerFullName = $"{_owner.Name} {_owner.Surname}",
-                Rut = "123456789123"
-            },
-            new GetBusinessesArgs
-            {
-                Name = "name2",
-                OwnerEmail = _otherOwner.Email,
-                OwnerFullName = $"{_otherOwner.Name} {_otherOwner.Surname}",
-                Rut = "123456789456"
-            }
-        };
         var pagedList = new PagedData<Business>
         {
             Data = businesses,
-            Page = _defaultCurrentPage,
-            PageSize = _defaultPageSize,
-            TotalPages = 1
-        };
-        var pagedResponse = new PagedData<GetBusinessesArgs>
-        {
-            Data = businessList,
             Page = _defaultCurrentPage,
             PageSize = _defaultPageSize,
             TotalPages = 1
@@ -438,7 +390,7 @@ public sealed class AdminServiceTests
         var result = _adminService.GetBusinesses();
 
         // Assert
-        result.Should().BeEquivalentTo(pagedResponse, options => options.ComparingByMembers<PagedData<GetBusinessesArgs>>());
+        result.Should().BeEquivalentTo(pagedList, options => options.ComparingByMembers<PagedData<Business>>());
         _businessRepository.Verify(x => x.GetPagedData(
             It.Is<int>(a => a == _defaultCurrentPage),
             It.Is<int>(a => a == _defaultPageSize),
@@ -454,27 +406,10 @@ public sealed class AdminServiceTests
         {
             new Business("123456789123", "name", _owner), new Business("123456789456", "name2", _otherOwner)
         };
-        var businessList = new List<GetBusinessesArgs>
-        {
-            new GetBusinessesArgs
-            {
-                Name = "name",
-                OwnerEmail = _owner.Email,
-                OwnerFullName = $"{_owner.Name} {_owner.Surname}",
-                Rut = "123456789123"
-            }
-        };
         var filter = $"{_owner.Name} {_owner.Surname}";
         var pagedList = new PagedData<Business>
         {
             Data = [businesses[0]],
-            Page = _defaultCurrentPage,
-            PageSize = _defaultPageSize,
-            TotalPages = 1
-        };
-        var pagedResponse = new PagedData<GetBusinessesArgs>
-        {
-            Data = businessList,
             Page = _defaultCurrentPage,
             PageSize = _defaultPageSize,
             TotalPages = 1
@@ -486,7 +421,7 @@ public sealed class AdminServiceTests
         var result = _adminService.GetBusinesses(fullNameFilter: filter);
 
         // Assert
-        result.Should().BeEquivalentTo(pagedResponse, options => options.ComparingByMembers<PagedData<GetBusinessesArgs>>());
+        result.Should().BeEquivalentTo(pagedList, options => options.ComparingByMembers<PagedData<Business>>());
         _businessRepository.Verify(x => x.GetPagedData(
             It.Is<int>(a => a == _defaultCurrentPage),
             It.Is<int>(a => a == _defaultPageSize),
@@ -502,27 +437,10 @@ public sealed class AdminServiceTests
         {
             new Business("123456789123", "name", _owner), new Business("123456789456", "name2", _otherOwner)
         };
-        var businessList = new List<GetBusinessesArgs>
-        {
-            new GetBusinessesArgs
-            {
-                Name = "name2",
-                OwnerEmail = _otherOwner.Email,
-                OwnerFullName = $"{_otherOwner.Name} {_otherOwner.Surname}",
-                Rut = "123456789456"
-            }
-        };
         var filter = "name2";
         var pagedList = new PagedData<Business>
         {
             Data = [businesses[1]],
-            Page = _defaultCurrentPage,
-            PageSize = _defaultPageSize,
-            TotalPages = 1
-        };
-        var pagedResponse = new PagedData<GetBusinessesArgs>
-        {
-            Data = businessList,
             Page = _defaultCurrentPage,
             PageSize = _defaultPageSize,
             TotalPages = 1
@@ -534,7 +452,7 @@ public sealed class AdminServiceTests
         var result = _adminService.GetBusinesses(nameFilter: filter);
 
         // Assert
-        result.Should().BeEquivalentTo(pagedResponse, options => options.ComparingByMembers<PagedData<GetBusinessesArgs>>());
+        result.Should().BeEquivalentTo(pagedList, options => options.ComparingByMembers<PagedData<Business>>());
         _businessRepository.Verify(x => x.GetPagedData(
             It.Is<int>(a => a == _defaultCurrentPage),
             It.Is<int>(a => a == _defaultPageSize),

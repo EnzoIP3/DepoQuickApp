@@ -20,9 +20,8 @@ public class BusinessControllerTests
     private User _user = null!;
     private User _otherUser = null!;
     private List<Business> _businesses = null!;
-    private List<GetBusinessesArgs> _expectedBusinesses = null!;
     private Pagination _expectedPagination;
-    private PagedData<GetBusinessesArgs> _pagedList;
+    private PagedData<Business> _pagedList;
 
     [TestInitialize]
     public void Initialize()
@@ -38,28 +37,10 @@ public class BusinessControllerTests
             new Business("123456789123", "Business 1", _user),
             new Business("123456789124", "Business 2", _otherUser),
         ];
-        _expectedBusinesses =
-        [
-            new GetBusinessesArgs()
-            {
-                Name = _businesses[0].Name,
-                OwnerFullName = $"{_user.Name} {_user.Surname}",
-                OwnerEmail = _user.Email,
-                Rut = _businesses[0].Rut,
-            },
-            new GetBusinessesArgs()
-            {
-                Name = _businesses[1].Name,
-                OwnerFullName = $"{_otherUser.Name} {_otherUser.Surname}",
-                OwnerEmail = _otherUser.Email,
-                Rut = _businesses[1].Rut,
-            }
-
-        ];
         _expectedPagination = new Pagination { Page = 1, PageSize = 10, TotalPages = 1 };
-        _pagedList = new PagedData<GetBusinessesArgs>
+        _pagedList = new PagedData<Business>
         {
-            Data = _expectedBusinesses,
+            Data = _businesses,
             Page = _expectedPagination.Page,
             PageSize = _expectedPagination.PageSize,
             TotalPages = _expectedPagination.TotalPages
@@ -81,41 +62,41 @@ public class BusinessControllerTests
         response.Should().NotBeNull();
         response.Should().BeOfType<OkObjectResult>();
         var okResult = response as OkObjectResult;
-        okResult.Value.Should().BeEquivalentTo(new { Data = _expectedBusinesses, Pagination = _expectedPagination });
+        okResult.Value.Should().BeEquivalentTo(new { Data = _businesses, Pagination = _expectedPagination });
     }
 
     [TestMethod]
     public void GetBusinesses_WhenCalledWithNameFilter_ReturnsFilteredExpectedResponse()
     {
         // Arrange
-        _adminService.Setup(x => x.GetBusinesses(null, null, _expectedBusinesses.First().Name, null)).Returns(_pagedList);
+        _adminService.Setup(x => x.GetBusinesses(null, null, _businesses.First().Name, null)).Returns(_pagedList);
 
         // Act
-        var response = _controller.GetBusinesses(nameFilter: _expectedBusinesses.First().Name);
+        var response = _controller.GetBusinesses(nameFilter: _businesses.First().Name);
 
         // Assert
         _adminService.VerifyAll();
         response.Should().NotBeNull();
         response.Should().BeOfType<OkObjectResult>();
         var okResult = response as OkObjectResult;
-        okResult.Value.Should().BeEquivalentTo(new { Data = _expectedBusinesses, Pagination = _expectedPagination });
+        okResult.Value.Should().BeEquivalentTo(new { Data = _businesses, Pagination = _expectedPagination });
     }
 
     [TestMethod]
     public void GetBusinesses_WhenCalledWithFullNameFilter_ReturnsFilteredExpectedResponse()
     {
         // Arrange
-        _adminService.Setup(x => x.GetBusinesses(null, null, _expectedBusinesses.First().OwnerFullName, null)).Returns(_pagedList);
+        _adminService.Setup(x => x.GetBusinesses(null, null, _businesses.First().Name, null)).Returns(_pagedList);
 
         // Act
-        var response = _controller.GetBusinesses(nameFilter: _expectedBusinesses.First().OwnerFullName);
+        var response = _controller.GetBusinesses(nameFilter: _businesses.First().Name);
 
         // Assert
         _adminService.VerifyAll();
         response.Should().NotBeNull();
         response.Should().BeOfType<OkObjectResult>();
         var okResult = response as OkObjectResult;
-        okResult.Value.Should().BeEquivalentTo(new { Data = _expectedBusinesses, Pagination = _expectedPagination });
+        okResult.Value.Should().BeEquivalentTo(new { Data = _businesses, Pagination = _expectedPagination });
     }
 
     [TestMethod]
@@ -132,7 +113,7 @@ public class BusinessControllerTests
         response.Should().NotBeNull();
         response.Should().BeOfType<OkObjectResult>();
         var okResult = response as OkObjectResult;
-        okResult.Value.Should().BeEquivalentTo(new { Data = _expectedBusinesses, Pagination = _expectedPagination });
+        okResult.Value.Should().BeEquivalentTo(new { Data = _businesses, Pagination = _expectedPagination });
     }
     #endregion
 }

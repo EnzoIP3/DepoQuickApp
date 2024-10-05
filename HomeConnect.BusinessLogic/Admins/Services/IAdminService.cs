@@ -1,4 +1,5 @@
 using BusinessLogic.Admins.Models;
+using BusinessLogic.BusinessOwners.Entities;
 using BusinessLogic.Users.Entities;
 using BusinessLogic.Users.Models;
 
@@ -10,5 +11,5 @@ public interface IAdminService
     void Delete(Guid id);
     public Guid CreateBusinessOwner(CreateUserArgs createUserArgs);
     PagedData<User> GetUsers(int? currentPage, int? pageSize, string? fullNameFilter, string? roleFilter);
-    PagedData<GetBusinessesArgs> GetBusinesses(int? currentPage, int? pageSize, string? nameFilter, string? ownerFilter);
+    PagedData<Business> GetBusinesses(int? currentPage, int? pageSize, string? nameFilter, string? ownerFilter);
 }

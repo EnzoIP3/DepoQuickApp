@@ -292,6 +292,7 @@ public class BusinessOwnerServiceTests
             x.EnsureDeviceDoesNotExist(It.IsAny<Device>()));
         _deviceRepository.Setup(x => x.Add(It.IsAny<Device>()));
         _businessRepository.Setup(x => x.Get("RUTexample")).Returns(business);
+        _businessRepository.Setup(x => x.Exists("RUTexample")).Returns(true);
         var args = new CreateCameraArgs
         {
             BusinessRut = "RUTexample",
@@ -347,6 +348,7 @@ public class BusinessOwnerServiceTests
         _deviceRepository.Setup(x => x.Add(It.IsAny<Device>()))
             .Callback<Device>(d => addedCamera = (Camera)d);
         _businessRepository.Setup(x => x.Get(args.BusinessRut)).Returns(business);
+        _businessRepository.Setup(x => x.Exists(args.BusinessRut)).Returns(true);
 
         // Act
         var returnedId = _businessOwnerService.CreateCamera(args);
@@ -369,6 +371,7 @@ public class BusinessOwnerServiceTests
             .Throws(new ArgumentException("Device already exists"));
         _deviceRepository.Setup(x => x.Add(It.IsAny<Device>()));
         _businessRepository.Setup(x => x.Get("RUTexample")).Returns(business);
+        _businessRepository.Setup(x => x.Exists("RUTexample")).Returns(true);
         var args = new CreateCameraArgs
         {
             BusinessRut = "RUTexample",

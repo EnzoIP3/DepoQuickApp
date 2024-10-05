@@ -53,17 +53,21 @@ public class BusinessOwnerService : IBusinessOwnerService
 
     public Guid CreateCamera(CreateCameraArgs args)
     {
-        if (!BusinessRepository.Exists(args.BusinessRut))
-        {
-            throw new ArgumentException("Business does not exist");
-        }
-
+        EnsureBusinessDoesNotExist(args);
         var business = BusinessRepository.Get(args.BusinessRut);
         var camera = new Camera(args.Name, args.ModelNumber, args.Description, args.MainPhoto, args.SecondaryPhotos,
             business, args.MotionDetection, args.PersonDetection, args.IsExterior, args.IsInterior);
         DeviceRepository.EnsureDeviceDoesNotExist(camera);
         DeviceRepository.Add(camera);
         return camera.Id;
+    }
+
+    private void EnsureBusinessDoesNotExist(CreateCameraArgs args)
+    {
+        if (!BusinessRepository.Exists(args.BusinessRut))
+        {
+            throw new ArgumentException("Business does not exist");
+        }
     }
 
     private void EnsureOwnerExists(Guid ownerId)

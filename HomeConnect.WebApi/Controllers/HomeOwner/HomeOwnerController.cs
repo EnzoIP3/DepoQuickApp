@@ -19,7 +19,7 @@ public class HomeOwnerController(IUserService userService) : ControllerBase
             Surname = args.Surname,
             Email = args.Email,
             Password = args.Password,
-            Role = Role.HomeOwner.Name,
+            Role = Role.HomeOwner,
             ProfilePicture = args.ProfilePicture
         });
         return new CreateHomeOwnerResponse { Id = user.Id.ToString() };

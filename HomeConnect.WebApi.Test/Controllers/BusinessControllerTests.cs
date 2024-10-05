@@ -1,10 +1,13 @@
 using BusinessLogic;
 using BusinessLogic.Admins.Services;
 using BusinessLogic.BusinessOwners.Entities;
+using BusinessLogic.BusinessOwners.Models;
+using BusinessLogic.BusinessOwners.Services;
 using BusinessLogic.Roles.Entities;
 using BusinessLogic.Users.Entities;
 using FluentAssertions;
 using HomeConnect.WebApi.Controllers.Business;
+using HomeConnect.WebApi.Controllers.Businesses.Models;
 using Microsoft.AspNetCore.Mvc;
 using Moq;
 
@@ -14,10 +17,13 @@ namespace HomeConnect.WebApi.Test.Controllers;
 public class BusinessControllerTests
 {
     private BusinessController _controller = null!;
+    private Mock<IBusinessOwnerService> _businessOwnerService = null!;
     private Mock<IAdminService> _adminService = null!;
     private Role _role = null!;
     private User _user = null!;
     private User _otherUser = null!;
+    private CreateBusinessArgs _businessArgs;
+    private CreateBusinessRequest _businessRequest;
     private List<Business> _businesses = null!;
     private Pagination _expectedPagination;
     private PagedData<Business> _pagedList;
@@ -26,7 +32,8 @@ public class BusinessControllerTests
     public void Initialize()
     {
         _adminService = new Mock<IAdminService>();
-        _controller = new BusinessController(_adminService.Object);
+        _businessOwnerService = new Mock<IBusinessOwnerService>();
+        _controller = new BusinessController(_adminService.Object, _businessOwnerService.Object);
 
         _role = new Role("BusinessOwner", []);
         _user = new User("Name", "Surname", "email@email.com", "Password@100", _role);
@@ -47,6 +54,7 @@ public class BusinessControllerTests
     }
 
     #region GetBusinesses
+
     [TestMethod]
     public void GetBusinesses_WhenCalledWithNoFiltersOrPagination_ReturnsExpectedResponse()
     {
@@ -114,5 +122,25 @@ public class BusinessControllerTests
         var okResult = response as OkObjectResult;
         okResult.Value.Should().BeEquivalentTo(new { Data = _businesses, Pagination = _expectedPagination });
     }
+
+    #endregion
+
+    #region CreateBusiness
+
+    [TestMethod]
+    public void CreateBusiness_WhenCalledWithValidRequest_ReturnsCreatedResponse()
+    {
+        // Arrange
+        _businessOwnerService.Setup(x => x.CreateBusiness(_businessArgs)).Returns(_businesses[0].Rut);
+
+        // Act
+        var response = _controller.CreateBusiness(_businessRequest);
+
+        // Assert
+        _businessOwnerService.VerifyAll();
+        response.Should().NotBeNull();
+        response.Rut.Should().Be(_businesses[0].Rut);
+    }
+
     #endregion
 }

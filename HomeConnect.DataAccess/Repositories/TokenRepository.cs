@@ -1,5 +1,6 @@
 using BusinessLogic.Auth.Entities;
 using BusinessLogic.Auth.Repositories;
+using Microsoft.EntityFrameworkCore;
 
 namespace HomeConnect.DataAccess.Repositories;
 
@@ -15,7 +16,8 @@ public class TokenRepository : ITokenRepository
     public Token Get(Guid token)
     {
         EnsureSessionExists(token);
-        return _context.Tokens.Find(token)!;
+        return _context.Tokens.Include(t => t.User).ThenInclude(u => u.Role).ThenInclude(r => r.Permissions)
+            .First(t => t.Id == token);
     }
 
     public void Add(Token token)

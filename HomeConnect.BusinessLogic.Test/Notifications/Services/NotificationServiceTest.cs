@@ -86,7 +86,7 @@ public class NotificationServiceTest
     public void Notify_WhenCalledWithExistentDevice_ShouldCreateNotificationForEachUserWithPermissions()
     {
         // Arrange
-        var shouldBeNotified = new HomePermission("shouldBeNotified");
+        var shouldBeNotified = new HomePermission(HomePermission.GetNotifications);
         var owner = new User("owner", "owner", "owner@email.com", "Password@100",
             _role);
         var member = new Member(_user, [shouldBeNotified]);

@@ -1,3 +1,7 @@
+using BusinessLogic.BusinessOwners.Entities;
+using BusinessLogic.BusinessOwners.Models;
+using BusinessLogic.BusinessOwners.Services;
+using BusinessLogic.Devices.Entities;
 using BusinessLogic.Devices.Services;
 using BusinessLogic.Notifications.Services;
 using FluentAssertions;
@@ -13,6 +17,7 @@ public class CameraControllerTests
 {
     private Mock<IDeviceService> _deviceServiceMock = null!;
     private Mock<INotificationService> _notificationServiceMock = null!;
+    private Mock<IBusinessOwnerService> _businessOwnerService = null!;
     private CameraController _cameraController = null!;
 
     [TestInitialize]
@@ -20,7 +25,9 @@ public class CameraControllerTests
     {
         _deviceServiceMock = new Mock<IDeviceService>();
         _notificationServiceMock = new Mock<INotificationService>();
-        _cameraController = new CameraController(_notificationServiceMock.Object, _deviceServiceMock.Object);
+        _businessOwnerService = new Mock<IBusinessOwnerService>();
+        _cameraController = new CameraController(_notificationServiceMock.Object, _deviceServiceMock.Object,
+            _businessOwnerService.Object);
     }
 
     [TestMethod]
@@ -28,12 +35,7 @@ public class CameraControllerTests
     {
         // Arrange
         var hardwareId = "hardwareId";
-        var args = new NotificationArgs
-        {
-            HardwareId = hardwareId,
-            Date = DateTime.Now,
-            Event = "movement-detected"
-        };
+        var args = new NotificationArgs { HardwareId = hardwareId, Date = DateTime.Now, Event = "movement-detected" };
         _notificationServiceMock.Setup(x => x.Notify(args));
 
         // Act
@@ -64,5 +66,50 @@ public class CameraControllerTests
         // Assert
         result.Should().NotBeNull();
         result.HardwareId.Should().Be(hardwareId);
+    }
+
+    [TestMethod]
+    public void CreateCamera_WhenCalledWithValidRequest_ReturnsCreatedResponse()
+    {
+        // Arrange
+        var camera = new Camera("Name", 123, "Description", "https://example.com/photo.png", [],
+            new Business(), true, true,
+            true,
+            true);
+        var cameraArgs = new CreateCameraArgs()
+        {
+            Name = "Name",
+            BusinessRut = "306869575",
+            Description = "Description",
+            IsExterior = true,
+            IsInterior = true,
+            MainPhoto = "MainPhoto",
+            ModelNumber = 123,
+            MotionDetection = true,
+            PersonDetection = true,
+            SecondaryPhotos = []
+        };
+        var cameraRequest = new CreateCameraRequest
+        {
+            Name = cameraArgs.Name,
+            BusinessRut = cameraArgs.BusinessRut,
+            Description = cameraArgs.Description,
+            IsExterior = cameraArgs.IsExterior,
+            IsInterior = cameraArgs.IsInterior,
+            MainPhoto = cameraArgs.MainPhoto,
+            ModelNumber = cameraArgs.ModelNumber,
+            MotionDetection = cameraArgs.MotionDetection,
+            PersonDetection = cameraArgs.PersonDetection,
+            SecondaryPhotos = cameraArgs.SecondaryPhotos
+        };
+        _businessOwnerService.Setup(x => x.CreateCamera(cameraArgs)).Returns(camera.Id);
+
+        // Act
+        var response = _cameraController.CreateCamera(cameraRequest);
+
+        // Assert
+        _businessOwnerService.VerifyAll();
+        response.Should().NotBeNull();
+        response.Id.Should().Be(camera.Id);
     }
 }

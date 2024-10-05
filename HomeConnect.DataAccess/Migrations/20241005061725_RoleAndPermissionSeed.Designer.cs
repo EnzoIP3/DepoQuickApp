@@ -4,6 +4,7 @@ using HomeConnect.DataAccess;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace HomeConnect.DataAccess.Migrations
 {
     [DbContext(typeof(Context))]
-    partial class ContextModelSnapshot : ModelSnapshot
+    [Migration("20241005061725_RoleAndPermissionSeed")]
+    partial class RoleAndPermissionSeed
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -31,12 +34,7 @@ namespace HomeConnect.DataAccess.Migrations
                     b.Property<DateTime>("CreatedAt")
                         .HasColumnType("datetime2");
 
-                    b.Property<Guid>("UserId")
-                        .HasColumnType("uniqueidentifier");
-
                     b.HasKey("Id");
-
-                    b.HasIndex("UserId");
 
                     b.ToTable("Tokens");
                 });
@@ -248,62 +246,65 @@ namespace HomeConnect.DataAccess.Migrations
                     b.Property<string>("Value")
                         .HasColumnType("nvarchar(450)");
 
+                    b.Property<string>("RoleName")
+                        .HasColumnType("nvarchar(450)");
+
                     b.HasKey("Value");
+
+                    b.HasIndex("RoleName");
 
                     b.ToTable("Permissions");
 
                     b.HasData(
                         new
                         {
-                            Value = "create-administrator"
+                            Value = "create-administrator",
+                            RoleName = "Admin"
                         },
                         new
                         {
-                            Value = "delete-administrator"
+                            Value = "delete-administrator",
+                            RoleName = "Admin"
                         },
                         new
                         {
-                            Value = "create-business-owner"
+                            Value = "create-business-owner",
+                            RoleName = "Admin"
                         },
                         new
                         {
-                            Value = "get-all-users"
+                            Value = "get-all-users",
+                            RoleName = "Admin"
                         },
                         new
                         {
-                            Value = "get-all-businesses"
+                            Value = "get-all-businesses",
+                            RoleName = "Admin"
                         },
                         new
                         {
-                            Value = "create-home"
+                            Value = "create-home",
+                            RoleName = "HomeOwner"
                         },
                         new
                         {
-                            Value = "add-member"
+                            Value = "add-member",
+                            RoleName = "HomeOwner"
                         },
                         new
                         {
-                            Value = "add-device"
+                            Value = "add-device",
+                            RoleName = "HomeOwner"
                         },
                         new
                         {
-                            Value = "get-devices"
+                            Value = "get-devices",
+                            RoleName = "HomeOwner"
                         },
                         new
                         {
-                            Value = "get-members"
-                        },
-                        new
-                        {
-                            Value = "create-business"
-                        },
-                        new
-                        {
-                            Value = "create-camera"
-                        },
-                        new
-                        {
-                            Value = "create-sensor"
+                            Value = "get-members",
+                            RoleName = "HomeOwner"
                         });
                 });
 
@@ -343,99 +344,6 @@ namespace HomeConnect.DataAccess.Migrations
                     b.HasIndex("RoleName");
 
                     b.ToTable("Users");
-                });
-
-            modelBuilder.Entity("RoleSystemPermission", b =>
-                {
-                    b.Property<string>("PermissionsValue")
-                        .HasColumnType("nvarchar(450)");
-
-                    b.Property<string>("RolesName")
-                        .HasColumnType("nvarchar(450)");
-
-                    b.HasKey("PermissionsValue", "RolesName");
-
-                    b.HasIndex("RolesName");
-
-                    b.ToTable("RoleSystemPermission");
-
-                    b.HasData(
-                        new
-                        {
-                            PermissionsValue = "create-administrator",
-                            RolesName = "Admin"
-                        },
-                        new
-                        {
-                            PermissionsValue = "delete-administrator",
-                            RolesName = "Admin"
-                        },
-                        new
-                        {
-                            PermissionsValue = "create-business-owner",
-                            RolesName = "Admin"
-                        },
-                        new
-                        {
-                            PermissionsValue = "get-all-users",
-                            RolesName = "Admin"
-                        },
-                        new
-                        {
-                            PermissionsValue = "get-all-businesses",
-                            RolesName = "Admin"
-                        },
-                        new
-                        {
-                            PermissionsValue = "create-home",
-                            RolesName = "HomeOwner"
-                        },
-                        new
-                        {
-                            PermissionsValue = "add-member",
-                            RolesName = "HomeOwner"
-                        },
-                        new
-                        {
-                            PermissionsValue = "add-device",
-                            RolesName = "HomeOwner"
-                        },
-                        new
-                        {
-                            PermissionsValue = "get-devices",
-                            RolesName = "HomeOwner"
-                        },
-                        new
-                        {
-                            PermissionsValue = "get-members",
-                            RolesName = "HomeOwner"
-                        },
-                        new
-                        {
-                            PermissionsValue = "create-business",
-                            RolesName = "BusinessOwner"
-                        },
-                        new
-                        {
-                            PermissionsValue = "create-camera",
-                            RolesName = "BusinessOwner"
-                        },
-                        new
-                        {
-                            PermissionsValue = "create-sensor",
-                            RolesName = "BusinessOwner"
-                        });
-                });
-
-            modelBuilder.Entity("BusinessLogic.Auth.Entities.Token", b =>
-                {
-                    b.HasOne("BusinessLogic.Users.Entities.User", "User")
-                        .WithMany()
-                        .HasForeignKey("UserId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("User");
                 });
 
             modelBuilder.Entity("BusinessLogic.BusinessOwners.Entities.Business", b =>
@@ -527,6 +435,13 @@ namespace HomeConnect.DataAccess.Migrations
                     b.Navigation("User");
                 });
 
+            modelBuilder.Entity("BusinessLogic.Roles.Entities.SystemPermission", b =>
+                {
+                    b.HasOne("BusinessLogic.Roles.Entities.Role", null)
+                        .WithMany("Permissions")
+                        .HasForeignKey("RoleName");
+                });
+
             modelBuilder.Entity("BusinessLogic.Users.Entities.User", b =>
                 {
                     b.HasOne("BusinessLogic.Roles.Entities.Role", "Role")
@@ -534,21 +449,6 @@ namespace HomeConnect.DataAccess.Migrations
                         .HasForeignKey("RoleName");
 
                     b.Navigation("Role");
-                });
-
-            modelBuilder.Entity("RoleSystemPermission", b =>
-                {
-                    b.HasOne("BusinessLogic.Roles.Entities.SystemPermission", null)
-                        .WithMany()
-                        .HasForeignKey("PermissionsValue")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("BusinessLogic.Roles.Entities.Role", null)
-                        .WithMany()
-                        .HasForeignKey("RolesName")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
                 });
 
             modelBuilder.Entity("BusinessLogic.HomeOwners.Entities.Home", b =>
@@ -559,6 +459,11 @@ namespace HomeConnect.DataAccess.Migrations
             modelBuilder.Entity("BusinessLogic.HomeOwners.Entities.Member", b =>
                 {
                     b.Navigation("HomePermissions");
+                });
+
+            modelBuilder.Entity("BusinessLogic.Roles.Entities.Role", b =>
+                {
+                    b.Navigation("Permissions");
                 });
 #pragma warning restore 612, 618
         }

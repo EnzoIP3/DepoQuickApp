@@ -72,12 +72,12 @@ public class HomeOwnerService : IHomeOwnerService
 
         if (args.CanAddDevices)
         {
-            permissions.Add(new HomePermission("canAddDevices"));
+            permissions.Add(new HomePermission(HomePermission.AddDevices));
         }
 
         if (args.CanListDevices)
         {
-            permissions.Add(new HomePermission("canListDevices"));
+            permissions.Add(new HomePermission(HomePermission.GetDevices));
         }
 
         var member = new Member(user, permissions);
@@ -142,7 +142,8 @@ public class HomeOwnerService : IHomeOwnerService
         var duplicateDevices = deviceIds.Intersect(ownedDeviceIds).ToList();
         if (duplicateDevices.Any())
         {
-            throw new ArgumentException($"Devices with ids {string.Join(", ", duplicateDevices)} are already added to the home");
+            throw new ArgumentException(
+                $"Devices with ids {string.Join(", ", duplicateDevices)} are already added to the home");
         }
     }
 
@@ -185,7 +186,7 @@ public class HomeOwnerService : IHomeOwnerService
     {
         EnsureMemberExists(memberId);
         var member = _homeRepository.GetMemberById(memberId);
-        var hasPermission = member.HasPermission(new HomePermission("shouldBeNotified"));
+        var hasPermission = member.HasPermission(new HomePermission(HomePermission.GetNotifications));
         ChangeMemberPermissions(requestShouldBeNotified, hasPermission, member);
     }
 
@@ -201,12 +202,12 @@ public class HomeOwnerService : IHomeOwnerService
     {
         if (requestShouldBeNotified && !hasPermission)
         {
-            member.AddPermission(new HomePermission("shouldBeNotified"));
+            member.AddPermission(new HomePermission(HomePermission.GetNotifications));
             _homeRepository.UpdateMember(member);
         }
         else if (!requestShouldBeNotified && hasPermission)
         {
-            member.DeletePermission(new HomePermission("shouldBeNotified"));
+            member.DeletePermission(new HomePermission(HomePermission.GetNotifications));
             _homeRepository.UpdateMember(member);
         }
     }

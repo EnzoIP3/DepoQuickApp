@@ -1,4 +1,5 @@
 ﻿using BusinessLogic.BusinessOwners.Entities;
+using BusinessLogic.BusinessOwners.Models;
 using BusinessLogic.BusinessOwners.Repositories;
 using BusinessLogic.Devices.Entities;
 using BusinessLogic.Devices.Repositories;
@@ -20,47 +21,67 @@ public class BusinessOwnerService : IBusinessOwnerService
         DeviceRepository = deviceRepository;
     }
 
-    public string CreateBusiness(string ownerEmail, string businessRut, string businessName)
+    public string CreateBusiness(CreateBusinessArgs args)
     {
-        EnsureOwnerExists(ownerEmail);
-        EnsureOwnerDoesNotHaveBusiness(ownerEmail);
-        EnsureBusinessRutDoesNotExist(businessRut);
-
-        var owner = UserRepository.Get(ownerEmail);
-        var business = new Business(businessRut, businessName, owner);
+        EnsureIsValidGuid(args.OwnerId);
+        EnsureOwnerExists(Guid.Parse(args.OwnerId));
+        EnsureOwnerDoesNotHaveBusiness(Guid.Parse(args.OwnerId));
+        EnsureBusinessRutDoesNotExist(args.Rut);
+        var owner = UserRepository.Get(Guid.Parse(args.OwnerId));
+        var business = new Business(args.Rut, args.Name, owner);
         BusinessRepository.Add(business);
         return business.Rut;
     }
 
-    public Guid CreateDevice(string name, int modelNumber, string description, string mainPhoto, List<string> secondaryPhotos, string type, Business business)
+    private static void EnsureIsValidGuid(string id)
     {
-        var device = new Device(name, modelNumber, description, mainPhoto, secondaryPhotos, type, business);
-        DeviceRepository.EnsureDeviceDoesNotExist(device);
-        DeviceRepository.Add(device);
-        return device.Id;
-    }
-
-    public Guid CreateCamera(string name, int modelNumber, string description, string mainPhoto, List<string> secondaryPhotos,
-        Business business, bool motionDetection, bool personDetection, bool isExterior, bool isInterior)
-    {
-        var camera = new Camera(name, modelNumber, description, mainPhoto, secondaryPhotos, business, motionDetection, personDetection, isExterior, isInterior);
-        DeviceRepository.EnsureDeviceDoesNotExist(camera);
-        DeviceRepository.Add(camera);
-        return camera.Id;
-    }
-
-    private void EnsureOwnerExists(string ownerEmail)
-    {
-        if (!UserRepository.Exists(ownerEmail))
+        if (Guid.TryParse(id, out _) == false)
         {
             throw new ArgumentException("Owner does not exist");
         }
     }
 
-    private void EnsureOwnerDoesNotHaveBusiness(string ownerEmail)
+    public Guid CreateDevice(CreateDeviceArgs args)
     {
-        var existingBusiness = BusinessRepository.GetBusinessByOwner(ownerEmail);
-        if (existingBusiness != null)
+        EnsureBusinessExists(args.BusinessRut);
+        var business = BusinessRepository.Get(args.BusinessRut);
+        var device = new Device(args.Name, args.ModelNumber, args.Description, args.MainPhoto, args.SecondaryPhotos,
+            args.Type, business);
+        DeviceRepository.EnsureDeviceDoesNotExist(device);
+        DeviceRepository.Add(device);
+        return device.Id;
+    }
+
+    public Guid CreateCamera(CreateCameraArgs args)
+    {
+        EnsureBusinessExists(args.BusinessRut);
+        var business = BusinessRepository.Get(args.BusinessRut);
+        var camera = new Camera(args.Name, args.ModelNumber, args.Description, args.MainPhoto, args.SecondaryPhotos,
+            business, args.MotionDetection, args.PersonDetection, args.IsExterior, args.IsInterior);
+        DeviceRepository.EnsureDeviceDoesNotExist(camera);
+        DeviceRepository.Add(camera);
+        return camera.Id;
+    }
+
+    private void EnsureBusinessExists(string rut)
+    {
+        if (!BusinessRepository.Exists(rut))
+        {
+            throw new ArgumentException("Business does not exist");
+        }
+    }
+
+    private void EnsureOwnerExists(Guid ownerId)
+    {
+        if (!UserRepository.Exists(ownerId))
+        {
+            throw new ArgumentException("Owner does not exist");
+        }
+    }
+
+    private void EnsureOwnerDoesNotHaveBusiness(Guid ownerId)
+    {
+        if (BusinessRepository.ExistsByOwnerId(ownerId))
         {
             throw new ArgumentException("Owner already has a business");
         }
@@ -68,10 +89,9 @@ public class BusinessOwnerService : IBusinessOwnerService
 
     private void EnsureBusinessRutDoesNotExist(string businessRut)
     {
-        var existingBusinessByRut = BusinessRepository.GetBusinessByRut(businessRut);
-        if (existingBusinessByRut != null)
+        if (BusinessRepository.Exists(businessRut))
         {
-            throw new InvalidOperationException("RUT already exists");
+            throw new ArgumentException("Business with this RUT already exists");
         }
     }
 }

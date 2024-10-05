@@ -2,6 +2,7 @@ using BusinessLogic.Admins.Services;
 using BusinessLogic.BusinessOwners.Entities;
 using BusinessLogic.BusinessOwners.Models;
 using BusinessLogic.BusinessOwners.Services;
+using BusinessLogic.Roles.Entities;
 using BusinessLogic.Users.Models;
 using HomeConnect.WebApi.Controllers.Businesses;
 using HomeConnect.WebApi.Controllers.Businesses.Models;
@@ -20,7 +21,7 @@ public class BusinessOwnerController(IAdminService adminService)
     : ControllerBase
 {
     [HttpPost]
-    [AuthorizationFilter("create-business-owner")]
+    [AuthorizationFilter(SystemPermission.CreateAdministrator)]
     public CreateBusinessOwnerResponse CreateBusinessOwner(CreateBusinessOwnerRequest request)
     {
         CreateUserArgs createUserArgs = UserModelFromRequest(request);

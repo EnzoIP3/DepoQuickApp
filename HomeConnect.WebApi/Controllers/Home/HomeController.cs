@@ -1,5 +1,6 @@
 using BusinessLogic.HomeOwners.Models;
 using BusinessLogic.HomeOwners.Services;
+using BusinessLogic.Roles.Entities;
 using HomeConnect.WebApi.Controllers.Home.Models;
 using HomeConnect.WebApi.Filters;
 using Microsoft.AspNetCore.Mvc;
@@ -13,7 +14,7 @@ namespace HomeConnect.WebApi.Controllers.Home;
 public class HomeController(IHomeOwnerService homeOwnerService) : ControllerBase
 {
     [HttpPost]
-    [AuthorizationFilter("create-home")]
+    [AuthorizationFilter(SystemPermission.CreateHome)]
     public CreateHomeResponse CreateHome([FromBody] CreateHomeRequest request, AuthorizationFilterContext context)
     {
         var userLoggedIn = context.HttpContext.Items[Item.UserLogged];
@@ -23,7 +24,7 @@ public class HomeController(IHomeOwnerService homeOwnerService) : ControllerBase
     }
 
     [HttpPost("{homesId}/members")]
-    [AuthorizationFilter("add-member")]
+    [AuthorizationFilter(SystemPermission.AddMember)]
     public AddMemberResponse AddMember([FromRoute] string homesId, [FromBody] AddMemberRequest request,
         AuthorizationFilterContext context)
     {
@@ -60,7 +61,7 @@ public class HomeController(IHomeOwnerService homeOwnerService) : ControllerBase
     }
 
     [HttpGet("{homesId}/members")]
-    [AuthorizationFilter("get-members")]
+    [AuthorizationFilter(SystemPermission.GetMembers)]
     public GetMembersResponse GetMembers([FromRoute] string homesId, AuthorizationFilterContext context)
     {
         var userLoggedIn = context.HttpContext.Items[Item.UserLogged];
@@ -81,7 +82,7 @@ public class HomeController(IHomeOwnerService homeOwnerService) : ControllerBase
     }
 
     [HttpGet("{homesId}/devices")]
-    [AuthorizationFilter("get-devices")]
+    [AuthorizationFilter(SystemPermission.GetDevices)]
     public GetDevicesResponse GetDevices([FromRoute] string homesId, AuthorizationFilterContext context)
     {
         var userLoggedIn = context.HttpContext.Items[Item.UserLogged];
@@ -98,7 +99,7 @@ public class HomeController(IHomeOwnerService homeOwnerService) : ControllerBase
     }
 
     [HttpPost("{homesId}/devices")]
-    [AuthorizationFilter("add-device")]
+    [AuthorizationFilter(SystemPermission.AddDevice)]
     public AddDevicesResponse AddDevices([FromRoute] string homesId, AddDevicesRequest request)
     {
         AddDevicesArgs addDevicesArgs = FromRequestToAddDevicesArgs(homesId, request);

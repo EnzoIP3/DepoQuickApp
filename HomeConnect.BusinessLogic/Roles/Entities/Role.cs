@@ -4,9 +4,9 @@ namespace BusinessLogic.Roles.Entities;
 
 public class Role
 {
-    public static string Admin = "Admin";
-    public static string HomeOwner = "HomeOwner";
-    public static string BusinessOwner = "BusinessOwner";
+    public const string Admin = "Admin";
+    public const string HomeOwner = "HomeOwner";
+    public const string BusinessOwner = "BusinessOwner";
 
     [Key]
     public string Name { get; init; } = string.Empty;

@@ -3,6 +3,7 @@ using BusinessLogic.Admins.Models;
 using BusinessLogic.Admins.Services;
 using BusinessLogic.BusinessOwners.Models;
 using BusinessLogic.BusinessOwners.Services;
+using BusinessLogic.Roles.Entities;
 using HomeConnect.WebApi.Controllers.Businesses.Models;
 using HomeConnect.WebApi.Filters;
 using Microsoft.AspNetCore.Mvc;
@@ -15,7 +16,7 @@ namespace HomeConnect.WebApi.Controllers.Business;
 public class BusinessController(IAdminService adminService, IBusinessOwnerService businessOwnerService) : ControllerBase
 {
     [HttpGet]
-    [AuthorizationFilter("get-all-businesses")]
+    [AuthorizationFilter(SystemPermission.GetAllBusinesses)]
     public IActionResult GetBusinesses([FromQuery] int? currentPage = null, [FromQuery] int? pageSize = null,
         [FromQuery] string? nameFilter = null, [FromQuery] string? ownerFilter = null)
     {

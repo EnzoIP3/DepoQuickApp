@@ -4,16 +4,16 @@ namespace BusinessLogic.Roles.Entities;
 
 public record SystemPermission
 {
-    public static string CreateAdministrator = "create-administrator";
-    public static string DeleteAdministrator = "delete-administrator";
-    public static string CreateBusinessOwner = "create-business-owner";
-    public static string GetAllUsers = "get-all-users";
-    public static string GetAllBusinesses = "get-all-businesses";
-    public static string CreateHome = "create-home";
-    public static string AddMember = "add-member";
-    public static string AddDevice = "add-device";
-    public static string GetDevices = "get-devices";
-    public static string GetMembers = "get-members";
+    public const string CreateAdministrator = "create-administrator";
+    public const string DeleteAdministrator = "delete-administrator";
+    public const string CreateBusinessOwner = "create-business-owner";
+    public const string GetAllUsers = "get-all-users";
+    public const string GetAllBusinesses = "get-all-businesses";
+    public const string CreateHome = "create-home";
+    public const string AddMember = "add-member";
+    public const string AddDevice = "add-device";
+    public const string GetDevices = "get-devices";
+    public const string GetMembers = "get-members";
 
     [Key]
     public string Value { get; init; }

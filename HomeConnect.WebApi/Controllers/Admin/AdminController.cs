@@ -1,4 +1,5 @@
 using BusinessLogic.Admins.Services;
+using BusinessLogic.Roles.Entities;
 using BusinessLogic.Users.Models;
 using HomeConnect.WebApi.Controllers.Admin.Models;
 using HomeConnect.WebApi.Filters;
@@ -12,7 +13,7 @@ namespace HomeConnect.WebApi.Controllers.Admin;
 public class AdminController(IAdminService adminService) : ControllerBase
 {
     [HttpPost]
-    [AuthorizationFilter("create-administrator")]
+    [AuthorizationFilter(SystemPermission.CreateAdministrator)]
     public CreateAdminResponse CreateAdmin([FromBody] CreateAdminRequest request)
     {
         CreateUserArgs createUserArgs = UserModelFromRequest(request);
@@ -33,7 +34,7 @@ public class AdminController(IAdminService adminService) : ControllerBase
     }
 
     [HttpDelete("{adminId}")]
-    [AuthorizationFilter("delete-administrator")]
+    [AuthorizationFilter(SystemPermission.DeleteAdministrator)]
     public IActionResult DeleteAdmin([FromRoute] Guid adminId)
     {
         adminService.Delete(adminId);

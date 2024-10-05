@@ -469,5 +469,21 @@ public class HomeOwnerServiceTests
         act.Should().Throw<ArgumentException>().WithMessage("Home does not exist");
     }
     #endregion
+    #region success
+    [TestMethod]
+    public void GetHome_WhenHomeExists_ReturnsHome()
+    {
+        // Arrange
+        var home = new Home(_user, "Main St 123", 1.0, 2.0, 5);
+        _homeRepositoryMock.Setup(x => x.Exists(home.Id)).Returns(true);
+        _homeRepositoryMock.Setup(x => x.Get(home.Id)).Returns(home);
+
+        // Act
+        var result = _homeOwnerService.GetHome(home.Id);
+
+        // Assert
+        result.Should().Be(home);
+    }
+    #endregion
     #endregion
 }

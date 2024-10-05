@@ -112,7 +112,7 @@ public class HomeOwnerService : IHomeOwnerService
     public Home GetHome(Guid homeId)
     {
         EnsureHomeExists(homeId);
-        return new Home();
+        return _homeRepository.Get(homeId);
     }
 
     private void EnsureHomeExists(Guid homeId)

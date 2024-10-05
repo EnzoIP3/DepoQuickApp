@@ -66,6 +66,6 @@ public class HomeRepository : IHomeRepository
 
     public bool ExistsMember(Guid memberId)
     {
-        throw new NotImplementedException();
+        return _context.Homes.Any(h => h.Members.Any(m => m.Id == memberId));
     }
 }

@@ -168,4 +168,16 @@ public class HomeRepositoryTests
         result.Should().BeTrue();
     }
     #endregion
+
+    #region ExistsMember
+    [TestMethod]
+    public void ExistsMember_WhenMemberExists_ReturnsTrue()
+    {
+        // Act
+        var result = _homeRepository.ExistsMember(_member.Id);
+
+        // Assert
+        result.Should().BeTrue();
+    }
+    #endregion
 }

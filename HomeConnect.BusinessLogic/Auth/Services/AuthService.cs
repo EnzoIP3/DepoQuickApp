@@ -1,4 +1,5 @@
 using BusinessLogic.Auth.Entities;
+using BusinessLogic.Auth.Exceptions;
 using BusinessLogic.Auth.Models;
 using BusinessLogic.Auth.Repositories;
 using BusinessLogic.Users.Entities;
@@ -31,7 +32,7 @@ public class AuthService : IAuthService
     {
         if (!_userRepository.ExistsByEmail(email))
         {
-            throw new ArgumentException("Invalid email or password.");
+            throw new AuthException("Invalid email or password.");
         }
     }
 
@@ -39,7 +40,7 @@ public class AuthService : IAuthService
     {
         if (!user.Password.Equals(args.Password))
         {
-            throw new ArgumentException("Invalid email or password.");
+            throw new AuthException("Invalid email or password.");
         }
     }
 

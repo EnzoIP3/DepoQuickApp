@@ -1,4 +1,5 @@
 using BusinessLogic.Auth.Entities;
+using BusinessLogic.Auth.Exceptions;
 using BusinessLogic.Auth.Models;
 using BusinessLogic.Auth.Repositories;
 using BusinessLogic.Auth.Services;
@@ -82,7 +83,7 @@ public class AuthServiceTests
         var act = () => _authService.CreateToken(args);
 
         // Assert
-        act.Should().Throw<ArgumentException>();
+        act.Should().Throw<AuthException>();
     }
 
     [TestMethod]
@@ -98,7 +99,7 @@ public class AuthServiceTests
         var act = () => _authService.CreateToken(args);
 
         // Assert
-        act.Should().Throw<ArgumentException>();
+        act.Should().Throw<AuthException>();
     }
 
     [TestMethod]

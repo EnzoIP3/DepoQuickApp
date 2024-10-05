@@ -4,6 +4,7 @@ using HomeConnect.WebApi.Controllers.Camera.Models;
 using HomeConnect.WebApi.Controllers.Device;
 using HomeConnect.WebApi.Controllers.Device.Models;
 using HomeConnect.WebApi.Controllers.Sensor;
+using HomeConnect.WebApi.Filters;
 using Microsoft.AspNetCore.Mvc;
 
 namespace HomeConnect.WebApi.Controllers.Camera;

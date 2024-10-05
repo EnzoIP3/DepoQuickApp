@@ -9,7 +9,7 @@ namespace HomeConnect.WebApi.Controllers.Home;
 
 [ApiController]
 [Route("homes")]
-[AuthorizationFilter]
+[AuthenticationFilter]
 public class HomeController(IHomeOwnerService homeOwnerService) : ControllerBase
 {
     [HttpPost]

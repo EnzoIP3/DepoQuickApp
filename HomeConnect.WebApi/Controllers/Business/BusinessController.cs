@@ -8,9 +8,10 @@ namespace HomeConnect.WebApi.Controllers.Business;
 
 [ApiController]
 [Route("businesses")]
-[AuthorizationFilter]
+[AuthenticationFilter]
 public class BusinessController(IAdminService adminService) : ControllerBase
 {
+    [AuthorizationFilter("get-all-businesses")]
     public IActionResult GetBusinesses([FromQuery] int? currentPage = null, [FromQuery] int? pageSize = null,
         [FromQuery] string? nameFilter = null, [FromQuery] string? ownerFilter = null)
     {

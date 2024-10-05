@@ -1,12 +1,14 @@
 using BusinessLogic.Auth.Models;
 using BusinessLogic.Auth.Services;
 using HomeConnect.WebApi.Controllers.Auth.Models;
+using HomeConnect.WebApi.Filters;
 using Microsoft.AspNetCore.Mvc;
 
 namespace HomeConnect.WebApi.Controllers.Auth;
 
 [ApiController]
 [Route("auth")]
+[AuthenticationFilter]
 public class AuthController(IAuthService authService)
 {
     [HttpPost]

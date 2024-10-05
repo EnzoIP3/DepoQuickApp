@@ -7,7 +7,7 @@ namespace HomeConnect.WebApi.Controllers.Notification;
 
 [ApiController]
 [Route("notifications")]
-[AuthorizationFilter]
+[AuthenticationFilter]
 public class NotificationController(INotificationService notificationService) : ControllerBase
 {
     [HttpGet]

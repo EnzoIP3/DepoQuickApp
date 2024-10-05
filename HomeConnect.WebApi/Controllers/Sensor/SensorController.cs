@@ -2,12 +2,14 @@ using BusinessLogic.Devices.Services;
 using BusinessLogic.Notifications.Services;
 using HomeConnect.WebApi.Controllers.Device;
 using HomeConnect.WebApi.Controllers.Device.Models;
+using HomeConnect.WebApi.Filters;
 using Microsoft.AspNetCore.Mvc;
 
 namespace HomeConnect.WebApi.Controllers.Sensor;
 
 [ApiController]
 [Route("sensors")]
+[AuthenticationFilter]
 public class SensorController(INotificationService notificationService, IDeviceService deviceService) : BaseDeviceController(deviceService)
 {
     [HttpPost("{hardwareId}/open")]

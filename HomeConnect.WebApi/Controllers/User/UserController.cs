@@ -8,10 +8,11 @@ namespace HomeConnect.WebApi.Controllers.User;
 
 [ApiController]
 [Route("users")]
-[AuthorizationFilter]
+[AuthenticationFilter]
 public class UserController(IAdminService adminService) : ControllerBase
 {
     [HttpGet]
+    [AuthorizationFilter("get-all-users")]
     public IActionResult GetUsers([FromQuery] int? currentPage = null, [FromQuery] int? pageSize = null,
         [FromQuery] string? fullNameFilter = null, [FromQuery] string? roleFilter = null)
     {
@@ -27,9 +28,7 @@ public class UserController(IAdminService adminService) : ControllerBase
             users.Data,
             Pagination = new Pagination
             {
-                Page = users.Page,
-                PageSize = users.PageSize,
-                TotalPages = users.TotalPages
+                Page = users.Page, PageSize = users.PageSize, TotalPages = users.TotalPages
             }
         };
         return response;

@@ -8,10 +8,11 @@ namespace HomeConnect.WebApi.Controllers.Admin;
 
 [ApiController]
 [Route("admins")]
-[AuthorizationFilter]
+[AuthenticationFilter]
 public class AdminController(IAdminService adminService) : ControllerBase
 {
     [HttpPost]
+    [AuthorizationFilter("create-administrator")]
     public CreateAdminResponse CreateAdmin([FromBody] CreateAdminRequest request)
     {
         CreateUserArgs createUserArgs = UserModelFromRequest(request);
@@ -32,6 +33,7 @@ public class AdminController(IAdminService adminService) : ControllerBase
     }
 
     [HttpDelete("{adminId}")]
+    [AuthorizationFilter("delete-administrator")]
     public IActionResult DeleteAdmin([FromRoute] Guid adminId)
     {
         adminService.Delete(adminId);

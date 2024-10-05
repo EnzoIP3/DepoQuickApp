@@ -8,9 +8,11 @@ namespace HomeConnect.WebApi.Controllers.BusinessOwner;
 
 [ApiController]
 [Route("business_owners")]
-[AuthorizationFilter]
+[AuthenticationFilter]
 public class BusinessOwnerController(IAdminService adminService, IBusinessOwnerService businessOwnerService) : ControllerBase
 {
+    [HttpPost]
+    [AuthorizationFilter("create-business-owner")]
     public CreateBusinessOwnerResponse CreateBusinessOwner(CreateBusinessOwnerRequest request)
     {
         CreateUserArgs createUserArgs = UserModelFromRequest(request);

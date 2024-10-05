@@ -1,4 +1,3 @@
-using System.ComponentModel.DataAnnotations;
 using System.Text.RegularExpressions;
 using BusinessLogic.Roles.Entities;
 
@@ -12,7 +11,7 @@ public class User
     private readonly string _password = string.Empty;
 
     public Guid Id { get; init; } = Guid.NewGuid();
-    public string ProfilePhoto { get; set; } = string.Empty;
+
     public string Name
     {
         get => _name;
@@ -33,7 +32,6 @@ public class User
         }
     }
 
-    [Key]
     public string Email
     {
         get => _email;
@@ -59,11 +57,30 @@ public class User
     public Role Role { get; set; } = new Role();
     public DateOnly CreatedAt { get; set; }
 
+    private readonly string? _profilePicture;
+
+    public string? ProfilePicture
+    {
+        get => _profilePicture;
+        private init
+        {
+            if (value != null)
+            {
+                if (!Uri.IsWellFormedUriString(value, UriKind.Absolute))
+                {
+                    throw new ArgumentException("Profile picture must be a valid URL.");
+                }
+            }
+
+            _profilePicture = value;
+        }
+    }
+
     public User()
     {
     }
 
-    public User(string name, string surname, string email, string password, Role role)
+    public User(string name, string surname, string email, string password, Role role, string? profilePicture = null)
     {
         Name = name;
         Surname = surname;
@@ -71,6 +88,7 @@ public class User
         Password = password;
         CreatedAt = DateOnly.FromDateTime(DateTime.Now);
         Role = role;
+        ProfilePicture = profilePicture;
     }
 
     private static void ValidateNotEmpty(string value, string propertyName)

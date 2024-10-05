@@ -215,7 +215,7 @@ public class HomeControllerTests
                     Id = member.User.Id.ToString(),
                     Name = member.User.Name,
                     Surname = member.User.Surname,
-                    Photo = member.User.ProfilePhoto,
+                    Photo = member.User.ProfilePicture ?? string.Empty,
                     CanAddDevices = member.HasPermission(new HomePermission("canAddDevices")),
                     CanListDevices = member.HasPermission(new HomePermission("canListDevices")),
                     ShouldBeNotified = member.HasPermission(new HomePermission("shouldBeNotified"))
@@ -226,7 +226,7 @@ public class HomeControllerTests
                     Id = otherMember.User.Id.ToString(),
                     Name = otherMember.User.Name,
                     Surname = otherMember.User.Surname,
-                    Photo = otherMember.User.ProfilePhoto,
+                    Photo = otherMember.User.ProfilePicture ?? string.Empty,
                     CanAddDevices = otherMember.HasPermission(new HomePermission("canAddDevices")),
                     CanListDevices = otherMember.HasPermission(new HomePermission("canListDevices")),
                     ShouldBeNotified = otherMember.HasPermission(new HomePermission("shouldBeNotified"))

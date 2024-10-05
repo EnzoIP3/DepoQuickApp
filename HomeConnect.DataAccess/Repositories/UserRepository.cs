@@ -23,22 +23,15 @@ public class UserRepository : PaginatedRepositoryBase<User>, IUserRepository
         return GetAllPaged(currentPage, pageSize, filters);
     }
 
-    public void Add(User user)
+    public User Get(string email)
     {
-        EnsureUserDoesNotExist(user);
-        _context.Users.Add(user);
-        _context.SaveChanges();
+        return _context.Users.First(u => u.Email == email);
     }
 
-    public User Get(Guid id)
+    public void Add(User user)
     {
-        User? user = _context.Users.FirstOrDefault(u => u.Id == id);
-        if (user == null)
-        {
-            throw new ArgumentException("User does not exist");
-        }
-
-        return user;
+        _context.Users.Add(user);
+        _context.SaveChanges();
     }
 
     public bool Exists(Guid id)
@@ -46,29 +39,21 @@ public class UserRepository : PaginatedRepositoryBase<User>, IUserRepository
         return _context.Users.Any(u => u.Id == id);
     }
 
-    public void Delete(Guid id)
-    {
-        User user = Get(id);
-        _context.Users.Remove(user);
-        _context.SaveChanges();
-    }
-
-    public User? GetUser(string email)
-    {
-        return _context.Users.FirstOrDefault(u => u.Email == email);
-    }
-
     public bool Exists(string email)
     {
         return _context.Users.Any(u => u.Email == email);
     }
 
-    public void Delete(string email)
+    public void Delete(Guid id)
     {
-        User? user = GetUser(email);
-        EnsureUserIsNotNull(user);
-        _context.Users.Remove(user!);
+        var user = Get(id);
+        _context.Users.Remove(user);
         _context.SaveChanges();
+    }
+
+    public User Get(Guid id)
+    {
+        return _context.Users.First(u => u.Id == id);
     }
 
     protected override IQueryable<User> GetQueryable()
@@ -85,22 +70,6 @@ public class UserRepository : PaginatedRepositoryBase<User>, IUserRepository
         query = FilterByRole(roleFilter, query);
 
         return query;
-    }
-
-    private void EnsureUserDoesNotExist(User user)
-    {
-        if (Exists(user.Email))
-        {
-            throw new ArgumentException("User with this email already exists.");
-        }
-    }
-
-    private static void EnsureUserIsNotNull(User? user)
-    {
-        if (user == null)
-        {
-            throw new ArgumentException("User does not exist");
-        }
     }
 
     private static IQueryable<User> FilterByRole(string? roleFilter, IQueryable<User> query)

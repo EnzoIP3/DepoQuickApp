@@ -1,6 +1,6 @@
 using System.Net;
+using BusinessLogic.Auth.Services;
 using BusinessLogic.Users.Entities;
-using HomeConnect.WebApi.Session;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Filters;
 using Microsoft.Extensions.Primitives;
@@ -8,115 +8,101 @@ using Microsoft.Extensions.Primitives;
 namespace HomeConnect.WebApi.Filters;
 
 [AttributeUsage(AttributeTargets.Class | AttributeTargets.Method)]
-public sealed class AuthenticationFilterAttribute(IAuthRepository authRepository) : Attribute, IAuthorizationFilter
+public sealed class AuthenticationFilterAttribute : Attribute, IAuthorizationFilter
 {
-    public IAuthRepository AuthRepository { get; } = authRepository;
     private const string AuthorizationHeader = "Authorization";
+    private const string BearerPrefix = "Bearer ";
 
     public void OnAuthorization(AuthorizationFilterContext context)
     {
-        var authorizationHeader = context.HttpContext.Request.Headers[AuthorizationHeader];
-
-        if (string.IsNullOrEmpty(authorizationHeader))
-        {
-            context.Result = new ObjectResult(new
-            {
-                InnerCode = "Unauthenticated",
-                Message = "You are not authenticated"
-            })
-            {
-                StatusCode = (int)HttpStatusCode.Unauthorized
-            };
-            return;
-        }
-
-        var isAuthorizationFormatNotValid = !IsAuthorizationFormatValid(authorizationHeader);
-        if (isAuthorizationFormatNotValid)
-        {
-            context.Result = new ObjectResult(
-                new
-                {
-                    InnerCode = "InvalidAuthorization",
-                    Message = "The provided authorization header format is invalid"
-                })
-            {
-                StatusCode = (int)HttpStatusCode.Unauthorized
-            };
-            return;
-        }
-
-        var isAuthorizationExpired = IsAuthorizationExpired(authorizationHeader);
-        if (isAuthorizationExpired)
-        {
-            context.Result = new ObjectResult(
-                new
-                {
-                    InnerCode = "ExpiredAuthorization",
-                    Message = "The provided authorization header is expired"
-                })
-            {
-                StatusCode = (int)HttpStatusCode.Unauthorized
-            };
-            return;
-        }
-
         try
         {
-            var userOfAuthorization = GetUserOfAuthorization(authorizationHeader, context);
+            var authorizationHeader = GetAuthorizationHeader(context);
 
-            if (userOfAuthorization == null)
+            if (string.IsNullOrEmpty(authorizationHeader))
             {
-                context.Result = new ObjectResult(new
-                {
-                    InnerCode = "Unauthenticated",
-                    Message = "You are not authenticated"
-                })
-                {
-                    StatusCode = (int)HttpStatusCode.Unauthorized
-                };
+                SetUnauthorizedResult(context, "Unauthenticated", "You are not authenticated");
                 return;
             }
 
-            context.HttpContext.Items[Item.UserLogged] = userOfAuthorization;
+            if (!IsAuthorizationFormatValid(authorizationHeader))
+            {
+                SetUnauthorizedResult(context, "InvalidAuthorization",
+                    "The provided authorization header format is invalid");
+                return;
+            }
+
+            if (IsTokenExpired(authorizationHeader, context))
+            {
+                SetUnauthorizedResult(context, "ExpiredAuthorization", "The provided authorization header is expired");
+                return;
+            }
+
+            var user = GetUserOfAuthorization(authorizationHeader, context);
+
+            context.HttpContext.Items[Item.UserLogged] = user;
         }
         catch (Exception)
         {
-            context.Result = new ObjectResult(new
-            {
-                InnerCode = "InternalError",
-                Message = "An error ocurred while processing the request"
-            })
-            {
-                StatusCode = (int)HttpStatusCode.InternalServerError
-            };
+            SetInternalServerErrorResult(context);
         }
     }
 
-    private User? GetUserOfAuthorization(
-        StringValues authorization,
-        AuthorizationFilterContext context)
+    private static StringValues GetAuthorizationHeader(AuthorizationFilterContext context)
     {
-        var token = authorization.ToString().Substring("Bearer ".Length);
-        var sessionService = context.HttpContext.RequestServices.GetRequiredService<ISessionService>();
-        var user = sessionService.GetUserByToken(token);
-
-        return user;
+        return context.HttpContext.Request.Headers[AuthorizationHeader];
     }
 
-    private bool IsAuthorizationExpired(StringValues authorizationHeader)
+    private static void SetUnauthorizedResult(AuthorizationFilterContext context, string innerCode, string message)
     {
-        return AuthRepository.IsAuthorizationExpired(authorizationHeader!);
+        context.Result = new ObjectResult(new { InnerCode = innerCode, Message = message })
+        {
+            StatusCode = (int)HttpStatusCode.Unauthorized
+        };
+    }
+
+    private void SetInternalServerErrorResult(AuthorizationFilterContext context)
+    {
+        context.Result = new ObjectResult(new
+        {
+            InnerCode = "InternalError",
+            Message = "An error occurred while processing the request"
+        })
+        { StatusCode = (int)HttpStatusCode.InternalServerError };
+    }
+
+    private static User GetUserOfAuthorization(StringValues authorization, AuthorizationFilterContext context)
+    {
+        var token = ExtractTokenFromAuthorization(authorization);
+        var tokenService = GetTokenService(context);
+        return tokenService.GetUserFromToken(token);
+    }
+
+    private static bool IsTokenExpired(StringValues authorizationHeader, AuthorizationFilterContext context)
+    {
+        var tokenService = GetTokenService(context);
+        var token = ExtractTokenFromAuthorization(authorizationHeader);
+        return tokenService.IsTokenExpired(token);
     }
 
     private bool IsAuthorizationFormatValid(StringValues authorizationHeader)
     {
-        if (!authorizationHeader.ToString().StartsWith("Bearer "))
+        if (!authorizationHeader.ToString().StartsWith(BearerPrefix))
         {
             return false;
         }
 
-        var token = authorizationHeader.ToString().Substring("Bearer ".Length);
-
+        var token = ExtractTokenFromAuthorization(authorizationHeader);
         return Guid.TryParse(token, out _);
+    }
+
+    private static string ExtractTokenFromAuthorization(StringValues authorizationHeader)
+    {
+        return authorizationHeader.ToString().Substring(BearerPrefix.Length);
+    }
+
+    private static IAuthService GetTokenService(AuthorizationFilterContext context)
+    {
+        return context.HttpContext.RequestServices.GetRequiredService<IAuthService>();
     }
 }

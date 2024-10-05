@@ -23,7 +23,6 @@ public sealed class AdminServiceTests
 
     private CreateUserArgs _validCreateUserArgs = new CreateUserArgs
     {
-        Id = Guid.NewGuid().ToString(),
         Name = "name",
         Surname = "surname",
         Email = "email@email.com",
@@ -44,10 +43,13 @@ public sealed class AdminServiceTests
         _adminService = new AdminService(_userRepository.Object, _businessRepository.Object, _roleRepository.Object);
         var adminRole = new global::BusinessLogic.Roles.Entities.Role("Admin", []);
         var businessOwnerRole = new global::BusinessLogic.Roles.Entities.Role("Business Owner", []);
-        _validUser = new global::BusinessLogic.Users.Entities.User(_validCreateUserArgs.Name, _validCreateUserArgs.Surname, _validCreateUserArgs.Email,
+        _validUser = new global::BusinessLogic.Users.Entities.User(_validCreateUserArgs.Name,
+            _validCreateUserArgs.Surname, _validCreateUserArgs.Email,
             _validCreateUserArgs.Password, adminRole);
-        _owner = new global::BusinessLogic.Users.Entities.User("name", "surname", "email@email.com", "Password#100", businessOwnerRole);
-        _otherOwner = new global::BusinessLogic.Users.Entities.User("name2", "surname2", "email2@email.com", "Password2#100", businessOwnerRole);
+        _owner = new global::BusinessLogic.Users.Entities.User("name", "surname", "email@email.com", "Password#100",
+            businessOwnerRole);
+        _otherOwner = new global::BusinessLogic.Users.Entities.User("name2", "surname2", "email2@email.com",
+            "Password2#100", businessOwnerRole);
     }
 
     #region Create
@@ -58,7 +60,7 @@ public sealed class AdminServiceTests
     public void Create_WhenAlreadyExists_ThrowsException()
     {
         // Arrange
-        _userRepository.Setup(x => x.Exists(It.IsAny<Guid>())).Returns(true);
+        _userRepository.Setup(x => x.Exists(It.IsAny<string>())).Returns(true);
 
         // Act
         var act = () => _adminService.Create(_validCreateUserArgs);
@@ -95,9 +97,10 @@ public sealed class AdminServiceTests
     public void Create_WhenArgumentsAreValid_CreatesAdmin()
     {
         // Arrange
-        _userRepository.Setup(x => x.Exists(It.IsAny<Guid>())).Returns(false);
+        _userRepository.Setup(x => x.Exists(It.IsAny<string>())).Returns(false);
         _userRepository.Setup(x => x.Add(It.IsAny<global::BusinessLogic.Users.Entities.User>()));
-        _roleRepository.Setup(x => x.GetRole(It.IsAny<string>())).Returns(new global::BusinessLogic.Roles.Entities.Role("Admin", []));
+        _roleRepository.Setup(x => x.Get(It.IsAny<string>()))
+            .Returns(new global::BusinessLogic.Roles.Entities.Role("Admin", []));
 
         // Act
         _adminService.Create(_validCreateUserArgs);
@@ -166,14 +169,13 @@ public sealed class AdminServiceTests
         // Arrange
         var businessOwnerModel = new CreateUserArgs
         {
-            Id = Guid.NewGuid().ToString(),
             Name = "name",
             Surname = "surname",
             Email = "email",
             Password = "password",
             Role = "BusinessOwner"
         };
-        _userRepository.Setup(x => x.Exists(It.IsAny<Guid>())).Returns(true);
+        _userRepository.Setup(x => x.Exists(It.IsAny<string>())).Returns(true);
 
         // Act
         var act = () => _adminService.CreateBusinessOwner(businessOwnerModel);
@@ -192,16 +194,16 @@ public sealed class AdminServiceTests
         // Arrange
         var businessOwnerModel = new CreateUserArgs
         {
-            Id = Guid.NewGuid().ToString(),
             Name = "name",
             Surname = "surname",
             Email = "email@email.com",
             Password = "Password#100",
             Role = "Business Owner"
         };
-        _userRepository.Setup(x => x.Exists(It.IsAny<Guid>())).Returns(false);
+        _userRepository.Setup(x => x.Exists(It.IsAny<string>())).Returns(false);
         _userRepository.Setup(x => x.Add(It.IsAny<global::BusinessLogic.Users.Entities.User>()));
-        _roleRepository.Setup(x => x.GetRole(It.IsAny<string>())).Returns(new global::BusinessLogic.Roles.Entities.Role(businessOwnerModel.Role, []));
+        _roleRepository.Setup(x => x.Get(It.IsAny<string>()))
+            .Returns(new global::BusinessLogic.Roles.Entities.Role(businessOwnerModel.Role, []));
 
         // Act
         _adminService.CreateBusinessOwner(businessOwnerModel);

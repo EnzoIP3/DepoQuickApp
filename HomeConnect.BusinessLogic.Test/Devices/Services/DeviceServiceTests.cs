@@ -43,4 +43,18 @@ public class DeviceServiceTests
         // Assert
         result.Should().BeTrue();
     }
+
+    [TestMethod]
+    public void Toggle_WhenOwnedDeviceDoesNotExist_ShouldThrowArgumentException()
+    {
+        // Arrange
+        var hardwareId = Guid.NewGuid().ToString();
+        _ownedDeviceRepositoryMock.Setup(x => x.Exists(hardwareId)).Returns(false);
+
+        // Act
+        var act = () => _deviceService.Toggle(hardwareId);
+
+        // Assert
+        act.Should().Throw<ArgumentException>().WithMessage("Owned device does not exist");
+    }
 }

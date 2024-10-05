@@ -37,4 +37,9 @@ public class OwnedDeviceRepository : IOwnedDeviceRepository
     {
         return _context.OwnedDevices.FirstOrDefault(od => od.HardwareId == Guid.Parse(hardwareId));
     }
+
+    public bool Exists(string hardwareId)
+    {
+        throw new NotImplementedException();
+    }
 }

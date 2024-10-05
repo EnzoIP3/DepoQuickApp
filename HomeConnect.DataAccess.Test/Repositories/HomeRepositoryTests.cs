@@ -12,6 +12,8 @@ public class HomeRepositoryTests
     private readonly Context _context = DbContextBuilder.BuildTestDbContext();
     private HomeRepository _homeRepository = null!;
     private User _homeOwner = null!;
+    private User _otherOwner = null!;
+    private Member _member = null!;
     private Home _home = null!;
 
     [TestInitialize]
@@ -21,7 +23,10 @@ public class HomeRepositoryTests
 
         var homeOwnerRole = new Role { Name = "HomeOwner", Permissions = new List<SystemPermission>() };
         _homeOwner = new User("John", "Doe", "email@email.com", "Password#100", homeOwnerRole);
+        _otherOwner = new User("Jane", "Doe", "email2@email.com", "Password#100", homeOwnerRole);
         _home = new Home(_homeOwner, "Main St 123", 12.5, 12.5, 5);
+        _member = new Member(_otherOwner);
+        _home.AddMember(_member);
         _context.Users.Add(_homeOwner);
         _context.Homes.Add(_home);
 
@@ -43,7 +48,7 @@ public class HomeRepositoryTests
     public void Add_WhenHomeDoesNotExist_AddsHome()
     {
         // Arrange
-        var home = new Home(_homeOwner, "Main St 123", 12.5, 12.5, 5);
+        var home = new Home(_homeOwner, "Main St 456", 12.5, 12.5, 5);
 
         // Act
         _homeRepository.Add(home);
@@ -90,6 +95,20 @@ public class HomeRepositoryTests
 
         // Assert
         action.Should().Throw<ArgumentException>().WithMessage("Home does not exist");
+    }
+    #endregion
+    #endregion
+
+    #region GetMemberById
+    #region Success
+    [TestMethod]
+    public void GetMemberById_WhenMemberExists_ReturnsMember()
+    {
+        // Act
+        var result = _homeRepository.GetMemberById(_member.Id);
+
+        // Assert
+        result.Should().BeEquivalentTo(_member);
     }
     #endregion
     #endregion

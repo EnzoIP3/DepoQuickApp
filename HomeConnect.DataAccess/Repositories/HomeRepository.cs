@@ -1,5 +1,6 @@
 using BusinessLogic.HomeOwners.Entities;
 using BusinessLogic.HomeOwners.Repositories;
+using Microsoft.EntityFrameworkCore;
 
 namespace HomeConnect.DataAccess.Repositories;
 
@@ -40,7 +41,9 @@ public class HomeRepository : IHomeRepository
 
     public Member GetMemberById(Guid memberId)
     {
-        throw new NotImplementedException();
+        Home? home = _context.Homes.Include(h => h.Members).FirstOrDefault(h => h.Members.Any(m => m.Id == memberId));
+        Member? member = home?.Members.FirstOrDefault(m => m.Id == memberId);
+        return member;
     }
 
     public void UpdateMember(Member member)

@@ -13,40 +13,42 @@ public class AuthorizationFilterAttribute(string? permission = null) : Attribute
     public void OnAuthorization(AuthorizationFilterContext context)
     {
         var userLoggedIn = context.HttpContext.Items[Item.UserLogged];
-        var userIsNotIdentified = userLoggedIn == null;
-
-        if (userIsNotIdentified)
+        if (userLoggedIn == null)
         {
-            context.Result = new ObjectResult(new
-            {
-                InnerCode = "Unauthorized",
-                Message = "You are not authenticated"
-            })
-            {
-                StatusCode = (int)HttpStatusCode.Unauthorized
-            };
+            SetUnauthorizedResult(context, "You are not authenticated");
             return;
         }
 
-        var userLoggedMap = (User)userLoggedIn;
-        var permission = BuildPermission(context);
-        var hasNotPermission = !userLoggedMap.HasPermission(permission);
-
-        if (hasNotPermission)
+        var user = (User)userLoggedIn;
+        var requiredPermission = BuildPermission(context);
+        if (!user.HasPermission(requiredPermission))
         {
-            context.Result = new ObjectResult(new
-            {
-                InnerCode = "Forbidden",
-                Message = $"Missing permission: {permission}"
-            })
-            {
-                StatusCode = (int)HttpStatusCode.Forbidden
-            };
+            SetForbiddenResult(context, $"Missing permission: {requiredPermission}");
         }
     }
 
-    private string BuildPermission(AuthorizationFilterContext context)
+    private static string BuildPermission(AuthorizationFilterContext context)
     {
-        return $"{context.RouteData.Values["action"].ToString().ToLower()}-{context.RouteData.Values["controller"].ToString().ToLower()}";
+        var action = context.RouteData.Values["action"]?.ToString()?.ToLower();
+        var controller = context.RouteData.Values["controller"]?.ToString()?.ToLower();
+        return $"{action}-{controller}";
+    }
+
+    private static void SetUnauthorizedResult(AuthorizationFilterContext context, string message)
+    {
+        context.Result =
+            new ObjectResult(new { InnerCode = "Unauthorized", Message = message })
+            {
+                StatusCode = (int)HttpStatusCode.Unauthorized
+            };
+    }
+
+    private static void SetForbiddenResult(AuthorizationFilterContext context, string message)
+    {
+        context.Result =
+            new ObjectResult(new { InnerCode = "Forbidden", Message = message })
+            {
+                StatusCode = (int)HttpStatusCode.Forbidden
+            };
     }
 }

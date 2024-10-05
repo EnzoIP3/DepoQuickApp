@@ -1,6 +1,9 @@
+using BusinessLogic.Roles.Entities;
+
 namespace BusinessLogic.Roles.Repositories;
 
 public interface IRoleRepository
 {
-    Entities.Role GetRole(string name);
+    Role Get(string name);
+    bool Exists(string name);
 }

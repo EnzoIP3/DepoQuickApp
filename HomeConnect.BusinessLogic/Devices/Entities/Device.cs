@@ -11,6 +11,7 @@ public class Device
     private string _type = string.Empty;
     private Business _business = null!;
 
+    public bool ConnectionState { get; set; } = false;
     public Guid Id { get; init; } = Guid.NewGuid();
 
     public Business Business

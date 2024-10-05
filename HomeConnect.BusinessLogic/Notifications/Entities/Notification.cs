@@ -10,7 +10,8 @@ public class Notification
     public bool Read { get; set; }
     public string Event { get; set; } = null!;
     public OwnedDevice OwnedDevice { get; set; } = null!;
-    public User User { get; set; } = null!;
+
+    public User? User { get; set; }
 
     public Notification()
     {

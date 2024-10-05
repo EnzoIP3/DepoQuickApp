@@ -1,6 +1,6 @@
-namespace HomeConnect.WebApi.Controllers.BusinessOwner.Models;
+namespace HomeConnect.WebApi.Controllers.Sensor.Models;
 
-public struct CreateDeviceRequest
+public struct CreateSensorRequest
 {
     public string BusinessRut { get; set; }
     public string Description { get; set; }
@@ -8,5 +8,4 @@ public struct CreateDeviceRequest
     public int ModelNumber { get; set; }
     public string Name { get; set; }
     public List<string> SecondaryPhotos { get; set; }
-    public string Type { get; set; }
 }

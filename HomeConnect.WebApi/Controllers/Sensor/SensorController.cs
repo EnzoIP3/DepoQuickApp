@@ -1,15 +1,41 @@
+using BusinessLogic.BusinessOwners.Models;
+using BusinessLogic.BusinessOwners.Services;
 using BusinessLogic.Devices.Services;
 using BusinessLogic.Notifications.Services;
 using HomeConnect.WebApi.Controllers.Device;
 using HomeConnect.WebApi.Controllers.Device.Models;
+using HomeConnect.WebApi.Controllers.Sensor.Models;
 using Microsoft.AspNetCore.Mvc;
 
 namespace HomeConnect.WebApi.Controllers.Sensor;
 
 [ApiController]
 [Route("sensors")]
-public class SensorController(INotificationService notificationService, IDeviceService deviceService) : BaseDeviceController(deviceService)
+public class SensorController(
+    INotificationService notificationService,
+    IDeviceService deviceService,
+    IBusinessOwnerService businessOwnerService)
+    : BaseDeviceController(deviceService)
 {
+    [HttpPost]
+    public CreateSensorResponse CreateSensor([FromBody] CreateSensorRequest request)
+    {
+        var args = new CreateDeviceArgs()
+        {
+            BusinessRut = request.BusinessRut,
+            Description = request.Description,
+            MainPhoto = request.MainPhoto,
+            ModelNumber = request.ModelNumber,
+            Name = request.Name,
+            SecondaryPhotos = request.SecondaryPhotos,
+            Type = "Sensor"
+        };
+
+        var createdDevice = businessOwnerService.CreateDevice(args);
+
+        return new CreateSensorResponse { Id = createdDevice };
+    }
+
     [HttpPost("{hardwareId}/open")]
     public NotifyResponse NotifyOpen([FromRoute] string hardwareId)
     {
@@ -20,12 +46,7 @@ public class SensorController(INotificationService notificationService, IDeviceS
 
     private static NotificationArgs CreateOpenNotificationArgs(string hardwareId)
     {
-        var notificationArgs = new NotificationArgs
-        {
-            HardwareId = hardwareId,
-            Date = DateTime.Now,
-            Event = "open"
-        };
+        var notificationArgs = new NotificationArgs { HardwareId = hardwareId, Date = DateTime.Now, Event = "open" };
         return notificationArgs;
     }
 
@@ -39,12 +60,7 @@ public class SensorController(INotificationService notificationService, IDeviceS
 
     private static NotificationArgs CreateCloseNotificationArgs(string hardwareId)
     {
-        var notificationArgs = new NotificationArgs
-        {
-            HardwareId = hardwareId,
-            Date = DateTime.Now,
-            Event = "close"
-        };
+        var notificationArgs = new NotificationArgs { HardwareId = hardwareId, Date = DateTime.Now, Event = "close" };
         return notificationArgs;
     }
 }

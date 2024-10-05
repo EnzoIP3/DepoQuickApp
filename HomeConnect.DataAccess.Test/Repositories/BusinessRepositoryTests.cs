@@ -158,7 +158,7 @@ public class BusinessRepositoryTests
         var expected = _validBusiness;
 
         // Act
-        var result = _businessRepository.GetBusinessByOwner(_validUser.Email);
+        var result = _businessRepository.GetBusinessByOwnerId(_validUser.Email);
 
         // Assert
         result.Should().BeEquivalentTo(expected);
@@ -171,7 +171,7 @@ public class BusinessRepositoryTests
         var nonExistentOwnerEmail = "nonexistent@example.com";
 
         // Act
-        var result = _businessRepository.GetBusinessByOwner(nonExistentOwnerEmail);
+        var result = _businessRepository.GetBusinessByOwnerId(nonExistentOwnerEmail);
 
         // Assert
         result.Should().BeNull();
@@ -192,7 +192,7 @@ public class BusinessRepositoryTests
         var expected = _validBusiness;
 
         // Act
-        var result = _businessRepository.GetBusinessByRut(_validBusiness.Rut);
+        var result = _businessRepository.Get(_validBusiness.Rut);
 
         // Assert
         result.Should().BeEquivalentTo(expected);

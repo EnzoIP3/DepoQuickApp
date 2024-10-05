@@ -23,10 +23,10 @@ public class BusinessOwnerService : IBusinessOwnerService
 
     public string CreateBusiness(CreateBusinessArgs args)
     {
-        EnsureOwnerExists(args.OwnerId);
-        EnsureOwnerDoesNotHaveBusiness(args.OwnerId);
+        EnsureOwnerExists(Guid.Parse(args.OwnerId));
+        EnsureOwnerDoesNotHaveBusiness(Guid.Parse(args.OwnerId));
         EnsureBusinessRutDoesNotExist(args.Rut);
-        var owner = UserRepository.Get(args.OwnerId);
+        var owner = UserRepository.Get(Guid.Parse(args.OwnerId));
         var business = new Business(args.Rut, args.Name, owner);
         BusinessRepository.Add(business);
         return business.Rut;
@@ -34,9 +34,9 @@ public class BusinessOwnerService : IBusinessOwnerService
 
     public Guid CreateDevice(CreateDeviceArgs args)
     {
-        var business = BusinessRepository.GetBusinessByRut(args.BusinessRut);
+        var business = BusinessRepository.Get(args.BusinessRut);
         var device = new Device(args.Name, args.ModelNumber, args.Description, args.MainPhoto, args.SecondaryPhotos,
-            args.Type, business!);
+            args.Type, business);
         DeviceRepository.EnsureDeviceDoesNotExist(device);
         DeviceRepository.Add(device);
         return device.Id;
@@ -44,26 +44,25 @@ public class BusinessOwnerService : IBusinessOwnerService
 
     public Guid CreateCamera(CreateCameraArgs args)
     {
-        var business = BusinessRepository.GetBusinessByRut(args.BusinessRut);
+        var business = BusinessRepository.Get(args.BusinessRut);
         var camera = new Camera(args.Name, args.ModelNumber, args.Description, args.MainPhoto, args.SecondaryPhotos,
-            business!, args.MotionDetection, args.PersonDetection, args.IsExterior, args.IsInterior);
+            business, args.MotionDetection, args.PersonDetection, args.IsExterior, args.IsInterior);
         DeviceRepository.EnsureDeviceDoesNotExist(camera);
         DeviceRepository.Add(camera);
         return camera.Id;
     }
 
-    private void EnsureOwnerExists(string ownerEmail)
+    private void EnsureOwnerExists(Guid ownerId)
     {
-        if (!UserRepository.Exists(ownerEmail))
+        if (!UserRepository.Exists(ownerId))
         {
             throw new ArgumentException("Owner does not exist");
         }
     }
 
-    private void EnsureOwnerDoesNotHaveBusiness(string ownerEmail)
+    private void EnsureOwnerDoesNotHaveBusiness(Guid ownerId)
     {
-        var existingBusiness = BusinessRepository.GetBusinessByOwner(ownerEmail);
-        if (existingBusiness != null)
+        if (BusinessRepository.ExistsByOwnerId(ownerId))
         {
             throw new ArgumentException("Owner already has a business");
         }
@@ -71,10 +70,9 @@ public class BusinessOwnerService : IBusinessOwnerService
 
     private void EnsureBusinessRutDoesNotExist(string businessRut)
     {
-        var existingBusinessByRut = BusinessRepository.GetBusinessByRut(businessRut);
-        if (existingBusinessByRut != null)
+        if (BusinessRepository.Exists(businessRut))
         {
-            throw new InvalidOperationException("RUT already exists");
+            throw new ArgumentException("Business with this RUT already exists");
         }
     }
 }

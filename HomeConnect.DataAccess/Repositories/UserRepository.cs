@@ -23,7 +23,7 @@ public class UserRepository : PaginatedRepositoryBase<User>, IUserRepository
         return GetAllPaged(currentPage, pageSize, filters);
     }
 
-    public User Get(string email)
+    public User GetByEmail(string email)
     {
         return _context.Users.First(u => u.Email == email);
     }
@@ -39,7 +39,7 @@ public class UserRepository : PaginatedRepositoryBase<User>, IUserRepository
         return _context.Users.Any(u => u.Id == id);
     }
 
-    public bool Exists(string email)
+    public bool ExistsByEmail(string email)
     {
         return _context.Users.Any(u => u.Email == email);
     }

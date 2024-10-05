@@ -38,7 +38,7 @@ public class UserServiceTest
     {
         // Arrange
         _userRepository.Setup(x => x.Add(It.IsAny<User>()));
-        _userRepository.Setup(x => x.Exists(_args.Email)).Returns(false);
+        _userRepository.Setup(x => x.ExistsByEmail(_args.Email)).Returns(false);
         _roleRepository.Setup(x => x.Exists(_args.Role)).Returns(true);
         _roleRepository.Setup(x => x.Get(_args.Role)).Returns(new Role());
 
@@ -67,7 +67,7 @@ public class UserServiceTest
     {
         // Arrange
         _roleRepository.Setup(x => x.Exists(_args.Role)).Returns(true);
-        _userRepository.Setup(x => x.Exists(_args.Email)).Returns(true);
+        _userRepository.Setup(x => x.ExistsByEmail(_args.Email)).Returns(true);
 
         // Act
         var act = () => _userService.CreateUser(_args);
@@ -84,7 +84,7 @@ public class UserServiceTest
         _args.ProfilePicture = null;
         _roleRepository.Setup(x => x.Exists(_args.Role)).Returns(true);
         _roleRepository.Setup(x => x.Get(_args.Role)).Returns(new Role(Role.HomeOwner, []));
-        _userRepository.Setup(x => x.Exists(_args.Email)).Returns(false);
+        _userRepository.Setup(x => x.ExistsByEmail(_args.Email)).Returns(false);
 
         // Act
         var act = () => _userService.CreateUser(_args);

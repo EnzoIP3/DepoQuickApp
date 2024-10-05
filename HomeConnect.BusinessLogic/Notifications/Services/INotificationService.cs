@@ -1,5 +1,5 @@
 using BusinessLogic.Notifications.Entities;
-using HomeConnect.WebApi.Controllers.Sensor;
+using BusinessLogic.Notifications.Models;
 
 namespace BusinessLogic.Notifications.Services;
 

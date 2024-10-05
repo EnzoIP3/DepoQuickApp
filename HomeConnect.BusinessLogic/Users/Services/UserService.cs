@@ -38,7 +38,7 @@ public class UserService : IUserService
 
     private void EnsureUserDoesNotExist(CreateUserArgs args)
     {
-        if (_userRepository.Exists(args.Email))
+        if (_userRepository.ExistsByEmail(args.Email))
         {
             throw new ArgumentException("User already exists");
         }

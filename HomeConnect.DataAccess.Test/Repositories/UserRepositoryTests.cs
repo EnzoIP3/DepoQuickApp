@@ -52,7 +52,7 @@ public class UserRepositoryTest
     public void ExistsByEmail_WhenUserExists_ReturnsTrue()
     {
         // Act
-        var result = _userRepository.Exists(_validUser.Email);
+        var result = _userRepository.ExistsByEmail(_validUser.Email);
 
         // Assert
         result.Should().BeTrue();
@@ -162,7 +162,7 @@ public class UserRepositoryTest
     public void GetByEmail_WhenUserExists_ReturnsUser()
     {
         // Act
-        var result = _userRepository.Get(_validUser.Email);
+        var result = _userRepository.GetByEmail(_validUser.Email);
 
         // Assert
         result.Should().NotBeNull();

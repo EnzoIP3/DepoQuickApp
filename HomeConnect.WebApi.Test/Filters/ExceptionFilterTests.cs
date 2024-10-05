@@ -43,15 +43,17 @@ public class ExceptionFilterTests
         response.Should().NotBeNull();
         var concreteResponse = response as ObjectResult;
         concreteResponse.Should().NotBeNull();
-        concreteResponse.StatusCode.Should().Be((int)HttpStatusCode.InternalServerError);
-        FilterTestsUtils.GetInnerCode(concreteResponse?.Value).Should().Be("InternalServerError");
-        FilterTestsUtils.GetMessage(concreteResponse?.Value).Should().Be("There was an error when processing your request");
+        concreteResponse!.StatusCode.Should().Be((int)HttpStatusCode.InternalServerError);
+        FilterTestsUtils.GetInnerCode(concreteResponse.Value).Should().Be("InternalServerError");
+        FilterTestsUtils.GetMessage(concreteResponse.Value).Should()
+            .Be("There was an error when processing your request");
     }
 
     [TestMethod]
     public void OnException_WhenExceptionIsArgumentException_ShouldResponseBadRequest()
     {
-        _context.Exception = new ArgumentException("Not registered");
+        var exceptionMessage = "Invalid argument passed";
+        _context.Exception = new ArgumentException(exceptionMessage);
         _attribute.OnException(_context);
 
         var response = _context.Result;
@@ -59,8 +61,8 @@ public class ExceptionFilterTests
         response.Should().NotBeNull();
         var concreteResponse = response as ObjectResult;
         concreteResponse.Should().NotBeNull();
-        concreteResponse.StatusCode.Should().Be((int)HttpStatusCode.BadRequest);
-        FilterTestsUtils.GetInnerCode(concreteResponse?.Value).Should().Be("BadRequest");
-        FilterTestsUtils.GetMessage(concreteResponse?.Value).Should().Be("The request is invalid");
+        concreteResponse!.StatusCode.Should().Be((int)HttpStatusCode.BadRequest);
+        FilterTestsUtils.GetInnerCode(concreteResponse.Value).Should().Be("BadRequest");
+        FilterTestsUtils.GetMessage(concreteResponse.Value).Should().Be(exceptionMessage);
     }
 }

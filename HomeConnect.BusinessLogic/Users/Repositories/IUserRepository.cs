@@ -6,9 +6,9 @@ public interface IUserRepository
 {
     void Add(User user);
     User Get(Guid id);
-    User Get(string email);
+    User GetByEmail(string email);
     bool Exists(Guid id);
-    bool Exists(string email);
+    bool ExistsByEmail(string email);
     void Delete(Guid id);
 
     PagedData<User> GetAllPaged(int currentPage, int pageSize, string? fullNameFilter = null,

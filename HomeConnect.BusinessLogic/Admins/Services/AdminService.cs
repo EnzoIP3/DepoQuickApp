@@ -51,7 +51,7 @@ public class AdminService : IAdminService
 
     private void EnsureUserEmailIsUnique(string email)
     {
-        if (UserRepository.Exists(email))
+        if (UserRepository.ExistsByEmail(email))
         {
             throw new Exception("User already exists.");
         }

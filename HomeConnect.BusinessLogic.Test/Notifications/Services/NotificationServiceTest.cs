@@ -3,12 +3,12 @@ using BusinessLogic.Devices.Entities;
 using BusinessLogic.Devices.Repositories;
 using BusinessLogic.HomeOwners.Entities;
 using BusinessLogic.Notifications.Entities;
+using BusinessLogic.Notifications.Models;
 using BusinessLogic.Notifications.Repositories;
 using BusinessLogic.Notifications.Services;
 using BusinessLogic.Roles.Entities;
 using BusinessLogic.Users.Entities;
 using FluentAssertions;
-using HomeConnect.WebApi.Controllers.Sensor;
 using Moq;
 
 namespace HomeConnect.BusinessLogic.Test.Notifications.Services;

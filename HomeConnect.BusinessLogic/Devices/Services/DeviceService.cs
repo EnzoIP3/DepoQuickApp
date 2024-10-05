@@ -1,6 +1,6 @@
 using BusinessLogic.Devices.Entities;
+using BusinessLogic.Devices.Models;
 using BusinessLogic.Devices.Repositories;
-using HomeConnect.WebApi.Controllers.Devices.Models;
 
 namespace BusinessLogic.Devices.Services;
 

@@ -1,4 +1,4 @@
-namespace HomeConnect.WebApi.Controllers.Sensor;
+namespace BusinessLogic.Notifications.Models;
 
 public struct NotificationArgs
 {

@@ -2,9 +2,9 @@ using BusinessLogic.Devices.Entities;
 using BusinessLogic.Devices.Repositories;
 using BusinessLogic.HomeOwners.Entities;
 using BusinessLogic.Notifications.Entities;
+using BusinessLogic.Notifications.Models;
 using BusinessLogic.Notifications.Repositories;
 using BusinessLogic.Users.Entities;
-using HomeConnect.WebApi.Controllers.Sensor;
 
 namespace BusinessLogic.Notifications.Services;
 

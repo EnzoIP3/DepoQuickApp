@@ -1,4 +1,4 @@
-namespace HomeConnect.WebApi.Controllers.Devices.Models;
+namespace BusinessLogic.Devices.Models;
 
 public class GetDeviceArgs
 {

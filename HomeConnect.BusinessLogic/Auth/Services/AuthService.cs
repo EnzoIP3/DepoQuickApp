@@ -20,7 +20,7 @@ public class AuthService : IAuthService
     public string CreateToken(CreateTokenArgs args)
     {
         EnsureUserExists(args.Email);
-        var user = _userRepository.Get(args.Email);
+        var user = _userRepository.GetByEmail(args.Email);
         ValidatePassword(args, user);
         var session = new Token(user);
         _tokenRepository.Add(session);
@@ -29,7 +29,7 @@ public class AuthService : IAuthService
 
     private void EnsureUserExists(string email)
     {
-        if (!_userRepository.Exists(email))
+        if (!_userRepository.ExistsByEmail(email))
         {
             throw new ArgumentException("Invalid email or password");
         }

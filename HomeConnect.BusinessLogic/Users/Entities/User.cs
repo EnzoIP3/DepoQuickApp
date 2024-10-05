@@ -95,7 +95,7 @@ public class User
     {
         if (string.IsNullOrEmpty(value) || string.IsNullOrWhiteSpace(value))
         {
-            throw new Exception($"{propertyName} cannot be blank.");
+            throw new ArgumentException($"{propertyName} cannot be blank.");
         }
     }
 
@@ -112,22 +112,22 @@ public class User
     {
         if (!ContainsCapitalLetter(password))
         {
-            throw new Exception("Password must contain at least one capital letter.");
+            throw new ArgumentException("Password must contain at least one capital letter.");
         }
 
         if (!ContainsDigit(password))
         {
-            throw new Exception("Password must contain at least one digit.");
+            throw new ArgumentException("Password must contain at least one digit.");
         }
 
         if (!ContainsSpecialCharacter(password))
         {
-            throw new Exception("Password must contain at least one special character.");
+            throw new ArgumentException("Password must contain at least one special character.");
         }
 
         if (password.Length < 8)
         {
-            throw new Exception("Password must be at least 8 characters long.");
+            throw new ArgumentException("Password must be at least 8 characters long.");
         }
     }
 

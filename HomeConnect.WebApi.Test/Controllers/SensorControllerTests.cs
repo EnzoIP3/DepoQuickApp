@@ -67,7 +67,7 @@ public class SensorControllerTests
     public void CreateSensor_WhenCalledWithValidRequest_ReturnsCreatedResponse()
     {
         // Arrange
-        var sensor = new Device("name", 123, "description", "http://example.com/photo.png", [], "Sensor",
+        var sensor = new Device("name", 123, "description", "http://example.com/photo.png", [], DeviceType.Sensor.ToString(),
             new Business());
         var sensorArgs = new CreateDeviceArgs()
         {
@@ -77,7 +77,7 @@ public class SensorControllerTests
             ModelNumber = sensor.ModelNumber,
             Name = sensor.Name,
             SecondaryPhotos = sensor.SecondaryPhotos,
-            Type = sensor.Type
+            Type = sensor.Type.ToString()
         };
         var sensorRequest = new CreateSensorRequest()
         {

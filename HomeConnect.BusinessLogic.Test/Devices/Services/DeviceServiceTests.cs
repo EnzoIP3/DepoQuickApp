@@ -134,9 +134,9 @@ public class DeviceServiceTests
         {
             Data = new List<Device>
             {
-                new Device { Type = "Sensor" },
-                new Device { Type = "Camera" },
-                new Device { Type = "Sensor" }
+                new Device { Type = DeviceType.Sensor },
+                new Device { Type = DeviceType.Camera },
+                new Device { Type = DeviceType.Sensor }
             },
             Page = 1,
             PageSize = 3,

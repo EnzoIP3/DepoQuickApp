@@ -8,7 +8,7 @@ public class Device
     private string _description = string.Empty;
     private string _mainPhoto = string.Empty;
     private List<string> _secondaryPhotos = [];
-    private string _type = string.Empty;
+    private DeviceType _type;
     private Business _business = null!;
 
     public bool ConnectionState { get; set; } = false;
@@ -66,12 +66,11 @@ public class Device
         }
     }
 
-    public string Type
+    public DeviceType Type
     {
         get => _type;
         set
         {
-            EnsureFieldIsNotEmpty("Type", value);
             _type = value;
         }
     }
@@ -84,7 +83,16 @@ public class Device
         Description = description;
         MainPhoto = mainPhoto;
         SecondaryPhotos = secondaryPhotos;
-        Type = type;
+
+        if (Enum.TryParse(type, true, out DeviceType parsedType))
+        {
+            Type = parsedType;
+        }
+        else
+        {
+            throw new ArgumentException("Invalid device type");
+        }
+
         Business = business;
     }
 

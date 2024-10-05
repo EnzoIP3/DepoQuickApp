@@ -119,7 +119,7 @@ public class DeviceControllerTests
     public void GetDevices_WhenCalledWithValidRequestAndDeviceTypeFilter_ReturnsFilteredExpectedResponse()
     {
         // Arrange
-        var deviceTypeFilter = _expectedDevices.First().Type;
+        var deviceTypeFilter = _expectedDevices.First().Type.ToString();
         var parameters = new GetDeviceArgs { DeviceTypeFilter = deviceTypeFilter };
         _deviceService.Setup(x => x.GetDevices(parameters)).Returns(_pagedList);
 

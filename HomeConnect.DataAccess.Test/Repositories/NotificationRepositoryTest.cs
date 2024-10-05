@@ -116,7 +116,7 @@ public class NotificationRepositoryTest
         var expectedResult = new List<Notification> { _notification };
 
         // Act
-        var result = _notificationRepository.Get(_user.Id, _sensor.Type);
+        var result = _notificationRepository.Get(_user.Id, _sensor.Type.ToString());
 
         // Assert
         result.Should().BeEquivalentTo(expectedResult);

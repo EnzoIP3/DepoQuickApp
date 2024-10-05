@@ -4,7 +4,7 @@ using BusinessLogic.Admins.Services;
 using HomeConnect.WebApi.Filters;
 using Microsoft.AspNetCore.Mvc;
 
-namespace HomeConnect.WebApi.Controllers.Business;
+namespace HomeConnect.WebApi.Controllers.Businesses;
 
 [ApiController]
 [Route("businesses")]

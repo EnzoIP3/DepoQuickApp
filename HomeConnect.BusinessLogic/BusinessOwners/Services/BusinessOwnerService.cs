@@ -1,4 +1,5 @@
 ﻿using BusinessLogic.BusinessOwners.Entities;
+using BusinessLogic.BusinessOwners.Models;
 using BusinessLogic.BusinessOwners.Repositories;
 using BusinessLogic.Devices.Entities;
 using BusinessLogic.Devices.Repositories;
@@ -20,30 +21,32 @@ public class BusinessOwnerService : IBusinessOwnerService
         DeviceRepository = deviceRepository;
     }
 
-    public string CreateBusiness(string ownerEmail, string businessRut, string businessName)
+    public string CreateBusiness(CreateBusinessArgs args)
     {
-        EnsureOwnerExists(ownerEmail);
-        EnsureOwnerDoesNotHaveBusiness(ownerEmail);
-        EnsureBusinessRutDoesNotExist(businessRut);
-
-        var owner = UserRepository.Get(ownerEmail);
-        var business = new Business(businessRut, businessName, owner);
+        EnsureOwnerExists(args.OwnerId);
+        EnsureOwnerDoesNotHaveBusiness(args.OwnerId);
+        EnsureBusinessRutDoesNotExist(args.Rut);
+        var owner = UserRepository.Get(args.OwnerId);
+        var business = new Business(args.Rut, args.Name, owner);
         BusinessRepository.Add(business);
         return business.Rut;
     }
 
-    public Guid CreateDevice(string name, int modelNumber, string description, string mainPhoto, List<string> secondaryPhotos, string type, Business business)
+    public Guid CreateDevice(CreateDeviceArgs args)
     {
-        var device = new Device(name, modelNumber, description, mainPhoto, secondaryPhotos, type, business);
+        var business = BusinessRepository.GetBusinessByRut(args.BusinessRut);
+        var device = new Device(args.Name, args.ModelNumber, args.Description, args.MainPhoto, args.SecondaryPhotos,
+            args.Type, business!);
         DeviceRepository.EnsureDeviceDoesNotExist(device);
         DeviceRepository.Add(device);
         return device.Id;
     }
 
-    public Guid CreateCamera(string name, int modelNumber, string description, string mainPhoto, List<string> secondaryPhotos,
-        Business business, bool motionDetection, bool personDetection, bool isExterior, bool isInterior)
+    public Guid CreateCamera(CreateCameraArgs args)
     {
-        var camera = new Camera(name, modelNumber, description, mainPhoto, secondaryPhotos, business, motionDetection, personDetection, isExterior, isInterior);
+        var business = BusinessRepository.GetBusinessByRut(args.BusinessRut);
+        var camera = new Camera(args.Name, args.ModelNumber, args.Description, args.MainPhoto, args.SecondaryPhotos,
+            business!, args.MotionDetection, args.PersonDetection, args.IsExterior, args.IsInterior);
         DeviceRepository.EnsureDeviceDoesNotExist(camera);
         DeviceRepository.Add(camera);
         return camera.Id;

@@ -1,8 +1,11 @@
 ﻿using BusinessLogic.BusinessOwners.Entities;
+using BusinessLogic.BusinessOwners.Models;
 using BusinessLogic.BusinessOwners.Repositories;
 using BusinessLogic.BusinessOwners.Services;
 using BusinessLogic.Devices.Entities;
 using BusinessLogic.Devices.Repositories;
+using BusinessLogic.Roles.Entities;
+using BusinessLogic.Users.Entities;
 using BusinessLogic.Users.Repositories;
 using FluentAssertions;
 using Moq;
@@ -19,7 +22,7 @@ public class BusinessOwnerServiceTests
     private string _ownerEmail = null!;
     private string _businessRut = null!;
     private string _businessName = null!;
-    private global::BusinessLogic.Users.Entities.User _owner = null!;
+    private User _owner = null!;
     private Business _existingBusiness = null!;
 
     private const string DeviceName = "Device Name";
@@ -44,8 +47,8 @@ public class BusinessOwnerServiceTests
         _ownerEmail = "owner@example.com";
         _businessRut = "123456789";
         _businessName = "Test Business";
-        _owner = new global::BusinessLogic.Users.Entities.User("John", "Doe", _ownerEmail, "Password123!",
-            new global::BusinessLogic.Roles.Entities.Role());
+        _owner = new User("John", "Doe", _ownerEmail, "Password123!",
+            new Role());
         _existingBusiness = new Business(_businessRut, "Existing Business", _owner);
     }
 
@@ -57,6 +60,7 @@ public class BusinessOwnerServiceTests
     public void CreateBusiness_WhenOwnerExists_CreatesBusiness()
     {
         // Arrange
+        var args = new CreateBusinessArgs { OwnerId = _ownerEmail, Rut = _businessRut, Name = _businessName };
         _userRepository.Setup(x => x.Exists(_ownerEmail)).Returns(true);
         _userRepository.Setup(x => x.Get(_ownerEmail)).Returns(_owner);
         _businessRepository.Setup(x => x.GetBusinessByOwner(_ownerEmail)).Returns((Business?)null);
@@ -64,7 +68,7 @@ public class BusinessOwnerServiceTests
         _businessRepository.Setup(x => x.GetBusinessByRut(_businessRut)).Returns((Business?)null);
 
         // Act
-        _businessOwnerService.CreateBusiness(_ownerEmail, _businessRut, _businessName);
+        _businessOwnerService.CreateBusiness(args);
 
         // Assert
         _businessRepository.Verify(x => x.Add(It.Is<Business>(b =>
@@ -77,6 +81,7 @@ public class BusinessOwnerServiceTests
     public void CreateBusiness_WhenCalledWithValidRequest_ReturnsCorrectRut()
     {
         // Arrange
+        var args = new CreateBusinessArgs { OwnerId = _ownerEmail, Rut = _businessRut, Name = _businessName };
         _userRepository.Setup(x => x.Get(_ownerEmail)).Returns(_owner);
         _userRepository.Setup(x => x.Exists(_ownerEmail)).Returns(true);
         _businessRepository.Setup(x => x.GetBusinessByOwner(_ownerEmail)).Returns((Business?)null);
@@ -84,7 +89,7 @@ public class BusinessOwnerServiceTests
         _businessRepository.Setup(x => x.GetBusinessByRut(_businessRut)).Returns((Business?)null);
 
         // Act
-        var returnedRut = _businessOwnerService.CreateBusiness(_ownerEmail, _businessRut, _businessName);
+        var returnedRut = _businessOwnerService.CreateBusiness(args);
 
         // Assert
         _businessRepository.Verify(x => x.Add(It.Is<Business>(b =>
@@ -102,12 +107,13 @@ public class BusinessOwnerServiceTests
     public void CreateBusiness_WhenOwnerAlreadyHasBusiness_ThrowsException()
     {
         // Arrange
+        var args = new CreateBusinessArgs { OwnerId = _ownerEmail, Rut = _businessRut, Name = _businessName };
         _userRepository.Setup(x => x.Exists(_ownerEmail)).Returns(true);
         _userRepository.Setup(x => x.Get(_ownerEmail)).Returns(_owner);
         _businessRepository.Setup(x => x.GetBusinessByOwner(_ownerEmail)).Returns(_existingBusiness);
 
         // Act
-        Action act = () => _businessOwnerService.CreateBusiness(_ownerEmail, _businessRut, _businessName);
+        Action act = () => _businessOwnerService.CreateBusiness(args);
 
         // Assert
         act.Should().Throw<ArgumentException>().WithMessage("Owner already has a business");
@@ -118,11 +124,12 @@ public class BusinessOwnerServiceTests
     public void CreateBusiness_WhenOwnerDoesNotExist_ThrowsException()
     {
         // Arrange
-        var nonexistentEmail = "nonexistent@example.com";
+        const string nonexistentEmail = "nonexistent@example.com";
+        var args = new CreateBusinessArgs { OwnerId = nonexistentEmail, Rut = _businessRut, Name = _businessName };
         _userRepository.Setup(x => x.Exists(nonexistentEmail)).Returns(false);
 
         // Act
-        Action act = () => _businessOwnerService.CreateBusiness(nonexistentEmail, _businessRut, _businessName);
+        Action act = () => _businessOwnerService.CreateBusiness(args);
 
         // Assert
         act.Should().Throw<ArgumentException>().WithMessage("Owner does not exist");
@@ -133,6 +140,7 @@ public class BusinessOwnerServiceTests
     public void CreateBusiness_WhenBusinessRutAlreadyExists_ThrowsException()
     {
         // Arrange
+        var args = new CreateBusinessArgs { OwnerId = _ownerEmail, Rut = _businessRut, Name = _businessName };
         _userRepository.Setup(x => x.Exists(_ownerEmail)).Returns(true);
         _userRepository.Setup(x => x.Get(_ownerEmail)).Returns(_owner);
         _businessRepository.Setup(x => x.GetBusinessByRut(_businessRut)).Returns(_existingBusiness);
@@ -141,7 +149,7 @@ public class BusinessOwnerServiceTests
         _businessRepository.Setup(x => x.GetBusinessByRut(_businessRut)).Returns(_existingBusiness);
 
         // Act
-        Action act = () => _businessOwnerService.CreateBusiness(_ownerEmail, _businessRut, _businessName);
+        Action act = () => _businessOwnerService.CreateBusiness(args);
 
         // Assert
         act.Should().Throw<InvalidOperationException>().WithMessage("RUT already exists");
@@ -160,17 +168,27 @@ public class BusinessOwnerServiceTests
     public void CreateDevice_WhenDeviceDoesNotExist_CreatesDevice()
     {
         // Arrange
-        var business = new Business("RUTexample", "Business Name", _owner);
+        var args = new CreateDeviceArgs
+        {
+            BusinessRut = "RUTexample",
+            Name = DeviceName,
+            ModelNumber = ModelNumber,
+            Description = Description,
+            MainPhoto = MainPhoto,
+            SecondaryPhotos = secondaryPhotos,
+            Type = Type
+        };
         _deviceRepository.Setup(x =>
-            x.EnsureDeviceDoesNotExist(It.IsAny<global::BusinessLogic.Devices.Entities.Device>()));
-        _deviceRepository.Setup(x => x.Add(It.IsAny<global::BusinessLogic.Devices.Entities.Device>()));
+            x.EnsureDeviceDoesNotExist(It.IsAny<Device>()));
+        _deviceRepository.Setup(x => x.Add(It.IsAny<Device>()));
+        _businessRepository.Setup(x => x.GetBusinessByRut("RUTexample"))
+            .Returns(new Business("RUTexample", "Business Name", _owner));
 
         // Act
-        _businessOwnerService.CreateDevice(DeviceName, ModelNumber, Description, MainPhoto, secondaryPhotos, Type,
-            business);
+        _businessOwnerService.CreateDevice(args);
 
         // Assert
-        _deviceRepository.Verify(x => x.Add(It.Is<global::BusinessLogic.Devices.Entities.Device>(d =>
+        _deviceRepository.Verify(x => x.Add(It.Is<Device>(d =>
             d.Name == DeviceName &&
             d.ModelNumber == ModelNumber &&
             d.Description == Description &&
@@ -183,13 +201,26 @@ public class BusinessOwnerServiceTests
     public void CreateDevice_ReturnsCorrectId()
     {
         // Arrange
-        var business = new Business("RUTexample", "Business Name", _owner);
+        var args = new CreateDeviceArgs
+        {
+            BusinessRut = "RUTexample",
+            Name = DeviceName,
+            ModelNumber = ModelNumber,
+            Description = Description,
+            MainPhoto = MainPhoto,
+            SecondaryPhotos = secondaryPhotos,
+            Type = Type
+        };
         Device addedDevice = null;
-        _deviceRepository.Setup(x => x.EnsureDeviceDoesNotExist(It.IsAny<global::BusinessLogic.Devices.Entities.Device>()));
-        _deviceRepository.Setup(x => x.Add(It.IsAny<global::BusinessLogic.Devices.Entities.Device>())).Callback<Device>(d => addedDevice = d);
+        _deviceRepository.Setup(x =>
+            x.EnsureDeviceDoesNotExist(It.IsAny<Device>()));
+        _deviceRepository.Setup(x => x.Add(It.IsAny<Device>()))
+            .Callback<Device>(d => addedDevice = d);
+        _businessRepository.Setup(x => x.GetBusinessByRut(args.BusinessRut))
+            .Returns(new Business("RUTexample", "Business Name", _owner));
 
         // Act
-        var returnedId = _businessOwnerService.CreateDevice(DeviceName, ModelNumber, Description, MainPhoto, secondaryPhotos, Type, business);
+        var returnedId = _businessOwnerService.CreateDevice(args);
 
         // Assert
         Assert.AreEqual(addedDevice.Id, returnedId);
@@ -204,21 +235,31 @@ public class BusinessOwnerServiceTests
     {
         // Arrange
         var business = new Business("RUTexample", "Business Name", _owner);
-        var existingDevice = new global::BusinessLogic.Devices.Entities.Device(DeviceName, ModelNumber, Description,
+        var existingDevice = new Device(DeviceName, ModelNumber, Description,
             MainPhoto, secondaryPhotos, Type, business);
         _deviceRepository
-            .Setup(x => x.EnsureDeviceDoesNotExist(It.IsAny<global::BusinessLogic.Devices.Entities.Device>()))
+            .Setup(x => x.EnsureDeviceDoesNotExist(It.IsAny<Device>()))
             .Throws(new ArgumentException("Device already exists"));
-        _deviceRepository.Setup(x => x.Add(It.IsAny<global::BusinessLogic.Devices.Entities.Device>()));
+        _deviceRepository.Setup(x => x.Add(It.IsAny<Device>()));
+        _businessRepository.Setup(x => x.GetBusinessByRut("RUTexample")).Returns(business);
+        var args = new CreateDeviceArgs
+        {
+            BusinessRut = "RUTexample",
+            Name = DeviceName,
+            ModelNumber = ModelNumber,
+            Description = Description,
+            MainPhoto = MainPhoto,
+            SecondaryPhotos = secondaryPhotos,
+            Type = Type
+        };
 
         // Act
         Action act = () =>
-            _businessOwnerService.CreateDevice(DeviceName, ModelNumber, Description, MainPhoto, secondaryPhotos, Type,
-                business);
+            _businessOwnerService.CreateDevice(args);
 
         // Assert
         act.Should().Throw<ArgumentException>().WithMessage("Device already exists");
-        _deviceRepository.Verify(x => x.Add(It.IsAny<global::BusinessLogic.Devices.Entities.Device>()), Times.Never);
+        _deviceRepository.Verify(x => x.Add(It.IsAny<Device>()), Times.Never);
     }
 
     #endregion
@@ -227,20 +268,36 @@ public class BusinessOwnerServiceTests
 
     #region CreateCamera
 
-    #region  Success
+    #region Success
+
     [TestMethod]
     public void CreateCamera_WhenCameraDoesNotExist_CreatesCamera()
     {
         // Arrange
         var business = new Business("RUTexample", "Business Name", _owner);
-        _deviceRepository.Setup(x => x.EnsureDeviceDoesNotExist(It.IsAny<global::BusinessLogic.Devices.Entities.Device>()));
-        _deviceRepository.Setup(x => x.Add(It.IsAny<global::BusinessLogic.Devices.Entities.Device>()));
+        _deviceRepository.Setup(x =>
+            x.EnsureDeviceDoesNotExist(It.IsAny<Device>()));
+        _deviceRepository.Setup(x => x.Add(It.IsAny<Device>()));
+        _businessRepository.Setup(x => x.GetBusinessByRut("RUTexample")).Returns(business);
+        var args = new CreateCameraArgs
+        {
+            BusinessRut = "RUTexample",
+            Name = DeviceName,
+            ModelNumber = ModelNumber,
+            Description = Description,
+            MainPhoto = MainPhoto,
+            SecondaryPhotos = secondaryPhotos,
+            MotionDetection = false,
+            PersonDetection = false,
+            IsExterior = false,
+            IsInterior = true
+        };
 
         // Act
-        _businessOwnerService.CreateCamera(DeviceName, ModelNumber, Description, MainPhoto, secondaryPhotos, business, false, false, false, true);
+        _businessOwnerService.CreateCamera(args);
 
         // Assert
-        _deviceRepository.Verify(x => x.Add(It.Is<global::BusinessLogic.Devices.Entities.Camera>(d =>
+        _deviceRepository.Verify(x => x.Add(It.Is<Camera>(d =>
             d.Name == DeviceName &&
             d.ModelNumber == ModelNumber &&
             d.Description == Description &&
@@ -258,35 +315,71 @@ public class BusinessOwnerServiceTests
     {
         // Arrange
         var business = new Business("RUTexample", "Business Name", _owner);
+        var args = new CreateCameraArgs
+        {
+            BusinessRut = "RUTexample",
+            Name = DeviceName,
+            ModelNumber = ModelNumber,
+            Description = Description,
+            MainPhoto = MainPhoto,
+            SecondaryPhotos = secondaryPhotos,
+            MotionDetection = false,
+            PersonDetection = false,
+            IsExterior = false,
+            IsInterior = true
+        };
         Camera addedCamera = null;
-        _deviceRepository.Setup(x => x.EnsureDeviceDoesNotExist(It.IsAny<global::BusinessLogic.Devices.Entities.Device>()));
-        _deviceRepository.Setup(x => x.Add(It.IsAny<global::BusinessLogic.Devices.Entities.Device>())).Callback<Device>(d => addedCamera = (Camera)d);
+        _deviceRepository.Setup(x =>
+            x.EnsureDeviceDoesNotExist(It.IsAny<Device>()));
+        _deviceRepository.Setup(x => x.Add(It.IsAny<Device>()))
+            .Callback<Device>(d => addedCamera = (Camera)d);
+        _businessRepository.Setup(x => x.GetBusinessByRut(args.BusinessRut)).Returns(business);
 
         // Act
-        var returnedId = _businessOwnerService.CreateCamera(DeviceName, ModelNumber, Description, MainPhoto, secondaryPhotos, business, false, false, false, true);
+        var returnedId = _businessOwnerService.CreateCamera(args);
 
         // Assert
         Assert.AreEqual(addedCamera.Id, returnedId);
     }
+
     #endregion
 
     #region Error
+
     [TestMethod]
     public void CreateCamera_WhenCameraAlreadyExists_ThrowsException()
     {
         // Arrange
         var business = new Business("RUTexample", "Business Name", _owner);
-        var existingCamera = new Camera(DeviceName, ModelNumber, Description, MainPhoto, secondaryPhotos, business, false, false, false, true);
-        _deviceRepository.Setup(x => x.EnsureDeviceDoesNotExist(It.IsAny<global::BusinessLogic.Devices.Entities.Device>())).Throws(new ArgumentException("Device already exists"));
-        _deviceRepository.Setup(x => x.Add(It.IsAny<global::BusinessLogic.Devices.Entities.Device>()));
+        var existingCamera = new Camera(DeviceName, ModelNumber, Description, MainPhoto, secondaryPhotos, business,
+            false, false, false, true);
+        _deviceRepository
+            .Setup(x => x.EnsureDeviceDoesNotExist(It.IsAny<Device>()))
+            .Throws(new ArgumentException("Device already exists"));
+        _deviceRepository.Setup(x => x.Add(It.IsAny<Device>()));
+        _businessRepository.Setup(x => x.GetBusinessByRut("RUTexample")).Returns(business);
+        var args = new CreateCameraArgs
+        {
+            BusinessRut = "RUTexample",
+            Name = DeviceName,
+            ModelNumber = ModelNumber,
+            Description = Description,
+            MainPhoto = MainPhoto,
+            SecondaryPhotos = secondaryPhotos,
+            MotionDetection = false,
+            PersonDetection = false,
+            IsExterior = false,
+            IsInterior = true
+        };
 
         // Act
-        Action act = () => _businessOwnerService.CreateCamera(DeviceName, ModelNumber, Description, MainPhoto, secondaryPhotos, business, false, false, false, true);
+        Action act = () => _businessOwnerService.CreateCamera(args);
 
         // Assert
         act.Should().Throw<ArgumentException>().WithMessage("Device already exists");
-        _deviceRepository.Verify(x => x.Add(It.IsAny<global::BusinessLogic.Devices.Entities.Device>()), Times.Never);
+        _deviceRepository.Verify(x => x.Add(It.IsAny<Device>()), Times.Never);
     }
+
     #endregion
 
     #endregion

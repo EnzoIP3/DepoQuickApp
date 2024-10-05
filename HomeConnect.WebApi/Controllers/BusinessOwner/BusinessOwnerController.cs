@@ -1,6 +1,9 @@
 using BusinessLogic.Admins.Services;
+using BusinessLogic.BusinessOwners.Entities;
+using BusinessLogic.BusinessOwners.Models;
 using BusinessLogic.BusinessOwners.Services;
 using BusinessLogic.Users.Models;
+using HomeConnect.WebApi.Controllers.BusinessOwner.Models;
 using HomeConnect.WebApi.Filters;
 using Microsoft.AspNetCore.Mvc;
 
@@ -9,7 +12,8 @@ namespace HomeConnect.WebApi.Controllers.BusinessOwner;
 [ApiController]
 [Route("business_owners")]
 [AuthorizationFilter]
-public class BusinessOwnerController(IAdminService adminService, IBusinessOwnerService businessOwnerService) : ControllerBase
+public class BusinessOwnerController(IAdminService adminService, IBusinessOwnerService businessOwnerService)
+    : ControllerBase
 {
     public CreateBusinessOwnerResponse CreateBusinessOwner(CreateBusinessOwnerRequest request)
     {
@@ -22,10 +26,7 @@ public class BusinessOwnerController(IAdminService adminService, IBusinessOwnerS
     {
         var userModel = new CreateUserArgs
         {
-            Name = request.Name,
-            Surname = request.Surname,
-            Email = request.Email,
-            Password = request.Password
+            Name = request.Name, Surname = request.Surname, Email = request.Email, Password = request.Password
         };
         return userModel;
     }
@@ -34,35 +35,27 @@ public class BusinessOwnerController(IAdminService adminService, IBusinessOwnerS
     [Route("businesses")]
     public CreateBusinessResponse CreateBusiness([FromBody] CreateBusinessRequest request)
     {
-        var business = new BusinessLogic.BusinessOwners.Entities.Business
-        {
-            Name = request.Name,
-            Rut = request.Rut,
-            Owner = request.Owner,
-        };
-
-        var createdBusiness = businessOwnerService.CreateBusiness(business.Owner.Email, business.Rut, business.Name);
-
-        return new CreateBusinessResponse { Id = createdBusiness };
+        var args = new CreateBusinessArgs() { Name = request.Name, OwnerId = request.OwnerId, Rut = request.Rut };
+        var createdBusiness = businessOwnerService.CreateBusiness(args);
+        return new CreateBusinessResponse { Rut = createdBusiness };
     }
 
     [HttpPost]
     [Route("sensors")]
     public CreateDeviceResponse CreateDevice([FromBody] CreateDeviceRequest request)
     {
-        var device = new BusinessLogic.Devices.Entities.Device
+        var args = new CreateDeviceArgs()
         {
-            Business = request.Business,
+            BusinessRut = request.BusinessRut,
             Description = request.Description,
             MainPhoto = request.MainPhoto,
             ModelNumber = request.ModelNumber,
             Name = request.Name,
             SecondaryPhotos = request.SecondaryPhotos,
-            Type = request.Type,
-            Id = request.Id
+            Type = request.Type
         };
 
-        var createdDevice = businessOwnerService.CreateDevice(device.Name, device.ModelNumber, device.Description, device.MainPhoto, device.SecondaryPhotos, device.Type, device.Business);
+        var createdDevice = businessOwnerService.CreateDevice(args);
 
         return new CreateDeviceResponse { Id = createdDevice };
     }
@@ -71,21 +64,21 @@ public class BusinessOwnerController(IAdminService adminService, IBusinessOwnerS
     [Route("cameras")]
     public CreateCameraResponse CreateCamera([FromBody] CreateCameraRequest request)
     {
-        var camera = new BusinessLogic.Devices.Entities.Camera
+        var args = new CreateCameraArgs()
         {
-            Business = request.Business,
+            Name = request.Name,
+            BusinessRut = request.BusinessRut,
             Description = request.Description,
+            IsExterior = request.IsExterior,
+            IsInterior = request.IsInterior,
             MainPhoto = request.MainPhoto,
             ModelNumber = request.ModelNumber,
-            Name = request.Name,
-            SecondaryPhotos = request.SecondaryPhotos,
             MotionDetection = request.MotionDetection,
             PersonDetection = request.PersonDetection,
-            IsExterior = request.IsExterior,
-            IsInterior = request.IsInterior
+            SecondaryPhotos = request.SecondaryPhotos
         };
 
-        var createdCamera = businessOwnerService.CreateCamera(camera.Name, camera.ModelNumber, camera.Description, camera.MainPhoto, camera.SecondaryPhotos, camera.Business, camera.MotionDetection, camera.PersonDetection, camera.IsExterior, camera.IsInterior);
+        var createdCamera = businessOwnerService.CreateCamera(args);
 
         return new CreateCameraResponse { Id = createdCamera };
     }

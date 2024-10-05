@@ -92,7 +92,10 @@ public class AdminService : IAdminService
         }).ToList();
         return new PagedData<GetUsersArgs>
         {
-            Data = data, Page = users.Page, PageSize = users.PageSize, TotalPages = users.TotalPages
+            Data = data,
+            Page = users.Page,
+            PageSize = users.PageSize,
+            TotalPages = users.TotalPages
         };
     }
 
@@ -112,7 +115,10 @@ public class AdminService : IAdminService
         }).ToList();
         return new PagedData<GetBusinessesArgs>
         {
-            Data = data, Page = businesses.Page, PageSize = businesses.PageSize, TotalPages = businesses.TotalPages
+            Data = data,
+            Page = businesses.Page,
+            PageSize = businesses.PageSize,
+            TotalPages = businesses.TotalPages
         };
     }
 }

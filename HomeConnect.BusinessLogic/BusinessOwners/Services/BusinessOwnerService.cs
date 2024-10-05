@@ -2,8 +2,6 @@
 using BusinessLogic.BusinessOwners.Repositories;
 using BusinessLogic.Devices.Entities;
 using BusinessLogic.Devices.Repositories;
-using BusinessLogic.Roles.Repositories;
-using BusinessLogic.Users.Entities;
 using BusinessLogic.Users.Repositories;
 
 namespace BusinessLogic.BusinessOwners.Services;

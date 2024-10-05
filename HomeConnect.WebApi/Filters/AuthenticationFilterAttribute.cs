@@ -65,8 +65,10 @@ public sealed class AuthenticationFilterAttribute : Attribute, IAuthorizationFil
     {
         context.Result = new ObjectResult(new
         {
-            InnerCode = "InternalError", Message = "An error occurred while processing the request"
-        }) { StatusCode = (int)HttpStatusCode.InternalServerError };
+            InnerCode = "InternalError",
+            Message = "An error occurred while processing the request"
+        })
+        { StatusCode = (int)HttpStatusCode.InternalServerError };
     }
 
     private static User GetUserOfAuthorization(StringValues authorization, AuthorizationFilterContext context)

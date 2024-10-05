@@ -53,16 +53,6 @@ public class BusinessRepository : PaginatedRepositoryBase<Business>, IBusinessRe
         return query;
     }
 
-    private static List<Business> PaginateBusinesses(int page, int pageSize, IQueryable<Business> query)
-    {
-        return query.Skip((page - 1) * pageSize).Take(pageSize).ToList();
-    }
-
-    private static int CalculateTotalPages(int pageSize, IQueryable<Business> query)
-    {
-        return (int)Math.Ceiling(query.Count() / (double)pageSize);
-    }
-
     private static IQueryable<Business> FilterByBusinessName(string? nameFilter, IQueryable<Business> query)
     {
         if (!string.IsNullOrWhiteSpace(nameFilter))

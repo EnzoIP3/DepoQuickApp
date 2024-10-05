@@ -3,7 +3,6 @@ using BusinessLogic.BusinessOwners.Repositories;
 using BusinessLogic.BusinessOwners.Services;
 using BusinessLogic.Devices.Entities;
 using BusinessLogic.Devices.Repositories;
-using BusinessLogic.Roles.Repositories;
 using BusinessLogic.Users.Repositories;
 using FluentAssertions;
 using Moq;

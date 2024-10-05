@@ -1,8 +1,6 @@
 using System.Diagnostics.CodeAnalysis;
-using BusinessLogic.Admins.Services;
 using BusinessLogic.Auth.Repositories;
 using BusinessLogic.Auth.Services;
-using BusinessLogic.BusinessOwners.Repositories;
 using BusinessLogic.Roles.Repositories;
 using BusinessLogic.Users.Repositories;
 using BusinessLogic.Users.Services;

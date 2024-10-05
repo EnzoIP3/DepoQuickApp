@@ -1,6 +1,6 @@
 using System.Net;
 using BusinessLogic.HomeOwners.Entities;
-using BusinessLogic.HomeOwners.Repositories;
+using BusinessLogic.HomeOwners.Services;
 using BusinessLogic.Users.Entities;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Filters;
@@ -8,7 +8,7 @@ using Microsoft.AspNetCore.Mvc.Filters;
 namespace HomeConnect.WebApi.Filters;
 
 [AttributeUsage(AttributeTargets.Class | AttributeTargets.Method)]
-public class HomeAuthorizationFilterAttribute(IHomeRepository homeRepository, string? permission = null) : Attribute, IAuthorizationFilter
+public class HomeAuthorizationFilterAttribute(IHomeOwnerService homeOwnerService, string? permission = null) : Attribute, IAuthorizationFilter
 {
     private readonly string homeIdRoute = "homesId";
     public string? Permission { get; } = permission;
@@ -46,7 +46,7 @@ public class HomeAuthorizationFilterAttribute(IHomeRepository homeRepository, st
             return;
         }
 
-        var home = homeRepository.Get(homeIdParsed);
+        var home = homeOwnerService.GetHome(homeIdParsed);
         var userLoggedMap = (User)userLoggedIn;
         var permission = BuildPermission(context);
         var member = home.Members.First(m => m.User.Id == userLoggedMap.Id);

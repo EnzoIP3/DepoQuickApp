@@ -63,12 +63,17 @@ public class NotificationServiceTest
     #region Notify
 
     [TestMethod]
-    public void Notify_WhenCalledWithNonExistentDevice_ShouldThrowArgumentException()
+    public void Notify_WhenCalledWithNonExistentOwnedDevice_ShouldThrowArgumentException()
     {
         // Arrange
-        var id = Guid.NewGuid();
-        var args = new NotificationArgs { HardwareId = id.ToString(), Event = "Test Event", Date = DateTime.Now };
-        _mockOwnedDeviceRepository.Setup(x => x.GetByHardwareId(id.ToString())).Returns((OwnedDevice)null);
+        var args = new NotificationArgs
+        {
+            HardwareId = Guid.NewGuid().ToString(),
+            Event = "Test Event",
+            Date = DateTime.Now
+        };
+
+        _mockOwnedDeviceRepository.Setup(x => x.Exists(args.HardwareId)).Returns(false);
 
         // Act
         var act = () => _notificationService.Notify(args);
@@ -99,7 +104,7 @@ public class NotificationServiceTest
             Event = "Test Event",
             Date = DateTime.Now
         };
-
+        _mockOwnedDeviceRepository.Setup(x => x.Exists(args.HardwareId)).Returns(true);
         _mockOwnedDeviceRepository.Setup(x => x.GetByHardwareId(args.HardwareId)).Returns(ownedDevice);
 
         // Act

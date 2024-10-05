@@ -43,6 +43,7 @@ public class BusinessOwnerService : IBusinessOwnerService
 
     public Guid CreateDevice(CreateDeviceArgs args)
     {
+        EnsureBusinessExists(args.BusinessRut);
         var business = BusinessRepository.Get(args.BusinessRut);
         var device = new Device(args.Name, args.ModelNumber, args.Description, args.MainPhoto, args.SecondaryPhotos,
             args.Type, business);
@@ -53,7 +54,7 @@ public class BusinessOwnerService : IBusinessOwnerService
 
     public Guid CreateCamera(CreateCameraArgs args)
     {
-        EnsureBusinessDoesNotExist(args);
+        EnsureBusinessExists(args.BusinessRut);
         var business = BusinessRepository.Get(args.BusinessRut);
         var camera = new Camera(args.Name, args.ModelNumber, args.Description, args.MainPhoto, args.SecondaryPhotos,
             business, args.MotionDetection, args.PersonDetection, args.IsExterior, args.IsInterior);
@@ -62,9 +63,9 @@ public class BusinessOwnerService : IBusinessOwnerService
         return camera.Id;
     }
 
-    private void EnsureBusinessDoesNotExist(CreateCameraArgs args)
+    private void EnsureBusinessExists(string rut)
     {
-        if (!BusinessRepository.Exists(args.BusinessRut))
+        if (!BusinessRepository.Exists(rut))
         {
             throw new ArgumentException("Business does not exist");
         }

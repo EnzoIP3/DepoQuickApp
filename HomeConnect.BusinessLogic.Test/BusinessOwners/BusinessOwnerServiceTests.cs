@@ -198,6 +198,7 @@ public class BusinessOwnerServiceTests
         _deviceRepository.Setup(x => x.Add(It.IsAny<Device>()));
         _businessRepository.Setup(x => x.Get("RUTexample"))
             .Returns(new Business("RUTexample", "Business Name", _owner));
+        _businessRepository.Setup(x => x.Exists("RUTexample")).Returns(true);
 
         // Act
         _businessOwnerService.CreateDevice(args);
@@ -233,6 +234,7 @@ public class BusinessOwnerServiceTests
             .Callback<Device>(d => addedDevice = d);
         _businessRepository.Setup(x => x.Get(args.BusinessRut))
             .Returns(new Business("RUTexample", "Business Name", _owner));
+        _businessRepository.Setup(x => x.Exists(args.BusinessRut)).Returns(true);
 
         // Act
         var returnedId = _businessOwnerService.CreateDevice(args);
@@ -255,6 +257,7 @@ public class BusinessOwnerServiceTests
             .Throws(new ArgumentException("Device already exists"));
         _deviceRepository.Setup(x => x.Add(It.IsAny<Device>()));
         _businessRepository.Setup(x => x.Get("RUTexample")).Returns(business);
+        _businessRepository.Setup(x => x.Exists("RUTexample")).Returns(true);
         var args = new CreateDeviceArgs
         {
             BusinessRut = "RUTexample",

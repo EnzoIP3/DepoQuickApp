@@ -134,8 +134,9 @@ public class DeviceRepositoryTests
         var result = _deviceRepository.GetDevices(1, 2, null, null, null, null);
 
         // Assert
-        result.Data.Should().HaveCount(1);
+        result.Data.Should().HaveCount(2);
         result.Data.Exists(d => d.Id == _validDevice.Id).Should().BeTrue();
+        result.Data.Exists(d => d.Id == _secondValidDevice.Id).Should().BeTrue();
     }
 
     [TestMethod]

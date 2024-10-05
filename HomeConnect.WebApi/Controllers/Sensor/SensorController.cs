@@ -2,15 +2,18 @@ using BusinessLogic.BusinessOwners.Models;
 using BusinessLogic.BusinessOwners.Services;
 using BusinessLogic.Devices.Services;
 using BusinessLogic.Notifications.Services;
+using BusinessLogic.Roles.Entities;
 using HomeConnect.WebApi.Controllers.Device;
 using HomeConnect.WebApi.Controllers.Device.Models;
 using HomeConnect.WebApi.Controllers.Sensor.Models;
+using HomeConnect.WebApi.Filters;
 using Microsoft.AspNetCore.Mvc;
 
 namespace HomeConnect.WebApi.Controllers.Sensor;
 
 [ApiController]
 [Route("sensors")]
+[AuthenticationFilter]
 public class SensorController(
     INotificationService notificationService,
     IDeviceService deviceService,
@@ -18,6 +21,7 @@ public class SensorController(
     : BaseDeviceController(deviceService)
 {
     [HttpPost]
+    [AuthorizationFilter(SystemPermission.CreateSensor)]
     public CreateSensorResponse CreateSensor([FromBody] CreateSensorRequest request)
     {
         var args = new CreateDeviceArgs()

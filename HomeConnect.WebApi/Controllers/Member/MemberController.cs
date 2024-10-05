@@ -6,7 +6,7 @@ namespace HomeConnect.WebApi.Controllers.Member;
 
 [ApiController]
 [Route("members")]
-[AuthorizationFilter]
+[AuthenticationFilter]
 public class MemberController(IHomeOwnerService homeOwnerService) : ControllerBase
 {
     [HttpPatch("{membersId}/notifications")]

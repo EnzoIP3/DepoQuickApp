@@ -30,7 +30,7 @@ public class UserService : IUserService
 
     private static void ValidateHomeOwner(CreateUserArgs args, Role role)
     {
-        if (role.Name == Role.HomeOwner.Name && args.ProfilePicture == null)
+        if (role.Name == Role.HomeOwner && args.ProfilePicture == null)
         {
             throw new ArgumentException("Home owners must have a profile picture");
         }

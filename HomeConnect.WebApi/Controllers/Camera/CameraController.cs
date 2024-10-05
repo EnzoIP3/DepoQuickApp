@@ -2,10 +2,12 @@ using BusinessLogic.BusinessOwners.Models;
 using BusinessLogic.BusinessOwners.Services;
 using BusinessLogic.Devices.Services;
 using BusinessLogic.Notifications.Services;
+using BusinessLogic.Roles.Entities;
 using HomeConnect.WebApi.Controllers.Camera.Models;
 using HomeConnect.WebApi.Controllers.Device;
 using HomeConnect.WebApi.Controllers.Device.Models;
 using HomeConnect.WebApi.Controllers.Sensor;
+using HomeConnect.WebApi.Filters;
 using Microsoft.AspNetCore.Mvc;
 
 namespace HomeConnect.WebApi.Controllers.Camera;
@@ -19,6 +21,7 @@ public class CameraController(
     : BaseDeviceController(deviceService)
 {
     [HttpPost]
+    [AuthorizationFilter(SystemPermission.CreateCamera)]
     public CreateCameraResponse CreateCamera([FromBody] CreateCameraRequest request)
     {
         var args = new CreateCameraArgs()

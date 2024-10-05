@@ -83,7 +83,7 @@ public class UserServiceTest
         _args.Role = "HomeOwner";
         _args.ProfilePicture = null;
         _roleRepository.Setup(x => x.Exists(_args.Role)).Returns(true);
-        _roleRepository.Setup(x => x.Get(_args.Role)).Returns(Role.HomeOwner);
+        _roleRepository.Setup(x => x.Get(_args.Role)).Returns(new Role(Role.HomeOwner, []));
         _userRepository.Setup(x => x.Exists(_args.Email)).Returns(false);
 
         // Act

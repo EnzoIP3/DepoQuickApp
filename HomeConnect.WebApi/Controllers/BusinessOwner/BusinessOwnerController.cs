@@ -1,4 +1,5 @@
 using BusinessLogic.Admins.Services;
+using BusinessLogic.Roles.Entities;
 using BusinessLogic.Users.Models;
 using HomeConnect.WebApi.Controllers.BusinessOwner.Models;
 using HomeConnect.WebApi.Filters;
@@ -8,10 +9,12 @@ namespace HomeConnect.WebApi.Controllers.BusinessOwner;
 
 [ApiController]
 [Route("business_owners")]
-[AuthorizationFilter]
+[AuthenticationFilter]
 public class BusinessOwnerController(IAdminService adminService)
     : ControllerBase
 {
+    [HttpPost]
+    [AuthorizationFilter(SystemPermission.CreateAdministrator)]
     public CreateBusinessOwnerResponse CreateBusinessOwner(CreateBusinessOwnerRequest request)
     {
         CreateUserArgs createUserArgs = UserModelFromRequest(request);

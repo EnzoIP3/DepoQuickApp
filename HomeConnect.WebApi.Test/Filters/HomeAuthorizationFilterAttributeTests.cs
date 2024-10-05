@@ -33,7 +33,7 @@ public class HomeAuthorizationFilterAttributeTests
         _httpContextMock = new Mock<HttpContext>(MockBehavior.Strict);
         _homeOwnerServiceMock = new Mock<IHomeOwnerService>(MockBehavior.Strict);
         _userRepositoryMock = new Mock<IUserRepository>(MockBehavior.Strict);
-        _attribute = new HomeAuthorizationFilterAttribute(_homeOwnerServiceMock.Object, "some-permission");
+        _attribute = new HomeAuthorizationFilterAttribute("some-permission");
 
         _context = new AuthorizationFilterContext(
             new ActionContext(
@@ -99,10 +99,10 @@ public class HomeAuthorizationFilterAttributeTests
         };
         _httpContextMock.Setup(h => h.Items).Returns(items);
         _homeOwnerServiceMock.Setup(h => h.GetHome(home.Id)).Returns(home);
+        _httpContextMock.Setup(h => h.RequestServices.GetService(typeof(IHomeOwnerService)))
+            .Returns(_homeOwnerServiceMock.Object);
 
         var routeData = new RouteData();
-        routeData.Values["action"] = "SomeAction";
-        routeData.Values["controller"] = "SomeController";
         routeData.Values[_homeIdRoute] = home.Id.ToString();
         _context.RouteData = routeData;
 
@@ -117,6 +117,6 @@ public class HomeAuthorizationFilterAttributeTests
         concreteResponse.Should().NotBeNull();
         concreteResponse.StatusCode.Should().Be((int)HttpStatusCode.Forbidden);
         FilterTestsUtils.GetInnerCode(concreteResponse?.Value).Should().Be("Forbidden");
-        FilterTestsUtils.GetMessage(concreteResponse?.Value).Should().Be("Missing permission: someaction-somecontroller");
+        FilterTestsUtils.GetMessage(concreteResponse?.Value).Should().Be("Missing permission: some-permission");
     }
 }

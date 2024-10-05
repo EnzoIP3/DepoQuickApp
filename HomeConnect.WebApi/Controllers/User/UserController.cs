@@ -1,6 +1,7 @@
 using BusinessLogic;
 using BusinessLogic.Admins.Models;
 using BusinessLogic.Admins.Services;
+using BusinessLogic.Roles.Entities;
 using HomeConnect.WebApi.Filters;
 using Microsoft.AspNetCore.Mvc;
 
@@ -8,10 +9,11 @@ namespace HomeConnect.WebApi.Controllers.User;
 
 [ApiController]
 [Route("users")]
-[AuthorizationFilter]
+[AuthenticationFilter]
 public class UserController(IAdminService adminService) : ControllerBase
 {
     [HttpGet]
+    [AuthorizationFilter(SystemPermission.GetAllUsers)]
     public IActionResult GetUsers([FromQuery] int? currentPage = null, [FromQuery] int? pageSize = null,
         [FromQuery] string? fullNameFilter = null, [FromQuery] string? roleFilter = null)
     {

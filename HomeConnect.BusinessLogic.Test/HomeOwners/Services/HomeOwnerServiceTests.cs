@@ -511,11 +511,11 @@ public class HomeOwnerServiceTests
         var memberId = member.Id;
         _homeRepositoryMock.Setup(x => x.ExistsMember(memberId)).Returns(true);
         _homeRepositoryMock.Setup(x => x.GetMemberById(memberId)).Returns(member);
-        var permissionList = new List<HomePermission> { new HomePermission("shouldBeNotified") };
+        var permissionList = new List<HomePermission> { new HomePermission(HomePermission.GetNotifications) };
 
         _homeRepositoryMock.Setup(e =>
             e.UpdateMember(It.Is<Member>(x =>
-                x.User == _user && x.HomePermissions.First().Value == "shouldBeNotified")));
+                x.User == _user && x.HomePermissions.First().Value == HomePermission.GetNotifications)));
 
         // Act
         _homeOwnerService.UpdateMemberNotifications(memberId, true);
@@ -529,7 +529,7 @@ public class HomeOwnerServiceTests
     public void UpdateMemberNotifications_WhenMemberHavePermissionAndRequestShouldBeNotifiedIsFalse_RemovesPermission()
     {
         // Arrange
-        var member = new Member(_user, [new HomePermission("shouldBeNotified")]);
+        var member = new Member(_user, [new HomePermission(HomePermission.GetNotifications)]);
         var memberId = member.Id;
         _homeRepositoryMock.Setup(x => x.ExistsMember(memberId)).Returns(true);
         _homeRepositoryMock.Setup(x => x.GetMemberById(memberId)).Returns(member);

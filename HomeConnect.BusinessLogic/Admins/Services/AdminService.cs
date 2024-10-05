@@ -1,4 +1,4 @@
-using BusinessLogic.Admins.Models;
+using BusinessLogic.BusinessOwners.Entities;
 using BusinessLogic.BusinessOwners.Repositories;
 using BusinessLogic.Roles.Repositories;
 using BusinessLogic.Users.Entities;
@@ -74,48 +74,29 @@ public class AdminService : IAdminService
         return user.Id;
     }
 
-    public PagedData<GetUsersArgs> GetUsers(int? currentPage = null, int? pageSize = null,
-        string? fullNameFilter = null,
+    public PagedData<User> GetUsers(int? currentPage = null, int? pageSize = null, string? fullNameFilter = null,
         string? roleFilter = null)
     {
         currentPage ??= 1;
         pageSize ??= 10;
         var users = UserRepository.GetAllPaged((int)currentPage, (int)pageSize, fullNameFilter, roleFilter);
-        var data = users.Data.Select(x => new GetUsersArgs
+        return new PagedData<User>
         {
-            Id = x.Id.ToString(),
-            Name = x.Name,
-            Surname = x.Surname,
-            FullName = $"{x.Name} {x.Surname}",
-            Role = x.Role.Name,
-            CreatedAt = x.CreatedAt
-        }).ToList();
-        return new PagedData<GetUsersArgs>
-        {
-            Data = data,
+            Data = users.Data,
             Page = users.Page,
             PageSize = users.PageSize,
             TotalPages = users.TotalPages
         };
     }
 
-    public PagedData<GetBusinessesArgs> GetBusinesses(int? currentPage = null, int? pageSize = null,
-        string? fullNameFilter = null, string? nameFilter = null)
+    public PagedData<Business> GetBusinesses(int? currentPage = null, int? pageSize = null, string? fullNameFilter = null, string? nameFilter = null)
     {
         currentPage ??= 1;
         pageSize ??= 10;
-        var businesses = BusinessRepository.GetPagedData((int)currentPage, (int)pageSize, fullNameFilter,
-            nameFilter);
-        var data = businesses.Data.Select(x => new GetBusinessesArgs
+        var businesses = BusinessRepository.GetPagedData((int)currentPage, (int)pageSize, fullNameFilter, nameFilter);
+        return new PagedData<Business>
         {
-            Rut = x.Rut,
-            Name = x.Name,
-            OwnerEmail = x.Owner.Email,
-            OwnerFullName = $"{x.Owner.Name} {x.Owner.Surname}"
-        }).ToList();
-        return new PagedData<GetBusinessesArgs>
-        {
-            Data = data,
+            Data = businesses.Data,
             Page = businesses.Page,
             PageSize = businesses.PageSize,
             TotalPages = businesses.TotalPages

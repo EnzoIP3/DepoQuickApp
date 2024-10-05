@@ -9,13 +9,15 @@ namespace HomeConnect.BusinessLogic.Test.Devices.Services;
 public class DeviceServiceTests
 {
     private Mock<IOwnedDeviceRepository> _ownedDeviceRepositoryMock = null!;
+    private Mock<IDeviceRepository> _deviceRepositoryMock = null!;
     private DeviceService _deviceService = null!;
 
     [TestInitialize]
     public void TestInitialize()
     {
+        _deviceRepositoryMock = new Mock<IDeviceRepository>();
         _ownedDeviceRepositoryMock = new Mock<IOwnedDeviceRepository>();
-        _deviceService = new DeviceService(_ownedDeviceRepositoryMock.Object);
+        _deviceService = new DeviceService(_deviceRepositoryMock.Object, _ownedDeviceRepositoryMock.Object);
     }
 
     [TestMethod]

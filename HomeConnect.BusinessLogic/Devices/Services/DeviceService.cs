@@ -1,20 +1,41 @@
+using BusinessLogic.Devices.Entities;
 using BusinessLogic.Devices.Repositories;
+using HomeConnect.WebApi.Controllers.Devices.Models;
 
 namespace BusinessLogic.Devices.Services;
 
-public class DeviceService(IOwnedDeviceRepository ownedDeviceRepository) : IDeviceService
+public class DeviceService : IDeviceService
 {
+    private IDeviceRepository DeviceRepository { get; init; }
+    private IOwnedDeviceRepository OwnedDeviceRepository { get; init; }
+
+    public DeviceService(IDeviceRepository deviceRepository, IOwnedDeviceRepository ownedDeviceRepository)
+    {
+        DeviceRepository = deviceRepository;
+        OwnedDeviceRepository = ownedDeviceRepository;
+    }
+
+    public PagedData<Device> GetDevices(GetDeviceArgs parameters)
+    {
+        parameters.Page ??= 1;
+        parameters.PageSize ??= 10;
+        var devices = DeviceRepository.GetDevices((int)parameters.Page, (int)parameters.PageSize,
+            parameters.DeviceNameFilter, parameters.ModelNumberFilter, parameters.BusinessNameFilter,
+            parameters.DeviceTypeFilter);
+        return devices;
+    }
+
     public bool Toggle(string hardwareId)
     {
         EnsureHardwareIdIsValid(hardwareId);
         EnsureOwnedDeviceExists(hardwareId);
-        var connectionState = ownedDeviceRepository.ToggleConnection(hardwareId);
+        var connectionState = OwnedDeviceRepository.ToggleConnection(hardwareId);
         return connectionState;
     }
 
     private void EnsureOwnedDeviceExists(string hardwareId)
     {
-        if (!ownedDeviceRepository.Exists(hardwareId))
+        if (!OwnedDeviceRepository.Exists(hardwareId))
         {
             throw new ArgumentException("Owned device does not exist");
         }

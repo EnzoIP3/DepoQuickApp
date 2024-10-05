@@ -1,5 +1,4 @@
 using BusinessLogic;
-using BusinessLogic.Admins.Models;
 using BusinessLogic.Admins.Services;
 using BusinessLogic.BusinessOwners.Models;
 using BusinessLogic.BusinessOwners.Services;
@@ -34,7 +33,7 @@ public class BusinessController(IAdminService adminService, IBusinessOwnerServic
         return new CreateBusinessResponse { Rut = createdBusiness };
     }
 
-    private static object ResponseFromBusinesses(PagedData<GetBusinessesArgs> businesses)
+    private static object ResponseFromBusinesses(PagedData<BusinessLogic.BusinessOwners.Entities.Business> businesses)
     {
         var response = new
         {

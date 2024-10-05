@@ -7,8 +7,4 @@
         <RootNamespace>BusinessLogic</RootNamespace>
     </PropertyGroup>
 
-    <ItemGroup>
-      <Folder Include="Devices\Models\" />
-    </ItemGroup>
-
 </Project>

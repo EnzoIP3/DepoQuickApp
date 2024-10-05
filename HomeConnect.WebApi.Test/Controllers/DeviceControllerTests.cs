@@ -84,7 +84,7 @@ public class DeviceControllerTests
         _deviceService.Setup(x => x.GetDevices(It.IsAny<int?>(), It.IsAny<int?>(), null, modelNameFilter, null, null)).Returns(_pagedList);
 
         // Act
-        var response = _controller.GetDevices(new DeviceQueryParameters { ModelNameFilter = modelNameFilter });
+        var response = _controller.GetDevices(new DeviceQueryParameters { ModelNumberFilter = modelNameFilter });
 
         // Assert
         _deviceService.Verify(x => x.GetDevices(It.IsAny<int?>(), It.IsAny<int?>(), null, modelNameFilter, null, null), Times.Once);

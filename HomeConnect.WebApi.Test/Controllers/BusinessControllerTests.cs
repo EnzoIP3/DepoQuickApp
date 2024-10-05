@@ -8,7 +8,6 @@ using BusinessLogic.Roles.Entities;
 using BusinessLogic.Users.Entities;
 using FluentAssertions;
 using HomeConnect.WebApi.Controllers.Business;
-using HomeConnect.WebApi.Controllers.Businesses;
 using HomeConnect.WebApi.Controllers.Businesses.Models;
 using Microsoft.AspNetCore.Mvc;
 using Moq;
@@ -48,11 +47,15 @@ public class BusinessControllerTests
         ];
         _businessArgs = new CreateBusinessArgs
         {
-            Name = _businesses[0].Name, Rut = _businesses[0].Rut, OwnerId = _user.Id.ToString()
+            Name = _businesses[0].Name,
+            Rut = _businesses[0].Rut,
+            OwnerId = _user.Id.ToString()
         };
         _businessRequest = new CreateBusinessRequest
         {
-            Name = _businesses[0].Name, Rut = _businesses[0].Rut, OwnerId = _user.Id.ToString()
+            Name = _businesses[0].Name,
+            Rut = _businesses[0].Rut,
+            OwnerId = _user.Id.ToString()
         };
         _expectedBusinesses =
         [

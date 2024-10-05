@@ -29,7 +29,9 @@ public class UserController(IAdminService adminService) : ControllerBase
             users.Data,
             Pagination = new Pagination
             {
-                Page = users.Page, PageSize = users.PageSize, TotalPages = users.TotalPages
+                Page = users.Page,
+                PageSize = users.PageSize,
+                TotalPages = users.TotalPages
             }
         };
         return response;

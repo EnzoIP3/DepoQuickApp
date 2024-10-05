@@ -1,5 +1,4 @@
 using System.Net;
-using BusinessLogic.Roles.Entities;
 using BusinessLogic.Users.Entities;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Filters;

@@ -50,8 +50,10 @@ public class HomeAuthorizationFilterAttribute(string permission) : Attribute, IA
         {
             context.Result = new ObjectResult(new
             {
-                InnerCode = "Forbidden", Message = $"Missing permission: {permission}"
-            }) { StatusCode = (int)HttpStatusCode.Forbidden };
+                InnerCode = "Forbidden",
+                Message = $"Missing permission: {permission}"
+            })
+            { StatusCode = (int)HttpStatusCode.Forbidden };
         }
     }
 

@@ -46,7 +46,10 @@ public class BusinessRepositoryTests
         // Arrange
         var expected = new PagedData<Business>()
         {
-            Data = [_validBusiness, _otherBusiness], Page = 1, PageSize = 2, TotalPages = 1
+            Data = [_validBusiness, _otherBusiness],
+            Page = 1,
+            PageSize = 2,
+            TotalPages = 1
         };
 
         // Act

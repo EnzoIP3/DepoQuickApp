@@ -2,19 +2,18 @@
 
 #nullable disable
 
-namespace HomeConnect.DataAccess.Migrations
+namespace HomeConnect.DataAccess.Migrations;
+
+/// <inheritdoc />
+public partial class RolePermission : Migration
 {
     /// <inheritdoc />
-    public partial class RolePermission : Migration
+    protected override void Up(MigrationBuilder migrationBuilder)
     {
-        /// <inheritdoc />
-        protected override void Up(MigrationBuilder migrationBuilder)
-        {
-        }
+    }
 
-        /// <inheritdoc />
-        protected override void Down(MigrationBuilder migrationBuilder)
-        {
-        }
+    /// <inheritdoc />
+    protected override void Down(MigrationBuilder migrationBuilder)
+    {
     }
 }

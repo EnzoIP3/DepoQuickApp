@@ -56,7 +56,10 @@ public class HomeControllerTests
         // Arrange
         var request = new CreateHomeRequest
         {
-            Address = "Road 123", Latitude = 123.456, Longitude = 456.789, MaxMembers = 3
+            Address = "Road 123",
+            Latitude = 123.456,
+            Longitude = 456.789,
+            MaxMembers = 3
         };
         var items = new Dictionary<object, object?> { { Item.UserLogged, _user } };
         _httpContextMock.Setup(h => h.Items).Returns(items);
@@ -229,12 +232,18 @@ public class HomeControllerTests
         var device1 = new OwnedDevice(_home,
             new Device
             {
-                Name = "Device1", Type = "Type1", ModelNumber = 1, MainPhoto = "https://www.example.com/photo1.jpg"
+                Name = "Device1",
+                Type = "Type1",
+                ModelNumber = 1,
+                MainPhoto = "https://www.example.com/photo1.jpg"
             });
         var device2 = new OwnedDevice(_home,
             new Device
             {
-                Name = "Device2", Type = "Type2", ModelNumber = 2, MainPhoto = "https://www.example.com/photo2.jpg"
+                Name = "Device2",
+                Type = "Type2",
+                ModelNumber = 2,
+                MainPhoto = "https://www.example.com/photo2.jpg"
             });
         var items = new Dictionary<object, object?> { { Item.UserLogged, _user } };
         _httpContextMock.Setup(h => h.Items).Returns(items);

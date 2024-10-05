@@ -1,4 +1,5 @@
 using BusinessLogic;
+using BusinessLogic.Devices.Services;
 using HomeConnect.WebApi.Controllers.Devices.Models;
 using Microsoft.AspNetCore.Mvc;
 

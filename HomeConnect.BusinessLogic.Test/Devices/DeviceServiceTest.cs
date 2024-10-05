@@ -40,8 +40,9 @@ public sealed class DeviceServiceTest
         };
 
         var deviceRepository = new Mock<IDeviceRepository>();
+        var ownedDeviceRepository = new Mock<IOwnedDeviceRepository>();
         deviceRepository.Setup(x => x.GetDevices(parameters.Page ?? 1, parameters.PageSize ?? 10, parameters.DeviceNameFilter, parameters.ModelNumberFilter, parameters.BusinessNameFilter, parameters.DeviceTypeFilter)).Returns(pagedDeviceList);
-        var deviceService = new DeviceService(deviceRepository.Object);
+        var deviceService = new DeviceService(deviceRepository.Object, ownedDeviceRepository.Object);
 
         // Act
         var result = deviceService.GetDevices(parameters);

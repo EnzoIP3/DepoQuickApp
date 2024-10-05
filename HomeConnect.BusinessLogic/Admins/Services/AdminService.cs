@@ -1,4 +1,3 @@
-using BusinessLogic.Admins.Models;
 using BusinessLogic.BusinessOwners.Entities;
 using BusinessLogic.BusinessOwners.Repositories;
 using BusinessLogic.Roles.Repositories;

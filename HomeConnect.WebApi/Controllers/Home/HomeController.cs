@@ -16,9 +16,9 @@ public class HomeController(IHomeOwnerService homeOwnerService) : ControllerBase
 {
     [HttpPost]
     [AuthorizationFilter(SystemPermission.CreateHome)]
-    public CreateHomeResponse CreateHome([FromBody] CreateHomeRequest request, AuthorizationFilterContext context)
+    public CreateHomeResponse CreateHome([FromBody] CreateHomeRequest request)
     {
-        var userLoggedIn = context.HttpContext.Items[Item.UserLogged];
+        var userLoggedIn = HttpContext.Items[Item.UserLogged];
         CreateHomeArgs createHomeArgs = HomeArgsFromRequest(request, (BusinessLogic.Users.Entities.User)userLoggedIn!);
         var homeId = homeOwnerService.CreateHome(createHomeArgs);
         return new CreateHomeResponse { Id = homeId.ToString() };
@@ -26,10 +26,9 @@ public class HomeController(IHomeOwnerService homeOwnerService) : ControllerBase
 
     [HttpPost("{homesId}/members")]
     [AuthorizationFilter(SystemPermission.AddMember)]
-    public AddMemberResponse AddMember([FromRoute] string homesId, [FromBody] AddMemberRequest request,
-        AuthorizationFilterContext context)
+    public AddMemberResponse AddMember([FromRoute] string homesId, [FromBody] AddMemberRequest request)
     {
-        var userLoggedIn = context.HttpContext.Items[Item.UserLogged];
+        var userLoggedIn = HttpContext.Items[Item.UserLogged];
         var addMemberArgs = ArgsFromRequest(request, homesId, (BusinessLogic.Users.Entities.User)userLoggedIn!);
         var addedMemberId = homeOwnerService.AddMemberToHome(addMemberArgs);
         return new AddMemberResponse { HomeId = homesId, MemberId = addedMemberId.ToString() };
@@ -103,7 +102,7 @@ public class HomeController(IHomeOwnerService homeOwnerService) : ControllerBase
     [HttpPost("{homesId}/devices")]
     [AuthorizationFilter(SystemPermission.AddDevice)]
     [HomeAuthorizationFilter(HomePermission.AddDevices)]
-    public AddDevicesResponse AddDevices([FromRoute] string homesId, AddDevicesRequest request)
+    public AddDevicesResponse AddDevices([FromRoute] string homesId, [FromBody] AddDevicesRequest request)
     {
         AddDevicesArgs addDevicesArgs = FromRequestToAddDevicesArgs(homesId, request);
         homeOwnerService.AddDeviceToHome(addDevicesArgs);

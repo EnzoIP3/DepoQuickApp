@@ -8,10 +8,9 @@ using Microsoft.AspNetCore.Mvc.Filters;
 namespace HomeConnect.WebApi.Filters;
 
 [AttributeUsage(AttributeTargets.Class | AttributeTargets.Method)]
-public class HomeAuthorizationFilterAttribute(string? permission = null) : Attribute, IAuthorizationFilter
+public class HomeAuthorizationFilterAttribute(string permission) : Attribute, IAuthorizationFilter
 {
     private const string HomeIdRoute = "homesId";
-    public string? Permission { get; } = permission;
 
     public void OnAuthorization(AuthorizationFilterContext context)
     {
@@ -43,24 +42,17 @@ public class HomeAuthorizationFilterAttribute(string? permission = null) : Attri
         var homeOwnerService = GetHomeOwnerService(context);
         var home = homeOwnerService.GetHome(homeIdParsed);
         var userLoggedMap = (User)userLoggedIn;
-        var permission = BuildPermission(context);
+        var homePermission = new HomePermission(permission);
         var member = home.Members.First(m => m.User.Id == userLoggedMap.Id);
-        var hasNotPermission = !member.HasPermission(permission);
+        var hasNotPermission = !member.HasPermission(homePermission);
 
         if (hasNotPermission)
         {
             context.Result = new ObjectResult(new
             {
-                InnerCode = "Forbidden", Message = $"Missing permission: {permission.Value}"
+                InnerCode = "Forbidden", Message = $"Missing permission: {permission}"
             }) { StatusCode = (int)HttpStatusCode.Forbidden };
         }
-    }
-
-    private HomePermission BuildPermission(AuthorizationFilterContext context)
-    {
-        var name =
-            $"{context.RouteData.Values["action"].ToString().ToLower()}-{context.RouteData.Values["controller"].ToString().ToLower()}";
-        return new HomePermission(name);
     }
 
     private static IHomeOwnerService GetHomeOwnerService(AuthorizationFilterContext context)

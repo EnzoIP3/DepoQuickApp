@@ -11,7 +11,7 @@ namespace HomeConnect.WebApi.Controllers.Notification;
 public class NotificationController(INotificationService notificationService) : ControllerBase
 {
     [HttpGet]
-    public GetNotificationsResponse GetNotifications(GetNotificationsRequest request, AuthorizationFilterContext context)
+    public GetNotificationsResponse GetNotifications([FromQuery] GetNotificationsRequest request, AuthorizationFilterContext context)
     {
         var user = (BusinessLogic.Users.Entities.User)context.HttpContext.Items[Item.UserLogged];
         var notifications =

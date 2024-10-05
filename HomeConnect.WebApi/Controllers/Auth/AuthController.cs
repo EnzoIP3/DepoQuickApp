@@ -8,7 +8,6 @@ namespace HomeConnect.WebApi.Controllers.Auth;
 
 [ApiController]
 [Route("auth")]
-[AuthenticationFilter]
 public class AuthController(IAuthService authService)
 {
     [HttpPost]

@@ -10,7 +10,7 @@ public class Role
 
     [Key]
     public string Name { get; init; } = string.Empty;
-    public List<SystemPermission> Permissions { get; init; } = [];
+    public List<SystemPermission> Permissions { get; set; } = [];
 
     public Role()
     {

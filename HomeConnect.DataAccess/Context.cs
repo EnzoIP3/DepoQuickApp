@@ -24,24 +24,42 @@ public class Context(DbContextOptions<Context> options) : DbContext(options)
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
         modelBuilder.Entity<Role>().HasData(
-            new Role(Role.Admin, []),
-            new Role(Role.HomeOwner, []),
-            new Role(Role.BusinessOwner, []));
+            new Role { Name = Role.Admin },
+            new Role { Name = Role.HomeOwner },
+            new Role { Name = Role.BusinessOwner });
 
         modelBuilder.Entity<SystemPermission>().HasData(
-            new SystemPermission(SystemPermission.CreateAdministrator, Role.Admin),
-            new SystemPermission(SystemPermission.DeleteAdministrator, Role.Admin),
-            new SystemPermission(SystemPermission.CreateBusinessOwner, Role.Admin),
-            new SystemPermission(SystemPermission.GetAllUsers, Role.Admin),
-            new SystemPermission(SystemPermission.GetAllBusinesses, Role.Admin),
-            new SystemPermission(SystemPermission.CreateHome, Role.HomeOwner),
-            new SystemPermission(SystemPermission.AddMember, Role.HomeOwner),
-            new SystemPermission(SystemPermission.AddDevice, Role.HomeOwner),
-            new SystemPermission(SystemPermission.GetDevices, Role.HomeOwner),
-            new SystemPermission(SystemPermission.GetMembers, Role.HomeOwner),
-            new SystemPermission(SystemPermission.CreateBusiness, Role.BusinessOwner),
-            new SystemPermission(SystemPermission.CreateCamera, Role.BusinessOwner),
-            new SystemPermission(SystemPermission.CreateSensor, Role.BusinessOwner));
+            new SystemPermission { Value = SystemPermission.CreateAdministrator },
+            new SystemPermission { Value = SystemPermission.DeleteAdministrator },
+            new SystemPermission { Value = SystemPermission.CreateBusinessOwner },
+            new SystemPermission { Value = SystemPermission.GetAllUsers },
+            new SystemPermission { Value = SystemPermission.GetAllBusinesses },
+            new SystemPermission { Value = SystemPermission.CreateHome },
+            new SystemPermission { Value = SystemPermission.AddMember },
+            new SystemPermission { Value = SystemPermission.AddDevice },
+            new SystemPermission { Value = SystemPermission.GetDevices },
+            new SystemPermission { Value = SystemPermission.GetMembers },
+            new SystemPermission { Value = SystemPermission.CreateBusiness },
+            new SystemPermission { Value = SystemPermission.CreateCamera },
+            new SystemPermission { Value = SystemPermission.CreateSensor });
+
+        modelBuilder.Entity<Role>()
+            .HasMany(r => r.Permissions)
+            .WithMany(p => p.Roles)
+            .UsingEntity(j => j.HasData(
+                new { RolesName = Role.Admin, PermissionsValue = SystemPermission.CreateAdministrator },
+                new { RolesName = Role.Admin, PermissionsValue = SystemPermission.DeleteAdministrator },
+                new { RolesName = Role.Admin, PermissionsValue = SystemPermission.CreateBusinessOwner },
+                new { RolesName = Role.Admin, PermissionsValue = SystemPermission.GetAllUsers },
+                new { RolesName = Role.Admin, PermissionsValue = SystemPermission.GetAllBusinesses },
+                new { RolesName = Role.HomeOwner, PermissionsValue = SystemPermission.CreateHome },
+                new { RolesName = Role.HomeOwner, PermissionsValue = SystemPermission.AddMember },
+                new { RolesName = Role.HomeOwner, PermissionsValue = SystemPermission.AddDevice },
+                new { RolesName = Role.HomeOwner, PermissionsValue = SystemPermission.GetDevices },
+                new { RolesName = Role.HomeOwner, PermissionsValue = SystemPermission.GetMembers },
+                new { RolesName = Role.BusinessOwner, PermissionsValue = SystemPermission.CreateBusiness },
+                new { RolesName = Role.BusinessOwner, PermissionsValue = SystemPermission.CreateCamera },
+                new { RolesName = Role.BusinessOwner, PermissionsValue = SystemPermission.CreateSensor }));
 
         base.OnModelCreating(modelBuilder);
     }

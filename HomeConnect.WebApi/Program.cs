@@ -1,6 +1,10 @@
 using System.Diagnostics.CodeAnalysis;
 using BusinessLogic.Auth.Repositories;
 using BusinessLogic.Auth.Services;
+using BusinessLogic.BusinessOwners.Repositories;
+using BusinessLogic.Devices.Repositories;
+using BusinessLogic.HomeOwners.Repositories;
+using BusinessLogic.HomeOwners.Services;
 using BusinessLogic.Roles.Repositories;
 using BusinessLogic.Users.Repositories;
 using BusinessLogic.Users.Services;
@@ -38,8 +42,13 @@ services.AddDbContext<Context>(options => options.UseSqlServer(connectionString)
 services.AddScoped<ITokenRepository, TokenRepository>();
 services.AddScoped<IRoleRepository, RoleRepository>();
 services.AddScoped<IUserRepository, UserRepository>();
+services.AddScoped<IHomeRepository, HomeRepository>();
+services.AddScoped<IDeviceRepository, DeviceRepository>();
+services.AddScoped<IBusinessRepository, BusinessRepository>();
+services.AddScoped<IOwnedDeviceRepository, OwnedDeviceRepository>();
 services.AddScoped<IAuthService, AuthService>();
 services.AddScoped<IUserService, UserService>();
+services.AddScoped<IHomeOwnerService, HomeOwnerService>();
 
 var app = builder.Build();
 

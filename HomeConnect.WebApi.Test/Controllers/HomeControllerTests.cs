@@ -39,6 +39,7 @@ public class HomeControllerTests
         _httpContextMock = new Mock<HttpContext>(MockBehavior.Strict);
         _homeOwnerService = new Mock<IHomeOwnerService>(MockBehavior.Strict);
         _controller = new HomeController(_homeOwnerService.Object);
+        _controller.ControllerContext = new ControllerContext { HttpContext = _httpContextMock.Object };
         _context = new AuthorizationFilterContext(
             new ActionContext(
                 _httpContextMock.Object,
@@ -71,7 +72,7 @@ public class HomeControllerTests
         _homeOwnerService.Setup(x => x.CreateHome(args)).Returns(home.Id);
 
         // Act
-        var response = _controller.CreateHome(request, _context);
+        var response = _controller.CreateHome(request);
 
         // Assert
         _homeOwnerService.VerifyAll();
@@ -106,7 +107,7 @@ public class HomeControllerTests
         _homeOwnerService.Setup(x => x.AddMemberToHome(args)).Returns(_user.Id);
 
         // Act
-        var response = _controller.AddMember(_home.Id.ToString(), request, _context);
+        var response = _controller.AddMember(_home.Id.ToString(), request);
 
         // Assert
         _homeOwnerService.VerifyAll();

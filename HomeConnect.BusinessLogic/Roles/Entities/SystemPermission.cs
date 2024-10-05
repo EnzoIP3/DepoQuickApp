@@ -19,14 +19,18 @@ public record SystemPermission
     public const string CreateSensor = "create-sensor";
 
     [Key]
-    public string Value { get; init; }
+    public string Value { get; init; } = null!;
 
-    public string? RoleName { get; set; }
+    public List<Role>? Roles { get; set; }
 
-    public SystemPermission(string value, string? roleName = null)
+    public SystemPermission()
+    {
+    }
+
+    public SystemPermission(string value, List<Role>? roles = null)
     {
         Value = value;
-        RoleName = roleName;
+        Roles = roles;
     }
 
     public override string ToString()

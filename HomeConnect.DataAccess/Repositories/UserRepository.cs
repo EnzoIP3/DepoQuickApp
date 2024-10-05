@@ -1,6 +1,7 @@
 using BusinessLogic;
 using BusinessLogic.Users.Entities;
 using BusinessLogic.Users.Repositories;
+using Microsoft.EntityFrameworkCore;
 
 namespace HomeConnect.DataAccess.Repositories;
 

@@ -39,10 +39,7 @@ public class AuthorizationFilterTests
     [TestMethod]
     public void OnAuthorization_UserNotAuthenticated_ShouldReturnsUnauthorizedResult()
     {
-        var items = new Dictionary<object, object?>
-        {
-            { Item.UserLogged, null }
-        };
+        var items = new Dictionary<object, object?> { { Item.UserLogged, null } };
         _httpContextMock.Setup(h => h.Items).Returns(items);
         _attribute.OnAuthorization(_context);
 
@@ -63,17 +60,11 @@ public class AuthorizationFilterTests
         var items = new Dictionary<object, object?>
         {
             {
-                Item.UserLogged,
-                new User("Name", "Surname", "email@email.com", "Password@100",
+                Item.UserLogged, new User("Name", "Surname", "email@email.com", "Password@100",
                     new Role("Admin", []))
             }
         };
         _httpContextMock.Setup(h => h.Items).Returns(items);
-
-        var routeData = new RouteData();
-        routeData.Values["action"] = "SomeAction";
-        routeData.Values["controller"] = "SomeController";
-        _context.RouteData = routeData;
 
         _attribute.OnAuthorization(_context);
 
@@ -86,6 +77,6 @@ public class AuthorizationFilterTests
         concreteResponse.Should().NotBeNull();
         concreteResponse.StatusCode.Should().Be((int)HttpStatusCode.Forbidden);
         FilterTestsUtils.GetInnerCode(concreteResponse?.Value).Should().Be("Forbidden");
-        FilterTestsUtils.GetMessage(concreteResponse?.Value).Should().Be("Missing permission: someaction-somecontroller");
+        FilterTestsUtils.GetMessage(concreteResponse?.Value).Should().Be("Missing permission: some-permission");
     }
 }

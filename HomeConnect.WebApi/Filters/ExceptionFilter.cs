@@ -16,20 +16,18 @@ public class ExceptionFilter : IExceptionFilter
             }
         },
     };
+
     public void OnException(ExceptionContext context)
     {
         var response = _errors.GetValueOrDefault(context.Exception.GetType());
 
+        Console.WriteLine(context.Exception.Message);
         if (response == null)
         {
             context.Result = new ObjectResult(new
             {
-                InnerCode = "InternalServerError",
-                Message = "There was an error when processing your request"
-            })
-            {
-                StatusCode = (int)HttpStatusCode.InternalServerError
-            };
+                InnerCode = "InternalServerError", Message = "There was an error when processing your request"
+            }) { StatusCode = (int)HttpStatusCode.InternalServerError };
             return;
         }
 

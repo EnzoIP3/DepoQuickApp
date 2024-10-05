@@ -4,6 +4,7 @@ using BusinessLogic.Roles.Entities;
 using BusinessLogic.Users.Entities;
 using FluentAssertions;
 using HomeConnect.WebApi.Controllers.User;
+using HomeConnect.WebApi.Controllers.User.Models;
 using Microsoft.AspNetCore.Mvc;
 using Moq;
 
@@ -44,10 +45,11 @@ public class UserControllerTests
     public void GetUsers_WhenCalledWithValidRequestAndNoFiltersOrPagination_ReturnsExpectedResponse()
     {
         // Arrange
-        _adminService.Setup(x => x.GetUsers(null, null, null, null)).Returns(_pagedList);
+        var parameters = new UserQueryParameters();
+        _adminService.Setup(x => x.GetUsers(parameters.CurrentPage, parameters.PageSize, parameters.FullNameFilter, parameters.RoleFilter)).Returns(_pagedList);
 
         // Act
-        var response = _controller.GetUsers();
+        var response = _controller.GetUsers(parameters);
 
         // Assert
         _adminService.VerifyAll();
@@ -61,10 +63,11 @@ public class UserControllerTests
     public void GetUsers_WhenCalledWithValidRequestAndFullNameFilter_ReturnsFilteredExpectedResponse()
     {
         // Arrange
-        _adminService.Setup(x => x.GetUsers(null, null, _expectedUsers.First().Name, null)).Returns(_pagedList);
+        var parameters = new UserQueryParameters { FullNameFilter = _expectedUsers.First().Name };
+        _adminService.Setup(x => x.GetUsers(parameters.CurrentPage, parameters.PageSize, parameters.FullNameFilter, parameters.RoleFilter)).Returns(_pagedList);
 
         // Act
-        var response = _controller.GetUsers(fullNameFilter: _expectedUsers.First().Name);
+        var response = _controller.GetUsers(parameters);
 
         // Assert
         _adminService.VerifyAll();
@@ -78,10 +81,11 @@ public class UserControllerTests
     public void GetUsers_WhenCalledWithValidRequestAndRoleFilter_ReturnsFilteredExpectedResponse()
     {
         // Arrange
-        _adminService.Setup(x => x.GetUsers(null, null, null, _expectedUsers.First().Role.Name)).Returns(_pagedList);
+        var parameters = new UserQueryParameters { RoleFilter = _expectedUsers.First().Role.Name };
+        _adminService.Setup(x => x.GetUsers(parameters.CurrentPage, parameters.PageSize, parameters.FullNameFilter, parameters.RoleFilter)).Returns(_pagedList);
 
         // Act
-        var response = _controller.GetUsers(roleFilter: _expectedUsers.First().Role.Name);
+        var response = _controller.GetUsers(parameters);
 
         // Assert
         _adminService.VerifyAll();
@@ -95,10 +99,11 @@ public class UserControllerTests
     public void GetUsers_WhenCalledWithPagination_ReturnsPagedExpectedResponse()
     {
         // Arrange
-        _adminService.Setup(x => x.GetUsers(_expectedPagination.Page, _expectedPagination.PageSize, null, null)).Returns(_pagedList);
+        var parameters = new UserQueryParameters { CurrentPage = _expectedPagination.Page, PageSize = _expectedPagination.PageSize };
+        _adminService.Setup(x => x.GetUsers(parameters.CurrentPage, parameters.PageSize, parameters.FullNameFilter, parameters.RoleFilter)).Returns(_pagedList);
 
         // Act
-        var response = _controller.GetUsers(_expectedPagination.Page, _expectedPagination.PageSize);
+        var response = _controller.GetUsers(parameters);
 
         // Assert
         _adminService.VerifyAll();

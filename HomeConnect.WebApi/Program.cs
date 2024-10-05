@@ -1,15 +1,47 @@
 using System.Diagnostics.CodeAnalysis;
+using BusinessLogic.Admins.Services;
+using BusinessLogic.Auth.Repositories;
+using BusinessLogic.Auth.Services;
+using BusinessLogic.BusinessOwners.Repositories;
+using BusinessLogic.Roles.Repositories;
+using BusinessLogic.Users.Repositories;
+using BusinessLogic.Users.Services;
+using HomeConnect.DataAccess;
+using HomeConnect.DataAccess.Repositories;
+using HomeConnect.WebApi.Filters;
+using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 
-builder.Services.AddControllers().ConfigureApiBehaviorOptions(options =>
-{
-    options.SuppressMapClientErrors = true;
-});
+builder.Services
+    .AddControllers(
+        options =>
+        {
+            options.Filters.Add<ExceptionFilter>();
+        })
+    .ConfigureApiBehaviorOptions(options =>
+    {
+        options.SuppressMapClientErrors = true;
+    });
 
 var services = builder.Services;
+var configuration = builder.Configuration;
+var connectionString = configuration.GetConnectionString("DefaultConnection");
+
+if (string.IsNullOrEmpty(connectionString))
+{
+    throw new InvalidOperationException("Missing DefaultConnection connection string");
+}
+
+services.AddDbContext<Context>(options => options.UseSqlServer(connectionString));
+
+services.AddScoped<ITokenRepository, TokenRepository>();
+services.AddScoped<IRoleRepository, RoleRepository>();
+services.AddScoped<IUserRepository, UserRepository>();
+services.AddScoped<IAuthService, AuthService>();
+services.AddScoped<IUserService, UserService>();
 
 var app = builder.Build();
 

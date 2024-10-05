@@ -452,4 +452,22 @@ public class HomeOwnerServiceTests
 
     #endregion
     #endregion
+
+    #region GetHome
+    #region error
+    [TestMethod]
+    public void GetHome_WhenHomeDoesNotExist_ThrowsException()
+    {
+        // Arrange
+        var nonExistentHomeId = Guid.NewGuid();
+        _homeRepositoryMock.Setup(x => x.Exists(nonExistentHomeId)).Returns(false);
+
+        // Act
+        var act = () => _homeOwnerService.GetHome(nonExistentHomeId);
+
+        // Assert
+        act.Should().Throw<ArgumentException>().WithMessage("Home does not exist");
+    }
+    #endregion
+    #endregion
 }

@@ -111,7 +111,16 @@ public class HomeOwnerService : IHomeOwnerService
 
     public Home GetHome(Guid homeId)
     {
-        throw new NotImplementedException();
+        EnsureHomeExists(homeId);
+        return new Home();
+    }
+
+    private void EnsureHomeExists(Guid homeId)
+    {
+        if (!_homeRepository.Exists(homeId))
+        {
+            throw new ArgumentException("Home does not exist");
+        }
     }
 
     private void EnsureDevicesAreNotAdded(IEnumerable<string> argsDeviceIds, Home home)

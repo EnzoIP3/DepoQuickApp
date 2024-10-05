@@ -60,6 +60,7 @@ public class DeviceRepository : PaginatedRepositoryBase<Device>, IDeviceReposito
     {
         var deviceNameFilter = filters.Length > 0 ? filters[0] as string : null;
         var modelNumberFilter = filters.Length > 1 ? filters[1] as int? : null;
+        var businessNameFilter = filters.Length > 2 ? filters[2] as string : null;
 
         if (!string.IsNullOrEmpty(deviceNameFilter))
         {
@@ -69,6 +70,11 @@ public class DeviceRepository : PaginatedRepositoryBase<Device>, IDeviceReposito
         if (modelNumberFilter.HasValue)
         {
             query = query.Where(d => d.ModelNumber == modelNumberFilter.Value);
+        }
+
+        if (!string.IsNullOrEmpty(businessNameFilter))
+        {
+            query = query.Where(d => d.Business.Name.Contains(businessNameFilter));
         }
 
         return query;

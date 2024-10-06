@@ -43,7 +43,7 @@ public class NotificationServiceTest
         var device = new global::BusinessLogic.Devices.Entities.Device("Device", 12345, "Device description",
             "https://example.com/image.png",
             [], "Sensor", new Business("Rut", "Business", user));
-        var home = new Home(user, "Adress 3420", 100, 100, 5);
+        var home = new Home(user, "Adress 3420", 50, 100, 5);
         var ownedDevice = new OwnedDevice(home, device);
         const string @event = "Test Event";
 
@@ -92,7 +92,7 @@ public class NotificationServiceTest
         var member = new Member(_user, [shouldBeNotified]);
         var otherMember = new Member(new User("name", "surname", "email@email.com", "Password@100",
             _role));
-        var home = new Home(owner, "Street 3420", 100, 100, 5);
+        var home = new Home(owner, "Street 3420", 50, 100, 5);
         home.AddMember(member);
         home.AddMember(otherMember);
         var device = new Device("Device", 12345, "Device description", "https://example.com/image.png",
@@ -138,12 +138,12 @@ public class NotificationServiceTest
         var notifications = new List<Notification>
         {
             new Notification(Guid.NewGuid(), DateTime.Now, false, "Test Event", new OwnedDevice(
-                    new Home(_user, "Street 3420", 100, 100, 5),
+                    new Home(_user, "Street 3420", 50, 100, 5),
                     new Device("Device", 12345, "Device description", "https://example.com/image.png", [], "Sensor",
                         new Business())),
                 new User("name", "surname", "email@email.com", "Password@100", new Role())),
             new Notification(Guid.NewGuid(), DateTime.Now, false, "Test Event", new OwnedDevice(
-                    new Home(_user, "Street 3420", 100, 100, 5),
+                    new Home(_user, "Street 3420", 50, 100, 5),
                     new Device("Device", 12345, "Device description", "https://example.com/image.png", [], "Sensor",
                         new Business())),
                 new User("name2", "surname2", "email2@email.com", "Password@100", new Role()))

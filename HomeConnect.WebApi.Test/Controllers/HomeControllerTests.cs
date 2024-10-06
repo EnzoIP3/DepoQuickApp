@@ -31,7 +31,7 @@ public class HomeControllerTests
     private readonly User _otherUser = new User("Jane", "Doe", "email2@email.com", "Password@100",
         new Role { Name = "HomeOwner", Permissions = [] });
 
-    private readonly Home _home = new Home(_user, "Road 123", 123.456, 456.789, 3);
+    private readonly Home _home = new Home(_user, "Road 123", 50.456, 100.789, 3);
 
     [TestInitialize]
     public void Initialize()
@@ -57,8 +57,8 @@ public class HomeControllerTests
         var request = new CreateHomeRequest
         {
             Address = "Road 123",
-            Latitude = 123.456,
-            Longitude = 456.789,
+            Latitude = 50.456,
+            Longitude = 100.789,
             MaxMembers = 3
         };
         var items = new Dictionary<object, object?> { { Item.UserLogged, _user } };
@@ -161,7 +161,7 @@ public class HomeControllerTests
         // Arrange
         var owner = new User("owner", "owner", "email@email.com", "Password@100",
             new Role { Name = "HomeOwner", Permissions = [] });
-        var home = new Home(owner, "Road 123", 123.456, 456.789, 3);
+        var home = new Home(owner, "Road 123", 50.456, 100.789, 3);
         var member = new Member(_user,
         [
             new HomePermission("canAddDevices"),

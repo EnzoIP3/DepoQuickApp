@@ -10,13 +10,12 @@ namespace HomeConnect.WebApi.Controllers.DeviceTypes;
 [AuthenticationFilter]
 public class DeviceTypesController(IDeviceService deviceService) : ControllerBase
 {
+    private readonly string _defaultCacheTime = "2592000";
     [HttpGet]
     public GetDeviceTypesResponse GetDeviceTypes()
     {
         var deviceTypes = deviceService.GetAllDeviceTypes();
-        return new GetDeviceTypesResponse
-        {
-            DeviceTypes = deviceTypes.ToList()
-        };
+        Response.Headers["Cache-Control"] = $"public,max-age={_defaultCacheTime}";
+        return new GetDeviceTypesResponse { DeviceTypes = deviceTypes.ToList() };
     }
 }

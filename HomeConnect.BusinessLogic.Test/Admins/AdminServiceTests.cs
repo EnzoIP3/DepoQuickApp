@@ -131,7 +131,7 @@ public sealed class AdminServiceTests
         _userRepository.Setup(x => x.Exists(It.IsAny<Guid>())).Returns(false);
 
         // Act
-        Action act = () => _adminService.Delete(id);
+        Action act = () => _adminService.Delete(id.ToString());
 
         // Assert
         act.Should().Throw<Exception>().WithMessage("Admin does not exist.");
@@ -150,7 +150,7 @@ public sealed class AdminServiceTests
         _userRepository.Setup(x => x.Delete(It.IsAny<Guid>()));
 
         // Act
-        _adminService.Delete(id);
+        _adminService.Delete(id.ToString());
 
         // Assert
         _userRepository.Verify(x => x.Delete(It.Is<Guid>(a => a == id)));

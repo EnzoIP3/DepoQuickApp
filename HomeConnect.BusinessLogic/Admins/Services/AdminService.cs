@@ -31,10 +31,10 @@ public class AdminService : IAdminService
         return admin.Id;
     }
 
-    public void Delete(Guid id)
+    public void Delete(string id)
     {
-        EnsureAdminExists(id);
-        UserRepository.Delete(id);
+        EnsureAdminExists(Guid.Parse(id));
+        UserRepository.Delete(Guid.Parse(id));
     }
 
     private static void ValidateAdminModel(CreateUserArgs args)

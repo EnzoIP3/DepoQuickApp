@@ -1,4 +1,5 @@
 using BusinessLogic.Admins.Services;
+using BusinessLogic.Roles.Entities;
 using BusinessLogic.Users.Models;
 using FluentAssertions;
 using HomeConnect.WebApi.Controllers.Admin;
@@ -38,7 +39,8 @@ public class AdminControllerTests
             Name = request.Name,
             Surname = request.Surname,
             Email = request.Email,
-            Password = request.Password
+            Password = request.Password,
+            Role = Role.Admin
         };
         var guid = Guid.NewGuid();
 
@@ -59,7 +61,7 @@ public class AdminControllerTests
     public void DeleteAdmin_WhenCalledWithValidRequest_ReturnsNoContentResponse()
     {
         // Arrange
-        var guid = Guid.NewGuid();
+        var guid = Guid.NewGuid().ToString();
         _adminService.Setup(x => x.Delete(guid));
 
         // Act

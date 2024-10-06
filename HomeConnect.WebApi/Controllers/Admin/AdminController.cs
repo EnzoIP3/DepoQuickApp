@@ -28,14 +28,15 @@ public class AdminController(IAdminService adminService) : ControllerBase
             Name = request.Name,
             Surname = request.Surname,
             Email = request.Email,
-            Password = request.Password
+            Password = request.Password,
+            Role = Role.Admin
         };
         return userModel;
     }
 
     [HttpDelete("{adminId}")]
     [AuthorizationFilter(SystemPermission.DeleteAdministrator)]
-    public IActionResult DeleteAdmin([FromRoute] Guid adminId)
+    public IActionResult DeleteAdmin([FromRoute] string adminId)
     {
         adminService.Delete(adminId);
         return NoContent();

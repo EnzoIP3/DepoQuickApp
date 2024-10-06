@@ -42,4 +42,9 @@ public class OwnedDeviceRepository : IOwnedDeviceRepository
     {
         return _context.OwnedDevices.Any(od => od.HardwareId == Guid.Parse(hardwareId));
     }
+
+    public bool IsConnected(string hardwareId)
+    {
+        throw new NotImplementedException();
+    }
 }

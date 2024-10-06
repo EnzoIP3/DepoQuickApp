@@ -42,7 +42,7 @@ public class DeviceService : IDeviceService
     {
         EnsureHardwareIdIsValid(hardwareId);
         EnsureOwnedDeviceExists(hardwareId);
-        return false;
+        return OwnedDeviceRepository.IsConnected(hardwareId);
     }
 
     private void EnsureOwnedDeviceExists(string hardwareId)

@@ -93,7 +93,24 @@ public class Home
         }
     }
 
-    public int MaxMembers { get; set; }
+    private int _maxMembers;
+    public int MaxMembers
+    {
+        get => _maxMembers;
+        set
+        {
+            EnsureMaxMembersIsPositive(value);
+            _maxMembers = value;
+        }
+    }
+
+    private static void EnsureMaxMembersIsPositive(int value)
+    {
+        if (value < 1)
+        {
+            throw new ArgumentException("Max members must be at least 1.");
+        }
+    }
 
     private static void EnsureAddressHasAtLeastOneSpace(string address)
     {

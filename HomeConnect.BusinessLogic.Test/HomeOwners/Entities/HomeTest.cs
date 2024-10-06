@@ -134,6 +134,23 @@ public class HomeTest
         act.Should().Throw<ArgumentException>();
     }
 
+    [TestMethod]
+    public void Constructor_WhenMaxMembersIsLessThanOne_ThrowsArgumentException()
+    {
+        // Arrange
+        var owner = new global::BusinessLogic.Users.Entities.User();
+        const string address = "Main St 123";
+        const double latitude = 50.456;
+        const double longitude = 100.789;
+        const int maxMembers = 0;
+
+        // Act
+        var act = () => new Home(owner, address, latitude, longitude, maxMembers);
+
+        // Assert
+        act.Should().Throw<ArgumentException>();
+    }
+
     #endregion
 
     #endregion

@@ -29,7 +29,8 @@ public class BusinessOwnerController(IAdminService adminService)
             Name = request.Name,
             Surname = request.Surname,
             Email = request.Email,
-            Password = request.Password
+            Password = request.Password,
+            Role = Role.BusinessOwner
         };
         return userModel;
     }

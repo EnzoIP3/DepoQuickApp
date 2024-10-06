@@ -50,6 +50,24 @@ public class HomeTest
         act.Should().Throw<ArgumentException>();
     }
 
+    [TestMethod]
+    [DataRow(-91)]
+    [DataRow(91)]
+    public void Constructor_WhenLatitudeIsInvalid_ThrowsArgumentException(double latitude)
+    {
+        // Arrange
+        var owner = new global::BusinessLogic.Users.Entities.User();
+        const string address = "Main St 123";
+        const double longitude = 456.789;
+        const int maxMembers = 5;
+
+        // Act
+        var act = () => new Home(owner, address, latitude, longitude, maxMembers);
+
+        // Assert
+        act.Should().Throw<ArgumentException>();
+    }
+
     #endregion
 
     #endregion

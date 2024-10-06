@@ -5,6 +5,7 @@ namespace BusinessLogic.HomeOwners.Entities;
 public class Home
 {
     private string _address = string.Empty;
+    private double _latitude;
 
     public Home()
     {
@@ -36,7 +37,20 @@ public class Home
         }
     }
 
-    public double Latitude { get; set; }
+    public double Latitude
+    {
+        get => _latitude;
+        init
+        {
+            if (value < -90 || value > 90)
+            {
+                throw new ArgumentException("Latitude must be between -90 and 90.");
+            }
+
+            _latitude = value;
+        }
+    }
+
     public double Longitude { get; set; }
     public int MaxMembers { get; set; }
 

@@ -33,13 +33,17 @@ public class AdminService : IAdminService
 
     public void Delete(string id)
     {
+        EnsureIsValidGuid(id);
+        EnsureAdminExists(Guid.Parse(id));
+        UserRepository.Delete(Guid.Parse(id));
+    }
+
+    private static void EnsureIsValidGuid(string id)
+    {
         if (Guid.TryParse(id, out _) == false)
         {
             throw new ArgumentException("The id is not a valid GUID.");
         }
-
-        EnsureAdminExists(Guid.Parse(id));
-        UserRepository.Delete(Guid.Parse(id));
     }
 
     private static void ValidateAdminModel(CreateUserArgs args)

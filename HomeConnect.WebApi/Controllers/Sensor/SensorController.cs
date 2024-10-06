@@ -44,9 +44,18 @@ public class SensorController(
     [HttpPost("{hardwareId}/open")]
     public NotifyResponse NotifyOpen([FromRoute] string hardwareId)
     {
+        EnsureDeviceIsConnected(hardwareId);
         NotificationArgs notificationArgs = CreateOpenNotificationArgs(hardwareId);
         notificationService.Notify(notificationArgs);
         return new NotifyResponse { HardwareId = hardwareId };
+    }
+
+    private void EnsureDeviceIsConnected(string hardwareId)
+    {
+        if (!deviceService.IsConnected(hardwareId))
+        {
+            throw new ArgumentException("Device is not connected");
+        }
     }
 
     private static NotificationArgs CreateOpenNotificationArgs(string hardwareId)

@@ -38,6 +38,11 @@ public class DeviceService : IDeviceService
         return Enum.GetNames(typeof(DeviceType));
     }
 
+    public bool IsConnected(string hardwareId)
+    {
+        throw new NotImplementedException();
+    }
+
     private void EnsureOwnedDeviceExists(string hardwareId)
     {
         if (!OwnedDeviceRepository.Exists(hardwareId))

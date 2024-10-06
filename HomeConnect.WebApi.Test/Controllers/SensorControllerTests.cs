@@ -37,6 +37,7 @@ public class SensorControllerTests
         // Arrange
         var hardwareId = "hardwareId";
         var args = new NotificationArgs { HardwareId = hardwareId, Date = DateTime.Now, Event = "open" };
+        _deviceServiceMock.Setup(x => x.IsConnected(hardwareId)).Returns(true);
         _notificationServiceMock.Setup(x => x.Notify(args));
 
         // Act
@@ -53,6 +54,7 @@ public class SensorControllerTests
         // Arrange
         var hardwareId = "hardwareId";
         var args = new NotificationArgs { HardwareId = hardwareId, Date = DateTime.Now, Event = "close" };
+        _deviceServiceMock.Setup(x => x.IsConnected(hardwareId)).Returns(true);
         _notificationServiceMock.Setup(x => x.Notify(args));
 
         // Act
@@ -61,6 +63,20 @@ public class SensorControllerTests
         // Assert
         result.Should().NotBeNull();
         result.HardwareId.Should().Be(hardwareId);
+    }
+
+    [TestMethod]
+    public void NotifyOpen_WhenDeviceIsDisconnected_ThrowsException()
+    {
+        // Arrange
+        var hardwareId = "hardwareId";
+        _notificationServiceMock.Setup(x => x.Notify(It.IsAny<NotificationArgs>())).Throws(new Exception());
+
+        // Act
+        var act = () => _sensorController.NotifyOpen(hardwareId);
+
+        // Assert
+        act.Should().Throw<Exception>();
     }
     #endregion
 

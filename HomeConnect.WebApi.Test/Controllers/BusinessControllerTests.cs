@@ -38,11 +38,11 @@ public class BusinessControllerTests
         _role = new Role("BusinessOwner", []);
         _user = new User("Name", "Surname", "email@email.com", "Password@100", _role);
         _otherUser = new User("Name1", "Surname1", "email1@email.com", "Password@100", _role);
-        _businesses =
-        [
+        _businesses = new List<Business>
+        {
             new Business("123456789123", "Business 1", _user),
-            new Business("123456789124", "Business 2", _otherUser),
-        ];
+            new Business("123456789124", "Business 2", _otherUser)
+        };
         _expectedPagination = new Pagination { Page = 1, PageSize = 10, TotalPages = 1 };
         _pagedList = new PagedData<Business>
         {
@@ -63,15 +63,27 @@ public class BusinessControllerTests
         // Arrange
         _adminService.Setup(x => x.GetBusinesses(null, null, null, null)).Returns(_pagedList);
 
+        var expectedBusinesses = _businesses.Select(b => new ListBusinessInfo
+        {
+            Name = b.Name,
+            OwnerEmail = b.Owner.Email,
+            OwnerName = b.Owner.Name,
+            OwnerSurname = b.Owner.Surname,
+            Rut = b.Rut
+        }).ToList();
+
+        var expectedResponse = new GetBusinessesResponse
+        {
+            Businesses = expectedBusinesses, Pagination = _expectedPagination
+        };
+
         // Act
-        var response = _controller.GetBusinesses();
+        var response = _controller.GetBusinesses(new GetBusinessesRequest());
 
         // Assert
         _adminService.VerifyAll();
         response.Should().NotBeNull();
-        response.Should().BeOfType<OkObjectResult>();
-        var okResult = response as OkObjectResult;
-        okResult.Value.Should().BeEquivalentTo(new { Data = _businesses, Pagination = _expectedPagination });
+        response.Should().BeEquivalentTo(expectedResponse);
     }
 
     [TestMethod]
@@ -80,32 +92,27 @@ public class BusinessControllerTests
         // Arrange
         _adminService.Setup(x => x.GetBusinesses(null, null, _businesses.First().Name, null)).Returns(_pagedList);
 
+        var expectedBusinesses = _businesses.Select(b => new ListBusinessInfo
+        {
+            Name = b.Name,
+            OwnerEmail = b.Owner.Email,
+            OwnerName = b.Owner.Name,
+            OwnerSurname = b.Owner.Surname,
+            Rut = b.Rut
+        }).ToList();
+
+        var expectedResponse = new GetBusinessesResponse
+        {
+            Businesses = expectedBusinesses, Pagination = _expectedPagination
+        };
+
         // Act
-        var response = _controller.GetBusinesses(nameFilter: _businesses.First().Name);
+        var response = _controller.GetBusinesses(new GetBusinessesRequest { Name = _businesses.First().Name });
 
         // Assert
         _adminService.VerifyAll();
         response.Should().NotBeNull();
-        response.Should().BeOfType<OkObjectResult>();
-        var okResult = response as OkObjectResult;
-        okResult.Value.Should().BeEquivalentTo(new { Data = _businesses, Pagination = _expectedPagination });
-    }
-
-    [TestMethod]
-    public void GetBusinesses_WhenCalledWithFullNameFilter_ReturnsFilteredExpectedResponse()
-    {
-        // Arrange
-        _adminService.Setup(x => x.GetBusinesses(null, null, _businesses.First().Name, null)).Returns(_pagedList);
-
-        // Act
-        var response = _controller.GetBusinesses(nameFilter: _businesses.First().Name);
-
-        // Assert
-        _adminService.VerifyAll();
-        response.Should().NotBeNull();
-        response.Should().BeOfType<OkObjectResult>();
-        var okResult = response as OkObjectResult;
-        okResult.Value.Should().BeEquivalentTo(new { Data = _businesses, Pagination = _expectedPagination });
+        response.Should().BeEquivalentTo(expectedResponse);
     }
 
     [TestMethod]
@@ -114,15 +121,27 @@ public class BusinessControllerTests
         // Arrange
         _adminService.Setup(x => x.GetBusinesses(1, 1, null, null)).Returns(_pagedList);
 
+        var expectedBusinesses = _businesses.Select(b => new ListBusinessInfo
+        {
+            Name = b.Name,
+            OwnerEmail = b.Owner.Email,
+            OwnerName = b.Owner.Name,
+            OwnerSurname = b.Owner.Surname,
+            Rut = b.Rut
+        }).ToList();
+
+        var expectedResponse = new GetBusinessesResponse
+        {
+            Businesses = expectedBusinesses, Pagination = _expectedPagination
+        };
+
         // Act
-        var response = _controller.GetBusinesses(1, 1);
+        var response = _controller.GetBusinesses(new GetBusinessesRequest { CurrentPage = 1, PageSize = 1 });
 
         // Assert
         _adminService.VerifyAll();
         response.Should().NotBeNull();
-        response.Should().BeOfType<OkObjectResult>();
-        var okResult = response as OkObjectResult;
-        okResult.Value.Should().BeEquivalentTo(new { Data = _businesses, Pagination = _expectedPagination });
+        response.Should().BeEquivalentTo(expectedResponse);
     }
 
     #endregion
@@ -135,13 +154,15 @@ public class BusinessControllerTests
         // Arrange
         _businessOwnerService.Setup(x => x.CreateBusiness(_businessArgs)).Returns(_businesses[0].Rut);
 
+        var expectedResponse = new CreateBusinessResponse { Rut = _businesses[0].Rut };
+
         // Act
         var response = _controller.CreateBusiness(_businessRequest);
 
         // Assert
         _businessOwnerService.VerifyAll();
         response.Should().NotBeNull();
-        response.Rut.Should().Be(_businesses[0].Rut);
+        response.Should().BeEquivalentTo(expectedResponse);
     }
 
     #endregion

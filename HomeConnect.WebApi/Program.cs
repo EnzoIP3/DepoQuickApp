@@ -3,6 +3,7 @@ using BusinessLogic.Admins.Services;
 using BusinessLogic.Auth.Repositories;
 using BusinessLogic.Auth.Services;
 using BusinessLogic.BusinessOwners.Repositories;
+using BusinessLogic.BusinessOwners.Services;
 using BusinessLogic.Devices.Repositories;
 using BusinessLogic.Devices.Services;
 using BusinessLogic.HomeOwners.Repositories;
@@ -53,6 +54,7 @@ services.AddScoped<IUserService, UserService>();
 services.AddScoped<IHomeOwnerService, HomeOwnerService>();
 services.AddScoped<IDeviceService, DeviceService>();
 services.AddScoped<IAdminService, AdminService>();
+services.AddScoped<IBusinessOwnerService, BusinessOwnerService>();
 
 var app = builder.Build();
 

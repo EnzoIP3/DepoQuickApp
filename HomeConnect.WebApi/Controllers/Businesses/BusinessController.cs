@@ -16,12 +16,11 @@ public class BusinessController(IAdminService adminService, IBusinessOwnerServic
 {
     [HttpGet]
     [AuthorizationFilter(SystemPermission.GetAllBusinesses)]
-    public IActionResult GetBusinesses([FromQuery] int? currentPage = null, [FromQuery] int? pageSize = null,
-        [FromQuery] string? nameFilter = null, [FromQuery] string? ownerFilter = null)
+    public GetBusinessesResponse GetBusinesses([FromQuery] GetBusinessesRequest request)
     {
-        var businesses = adminService.GetBusinesses(currentPage, pageSize, nameFilter, ownerFilter);
+        var businesses = adminService.GetBusinesses(request.CurrentPage, request.PageSize, request.Name, request.Owner);
         var response = ResponseFromBusinesses(businesses);
-        return Ok(response);
+        return response;
     }
 
     [HttpPost]
@@ -33,18 +32,23 @@ public class BusinessController(IAdminService adminService, IBusinessOwnerServic
         return new CreateBusinessResponse { Rut = createdBusiness };
     }
 
-    private static object ResponseFromBusinesses(PagedData<BusinessLogic.BusinessOwners.Entities.Business> businesses)
+    private static GetBusinessesResponse ResponseFromBusinesses(
+        PagedData<BusinessLogic.BusinessOwners.Entities.Business> businesses)
     {
-        var response = new
+        return new GetBusinessesResponse
         {
-            businesses.Data,
-            Pagination = new Pagination
+            Businesses = businesses.Data.Select(b => new ListBusinessInfo()
             {
-                Page = businesses.Page,
-                PageSize = businesses.PageSize,
-                TotalPages = businesses.TotalPages
+                Name = b.Name,
+                OwnerEmail = b.Owner.Email,
+                OwnerName = b.Owner.Name,
+                OwnerSurname = b.Owner.Surname,
+                Rut = b.Rut
+            }).ToList(),
+            Pagination = new Pagination()
+            {
+                Page = businesses.Page, PageSize = businesses.PageSize, TotalPages = businesses.TotalPages
             }
         };
-        return response;
     }
 }

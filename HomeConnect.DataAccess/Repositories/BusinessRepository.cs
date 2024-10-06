@@ -1,6 +1,7 @@
 using BusinessLogic;
 using BusinessLogic.BusinessOwners.Entities;
 using BusinessLogic.BusinessOwners.Repositories;
+using Microsoft.EntityFrameworkCore;
 
 namespace HomeConnect.DataAccess.Repositories;
 
@@ -54,7 +55,7 @@ public class BusinessRepository : PaginatedRepositoryBase<Business>, IBusinessRe
 
     protected override IQueryable<Business> GetQueryable()
     {
-        return Context.Businesses;
+        return Context.Businesses.Include(b => b.Owner);
     }
 
     protected override IQueryable<Business> ApplyFilters(IQueryable<Business> query, params object[] filters)

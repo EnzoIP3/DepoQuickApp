@@ -15,12 +15,17 @@ public class Business
         get => _logo;
         set
         {
-            if (!Uri.TryCreate(value, UriKind.Absolute, out _))
-            {
-                throw new ArgumentException("Logo must be a valid URI");
-            }
+            EnsureLogoIsValidUrl(value);
 
             _logo = value;
+        }
+    }
+
+    private static void EnsureLogoIsValidUrl(string value)
+    {
+        if (!Uri.TryCreate(value, UriKind.Absolute, out _))
+        {
+            throw new ArgumentException("Logo must be a valid URI");
         }
     }
 

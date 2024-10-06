@@ -22,11 +22,11 @@ public class BusinessControllerTests
     private Role _role = null!;
     private User _user = null!;
     private User _otherUser = null!;
-    private CreateBusinessArgs _businessArgs;
-    private CreateBusinessRequest _businessRequest;
+    private CreateBusinessArgs _businessArgs = null!;
+    private CreateBusinessRequest _businessRequest = null!;
     private List<Business> _businesses = null!;
-    private Pagination _expectedPagination;
-    private PagedData<Business> _pagedList;
+    private Pagination _expectedPagination = null!;
+    private PagedData<Business> _pagedList = null!;
 
     [TestInitialize]
     public void Initialize()
@@ -51,6 +51,8 @@ public class BusinessControllerTests
             PageSize = _expectedPagination.PageSize,
             TotalPages = _expectedPagination.TotalPages
         };
+        _businessArgs = new CreateBusinessArgs { Name = "Business 1" };
+        _businessRequest = new CreateBusinessRequest { Name = "Business 1" };
     }
 
     #region GetBusinesses

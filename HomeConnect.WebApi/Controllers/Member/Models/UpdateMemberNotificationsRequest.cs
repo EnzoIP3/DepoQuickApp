@@ -1,6 +1,6 @@
 namespace HomeConnect.WebApi.Controllers.Member;
 
-public struct UpdateMemberNotificationsRequest
+public record UpdateMemberNotificationsRequest
 {
     public bool ShouldBeNotified { get; set; }
 }

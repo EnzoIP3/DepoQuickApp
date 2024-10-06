@@ -1,6 +1,6 @@
 namespace HomeConnect.WebApi.Controllers.BusinessOwner.Models;
 
-public struct CreateBusinessOwnerRequest
+public record CreateBusinessOwnerRequest
 {
     public string? Name { get; set; }
     public string? Surname { get; set; }

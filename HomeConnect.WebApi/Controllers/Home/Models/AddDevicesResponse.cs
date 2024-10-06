@@ -1,7 +1,7 @@
 namespace HomeConnect.WebApi.Controllers.Home.Models;
 
-public struct AddDevicesResponse
+public record AddDevicesResponse
 {
-    public string HomeId { get; set; }
-    public List<string> DeviceIds { get; set; }
+    public string HomeId { get; set; } = null!;
+    public List<string> DeviceIds { get; set; } = null!;
 }

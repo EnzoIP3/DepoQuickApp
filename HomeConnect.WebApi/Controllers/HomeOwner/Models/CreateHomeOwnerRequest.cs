@@ -1,6 +1,6 @@
 namespace HomeConnect.WebApi.Controllers.HomeOwner.Models;
 
-public struct CreateHomeOwnerRequest
+public record CreateHomeOwnerRequest
 {
     public string? Name { get; set; }
     public string? Surname { get; set; }

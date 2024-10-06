@@ -1,6 +1,6 @@
 namespace HomeConnect.WebApi.Controllers.Admin.Models;
 
-public struct CreateAdminRequest
+public record CreateAdminRequest
 {
     public string? Name { get; set; }
     public string? Surname { get; set; }

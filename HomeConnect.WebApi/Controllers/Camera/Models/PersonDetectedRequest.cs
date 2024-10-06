@@ -1,6 +1,6 @@
 namespace HomeConnect.WebApi.Controllers.Camera.Models;
 
-public struct PersonDetectedRequest
+public record PersonDetectedRequest
 {
-    public string UserId { get; set; }
+    public string UserId { get; set; } = null!;
 }

@@ -1,6 +1,6 @@
 namespace HomeConnect.WebApi.Controllers.Home.Models;
 
-public struct CreateHomeResponse
+public record CreateHomeResponse
 {
-    public string Id { get; set; }
+    public string Id { get; set; } = null!;
 }

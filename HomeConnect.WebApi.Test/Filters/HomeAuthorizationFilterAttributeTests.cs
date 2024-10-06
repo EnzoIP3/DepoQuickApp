@@ -22,9 +22,9 @@ public class HomeAuthorizationFilterAttributeTests
     private Mock<IUserRepository> _userRepositoryMock = null!;
     private Mock<IHomeOwnerService> _homeOwnerServiceMock = null!;
     private AuthorizationFilterContext _context = null!;
-    private HomeAuthorizationFilterAttribute _attribute = null;
+    private HomeAuthorizationFilterAttribute _attribute = null!;
     private readonly string _homeIdRoute = "homesId";
-    private readonly User _user = new User("name", "surname", "email@email.com", "Password@100",
+    private readonly User _user = new("name", "surname", "email@email.com", "Password@100",
         new Role { Name = "HomeOwner", Permissions = [] });
 
     [TestInitialize]
@@ -56,9 +56,9 @@ public class HomeAuthorizationFilterAttributeTests
         response.Should().NotBeNull();
         var concreteResponse = response as ObjectResult;
         concreteResponse.Should().NotBeNull();
-        concreteResponse.StatusCode.Should().Be((int)HttpStatusCode.Unauthorized);
-        FilterTestsUtils.GetInnerCode(concreteResponse?.Value).Should().Be("Unauthorized");
-        FilterTestsUtils.GetMessage(concreteResponse?.Value).Should().Be("You are not authenticated");
+        concreteResponse!.StatusCode.Should().Be((int)HttpStatusCode.Unauthorized);
+        FilterTestsUtils.GetInnerCode(concreteResponse.Value).Should().Be("Unauthorized");
+        FilterTestsUtils.GetMessage(concreteResponse.Value).Should().Be("You are not authenticated");
     }
 
     [TestMethod]
@@ -78,9 +78,9 @@ public class HomeAuthorizationFilterAttributeTests
         response.Should().NotBeNull();
         var concreteResponse = response as ObjectResult;
         concreteResponse.Should().NotBeNull();
-        concreteResponse.StatusCode.Should().Be((int)HttpStatusCode.BadRequest);
-        FilterTestsUtils.GetInnerCode(concreteResponse?.Value).Should().Be("BadRequest");
-        FilterTestsUtils.GetMessage(concreteResponse?.Value).Should().Be("The home id is invalid");
+        concreteResponse!.StatusCode.Should().Be((int)HttpStatusCode.BadRequest);
+        FilterTestsUtils.GetInnerCode(concreteResponse.Value).Should().Be("BadRequest");
+        FilterTestsUtils.GetMessage(concreteResponse.Value).Should().Be("The home id is invalid");
     }
 
     [TestMethod]

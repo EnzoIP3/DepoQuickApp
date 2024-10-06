@@ -18,7 +18,7 @@ public class DeviceServiceTests
     private Mock<IDeviceRepository> _deviceRepository = null!;
     private DeviceService _deviceService = null!;
     private List<Device> _devices = null!;
-    private PagedData<Device> _pagedDeviceList;
+    private PagedData<Device> _pagedDeviceList = null!;
     private GetDeviceArgs _parameters = null!;
     private User user1 = null!;
     private User user2 = null!;

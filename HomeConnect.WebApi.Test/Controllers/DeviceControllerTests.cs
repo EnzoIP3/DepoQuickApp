@@ -18,8 +18,8 @@ public class DeviceControllerTests
     private Device _device = null!;
     private Device _otherDevice = null!;
     private List<Device> _expectedDevices = null!;
-    private Pagination _expectedPagination;
-    private PagedData<Device> _pagedList;
+    private Pagination _expectedPagination = null!;
+    private PagedData<Device> _pagedList = null!;
 
     [TestInitialize]
     public void Initialize()

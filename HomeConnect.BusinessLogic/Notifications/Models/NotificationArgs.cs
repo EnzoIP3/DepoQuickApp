@@ -1,8 +1,8 @@
 namespace BusinessLogic.Notifications.Models;
 
-public struct NotificationArgs
+public record NotificationArgs
 {
-    public string HardwareId { get; set; }
+    public string HardwareId { get; set; } = null!;
     public DateTime Date { get; set; }
-    public string Event { get; set; }
+    public string Event { get; set; } = null!;
 }

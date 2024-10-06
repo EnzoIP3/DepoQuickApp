@@ -1,9 +1,9 @@
 namespace HomeConnect.WebApi.Controllers.Notification;
 
-public struct NotificationData
+public record NotificationData
 {
-    public string Event { get; set; }
-    public string DeviceId { get; set; }
+    public string Event { get; set; } = null!;
+    public string DeviceId { get; set; } = null!;
     public bool Read { get; set; }
     public DateTime DateCreated { get; set; }
 }

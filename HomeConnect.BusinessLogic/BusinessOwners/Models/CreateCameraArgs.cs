@@ -1,13 +1,13 @@
 namespace BusinessLogic.BusinessOwners.Models;
 
-public struct CreateCameraArgs
+public record CreateCameraArgs
 {
-    public string Name { get; set; }
+    public string Name { get; set; } = null!;
     public int ModelNumber { get; set; }
-    public string Description { get; set; }
-    public string MainPhoto { get; set; }
-    public List<string> SecondaryPhotos { get; set; }
-    public string BusinessRut { get; set; }
+    public string Description { get; set; } = null!;
+    public string MainPhoto { get; set; } = null!;
+    public List<string> SecondaryPhotos { get; set; } = null!;
+    public string BusinessRut { get; set; } = null!;
     public bool MotionDetection { get; set; }
     public bool PersonDetection { get; set; }
     public bool IsExterior { get; set; }

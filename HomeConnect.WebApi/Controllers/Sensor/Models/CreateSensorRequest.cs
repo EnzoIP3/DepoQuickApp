@@ -1,11 +1,11 @@
 namespace HomeConnect.WebApi.Controllers.Sensor.Models;
 
-public struct CreateSensorRequest
+public record CreateSensorRequest
 {
-    public string BusinessRut { get; set; }
-    public string Description { get; set; }
-    public string MainPhoto { get; set; }
+    public string BusinessRut { get; set; } = null!;
+    public string Description { get; set; } = null!;
+    public string MainPhoto { get; set; } = null!;
     public int ModelNumber { get; set; }
-    public string Name { get; set; }
-    public List<string> SecondaryPhotos { get; set; }
+    public string Name { get; set; } = null!;
+    public List<string> SecondaryPhotos { get; set; } = null!;
 }

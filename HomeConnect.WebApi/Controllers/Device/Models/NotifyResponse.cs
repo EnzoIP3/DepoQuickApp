@@ -1,6 +1,6 @@
 namespace HomeConnect.WebApi.Controllers.Device.Models;
 
-public struct NotifyResponse
+public record NotifyResponse
 {
-    public string HardwareId { get; set; }
+    public string HardwareId { get; set; } = null!;
 }

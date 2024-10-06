@@ -13,8 +13,8 @@ public class BusinessOwnerControllerTests
 {
     private Mock<IAdminService> _adminService = null!;
     private BusinessOwnerController _controller = null!;
-    private CreateBusinessOwnerRequest _businessOwnerRequest;
-    private CreateUserArgs _userModel;
+    private CreateBusinessOwnerRequest _businessOwnerRequest = null!;
+    private CreateUserArgs _userModel = null!;
     private Guid _guid;
 
     [TestInitialize]

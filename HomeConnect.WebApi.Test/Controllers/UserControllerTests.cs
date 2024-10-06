@@ -18,8 +18,8 @@ public class UserControllerTests
     private User _user = null!;
     private User _otherUser = null!;
     private List<User> _expectedUsers = null!;
-    private Pagination _expectedPagination;
-    private PagedData<User> _pagedList;
+    private Pagination _expectedPagination = null!;
+    private PagedData<User> _pagedList = null!;
 
     [TestInitialize]
     public void Initialize()

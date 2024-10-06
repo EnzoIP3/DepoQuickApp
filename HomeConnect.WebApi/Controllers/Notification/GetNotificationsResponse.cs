@@ -1,6 +1,6 @@
 namespace HomeConnect.WebApi.Controllers.Notification;
 
-public struct GetNotificationsResponse
+public record GetNotificationsResponse
 {
-    public List<NotificationData> Notifications { get; set; }
+    public List<NotificationData> Notifications { get; set; } = null!;
 }

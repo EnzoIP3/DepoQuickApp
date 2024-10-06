@@ -1,6 +1,6 @@
 namespace HomeConnect.WebApi.Controllers.Home.Models;
 
-public struct GetDevicesResponse
+public record GetDevicesResponse
 {
-    public List<ListDeviceInfo> Device { get; set; }
+    public List<ListDeviceInfo> Device { get; set; } = null!;
 }

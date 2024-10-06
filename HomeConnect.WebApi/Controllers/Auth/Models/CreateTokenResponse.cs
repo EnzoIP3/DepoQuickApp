@@ -1,6 +1,6 @@
 namespace HomeConnect.WebApi.Controllers.Auth.Models;
 
-public struct CreateTokenResponse
+public record CreateTokenResponse
 {
-    public string Token { get; set; }
+    public string Token { get; set; } = null!;
 }

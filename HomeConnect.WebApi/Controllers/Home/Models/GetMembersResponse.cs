@@ -1,6 +1,6 @@
 namespace HomeConnect.WebApi.Controllers.Home.Models;
 
-public struct GetMembersResponse
+public record GetMembersResponse
 {
-    public List<ListMemberInfo> Members { get; set; }
+    public List<ListMemberInfo> Members { get; set; } = null!;
 }

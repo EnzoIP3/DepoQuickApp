@@ -1,6 +1,6 @@
 namespace HomeConnect.WebApi.Controllers.Businesses.Models;
 
-public struct CreateBusinessResponse
+public record CreateBusinessResponse
 {
-    public string Rut { get; set; }
+    public string Rut { get; set; } = null!;
 }

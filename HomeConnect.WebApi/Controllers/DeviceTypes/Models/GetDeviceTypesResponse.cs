@@ -1,6 +1,6 @@
 namespace HomeConnect.WebApi.Controllers.DeviceTypes.Models;
 
-public struct GetDeviceTypesResponse
+public record GetDeviceTypesResponse
 {
-    public List<string> DeviceTypes { get; set; }
+    public List<string> DeviceTypes { get; set; } = null!;
 }

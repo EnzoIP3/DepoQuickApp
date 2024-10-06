@@ -1,4 +1,5 @@
 using BusinessLogic.Admins.Services;
+using BusinessLogic.Roles.Entities;
 using BusinessLogic.Users.Models;
 using FluentAssertions;
 using HomeConnect.WebApi.Controllers.BusinessOwner;
@@ -34,7 +35,8 @@ public class BusinessOwnerControllerTests
             Name = _businessOwnerRequest.Name,
             Surname = _businessOwnerRequest.Surname,
             Email = _businessOwnerRequest.Email,
-            Password = _businessOwnerRequest.Password
+            Password = _businessOwnerRequest.Password,
+            Role = Role.BusinessOwner
         };
         _guid = Guid.NewGuid();
     }

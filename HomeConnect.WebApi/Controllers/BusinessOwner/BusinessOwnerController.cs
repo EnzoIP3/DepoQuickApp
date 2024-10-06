@@ -14,7 +14,7 @@ public class BusinessOwnerController(IAdminService adminService)
     : ControllerBase
 {
     [HttpPost]
-    [AuthorizationFilter(SystemPermission.CreateAdministrator)]
+    [AuthorizationFilter(SystemPermission.CreateBusinessOwner)]
     public CreateBusinessOwnerResponse CreateBusinessOwner(CreateBusinessOwnerRequest request)
     {
         CreateUserArgs createUserArgs = UserModelFromRequest(request);
@@ -29,7 +29,8 @@ public class BusinessOwnerController(IAdminService adminService)
             Name = request.Name,
             Surname = request.Surname,
             Email = request.Email,
-            Password = request.Password
+            Password = request.Password,
+            Role = Role.BusinessOwner
         };
         return userModel;
     }

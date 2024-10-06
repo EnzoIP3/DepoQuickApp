@@ -45,6 +45,6 @@ public class OwnedDeviceRepository : IOwnedDeviceRepository
 
     public bool IsConnected(string hardwareId)
     {
-        throw new NotImplementedException();
+        return _context.OwnedDevices.First(od => od.HardwareId == Guid.Parse(hardwareId)).Device.ConnectionState;
     }
 }

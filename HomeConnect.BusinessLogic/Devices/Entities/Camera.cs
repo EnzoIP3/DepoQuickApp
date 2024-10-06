@@ -14,15 +14,51 @@ public class Camera : Device
     {
     }
 
+    private void EnsureMotionDetectionIsNotNull(bool? motionDetection)
+    {
+        if (motionDetection == null)
+        {
+            throw new ArgumentException("Motion detection must be provided");
+        }
+    }
+
+    private void EnsurePersonDetectionIsNotNull(bool? personDetection)
+    {
+        if (personDetection == null)
+        {
+            throw new ArgumentException("Person detection must be provided");
+        }
+    }
+
+    private void EnsureIsExteriorIsNotNull(bool? isExterior)
+    {
+        if (isExterior == null)
+        {
+            throw new ArgumentException("Is exterior must be provided");
+        }
+    }
+
+    private void EnsureIsInteriorIsNotNull(bool? isInterior)
+    {
+        if (isInterior == null)
+        {
+            throw new ArgumentException("Is interior must be provided");
+        }
+    }
+
     public Camera(string name, int? modelNumber, string description, string mainPhoto, List<string>? secondaryPhotos,
         Business business,
         bool? motionDetection, bool? personDetection, bool? isExterior, bool? isInterior)
         : base(name, modelNumber, description, mainPhoto, secondaryPhotos, CameraType, business)
     {
-        MotionDetection = motionDetection ?? throw new ArgumentException("Motion detection must be provided");
-        PersonDetection = personDetection ?? throw new ArgumentException("Person detection must be provided");
-        IsExterior = isExterior ?? throw new ArgumentException("Is exterior must be provided");
-        IsInterior = isInterior ?? throw new ArgumentException("Is interior must be provided");
+        EnsurePersonDetectionIsNotNull(personDetection);
+        EnsureIsExteriorIsNotNull(isExterior);
+        EnsureIsInteriorIsNotNull(isInterior);
+        EnsureMotionDetectionIsNotNull(motionDetection);
+        MotionDetection = motionDetection!.Value;
+        PersonDetection = personDetection!.Value;
+        IsExterior = isExterior!.Value;
+        IsInterior = isInterior!.Value;
         EnsureExteriorOrInterior();
     }
 

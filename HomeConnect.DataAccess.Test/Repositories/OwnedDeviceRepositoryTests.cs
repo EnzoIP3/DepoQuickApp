@@ -114,4 +114,20 @@ public class OwnedDeviceRepositoryTests
         result.Should().BeTrue();
     }
     #endregion
+
+    #region IsConnected
+    [TestMethod]
+    public void IsConnected_WhenDeviceIsConnected_ReturnsTrue()
+    {
+        // Assert
+        _ownedDevice.Device.ConnectionState = true;
+        _context.SaveChanges();
+
+        // Act
+        var result = _ownedDeviceRepository.IsConnected(_ownedDevice.HardwareId.ToString());
+
+        // Assert
+        result.Should().BeTrue();
+    }
+    #endregion
 }

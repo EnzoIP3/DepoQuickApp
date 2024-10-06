@@ -30,6 +30,7 @@ public class SensorControllerTests
             _businessOwnerServiceMock.Object);
     }
 
+    #region Notify
     [TestMethod]
     public void NotifyOpen_WithHardwareId_ReturnsNotifyResponse()
     {
@@ -61,6 +62,7 @@ public class SensorControllerTests
         result.Should().NotBeNull();
         result.HardwareId.Should().Be(hardwareId);
     }
+    #endregion
 
     #region CreateDevices
 

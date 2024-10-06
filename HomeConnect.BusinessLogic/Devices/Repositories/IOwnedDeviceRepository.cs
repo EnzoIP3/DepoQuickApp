@@ -10,4 +10,5 @@ public interface IOwnedDeviceRepository
     bool ToggleConnection(string hardwareId);
     OwnedDevice GetByHardwareId(string hardwareId);
     bool Exists(string hardwareId);
+    bool IsConnected(string hardwareId);
 }

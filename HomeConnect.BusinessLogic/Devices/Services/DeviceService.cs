@@ -42,7 +42,7 @@ public class DeviceService : IDeviceService
     {
         EnsureHardwareIdIsValid(hardwareId);
         EnsureOwnedDeviceExists(hardwareId);
-        return true;
+        return false;
     }
 
     private void EnsureOwnedDeviceExists(string hardwareId)

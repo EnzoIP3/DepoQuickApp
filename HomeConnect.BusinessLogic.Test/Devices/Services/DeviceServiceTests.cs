@@ -160,5 +160,21 @@ public class DeviceServiceTests
         act.Should().Throw<ArgumentException>().WithMessage("Owned device does not exist.");
     }
     #endregion
+
+    [TestMethod]
+    public void IsConnected_WhenDeviceIsConnected_ReturnsTrue()
+    {
+        // Arrange
+        var hardwareId = Guid.NewGuid().ToString();
+        _ownedDeviceRepository.Setup(x => x.Exists(hardwareId)).Returns(true);
+        _ownedDeviceRepository.Setup(x => x.IsConnected(hardwareId)).Returns(true);
+
+        // Act
+        var result = _deviceService.IsConnected(hardwareId);
+
+        // Assert
+        _ownedDeviceRepository.VerifyAll();
+        result.Should().BeTrue();
+    }
     #endregion
 }

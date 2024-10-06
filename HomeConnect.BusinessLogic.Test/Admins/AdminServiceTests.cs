@@ -137,6 +137,19 @@ public sealed class AdminServiceTests
         act.Should().Throw<Exception>().WithMessage("Admin does not exist.");
     }
 
+    [TestMethod]
+    public void Delete_WhenIdIsNotAGuid_ThrowsException()
+    {
+        // Arrange
+        var id = "not-a-guid";
+
+        // Act
+        Action act = () => _adminService.Delete(id);
+
+        // Assert
+        act.Should().Throw<ArgumentException>().WithMessage("The id is not a valid GUID.");
+    }
+
     #endregion
 
     #region Success

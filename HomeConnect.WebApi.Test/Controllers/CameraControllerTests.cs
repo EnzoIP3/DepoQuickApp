@@ -34,6 +34,7 @@ public class CameraControllerTests
             _businessOwnerService.Object, _userService.Object);
     }
 
+    #region MovementDetected
     [TestMethod]
     public void MovementDetected_WithHardwareId_ReturnsNotifyResponse()
     {
@@ -49,7 +50,9 @@ public class CameraControllerTests
         result.Should().NotBeNull();
         result.HardwareId.Should().Be(hardwareId);
     }
+    #endregion
 
+    #region PersonDetected
     [TestMethod]
     public void PersonDetected_WithHardwareIdAndRequest_ReturnsNotifyResponse()
     {
@@ -94,7 +97,9 @@ public class CameraControllerTests
         // Assert
         act.Should().Throw<ArgumentException>().WithMessage("User detected by camera is not found");
     }
+    #endregion
 
+    #region CreateCamera
     [TestMethod]
     public void CreateCamera_WhenCalledWithValidRequest_ReturnsCreatedResponse()
     {
@@ -139,4 +144,5 @@ public class CameraControllerTests
         response.Should().NotBeNull();
         response.Id.Should().Be(camera.Id);
     }
+    #endregion
 }

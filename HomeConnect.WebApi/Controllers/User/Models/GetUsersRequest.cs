@@ -4,6 +4,6 @@ public record GetUsersRequest
 {
     public int? CurrentPage { get; init; }
     public int? PageSize { get; init; }
-    public string? FullNameFilter { get; init; }
-    public string? RoleFilter { get; init; }
+    public string? FullName { get; init; }
+    public string? Role { get; init; }
 }

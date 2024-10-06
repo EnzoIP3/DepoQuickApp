@@ -16,8 +16,8 @@ public class UserController(IAdminService adminService) : ControllerBase
     [AuthorizationFilter(SystemPermission.GetAllUsers)]
     public GetUsersResponse GetUsers([FromQuery] GetUsersRequest request)
     {
-        var users = adminService.GetUsers(request.CurrentPage, request.PageSize, request.FullNameFilter,
-            request.RoleFilter);
+        var users = adminService.GetUsers(request.CurrentPage, request.PageSize, request.FullName,
+            request.Role);
         var response = ResponseFromUsers(users);
         return response;
     }

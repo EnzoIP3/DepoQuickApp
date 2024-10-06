@@ -53,8 +53,8 @@ public class UserControllerTests
     {
         // Arrange
         var parameters = new GetUsersRequest();
-        _adminService.Setup(x => x.GetUsers(parameters.CurrentPage, parameters.PageSize, parameters.FullNameFilter,
-            parameters.RoleFilter)).Returns(_pagedList);
+        _adminService.Setup(x => x.GetUsers(parameters.CurrentPage, parameters.PageSize, parameters.FullName,
+            parameters.Role)).Returns(_pagedList);
 
         // Act
         var response = _controller.GetUsers(parameters);
@@ -79,9 +79,9 @@ public class UserControllerTests
     public void GetUsers_WhenCalledWithValidRequestAndFullNameFilter_ReturnsFilteredExpectedResponse()
     {
         // Arrange
-        var parameters = new GetUsersRequest { FullNameFilter = _expectedUsers.First().Name };
-        _adminService.Setup(x => x.GetUsers(parameters.CurrentPage, parameters.PageSize, parameters.FullNameFilter,
-            parameters.RoleFilter)).Returns(_pagedList);
+        var parameters = new GetUsersRequest { FullName = _expectedUsers.First().Name };
+        _adminService.Setup(x => x.GetUsers(parameters.CurrentPage, parameters.PageSize, parameters.FullName,
+            parameters.Role)).Returns(_pagedList);
 
         // Act
         var response = _controller.GetUsers(parameters);
@@ -106,9 +106,9 @@ public class UserControllerTests
     public void GetUsers_WhenCalledWithValidRequestAndRoleFilter_ReturnsFilteredExpectedResponse()
     {
         // Arrange
-        var parameters = new GetUsersRequest { RoleFilter = _expectedUsers.First().Role.Name };
-        _adminService.Setup(x => x.GetUsers(parameters.CurrentPage, parameters.PageSize, parameters.FullNameFilter,
-            parameters.RoleFilter)).Returns(_pagedList);
+        var parameters = new GetUsersRequest { Role = _expectedUsers.First().Role.Name };
+        _adminService.Setup(x => x.GetUsers(parameters.CurrentPage, parameters.PageSize, parameters.FullName,
+            parameters.Role)).Returns(_pagedList);
 
         // Act
         var response = _controller.GetUsers(parameters);
@@ -137,8 +137,8 @@ public class UserControllerTests
         {
             CurrentPage = _expectedPagination.Page, PageSize = _expectedPagination.PageSize
         };
-        _adminService.Setup(x => x.GetUsers(parameters.CurrentPage, parameters.PageSize, parameters.FullNameFilter,
-            parameters.RoleFilter)).Returns(_pagedList);
+        _adminService.Setup(x => x.GetUsers(parameters.CurrentPage, parameters.PageSize, parameters.FullName,
+            parameters.Role)).Returns(_pagedList);
 
         // Act
         var response = _controller.GetUsers(parameters);

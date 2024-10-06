@@ -22,7 +22,7 @@ public class Camera : Device
         MotionDetection = motionDetection ?? throw new ArgumentException("Motion detection must be provided");
         PersonDetection = personDetection ?? throw new ArgumentException("Person detection must be provided");
         IsExterior = isExterior ?? throw new ArgumentException("Is exterior must be provided");
-        IsInterior = isInterior ?? false;
+        IsInterior = isInterior ?? throw new ArgumentException("Is interior must be provided");
         EnsureExteriorOrInterior();
     }
 

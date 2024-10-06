@@ -105,6 +105,18 @@ public class CameraTest
         act.Should().Throw<ArgumentException>();
     }
 
+    [TestMethod]
+    public void Constructor_WhenIsInteriorIsNull_ThrowsArgumentException()
+    {
+        // Act
+        var act = () => new Camera(Name, ModelNumber, Description, MainPhoto, secondaryPhotos, _business,
+            MotionDetection,
+            PersonDetection, IsExterior, null);
+
+        // Assert
+        act.Should().Throw<ArgumentException>();
+    }
+
     #endregion
 
     #endregion

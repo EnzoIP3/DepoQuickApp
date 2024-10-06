@@ -132,7 +132,7 @@ public class DeviceRepositoryTests
     public void GetDevices_WhenCalled_ReturnsPaginatedDevices()
     {
         // Arrange
-        var args = new GetDeviceArgs
+        var args = new GetDevicesArgs
         {
             Page = 1,
             PageSize = 2
@@ -152,7 +152,7 @@ public class DeviceRepositoryTests
     {
         // Arrange
         var deviceNameFilter = "DeviceValid";
-        var args = new GetDeviceArgs
+        var args = new GetDevicesArgs
         {
             Page = 1,
             PageSize = 10,
@@ -172,7 +172,7 @@ public class DeviceRepositoryTests
     {
         // Arrange
         var modelNumberFilter = 1234567;
-        var args = new GetDeviceArgs
+        var args = new GetDevicesArgs
         {
             Page = 1,
             PageSize = 10,
@@ -194,7 +194,7 @@ public class DeviceRepositoryTests
     {
         // Arrange
         DeviceType deviceType = Enum.Parse<DeviceType>(deviceTypeFilter);
-        var args = new GetDeviceArgs
+        var args = new GetDevicesArgs
         {
             Page = 1,
             PageSize = 2,
@@ -214,7 +214,7 @@ public class DeviceRepositoryTests
     {
         // Arrange
         var deviceTypeFilter = "Sensor";
-        var args = new GetDeviceArgs
+        var args = new GetDevicesArgs
         {
             Page = 1,
             PageSize = 2,

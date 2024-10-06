@@ -15,7 +15,7 @@ public class DeviceService : IDeviceService
         OwnedDeviceRepository = ownedDeviceRepository;
     }
 
-    public PagedData<Device> GetDevices(GetDeviceArgs parameters)
+    public PagedData<Device> GetDevices(GetDevicesArgs parameters)
     {
         parameters.Page ??= 1;
         parameters.PageSize ??= 10;

@@ -5,7 +5,7 @@ namespace BusinessLogic.Devices.Services;
 
 public interface IDeviceService
 {
-    PagedData<Device> GetDevices(GetDeviceArgs parameters);
+    PagedData<Device> GetDevices(GetDevicesArgs parameters);
     bool Toggle(string hardwareId);
     IEnumerable<string> GetAllDeviceTypes();
     bool IsConnected(string hardwareId);

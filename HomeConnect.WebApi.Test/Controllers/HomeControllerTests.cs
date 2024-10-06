@@ -56,10 +56,7 @@ public class HomeControllerTests
         // Arrange
         var request = new CreateHomeRequest
         {
-            Address = "Road 123",
-            Latitude = 50.456,
-            Longitude = 100.789,
-            MaxMembers = 3
+            Address = "Road 123", Latitude = 50.456, Longitude = 100.789, MaxMembers = 3
         };
         var items = new Dictionary<object, object?> { { Item.UserLogged, _user } };
         _httpContextMock.Setup(h => h.Items).Returns(items);
@@ -235,7 +232,8 @@ public class HomeControllerTests
                 Name = "Device1",
                 Type = DeviceType.Sensor,
                 ModelNumber = 1,
-                MainPhoto = "https://www.example.com/photo1.jpg"
+                MainPhoto = "https://www.example.com/photo1.jpg",
+                Business = new Business { Name = "Name1" }
             });
         var device2 = new OwnedDevice(_home,
             new Device
@@ -243,7 +241,8 @@ public class HomeControllerTests
                 Name = "Device2",
                 Type = DeviceType.Camera,
                 ModelNumber = 2,
-                MainPhoto = "https://www.example.com/photo2.jpg"
+                MainPhoto = "https://www.example.com/photo2.jpg",
+                Business = new Business { Name = "Name2" }
             });
         var items = new Dictionary<object, object?> { { Item.UserLogged, _user } };
         _httpContextMock.Setup(h => h.Items).Returns(items);
@@ -257,6 +256,7 @@ public class HomeControllerTests
                 new ListDeviceInfo
                 {
                     Name = device1.Device.Name,
+                    BusinessName = device1.Device.Business.Name,
                     Type = device1.Device.Type.ToString(),
                     ModelNumber = device1.Device.ModelNumber,
                     Photo = device1.Device.MainPhoto,
@@ -265,6 +265,7 @@ public class HomeControllerTests
                 new ListDeviceInfo
                 {
                     Name = device2.Device.Name,
+                    BusinessName = device2.Device.Business.Name,
                     Type = device2.Device.Type.ToString(),
                     ModelNumber = device2.Device.ModelNumber,
                     Photo = device2.Device.MainPhoto,

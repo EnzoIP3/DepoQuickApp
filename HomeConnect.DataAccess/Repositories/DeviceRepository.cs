@@ -2,6 +2,7 @@ using BusinessLogic;
 using BusinessLogic.Devices.Entities;
 using BusinessLogic.Devices.Models;
 using BusinessLogic.Devices.Repositories;
+using Microsoft.EntityFrameworkCore;
 
 namespace HomeConnect.DataAccess.Repositories;
 
@@ -41,7 +42,7 @@ public class DeviceRepository : PaginatedRepositoryBase<Device>, IDeviceReposito
         }
     }
 
-    public PagedData<Device> GetDevices(GetDeviceArgs args)
+    public PagedData<Device> GetDevices(GetDevicesArgs args)
     {
         var filters = new object[4];
         filters[0] = args.DeviceNameFilter ?? string.Empty;
@@ -53,7 +54,7 @@ public class DeviceRepository : PaginatedRepositoryBase<Device>, IDeviceReposito
 
     protected override IQueryable<Device> GetQueryable()
     {
-        return _context.Devices;
+        return _context.Devices.Include(d => d.Business);
     }
 
     protected override IQueryable<Device> ApplyFilters(IQueryable<Device> query, params object[] filters)

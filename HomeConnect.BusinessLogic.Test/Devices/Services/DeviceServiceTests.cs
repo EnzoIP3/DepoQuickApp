@@ -19,7 +19,7 @@ public class DeviceServiceTests
     private DeviceService _deviceService = null!;
     private List<Device> _devices = null!;
     private PagedData<Device> _pagedDeviceList = null!;
-    private GetDeviceArgs _parameters = null!;
+    private GetDevicesArgs _parameters = null!;
     private User user1 = null!;
     private User user2 = null!;
     private Device otherDevice = null!;
@@ -41,7 +41,7 @@ public class DeviceServiceTests
 
         _devices = [validDevice, otherDevice];
 
-        _parameters = new GetDeviceArgs { Page = 1, PageSize = 10 };
+        _parameters = new GetDevicesArgs { Page = 1, PageSize = 10 };
 
         _pagedDeviceList = new PagedData<Device>
         {
@@ -94,7 +94,7 @@ public class DeviceServiceTests
     public void GetDevices_WhenCalled_ReturnsDeviceList()
     {
         // Arrange
-        _deviceRepository.Setup(x => x.GetDevices(It.Is<GetDeviceArgs>(args =>
+        _deviceRepository.Setup(x => x.GetDevices(It.Is<GetDevicesArgs>(args =>
             args.Page == _parameters.Page &&
             args.PageSize == _parameters.PageSize &&
             args.DeviceNameFilter == _parameters.DeviceNameFilter &&
@@ -115,7 +115,7 @@ public class DeviceServiceTests
         result.Should().BeEquivalentTo(expectedPagedDeviceList,
             options => options.ComparingByMembers<PagedData<Device>>());
         _deviceRepository.Verify(x => x.GetDevices(
-            It.Is<GetDeviceArgs>(args =>
+            It.Is<GetDevicesArgs>(args =>
                 args.Page == _parameters.Page &&
                 args.PageSize == _parameters.PageSize &&
                 args.DeviceNameFilter == _parameters.DeviceNameFilter &&

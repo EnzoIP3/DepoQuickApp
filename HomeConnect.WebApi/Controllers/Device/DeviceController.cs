@@ -1,8 +1,11 @@
 using BusinessLogic;
 using BusinessLogic.Devices.Models;
 using BusinessLogic.Devices.Services;
+using HomeConnect.WebApi.Controllers.Device.Models;
+using HomeConnect.WebApi.Controllers.Home.Models;
 using HomeConnect.WebApi.Filters;
 using Microsoft.AspNetCore.Mvc;
+using GetDevicesResponse = HomeConnect.WebApi.Controllers.Device.Models.GetDevicesResponse;
 
 namespace HomeConnect.WebApi.Controllers.Device;
 
@@ -19,23 +22,39 @@ public class DeviceController : ControllerBase
     }
 
     [HttpGet]
-    public IActionResult GetDevices([FromQuery] GetDeviceArgs parameters)
+    public GetDevicesResponse GetDevices([FromQuery] GetDevicesRequest parameters)
     {
-        PagedData<BusinessLogic.Devices.Entities.Device> devices = _deviceService.GetDevices(parameters);
+        var args = new GetDevicesArgs()
+        {
+            BusinessNameFilter = parameters.BusinessNameFilter,
+            DeviceTypeFilter = parameters.DeviceTypeFilter,
+            Page = parameters.Page,
+            PageSize = parameters.PageSize,
+            DeviceNameFilter = parameters.DeviceNameFilter,
+            ModelNumberFilter = parameters.ModelNumberFilter
+        };
+        var devices = _deviceService.GetDevices(args);
         var response = ResponseFromDevices(devices);
-        return Ok(response);
+        return response;
     }
 
-    private static object ResponseFromDevices(PagedData<BusinessLogic.Devices.Entities.Device> devices)
+    private static GetDevicesResponse ResponseFromDevices(PagedData<BusinessLogic.Devices.Entities.Device> devices)
     {
-        var response = new
+        return new GetDevicesResponse()
         {
-            devices.Data,
-            Pagination = new Pagination
+            Devices = devices.Data.Select(d => new ListDeviceInfo()
+            {
+                Name = d.Name,
+                BusinessName = d.Business.Name,
+                Type = d.Type.ToString(),
+                ModelNumber = d.ModelNumber,
+                Photo = d.MainPhoto,
+                IsConnected = d.ConnectionState
+            }).ToList(),
+            Pagination = new Pagination()
             {
                 Page = devices.Page, PageSize = devices.PageSize, TotalPages = devices.TotalPages
             }
         };
-        return response;
     }
 }

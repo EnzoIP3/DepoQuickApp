@@ -90,8 +90,7 @@ public class HomeControllerTests
         // Arrange
         var request = new AddMemberRequest
         {
-            HomeId = _home.Id.ToString(),
-            HomeOwnerId = _user.Id.ToString(),
+            MemberId = _user.Id.ToString(),
             CanAddDevices = true,
             CanListDevices = false
         };
@@ -100,7 +99,7 @@ public class HomeControllerTests
         var args = new AddMemberArgs
         {
             HomeId = _home.Id.ToString(),
-            HomeOwnerId = _user.Id.ToString(),
+            MemberId = _user.Id.ToString(),
             CanAddDevices = request.CanAddDevices,
             CanListDevices = request.CanListDevices
         };

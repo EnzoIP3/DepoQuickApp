@@ -26,25 +26,18 @@ public class HomeController(IHomeOwnerService homeOwnerService) : ControllerBase
 
     [HttpPost("{homesId}/members")]
     [AuthorizationFilter(SystemPermission.AddMember)]
+    [HomeAuthorizationFilter(HomePermission.AddMember)]
     public AddMemberResponse AddMember([FromRoute] string homesId, [FromBody] AddMemberRequest request)
-    {
-        var userLoggedIn = HttpContext.Items[Item.UserLogged];
-        var addMemberArgs = ArgsFromRequest(request, homesId, (BusinessLogic.Users.Entities.User)userLoggedIn!);
-        var addedMemberId = homeOwnerService.AddMemberToHome(addMemberArgs);
-        return new AddMemberResponse { HomeId = homesId, MemberId = addedMemberId.ToString() };
-    }
-
-    private AddMemberArgs ArgsFromRequest(AddMemberRequest request, string homesId,
-        BusinessLogic.Users.Entities.User userLoggedIn)
     {
         var addMemberArgs = new AddMemberArgs
         {
             HomeId = homesId,
-            HomeOwnerId = userLoggedIn.Id.ToString(),
+            MemberId = request.MemberId ?? string.Empty,
             CanAddDevices = request.CanAddDevices,
             CanListDevices = request.CanListDevices
         };
-        return addMemberArgs;
+        var addedMemberId = homeOwnerService.AddMemberToHome(addMemberArgs);
+        return new AddMemberResponse { HomeId = homesId, MemberId = addedMemberId.ToString() };
     }
 
     private CreateHomeArgs HomeArgsFromRequest(CreateHomeRequest request, BusinessLogic.Users.Entities.User user)
@@ -102,7 +95,7 @@ public class HomeController(IHomeOwnerService homeOwnerService) : ControllerBase
 
     [HttpPost("{homesId}/devices")]
     [AuthorizationFilter(SystemPermission.AddDevice)]
-    [HomeAuthorizationFilter(HomePermission.AddDevices)]
+    [HomeAuthorizationFilter(HomePermission.AddDevice)]
     public AddDevicesResponse AddDevices([FromRoute] string homesId, [FromBody] AddDevicesRequest request)
     {
         AddDevicesArgs addDevicesArgs = FromRequestToAddDevicesArgs(homesId, request);

@@ -30,7 +30,8 @@ public class HomeRepository : IHomeRepository
 
     public Home Get(Guid homeId)
     {
-        Home? home = _context.Homes.FirstOrDefault(h => h.Id == homeId);
+        Home? home = _context.Homes.Include(h => h.Members).ThenInclude(h => h.User).Include(h => h.Owner)
+            .FirstOrDefault(h => h.Id == homeId);
         if (home == null)
         {
             throw new ArgumentException("Home does not exist");
@@ -41,14 +42,16 @@ public class HomeRepository : IHomeRepository
 
     public Member GetMemberById(Guid memberId)
     {
-        Home home = _context.Homes.Include(home => home.Members).FirstOrDefault(m => m.Members.Any(h => h.Id == memberId));
+        Home home = _context.Homes.Include(home => home.Members)
+            .FirstOrDefault(m => m.Members.Any(h => h.Id == memberId));
         Member member = home!.Members.FirstOrDefault(m => m.Id == memberId);
         return member;
     }
 
     public void UpdateMember(Member member)
     {
-        Home home = _context.Homes.Include(home => home.Members).FirstOrDefault(m => m.Members.Any(h => h.Id == member.Id));
+        Home home = _context.Homes.Include(home => home.Members)
+            .FirstOrDefault(m => m.Members.Any(h => h.Id == member.Id));
         Member memberToUpdate = home.Members.FirstOrDefault(m => m.Id == member.Id);
         memberToUpdate!.HomePermissions = member.HomePermissions;
         _context.SaveChanges();

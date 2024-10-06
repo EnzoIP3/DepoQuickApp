@@ -117,6 +117,6 @@ public class HomeAuthorizationFilterAttributeTests
         concreteResponse.Should().NotBeNull();
         concreteResponse.StatusCode.Should().Be((int)HttpStatusCode.Forbidden);
         FilterTestsUtils.GetInnerCode(concreteResponse?.Value).Should().Be("Forbidden");
-        FilterTestsUtils.GetMessage(concreteResponse?.Value).Should().Be("Missing permission: some-permission");
+        FilterTestsUtils.GetMessage(concreteResponse?.Value).Should().Be("Missing home permission: some-permission");
     }
 }

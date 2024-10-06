@@ -64,15 +64,15 @@ public class HomeOwnerService : IHomeOwnerService
         EnsureAddMemberModelIsValid(args);
         EnsureGuidIsValid(args.HomeId);
         EnsureMemberIsNotAlreadyAdded(args);
-        EnsureGuidIsValid(args.HomeOwnerId);
-        EnsureUserExists(args.HomeOwnerId);
-        var user = _userRepository.Get(Guid.Parse(args.HomeOwnerId));
+        EnsureGuidIsValid(args.MemberId);
+        EnsureUserExists(args.MemberId);
+        var user = _userRepository.Get(Guid.Parse(args.MemberId));
         var home = GetHome(Guid.Parse(args.HomeId));
         var permissions = new List<HomePermission>();
 
         if (args.CanAddDevices)
         {
-            permissions.Add(new HomePermission(HomePermission.AddDevices));
+            permissions.Add(new HomePermission(HomePermission.AddDevice));
         }
 
         if (args.CanListDevices)
@@ -88,7 +88,7 @@ public class HomeOwnerService : IHomeOwnerService
     private void EnsureMemberIsNotAlreadyAdded(AddMemberArgs args)
     {
         var home = GetHome(Guid.Parse(args.HomeId));
-        if (home.Members.Any(m => m.User.Id.ToString() == args.HomeOwnerId))
+        if (home.Members.Any(m => m.User.Id.ToString() == args.MemberId))
         {
             throw new ArgumentException("Member is already added to the home.");
         }
@@ -104,7 +104,7 @@ public class HomeOwnerService : IHomeOwnerService
 
     private static void EnsureAddMemberModelIsValid(AddMemberArgs args)
     {
-        if (string.IsNullOrWhiteSpace(args.HomeId) || string.IsNullOrWhiteSpace(args.HomeOwnerId))
+        if (string.IsNullOrWhiteSpace(args.HomeId) || string.IsNullOrWhiteSpace(args.MemberId))
         {
             throw new ArgumentException("All arguments are required.");
         }

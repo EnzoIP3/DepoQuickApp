@@ -159,12 +159,12 @@ public class HomeOwnerServiceTests
         var model = new AddMemberArgs
         {
             HomeId = home.Id.ToString(),
-            HomeOwnerId = invitedUser.Id.ToString(),
+            MemberId = invitedUser.Id.ToString(),
             CanAddDevices = true,
             CanListDevices = true
         };
-        _userRepositoryMock.Setup(x => x.Exists(Guid.Parse(model.HomeOwnerId))).Returns(true);
-        _userRepositoryMock.Setup(x => x.Get(Guid.Parse(model.HomeOwnerId))).Returns(invitedUser);
+        _userRepositoryMock.Setup(x => x.Exists(Guid.Parse(model.MemberId))).Returns(true);
+        _userRepositoryMock.Setup(x => x.Get(Guid.Parse(model.MemberId))).Returns(invitedUser);
         _homeRepositoryMock.Setup(x => x.Exists(Guid.Parse(model.HomeId))).Returns(true);
         _homeRepositoryMock.Setup(x => x.Get(Guid.Parse(model.HomeId))).Returns(home);
 
@@ -189,7 +189,7 @@ public class HomeOwnerServiceTests
         var model = new AddMemberArgs()
         {
             HomeId = homeId,
-            HomeOwnerId = homeOwnerId,
+            MemberId = homeOwnerId,
             CanAddDevices = true,
             CanListDevices = true
         };
@@ -208,7 +208,7 @@ public class HomeOwnerServiceTests
         var model = new AddMemberArgs()
         {
             HomeId = "invalid-guid",
-            HomeOwnerId = "a99feb27-7dac-41ec-8fd2-942533868689",
+            MemberId = "a99feb27-7dac-41ec-8fd2-942533868689",
             CanAddDevices = true,
             CanListDevices = true
         };
@@ -227,7 +227,7 @@ public class HomeOwnerServiceTests
         var model = new AddMemberArgs()
         {
             HomeId = "a99feb27-7dac-41ec-8fd2-942533868689",
-            HomeOwnerId = "invalid-guid",
+            MemberId = "invalid-guid",
             CanAddDevices = true,
             CanListDevices = true
         };
@@ -249,14 +249,14 @@ public class HomeOwnerServiceTests
         var model = new AddMemberArgs()
         {
             HomeId = "a99feb27-7dac-41ec-8fd2-942533868689",
-            HomeOwnerId = "a99feb27-7dac-41ec-8fd2-942533868689",
+            MemberId = "a99feb27-7dac-41ec-8fd2-942533868689",
             CanAddDevices = true,
             CanListDevices = true
         };
         _homeRepositoryMock.Setup(x => x.Exists(Guid.Parse(model.HomeId))).Returns(true);
         _homeRepositoryMock.Setup(x => x.Get(Guid.Parse(model.HomeId)))
             .Returns(new Home());
-        _userRepositoryMock.Setup(x => x.Exists(Guid.Parse(model.HomeOwnerId)))
+        _userRepositoryMock.Setup(x => x.Exists(Guid.Parse(model.MemberId)))
             .Returns(false);
 
         // Act
@@ -278,7 +278,7 @@ public class HomeOwnerServiceTests
         var args = new AddMemberArgs
         {
             HomeId = home.Id.ToString(),
-            HomeOwnerId = invitedUser.Id.ToString(),
+            MemberId = invitedUser.Id.ToString(),
             CanAddDevices = true,
             CanListDevices = true
         };

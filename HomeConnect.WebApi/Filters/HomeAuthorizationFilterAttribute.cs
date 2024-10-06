@@ -41,19 +41,24 @@ public class HomeAuthorizationFilterAttribute(string permission) : Attribute, IA
 
         var homeOwnerService = GetHomeOwnerService(context);
         var home = homeOwnerService.GetHome(homeIdParsed);
-        var userLoggedMap = (User)userLoggedIn;
+        var userLoggedMap = (User)userLoggedIn!;
         var homePermission = new HomePermission(permission);
-        var member = home.Members.First(m => m.User.Id == userLoggedMap.Id);
-        var hasNotPermission = !member.HasPermission(homePermission);
+        var hasPermission = home.Owner.Id == userLoggedMap.Id;
+        Console.WriteLine(home.Owner.Id);
+        Console.WriteLine(userLoggedMap.Id);
 
-        if (hasNotPermission)
+        if (!hasPermission)
+        {
+            var member = home.Members.FirstOrDefault(m => m.User.Id == userLoggedMap.Id);
+            hasPermission = member != null && member.HasPermission(homePermission);
+        }
+
+        if (!hasPermission)
         {
             context.Result = new ObjectResult(new
             {
-                InnerCode = "Forbidden",
-                Message = $"Missing permission: {permission}"
-            })
-            { StatusCode = (int)HttpStatusCode.Forbidden };
+                InnerCode = "Forbidden", Message = $"Missing home permission: {permission}"
+            }) { StatusCode = (int)HttpStatusCode.Forbidden };
         }
     }
 

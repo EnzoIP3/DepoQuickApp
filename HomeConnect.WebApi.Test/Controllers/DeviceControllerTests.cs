@@ -56,6 +56,7 @@ public class DeviceControllerTests
         {
             Devices = _expectedDevices.Select(d => new ListDeviceInfo
             {
+                Id = d.Id.ToString(),
                 Name = d.Name,
                 BusinessName = d.Business.Name,
                 Type = d.Type.ToString(),

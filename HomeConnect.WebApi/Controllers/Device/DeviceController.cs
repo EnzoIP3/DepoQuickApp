@@ -26,12 +26,12 @@ public class DeviceController : ControllerBase
     {
         var args = new GetDevicesArgs()
         {
-            BusinessNameFilter = parameters.BusinessNameFilter,
-            DeviceTypeFilter = parameters.DeviceTypeFilter,
+            BusinessNameFilter = parameters.BusinessName,
+            DeviceTypeFilter = parameters.Type,
             Page = parameters.Page,
             PageSize = parameters.PageSize,
-            DeviceNameFilter = parameters.DeviceNameFilter,
-            ModelNumberFilter = parameters.ModelNumberFilter
+            DeviceNameFilter = parameters.Name,
+            ModelNumberFilter = parameters.Model
         };
         var devices = _deviceService.GetDevices(args);
         var response = ResponseFromDevices(devices);
@@ -44,6 +44,7 @@ public class DeviceController : ControllerBase
         {
             Devices = devices.Data.Select(d => new ListDeviceInfo()
             {
+                Id = d.Id.ToString(),
                 Name = d.Name,
                 BusinessName = d.Business.Name,
                 Type = d.Type.ToString(),

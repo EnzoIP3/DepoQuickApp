@@ -14,23 +14,29 @@ public class UserController(IAdminService adminService) : ControllerBase
 {
     [HttpGet]
     [AuthorizationFilter(SystemPermission.GetAllUsers)]
-    public IActionResult GetUsers([FromQuery] UserQueryParameters parameters)
+    public GetUsersResponse GetUsers([FromQuery] GetUsersRequest request)
     {
-        var users = adminService.GetUsers(parameters.CurrentPage, parameters.PageSize, parameters.FullNameFilter, parameters.RoleFilter);
+        var users = adminService.GetUsers(request.CurrentPage, request.PageSize, request.FullNameFilter,
+            request.RoleFilter);
         var response = ResponseFromUsers(users);
-        return Ok(response);
+        return response;
     }
 
-    private static object ResponseFromUsers(PagedData<BusinessLogic.Users.Entities.User> users)
+    private static GetUsersResponse ResponseFromUsers(PagedData<BusinessLogic.Users.Entities.User> users)
     {
-        var response = new
+        var response = new GetUsersResponse
         {
-            users.Data,
+            Users = users.Data.Select(user => new ListUserInfo
+            {
+                Id = user.Id.ToString(),
+                Name = user.Name,
+                Surname = user.Surname,
+                Role = user.RoleName,
+                CreatedAt = user.CreatedAt.ToString()
+            }).ToList(),
             Pagination = new Pagination
             {
-                Page = users.Page,
-                PageSize = users.PageSize,
-                TotalPages = users.TotalPages
+                Page = users.Page, PageSize = users.PageSize, TotalPages = users.TotalPages,
             }
         };
         return response;

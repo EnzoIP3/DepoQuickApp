@@ -36,7 +36,7 @@ public class DeviceRepository : PaginatedRepositoryBase<Device>, IDeviceReposito
     {
         if (_context.Devices.Any(d => d.ModelNumber == device.ModelNumber))
         {
-            throw new ArgumentException("Device already exists.");
+            throw new InvalidOperationException("Device already exists.");
         }
     }
 

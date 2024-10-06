@@ -75,7 +75,7 @@ public class DeviceRepositoryTests
         Action act = () => _deviceRepository.Add(device);
 
         // Assert
-        act.Should().Throw<ArgumentException>();
+        act.Should().Throw<InvalidOperationException>();
     }
 
     #endregion

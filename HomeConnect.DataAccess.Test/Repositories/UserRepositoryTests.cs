@@ -24,6 +24,7 @@ public class UserRepositoryTest
         _validUser = new User("John", "Doe", "john.doe@example.com", "Password#100", role);
         _otherUser = new User("Jane", "Doe", "jane.doe@example.com", "Password#200", otherRole);
         _context.Users.Add(_validUser);
+        _context.SaveChanges();
         _context.Users.Add(_otherUser);
         _context.SaveChanges();
     }

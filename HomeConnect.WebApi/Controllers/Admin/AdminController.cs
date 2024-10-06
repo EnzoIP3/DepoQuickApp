@@ -36,9 +36,9 @@ public class AdminController(IAdminService adminService) : ControllerBase
 
     [HttpDelete("{adminId}")]
     [AuthorizationFilter(SystemPermission.DeleteAdministrator)]
-    public IActionResult DeleteAdmin([FromRoute] string adminId)
+    public DeleteAdminResponse DeleteAdmin([FromRoute] string adminId)
     {
         adminService.Delete(adminId);
-        return NoContent();
+        return new DeleteAdminResponse() { Id = adminId };
     }
 }

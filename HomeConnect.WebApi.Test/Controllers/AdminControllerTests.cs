@@ -69,8 +69,7 @@ public class AdminControllerTests
 
         // Assert
         _adminService.VerifyAll();
-        response.Should().NotBeNull();
-        response.Should().BeOfType<NoContentResult>();
+        response.Id.Should().Be(guid);
     }
     #endregion
 }

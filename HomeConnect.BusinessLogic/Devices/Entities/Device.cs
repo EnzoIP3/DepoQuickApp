@@ -75,14 +75,14 @@ public class Device
         }
     }
 
-    public Device(string name, int modelNumber, string description, string mainPhoto, List<string> secondaryPhotos,
+    public Device(string name, int? modelNumber, string description, string mainPhoto, List<string>? secondaryPhotos,
         string type, Business business)
     {
         Name = name;
-        ModelNumber = modelNumber;
+        ModelNumber = modelNumber ?? 0;
         Description = description;
         MainPhoto = mainPhoto;
-        SecondaryPhotos = secondaryPhotos;
+        SecondaryPhotos = secondaryPhotos ?? [];
 
         if (Enum.TryParse(type, true, out DeviceType parsedType))
         {

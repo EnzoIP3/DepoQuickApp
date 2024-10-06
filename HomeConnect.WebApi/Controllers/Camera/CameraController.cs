@@ -50,9 +50,18 @@ public class CameraController(
     [HttpPost("{hardwareId}/movement-detected")]
     public NotifyResponse MovementDetected([FromRoute] string hardwareId)
     {
+        EnsureDeviceIsConnected(hardwareId);
         NotificationArgs args = CreateMovementDetectedNotificationArgs(hardwareId);
         notificationService.Notify(args);
         return new NotifyResponse { HardwareId = hardwareId };
+    }
+
+    private void EnsureDeviceIsConnected(string hardwareId)
+    {
+        if (!deviceService.IsConnected(hardwareId))
+        {
+            throw new ArgumentException("Device is not connected");
+        }
     }
 
     private static NotificationArgs CreateMovementDetectedNotificationArgs(string hardwareId)

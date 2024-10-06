@@ -13,14 +13,14 @@ public class Camera : Device
     {
     }
 
-    public Camera(string name, int modelNumber, string description, string mainPhoto, List<string> secondaryPhotos, Business business,
-        bool motionDetection, bool personDetection, bool isExterior, bool isInterior)
+    public Camera(string name, int? modelNumber, string description, string mainPhoto, List<string>? secondaryPhotos, Business business,
+        bool? motionDetection, bool? personDetection, bool? isExterior, bool? isInterior)
         : base(name, modelNumber, description, mainPhoto, secondaryPhotos, CameraType, business)
     {
-        MotionDetection = motionDetection;
-        PersonDetection = personDetection;
-        IsExterior = isExterior;
-        IsInterior = isInterior;
+        MotionDetection = motionDetection ?? throw new ArgumentException("Motion detection must be provided");
+        PersonDetection = personDetection ?? false;
+        IsExterior = isExterior ?? false;
+        IsInterior = isInterior ?? false;
         EnsureExteriorOrInterior();
     }
 

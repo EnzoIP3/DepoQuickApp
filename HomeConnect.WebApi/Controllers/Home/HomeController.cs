@@ -52,7 +52,7 @@ public class HomeController(IHomeOwnerService homeOwnerService) : ControllerBase
         var homeArgs = new CreateHomeArgs
         {
             HomeOwnerId = user.Id.ToString(),
-            Address = request.Address,
+            Address = request.Address ?? string.Empty,
             Latitude = request.Latitude,
             Longitude = request.Longitude,
             MaxMembers = request.MaxMembers

@@ -85,6 +85,23 @@ public class HomeTest
         // Assert
         act.Should().Throw<ArgumentException>();
     }
+
+    [TestMethod]
+    public void Constructor_WhenLatitudeIsNull_ThrowsArgumentException()
+    {
+        // Arrange
+        var owner = new global::BusinessLogic.Users.Entities.User();
+        const string address = "Main St 123";
+        const double longitude = 100.789;
+        const int maxMembers = 5;
+
+        // Act
+        var act = () => new Home(owner, address, null, longitude, maxMembers);
+
+        // Assert
+        act.Should().Throw<ArgumentException>();
+    }
+
     #endregion
 
     #endregion

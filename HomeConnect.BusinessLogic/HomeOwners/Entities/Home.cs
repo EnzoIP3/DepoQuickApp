@@ -12,13 +12,13 @@ public class Home
     {
     }
 
-    public Home(User owner, string address, double latitude, double longitude, int maxMembers)
+    public Home(User owner, string address, double? latitude, double? longitude, int? maxMembers)
     {
         Owner = owner;
         Address = address;
-        Latitude = latitude;
-        Longitude = longitude;
-        MaxMembers = maxMembers;
+        Latitude = latitude ?? 0;
+        Longitude = longitude ?? 0;
+        MaxMembers = maxMembers ?? 0;
     }
 
     public Guid Id { get; set; } = Guid.NewGuid();

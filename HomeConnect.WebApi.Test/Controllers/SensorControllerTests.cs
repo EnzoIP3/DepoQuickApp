@@ -70,14 +70,17 @@ public class SensorControllerTests
     {
         // Arrange
         var hardwareId = "hardwareId";
-        _notificationServiceMock.Setup(x => x.Notify(It.IsAny<NotificationArgs>())).Throws(new Exception());
+
+        _deviceServiceMock.Setup(x => x.IsConnected(hardwareId)).Returns(false);
 
         // Act
         var act = () => _sensorController.NotifyOpen(hardwareId);
 
         // Assert
-        act.Should().Throw<Exception>();
+        act.Should().Throw<ArgumentException>().WithMessage("Device is not connected");
+        _deviceServiceMock.VerifyAll();
     }
+
     #endregion
 
     #region CreateDevices

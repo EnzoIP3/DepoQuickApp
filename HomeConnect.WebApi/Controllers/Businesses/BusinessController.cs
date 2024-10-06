@@ -18,7 +18,7 @@ public class BusinessController(IAdminService adminService, IBusinessOwnerServic
     [AuthorizationFilter(SystemPermission.GetAllBusinesses)]
     public GetBusinessesResponse GetBusinesses([FromQuery] GetBusinessesRequest request)
     {
-        var businesses = adminService.GetBusinesses(request.CurrentPage, request.PageSize, request.Name, request.Owner);
+        var businesses = adminService.GetBusinesses(request.CurrentPage, request.PageSize, request.Name, request.OwnerName);
         var response = ResponseFromBusinesses(businesses);
         return response;
     }

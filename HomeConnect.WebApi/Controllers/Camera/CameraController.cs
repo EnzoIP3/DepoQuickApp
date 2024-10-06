@@ -16,6 +16,7 @@ namespace HomeConnect.WebApi.Controllers.Camera;
 
 [ApiController]
 [Route("cameras")]
+[AuthenticationFilter]
 public class CameraController(
     INotificationService notificationService,
     IDeviceService deviceService,
@@ -81,9 +82,7 @@ public class CameraController(
     {
         var args = new NotificationArgs
         {
-            HardwareId = hardwareId,
-            Date = DateTime.Now,
-            Event = $"person detected with id: {userId}",
+            HardwareId = hardwareId, Date = DateTime.Now, Event = $"person detected with id: {userId}",
         };
         return args;
     }

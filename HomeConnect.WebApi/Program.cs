@@ -8,6 +8,8 @@ using BusinessLogic.Devices.Repositories;
 using BusinessLogic.Devices.Services;
 using BusinessLogic.HomeOwners.Repositories;
 using BusinessLogic.HomeOwners.Services;
+using BusinessLogic.Notifications.Repositories;
+using BusinessLogic.Notifications.Services;
 using BusinessLogic.Roles.Repositories;
 using BusinessLogic.Users.Repositories;
 using BusinessLogic.Users.Services;
@@ -49,12 +51,14 @@ services.AddScoped<IHomeRepository, HomeRepository>();
 services.AddScoped<IDeviceRepository, DeviceRepository>();
 services.AddScoped<IBusinessRepository, BusinessRepository>();
 services.AddScoped<IOwnedDeviceRepository, OwnedDeviceRepository>();
+services.AddScoped<INotificationRepository, NotificationRepository>();
 services.AddScoped<IAuthService, AuthService>();
 services.AddScoped<IUserService, UserService>();
 services.AddScoped<IHomeOwnerService, HomeOwnerService>();
 services.AddScoped<IDeviceService, DeviceService>();
 services.AddScoped<IAdminService, AdminService>();
 services.AddScoped<IBusinessOwnerService, BusinessOwnerService>();
+services.AddScoped<INotificationService, NotificationService>();
 
 var app = builder.Build();
 

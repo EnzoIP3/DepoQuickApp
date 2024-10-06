@@ -95,8 +95,8 @@ public class AdminService : IAdminService
         };
     }
 
-    public PagedData<Business> GetBusinesses(int? currentPage = null, int? pageSize = null,
-        string? fullNameFilter = null, string? nameFilter = null)
+    public PagedData<Business> GetBusinesses(int? currentPage = null, int? pageSize = null, string? nameFilter = null,
+        string? fullNameFilter = null)
     {
         currentPage ??= 1;
         pageSize ??= 10;

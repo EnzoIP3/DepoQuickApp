@@ -18,7 +18,7 @@ public class Camera : Device
         : base(name, modelNumber, description, mainPhoto, secondaryPhotos, CameraType, business)
     {
         MotionDetection = motionDetection ?? throw new ArgumentException("Motion detection must be provided");
-        PersonDetection = personDetection ?? false;
+        PersonDetection = personDetection ?? throw new ArgumentException("Person detection must be provided");
         IsExterior = isExterior ?? false;
         IsInterior = isInterior ?? false;
         EnsureExteriorOrInterior();

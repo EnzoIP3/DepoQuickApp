@@ -40,7 +40,9 @@ public class DeviceService : IDeviceService
 
     public bool IsConnected(string hardwareId)
     {
-        throw new NotImplementedException();
+        EnsureHardwareIdIsValid(hardwareId);
+        EnsureOwnedDeviceExists(hardwareId);
+        return true;
     }
 
     private void EnsureOwnedDeviceExists(string hardwareId)

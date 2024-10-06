@@ -130,4 +130,35 @@ public class DeviceServiceTests
         // Assert
         result.Should().BeEquivalentTo(expectedDeviceTypes);
     }
+
+    #region IsConnected
+    #region Error
+    [TestMethod]
+    public void IsConnected_WhenHardwareIdIsInvalid_ShouldThrowArgumentException()
+    {
+        // Arrange
+        var hardwareId = "hardwareId";
+
+        // Act
+        var act = () => _deviceService.IsConnected(hardwareId);
+
+        // Assert
+        act.Should().Throw<ArgumentException>().WithMessage("Hardware ID is invalid.");
+    }
+
+    [TestMethod]
+    public void IsConnected_WhenOwnedDeviceDoesNotExist_ShouldThrowArgumentException()
+    {
+        // Arrange
+        var hardwareId = Guid.NewGuid().ToString();
+        _ownedDeviceRepository.Setup(x => x.Exists(hardwareId)).Returns(false);
+
+        // Act
+        var act = () => _deviceService.IsConnected(hardwareId);
+
+        // Assert
+        act.Should().Throw<ArgumentException>().WithMessage("Owned device does not exist.");
+    }
+    #endregion
+    #endregion
 }

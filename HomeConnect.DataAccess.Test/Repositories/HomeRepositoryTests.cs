@@ -43,6 +43,7 @@ public class HomeRepositoryTests
     #region Add
 
     #region Success
+
     [TestMethod]
     public void Add_WhenHomeDoesNotExist_AddsHome()
     {
@@ -55,9 +56,11 @@ public class HomeRepositoryTests
         // Assert
         _context.Homes.Should().Contain(home);
     }
+
     #endregion
 
     #region Error
+
     [TestMethod]
     public void Add_WhenHomeExists_ThrowsException()
     {
@@ -70,11 +73,15 @@ public class HomeRepositoryTests
         // Assert
         action.Should().Throw<ArgumentException>().WithMessage("Home already exists");
     }
+
     #endregion
+
     #endregion
 
     #region Get
+
     #region Success
+
     [TestMethod]
     public void Get_WhenHomeExists_ReturnsHome()
     {
@@ -84,8 +91,11 @@ public class HomeRepositoryTests
         // Assert
         result.Should().BeEquivalentTo(_home);
     }
+
     #endregion
+
     #region Error
+
     [TestMethod]
     public void Get_WhenHomeDoesNotExist_ShouldThrowException()
     {
@@ -95,11 +105,15 @@ public class HomeRepositoryTests
         // Assert
         action.Should().Throw<ArgumentException>().WithMessage("Home does not exist");
     }
+
     #endregion
+
     #endregion
 
     #region GetMemberById
+
     #region Success
+
     [TestMethod]
     public void GetMemberById_WhenMemberExists_ReturnsMember()
     {
@@ -109,11 +123,36 @@ public class HomeRepositoryTests
         // Assert
         result.Should().BeEquivalentTo(_member);
     }
+
     #endregion
+
+    #endregion
+
+    #region Update
+
+    #region Success
+
+    [TestMethod]
+    public void Update_WhenHomeExists_UpdatesHome()
+    {
+        // Arrange
+        _home.Address = "Main St 456";
+
+        // Act
+        _homeRepository.Update(_home);
+
+        // Assert
+        _context.Homes.Should().Contain(h => h.Address == "Main St 456");
+    }
+
+    #endregion
+
     #endregion
 
     #region UpdateMember
+
     #region Success
+
     [TestMethod]
     public void UpdateMember_WhenMemberExists_UpdatesMember()
     {
@@ -126,14 +165,17 @@ public class HomeRepositoryTests
 
         // Assert
         _context.Homes.Should().Contain(h =>
-            h.Members.Any(m => m.Id == member.Id && m.HomePermissions.
-                Any(hp => hp.Value == "ExamplePermission")));
+            h.Members.Any(m => m.Id == member.Id && m.HomePermissions.Any(hp => hp.Value == "ExamplePermission")));
     }
+
     #endregion
+
     #endregion
 
     #region GetByAddress
+
     #region Success
+
     [TestMethod]
     public void GetByAddress_WhenHomeDoesNotExist_ReturnsNull()
     {
@@ -153,10 +195,13 @@ public class HomeRepositoryTests
         // Assert
         result.Should().BeEquivalentTo(_home);
     }
+
     #endregion
+
     #endregion
 
     #region Exists
+
     [TestMethod]
     public void Exists_WhenHomeExists_ReturnsTrue()
     {
@@ -166,9 +211,11 @@ public class HomeRepositoryTests
         // Assert
         result.Should().BeTrue();
     }
+
     #endregion
 
     #region ExistsMember
+
     [TestMethod]
     public void ExistsMember_WhenMemberExists_ReturnsTrue()
     {
@@ -178,5 +225,6 @@ public class HomeRepositoryTests
         // Assert
         result.Should().BeTrue();
     }
+
     #endregion
 }

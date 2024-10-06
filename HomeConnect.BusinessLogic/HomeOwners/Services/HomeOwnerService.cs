@@ -82,6 +82,7 @@ public class HomeOwnerService : IHomeOwnerService
 
         var member = new Member(user, permissions);
         home.AddMember(member);
+        _homeRepository.Update(home);
         return user.Id;
     }
 

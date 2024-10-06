@@ -18,7 +18,7 @@ public class Home
         Address = address;
         Latitude = latitude ?? throw new ArgumentException("Latitude is required.");
         Longitude = longitude ?? throw new ArgumentException("Longitude is required.");
-        MaxMembers = maxMembers ?? 0;
+        MaxMembers = maxMembers ?? throw new ArgumentException("Max members is required.");
     }
 
     public Guid Id { get; set; } = Guid.NewGuid();

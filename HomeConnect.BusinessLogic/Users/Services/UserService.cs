@@ -30,7 +30,12 @@ public class UserService : IUserService
 
     public bool Exists(string requestUserId)
     {
-        throw new NotImplementedException();
+        return UserIdIsValid(requestUserId);
+    }
+
+    private bool UserIdIsValid(string requestUserId)
+    {
+        return Guid.TryParse(requestUserId, out _);
     }
 
     private static void ValidateHomeOwner(CreateUserArgs args, Role role)

@@ -92,4 +92,17 @@ public class UserServiceTest
         // Assert
         act.Should().Throw<ArgumentException>();
     }
+
+    [TestMethod]
+    public void Exists_WhenUserIsNotAValidGuid_ReturnsFalse()
+    {
+        // Arrange
+        var requestUserId = "invalidGuid";
+
+        // Act
+        var result = _userService.Exists(requestUserId);
+
+        // Assert
+        result.Should().BeFalse();
+    }
 }

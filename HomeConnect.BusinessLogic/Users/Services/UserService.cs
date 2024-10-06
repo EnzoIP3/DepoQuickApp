@@ -30,7 +30,7 @@ public class UserService : IUserService
 
     public bool Exists(string requestUserId)
     {
-        return UserIdIsValid(requestUserId);
+        return UserIdIsValid(requestUserId) && _userRepository.Exists(Guid.Parse(requestUserId));
     }
 
     private bool UserIdIsValid(string requestUserId)

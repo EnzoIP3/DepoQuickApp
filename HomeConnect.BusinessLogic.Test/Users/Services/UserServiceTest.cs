@@ -105,4 +105,18 @@ public class UserServiceTest
         // Assert
         result.Should().BeFalse();
     }
+
+    [TestMethod]
+    public void Exists_WhenUserIdCorrespondsToARegisteredUser_ReturnsTrue()
+    {
+        // Arrange
+        var requestUserId = Guid.NewGuid().ToString();
+        _userRepository.Setup(x => x.Exists(Guid.Parse(requestUserId))).Returns(true);
+
+        // Act
+        var result = _userService.Exists(requestUserId);
+
+        // Assert
+        result.Should().BeTrue();
+    }
 }

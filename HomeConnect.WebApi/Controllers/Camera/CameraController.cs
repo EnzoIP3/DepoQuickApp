@@ -73,6 +73,7 @@ public class CameraController(
     [HttpPost("{hardwareId}/person-detected")]
     public NotifyResponse PersonDetected([FromRoute] string hardwareId, PersonDetectedRequest request)
     {
+        EnsureDeviceIsConnected(hardwareId);
         NotificationArgs args = CreatePersonDetectedNotificationArgs(hardwareId, request.UserId);
         EnsureDetectedUserIsRegistered(request.UserId);
         notificationService.Notify(args);

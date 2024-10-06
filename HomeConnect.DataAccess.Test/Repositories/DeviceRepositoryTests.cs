@@ -1,5 +1,6 @@
 using BusinessLogic.BusinessOwners.Entities;
 using BusinessLogic.Devices.Entities;
+using BusinessLogic.Devices.Models;
 using BusinessLogic.Roles.Entities;
 using BusinessLogic.Users.Entities;
 using FluentAssertions;
@@ -130,8 +131,15 @@ public class DeviceRepositoryTests
     [TestMethod]
     public void GetDevices_WhenCalled_ReturnsPaginatedDevices()
     {
+        // Arrange
+        var args = new GetDeviceArgs
+        {
+            Page = 1,
+            PageSize = 2
+        };
+
         // Act
-        var result = _deviceRepository.GetDevices(1, 2, null, null, null, null);
+        var result = _deviceRepository.GetDevices(args);
 
         // Assert
         result.Data.Should().HaveCount(2);
@@ -142,23 +150,41 @@ public class DeviceRepositoryTests
     [TestMethod]
     public void GetDevices_WhenFilteredByDeviceName_ReturnsFilteredDevices()
     {
+        // Arrange
+        var deviceNameFilter = "DeviceValid";
+        var args = new GetDeviceArgs
+        {
+            Page = 1,
+            PageSize = 10,
+            DeviceNameFilter = deviceNameFilter
+        };
+
         // Act
-        var result = _deviceRepository.GetDevices(1, 10, "DeviceValid");
+        var result = _deviceRepository.GetDevices(args);
 
         // Assert
         result.Data.Should().HaveCount(1);
-        result.Data.First().Name.Should().Be("DeviceValid");
+        result.Data.First().Name.Should().Be(deviceNameFilter);
     }
 
     [TestMethod]
     public void GetDevices_WhenFilteredByModelNumber_ReturnsFilteredDevices()
     {
+        // Arrange
+        var modelNumberFilter = 1234567;
+        var args = new GetDeviceArgs
+        {
+            Page = 1,
+            PageSize = 10,
+            ModelNumberFilter = modelNumberFilter
+        };
+
         // Act
-        var result = _deviceRepository.GetDevices(1, 10, null, 1234567);
+        var result = _deviceRepository.GetDevices(args);
 
         // Assert
         result.Data.Should().HaveCount(1);
-        result.Data.First().ModelNumber.Should().Be(1234567);
+        result.Data.First().ModelNumber.Should().Be(modelNumberFilter);
     }
 
     [TestMethod]
@@ -168,9 +194,15 @@ public class DeviceRepositoryTests
     {
         // Arrange
         DeviceType deviceType = Enum.Parse<DeviceType>(deviceTypeFilter);
+        var args = new GetDeviceArgs
+        {
+            Page = 1,
+            PageSize = 2,
+            DeviceTypeFilter = deviceType.ToString()
+        };
 
         // Act
-        var result = _deviceRepository.GetDevices(1, 2, null, null, null, deviceType.ToString());
+        var result = _deviceRepository.GetDevices(args);
 
         // Assert
         result.Data.Should().HaveCount(1);
@@ -182,9 +214,15 @@ public class DeviceRepositoryTests
     {
         // Arrange
         var deviceTypeFilter = "Sensor";
+        var args = new GetDeviceArgs
+        {
+            Page = 1,
+            PageSize = 2,
+            DeviceTypeFilter = deviceTypeFilter
+        };
 
         // Act
-        var result = _deviceRepository.GetDevices(1, 2, null, null, null, deviceTypeFilter);
+        var result = _deviceRepository.GetDevices(args);
 
         // Assert
         result.Data.Should().HaveCount(1);

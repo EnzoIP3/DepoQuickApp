@@ -58,7 +58,7 @@ public class HomeTest
         // Arrange
         var owner = new global::BusinessLogic.Users.Entities.User();
         const string address = "Main St 123";
-        const double longitude = 456.789;
+        const double longitude = 100.789;
         const int maxMembers = 5;
 
         // Act
@@ -68,6 +68,23 @@ public class HomeTest
         act.Should().Throw<ArgumentException>();
     }
 
+    [TestMethod]
+    [DataRow(-181)]
+    [DataRow(181)]
+    public void Constructor_WhenLongitudeIsInvalid_ThrowsArgumentException(double longitude)
+    {
+        // Arrange
+        var owner = new global::BusinessLogic.Users.Entities.User();
+        const string address = "Main St 123";
+        const double latitude = 50;
+        const int maxMembers = 5;
+
+        // Act
+        var act = () => new Home(owner, address, latitude, longitude, maxMembers);
+
+        // Assert
+        act.Should().Throw<ArgumentException>();
+    }
     #endregion
 
     #endregion
@@ -81,7 +98,7 @@ public class HomeTest
     {
         // Arrange
         var owner = new global::BusinessLogic.Users.Entities.User();
-        var home = new Home(owner, "Main St 123", 85.2, 456.789, 5);
+        var home = new Home(owner, "Main St 123", 85.2, 100.789, 5);
         var member = new Member(new global::BusinessLogic.Users.Entities.User());
 
         // Act

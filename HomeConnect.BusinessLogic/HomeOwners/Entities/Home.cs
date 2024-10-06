@@ -5,7 +5,8 @@ namespace BusinessLogic.HomeOwners.Entities;
 public class Home
 {
     private string _address = string.Empty;
-    private double _latitude;
+    private readonly double _latitude;
+    private readonly double _longitude;
 
     public Home()
     {
@@ -51,7 +52,20 @@ public class Home
         }
     }
 
-    public double Longitude { get; set; }
+    public double Longitude
+    {
+        get => _longitude;
+        init
+        {
+            if (value < -180 || value > 180)
+            {
+                throw new ArgumentException("Longitude must be between -180 and 180.");
+            }
+
+            _longitude = value;
+        }
+    }
+
     public int MaxMembers { get; set; }
 
     private static void EnsureAddressHasAtLeastOneSpace(string address)

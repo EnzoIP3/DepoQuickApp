@@ -33,6 +33,11 @@ public class AdminService : IAdminService
 
     public void Delete(string id)
     {
+        if (Guid.TryParse(id, out _) == false)
+        {
+            throw new ArgumentException("The id is not a valid GUID.");
+        }
+
         EnsureAdminExists(Guid.Parse(id));
         UserRepository.Delete(Guid.Parse(id));
     }
@@ -82,14 +87,12 @@ public class AdminService : IAdminService
         var users = UserRepository.GetAllPaged((int)currentPage, (int)pageSize, fullNameFilter, roleFilter);
         return new PagedData<User>
         {
-            Data = users.Data,
-            Page = users.Page,
-            PageSize = users.PageSize,
-            TotalPages = users.TotalPages
+            Data = users.Data, Page = users.Page, PageSize = users.PageSize, TotalPages = users.TotalPages
         };
     }
 
-    public PagedData<Business> GetBusinesses(int? currentPage = null, int? pageSize = null, string? fullNameFilter = null, string? nameFilter = null)
+    public PagedData<Business> GetBusinesses(int? currentPage = null, int? pageSize = null,
+        string? fullNameFilter = null, string? nameFilter = null)
     {
         currentPage ??= 1;
         pageSize ??= 10;

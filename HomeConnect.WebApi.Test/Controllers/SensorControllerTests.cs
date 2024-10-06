@@ -81,6 +81,21 @@ public class SensorControllerTests
         _deviceServiceMock.VerifyAll();
     }
 
+    [TestMethod]
+    public void NotifyClose_WhenDeviceIsDisconnected_ThrowsException()
+    {
+        // Arrange
+        var hardwareId = "hardwareId";
+        _deviceServiceMock.Setup(x => x.IsConnected(hardwareId)).Returns(false);
+
+        // Act
+        var act = () => _sensorController.NotifyClose(hardwareId);
+
+        // Assert
+        act.Should().Throw<ArgumentException>().WithMessage("Device is not connected");
+        _deviceServiceMock.VerifyAll();
+    }
+
     #endregion
 
     #region CreateDevices

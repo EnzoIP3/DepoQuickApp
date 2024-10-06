@@ -67,6 +67,7 @@ public class SensorController(
     [HttpPost("{hardwareId}/close")]
     public NotifyResponse NotifyClose([FromRoute] string hardwareId)
     {
+        EnsureDeviceIsConnected(hardwareId);
         NotificationArgs notificationArgs = CreateCloseNotificationArgs(hardwareId);
         notificationService.Notify(notificationArgs);
         return new NotifyResponse { HardwareId = hardwareId };

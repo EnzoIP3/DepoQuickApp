@@ -29,10 +29,10 @@ public class SensorController(
         var args = new CreateDeviceArgs()
         {
             Owner = userLoggedIn!,
-            Description = request.Description,
-            MainPhoto = request.MainPhoto,
+            Description = request.Description ?? string.Empty,
+            MainPhoto = request.MainPhoto ?? string.Empty,
             ModelNumber = request.ModelNumber,
-            Name = request.Name,
+            Name = request.Name ?? string.Empty,
             SecondaryPhotos = request.SecondaryPhotos,
             Type = "Sensor"
         };

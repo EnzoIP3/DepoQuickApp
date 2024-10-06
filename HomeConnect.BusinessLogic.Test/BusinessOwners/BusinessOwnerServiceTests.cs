@@ -22,6 +22,7 @@ public class BusinessOwnerServiceTests
     private string _ownerEmail = null!;
     private string _businessRut = null!;
     private string _businessName = null!;
+    private string _businessLogo = null!;
     private User _owner = null!;
     private Business _existingBusiness = null!;
 
@@ -47,6 +48,7 @@ public class BusinessOwnerServiceTests
         _ownerEmail = "owner@example.com";
         _businessRut = "123456789";
         _businessName = "Test Business";
+        _businessLogo = "https://example.com/image.png";
         _owner = new User("John", "Doe", _ownerEmail, "Password123!", new Role());
         _existingBusiness = new Business(_businessRut, "Existing Business", "https://example.com/image.png", _owner);
     }
@@ -59,7 +61,10 @@ public class BusinessOwnerServiceTests
     public void CreateBusiness_WhenOwnerExists_CreatesBusiness()
     {
         // Arrange
-        var args = new CreateBusinessArgs { OwnerId = _owner.Id.ToString(), Rut = _businessRut, Name = _businessName };
+        var args = new CreateBusinessArgs
+        {
+            OwnerId = _owner.Id.ToString(), Rut = _businessRut, Name = _businessName, Logo = _businessLogo
+        };
         _userRepository.Setup(x => x.Exists(_owner.Id)).Returns(true);
         _userRepository.Setup(x => x.Get(_owner.Id)).Returns(_owner);
         _userRepository.Setup(x => x.Exists(_owner.Id)).Returns(true);
@@ -82,7 +87,10 @@ public class BusinessOwnerServiceTests
     public void CreateBusiness_WhenCalledWithValidRequest_ReturnsCorrectRut()
     {
         // Arrange
-        var args = new CreateBusinessArgs { OwnerId = _owner.Id.ToString(), Rut = _businessRut, Name = _businessName };
+        var args = new CreateBusinessArgs
+        {
+            OwnerId = _owner.Id.ToString(), Rut = _businessRut, Name = _businessName, Logo = _businessLogo
+        };
         _userRepository.Setup(x => x.Get(_owner.Id)).Returns(_owner);
         _userRepository.Setup(x => x.Exists(_owner.Id)).Returns(true);
         _businessRepository.Setup(x => x.Add(It.IsAny<Business>()));

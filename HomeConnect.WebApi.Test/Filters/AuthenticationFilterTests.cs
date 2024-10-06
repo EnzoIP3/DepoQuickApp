@@ -54,7 +54,7 @@ public class AuthenticationFilterTests
         var concreteResponse = response as ObjectResult;
         concreteResponse.Should().NotBeNull();
         concreteResponse.StatusCode.Should().Be((int)HttpStatusCode.Unauthorized);
-        FilterTestsUtils.GetInnerCode(concreteResponse?.Value).Should().Be("Unauthenticated");
+        FilterTestsUtils.GetInnerCode(concreteResponse?.Value).Should().Be("Unauthorized");
         FilterTestsUtils.GetMessage(concreteResponse?.Value).Should().Be("You are not authenticated");
     }
 
@@ -75,7 +75,7 @@ public class AuthenticationFilterTests
         var concreteResponse = response as ObjectResult;
         concreteResponse.Should().NotBeNull();
         concreteResponse.StatusCode.Should().Be((int)HttpStatusCode.Unauthorized);
-        FilterTestsUtils.GetInnerCode(concreteResponse.Value).Should().Be("Unauthenticated");
+        FilterTestsUtils.GetInnerCode(concreteResponse.Value).Should().Be("Unauthorized");
         FilterTestsUtils.GetMessage(concreteResponse.Value).Should().Be("You are not authenticated");
     }
 

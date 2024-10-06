@@ -21,7 +21,7 @@ public sealed class AuthenticationFilterAttribute : Attribute, IAuthorizationFil
 
             if (string.IsNullOrEmpty(authorizationHeader))
             {
-                SetUnauthorizedResult(context, "Unauthenticated", "You are not authenticated");
+                SetUnauthorizedResult(context, "Unauthorized", "You are not authenticated");
                 return;
             }
 

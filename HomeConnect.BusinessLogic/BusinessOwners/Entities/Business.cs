@@ -5,8 +5,18 @@ namespace BusinessLogic.BusinessOwners.Entities;
 
 public class Business
 {
+    private string _rut = string.Empty;
+
     [Key]
-    public string Rut { get; set; } = string.Empty;
+    public string Rut
+    {
+        get => _rut;
+        set
+        {
+            EnsureIsNotEmpty(value, nameof(Rut));
+            _rut = value;
+        }
+    }
 
     private string _logo = string.Empty;
 
@@ -15,9 +25,18 @@ public class Business
         get => _logo;
         set
         {
+            EnsureIsNotEmpty(value, nameof(Logo));
             EnsureLogoIsValidUrl(value);
 
             _logo = value;
+        }
+    }
+
+    private static void EnsureIsNotEmpty(string value, string name)
+    {
+        if (string.IsNullOrWhiteSpace(value))
+        {
+            throw new ArgumentException($"{name} must not be blank");
         }
     }
 
@@ -29,7 +48,18 @@ public class Business
         }
     }
 
-    public string Name { get; set; } = string.Empty;
+    private string _name = string.Empty;
+
+    public string Name
+    {
+        get => _name;
+        set
+        {
+            EnsureIsNotEmpty(value, nameof(Name));
+            _name = value;
+        }
+    }
+
     public User Owner { get; set; } = null!;
 
     public Business()

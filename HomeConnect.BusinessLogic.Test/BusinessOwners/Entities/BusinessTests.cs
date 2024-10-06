@@ -32,4 +32,20 @@ public class BusinessTests
         // Assert
         act.Should().Throw<ArgumentException>();
     }
+
+    [TestMethod]
+    [DataRow("", "Business", "https://example.com/image.png")]
+    [DataRow("RUT", "", "https://example.com/image.png")]
+    [DataRow("RUT", "Business", "")]
+    public void Constructor_WithBlankArguments_ShouldThrowException(string rut, string name, string logo)
+    {
+        // Arrange
+        var user = new User();
+
+        // Act
+        var act = () => new Business(rut, name, logo, user);
+
+        // Assert
+        act.Should().Throw<ArgumentException>();
+    }
 }

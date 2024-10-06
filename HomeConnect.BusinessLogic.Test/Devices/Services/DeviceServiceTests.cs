@@ -35,9 +35,9 @@ public class DeviceServiceTests
         user1 = new User("name", "surname", "email1@email.com", "Password#100", new Role());
         user2 = new User("name", "surname", "email2@email.com", "Password#100", new Role());
         validDevice = new Device("Device1", 12345, "Device description1", "https://example1.com/image.png",
-            [], "Sensor", new Business("Rut1", "Business", user1));
+            [], "Sensor", new Business("Rut1", "Business", "https://example.com/image.png", user1));
         otherDevice = new Device("Device2", 12345, "Device description2", "https://example2.com/image.png",
-            [], "Sensor", new Business("Rut2", "Business", user2));
+            [], "Sensor", new Business("Rut2", "Business", "https://example.com/image.png", user2));
 
         _devices = [validDevice, otherDevice];
 

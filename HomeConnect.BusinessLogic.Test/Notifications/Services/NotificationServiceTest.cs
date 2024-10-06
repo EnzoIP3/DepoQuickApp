@@ -42,7 +42,7 @@ public class NotificationServiceTest
             new global::BusinessLogic.Roles.Entities.Role());
         var device = new global::BusinessLogic.Devices.Entities.Device("Device", 12345, "Device description",
             "https://example.com/image.png",
-            [], "Sensor", new Business("Rut", "Business", user));
+            [], "Sensor", new Business("Rut", "Business", "https://example.com/image.png", user));
         var home = new Home(user, "Adress 3420", 50, 100, 5);
         var ownedDevice = new OwnedDevice(home, device);
         const string @event = "Test Event";
@@ -96,7 +96,7 @@ public class NotificationServiceTest
         home.AddMember(member);
         home.AddMember(otherMember);
         var device = new Device("Device", 12345, "Device description", "https://example.com/image.png",
-            [], "Sensor", new Business("Rut", "Business", owner));
+            [], "Sensor", new Business("Rut", "Business", "https://example.com/image.png", owner));
         var ownedDevice = new OwnedDevice(home, device);
         var args = new NotificationArgs
         {

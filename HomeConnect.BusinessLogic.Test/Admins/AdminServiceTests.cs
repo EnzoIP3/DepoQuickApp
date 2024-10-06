@@ -347,7 +347,8 @@ public sealed class AdminServiceTests
         // Arrange
         var businesses = new List<Business>
         {
-            new("123456789123", "name", _owner), new("123456789456", "name2", _otherOwner)
+            new("123456789123", "name", "https://example.com/image.png", _owner),
+            new("123456789456", "name2", "https://example.com/image.png", _otherOwner)
         };
         var pagedList = new PagedData<Business>
         {
@@ -374,7 +375,8 @@ public sealed class AdminServiceTests
         // Arrange
         var businesses = new List<Business>
         {
-            new("123456789123", "name", _owner), new("123456789456", "name2", _otherOwner)
+            new("123456789123", "name", "https://example.com/image.png", _owner),
+            new("123456789456", "name2", "https://example.com/image.png", _otherOwner)
         };
         var pagedList = new PagedData<Business>
         {
@@ -401,7 +403,8 @@ public sealed class AdminServiceTests
         // Arrange
         var businesses = new List<Business>
         {
-            new("123456789123", "name", _owner), new("123456789456", "name2", _otherOwner)
+            new("123456789123", "name", "https://example.com/image.png", _owner),
+            new("123456789456", "name2", "https://example.com/image.png", _otherOwner)
         };
         var filter = $"{_owner.Name} {_owner.Surname}";
         var pagedList = new PagedData<Business>
@@ -429,7 +432,8 @@ public sealed class AdminServiceTests
         // Arrange
         var businesses = new List<Business>
         {
-            new("123456789123", "name", _owner), new("123456789456", "name2", _otherOwner)
+            new("123456789123", "name", "https://example.com/image.png", _owner),
+            new("123456789456", "name2", "https://example.com/image.png", _otherOwner)
         };
         var filter = "name2";
         var pagedList = new PagedData<Business>

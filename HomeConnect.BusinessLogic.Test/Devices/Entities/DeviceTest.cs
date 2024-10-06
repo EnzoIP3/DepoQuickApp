@@ -14,7 +14,7 @@ public class DeviceTest
     private const string Type = "Camera";
     private readonly List<string> secondaryPhotos = ["https://www.example.com/photo2.jpg", "https://www.example.com/photo3.jpg"];
     private static readonly global::BusinessLogic.Users.Entities.User _owner = new global::BusinessLogic.Users.Entities.User("John", "Doe", "JohnDoe@example.com", "Password123!", new global::BusinessLogic.Roles.Entities.Role());
-    private readonly Business business = new Business("RUTexample", "Business Name", _owner);
+    private readonly Business business = new Business("RUTexample", "Business Name", "https://example.com/image.png", _owner);
 
     #region Create
 

@@ -28,7 +28,7 @@ public class BusinessOwnerService : IBusinessOwnerService
         EnsureOwnerDoesNotHaveBusiness(Guid.Parse(args.OwnerId));
         EnsureBusinessRutDoesNotExist(args.Rut);
         var owner = UserRepository.Get(Guid.Parse(args.OwnerId));
-        var business = new Business(args.Rut, args.Name, owner);
+        var business = new Business(args.Rut, args.Name, args.Logo, owner);
         BusinessRepository.Add(business);
         return business;
     }

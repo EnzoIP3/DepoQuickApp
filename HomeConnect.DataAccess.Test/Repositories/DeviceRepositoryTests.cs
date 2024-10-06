@@ -25,9 +25,9 @@ public class DeviceRepositoryTests
         _role = new Role();
         _validUser = new User("John", "Doe", "johhnDoe@example.com", "Password#100", _role);
         _validDevice = new Device("DeviceValid", 123456, "Device description", "https://example.com/image.png",
-            [], "Camera", new Business("123456", "BusinessValid", _validUser));
+            [], "Camera", new Business("123456", "BusinessValid", "https://example.com/image.png", _validUser));
         _secondValidDevice = new Device("DeviceValid2", 1234567, "Device description", "https://example2.com/image.png",
-            [], "Sensor", new Business("1234567", "BusinessValid2", _validUser));
+            [], "Sensor", new Business("1234567", "BusinessValid2", "https://example.com/image.png", _validUser));
         _context.Add(_validDevice);
         _context.Add(_secondValidDevice);
         _context.SaveChanges();
@@ -47,7 +47,7 @@ public class DeviceRepositoryTests
     public void Add_WhenDeviceDoesNotExist_ShouldAddDevice()
     {
         // Arrange
-        var business = new Business("12345", "Business", _validUser);
+        var business = new Business("12345", "Business", "https://example.com/image.png", _validUser);
         var device = new Device("Device", 12345, "Device description", "https://example.com/image.png",
             [], "Sensor", business);
 
@@ -66,7 +66,7 @@ public class DeviceRepositoryTests
     public void Add_WhenDeviceExists_ShouldThrowException()
     {
         // Arrange
-        var business = new Business("12345", "Business", _validUser);
+        var business = new Business("12345", "Business", "https://example.com/image.png", _validUser);
         var device = new Device("Device", 12345, "Device description", "https://example.com/image.png",
             [], "Sensor", business);
         _deviceRepository.Add(device);
@@ -90,7 +90,7 @@ public class DeviceRepositoryTests
     public void Get_WhenDeviceExists_ShouldReturnDevice()
     {
         // Arrange
-        var business = new Business("12345", "Business", _validUser);
+        var business = new Business("12345", "Business", "https://example.com/image.png", _validUser);
         var device = new Device("Device", 12345, "Device description", "https://example.com/image.png",
             [], "Sensor", business);
         _deviceRepository.Add(device);

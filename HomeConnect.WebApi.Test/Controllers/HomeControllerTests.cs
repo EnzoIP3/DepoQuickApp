@@ -129,7 +129,7 @@ public class HomeControllerTests
         // Arrange
         var businessOwner = new User("Business", "Owner", "bo@email.com", "Password@100",
             new Role { Name = "BusinessOwner", Permissions = [] });
-        var business = new Business("123456789123", "business", businessOwner);
+        var business = new Business("123456789123", "business", "https://example.com/image.png", businessOwner);
         var sensor = new Device("sensor", 123, "a camera", "https://www.example.com/photo1.jpg", [],
             "sensor", business);
         var camera = new Camera("camera", 123, "a camera", "https://www.example.com/photo1.jpg", [],

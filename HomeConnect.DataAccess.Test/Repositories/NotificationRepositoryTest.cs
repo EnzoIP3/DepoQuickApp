@@ -35,7 +35,7 @@ public class NotificationRepositoryTest
         _user = new User("John", "Doe", "email@email.com", "Password#100", _role);
         _context.Users.Add(_user);
         _context.SaveChanges();
-        _business = new Business("123456789123", "Business", _user);
+        _business = new Business("123456789123", "Business", "https://example.com/image.png", _user);
         _context.Businesses.Add(_business);
         _context.SaveChanges();
         _sensor = new Device("Device", 12345, "Device description", "https://example.com/image.png", new List<string>(), "Sensor", _business);
@@ -67,7 +67,7 @@ public class NotificationRepositoryTest
         // Arrange
         var user = new User("name", "surname", "email2@email.com", "Password#100", new Role());
         var device = new Device("Device", 12345, "Device description", "https://example.com/image.png",
-            [], "Sensor", new Business("12345", "Business", user));
+            [], "Sensor", new Business("12345", "Business", "https://example.com/image.png", user));
         var home = new Home(user, "Address 3420", 50, 100, 5);
         var ownedDevice = new OwnedDevice(home, device);
         var notification = new Notification(Guid.NewGuid(), DateTime.Now, false,

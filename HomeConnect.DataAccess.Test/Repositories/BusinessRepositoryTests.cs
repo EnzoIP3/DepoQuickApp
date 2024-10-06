@@ -25,8 +25,8 @@ public class BusinessRepositoryTests
     {
         _context.Database.EnsureCreated();
         _businessRepository = new BusinessRepository(_context);
-        _validBusiness = new Business("1", "Business", _validUser);
-        _otherBusiness = new Business("2", "Other Business", _otherUser);
+        _validBusiness = new Business("1", "Business", "https://example.com/image.png", _validUser);
+        _otherBusiness = new Business("2", "Other Business", "https://example.com/image.png", _otherUser);
         _context.Businesses.Add(_validBusiness);
         _context.Businesses.Add(_otherBusiness);
         _context.SaveChanges();
@@ -121,7 +121,7 @@ public class BusinessRepositoryTests
     public void Add_WhenBusinessDoesNotExist_AddsBusiness()
     {
         // Arrange
-        var business = new Business("3", "New Business", _validUser);
+        var business = new Business("3", "New Business", "https://example.com/image.png", _validUser);
 
         // Act
         _businessRepository.Add(business);
@@ -136,7 +136,7 @@ public class BusinessRepositoryTests
     public void Add_WhenBusinessAlreadyExists_ThrowsException()
     {
         // Arrange
-        var business = new Business("1", "Business", _validUser);
+        var business = new Business("1", "Business", "https://example.com/image.png", _validUser);
 
         // Act
         var act = () => _businessRepository.Add(business);

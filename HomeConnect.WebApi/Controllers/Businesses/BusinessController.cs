@@ -31,11 +31,12 @@ public class BusinessController(IAdminService adminService, IBusinessOwnerServic
         var args = new CreateBusinessArgs()
         {
             Name = request.Name ?? string.Empty,
+            Logo = request.Logo ?? string.Empty,
             OwnerId = userLoggedIn?.Id.ToString() ?? string.Empty,
             Rut = request.Rut ?? string.Empty
         };
         var business = businessOwnerService.CreateBusiness(args);
-        return new CreateBusinessResponse { Rut = business.Rut };
+        return new CreateBusinessResponse() { Rut = business.Rut };
     }
 
     private static GetBusinessesResponse ResponseFromBusinesses(

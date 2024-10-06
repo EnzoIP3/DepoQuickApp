@@ -23,7 +23,7 @@ public class CameraTest
     public void TestInitialize()
     {
         _owner = new global::BusinessLogic.Users.Entities.User("John", "Doe", "JohnDoe@example.com", "Password123!", new global::BusinessLogic.Roles.Entities.Role());
-        _business = new Business("RUTexample", "Business Name", _owner);
+        _business = new Business("RUTexample", "Business Name", "https://example.com/image.png", _owner);
     }
 
     #region Create

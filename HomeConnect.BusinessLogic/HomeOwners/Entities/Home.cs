@@ -16,7 +16,7 @@ public class Home
     {
         Owner = owner;
         Address = address;
-        Latitude = latitude ?? 0;
+        Latitude = latitude ?? throw new ArgumentException("Latitude is required.");
         Longitude = longitude ?? 0;
         MaxMembers = maxMembers ?? 0;
     }

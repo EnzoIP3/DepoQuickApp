@@ -9,17 +9,19 @@ public class Camera : Device
     public bool PersonDetection { get; set; }
     public bool IsExterior { get; set; }
     public bool IsInterior { get; set; }
+
     public Camera()
     {
     }
 
-    public Camera(string name, int? modelNumber, string description, string mainPhoto, List<string>? secondaryPhotos, Business business,
+    public Camera(string name, int? modelNumber, string description, string mainPhoto, List<string>? secondaryPhotos,
+        Business business,
         bool? motionDetection, bool? personDetection, bool? isExterior, bool? isInterior)
         : base(name, modelNumber, description, mainPhoto, secondaryPhotos, CameraType, business)
     {
         MotionDetection = motionDetection ?? throw new ArgumentException("Motion detection must be provided");
         PersonDetection = personDetection ?? throw new ArgumentException("Person detection must be provided");
-        IsExterior = isExterior ?? false;
+        IsExterior = isExterior ?? throw new ArgumentException("Is exterior must be provided");
         IsInterior = isInterior ?? false;
         EnsureExteriorOrInterior();
     }

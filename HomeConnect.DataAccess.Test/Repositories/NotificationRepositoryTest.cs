@@ -41,7 +41,7 @@ public class NotificationRepositoryTest
         _sensor = new Device("Device", 12345, "Device description", "https://example.com/image.png", new List<string>(), "Sensor", _business);
         _camera = new Camera("Device", 12345, "Device description", "https://example.com/image.png", new List<string>(), _business, true, true, true, true);
         _context.Devices.AddRange(_sensor, _camera);
-        _home = new Home(_user, "Address 3420", 100, 100, 5);
+        _home = new Home(_user, "Address 3420", 50, 100, 5);
         _context.Homes.Add(_home);
         _ownedDevice = new OwnedDevice(_home, _sensor);
         _otherOwnedDevice = new OwnedDevice(_home, _camera);
@@ -68,7 +68,7 @@ public class NotificationRepositoryTest
         var user = new User("name", "surname", "email2@email.com", "Password#100", new Role());
         var device = new Device("Device", 12345, "Device description", "https://example.com/image.png",
             [], "Sensor", new Business("12345", "Business", user));
-        var home = new Home(user, "Address 3420", 100, 100, 5);
+        var home = new Home(user, "Address 3420", 50, 100, 5);
         var ownedDevice = new OwnedDevice(home, device);
         var notification = new Notification(Guid.NewGuid(), DateTime.Now, false,
             "Notification message", ownedDevice, user);

@@ -88,7 +88,7 @@ public class HomeAuthorizationFilterAttributeTests
     {
         var otherUser = new User("Name2", "Surname2", "email2@email.com", "Password@100",
             new Role { Name = "HomeOwner", Permissions = [] });
-        var home = new Home(otherUser, "street 123", 123.456, 123.456, 2);
+        var home = new Home(otherUser, "street 123", 50.456, 123.456, 2);
         home.AddMember(new Member(_user));
         var items = new Dictionary<object, object?>
         {

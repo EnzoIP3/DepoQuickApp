@@ -16,8 +16,8 @@ public class HomeTest
         // Arrange
         var owner = new global::BusinessLogic.Users.Entities.User();
         const string address = "Main St 123";
-        const double latitude = 123.456;
-        const double longitude = 456.789;
+        const double latitude = 50.456;
+        const double longitude = 100.789;
         const int maxMembers = 5;
 
         // Act
@@ -63,7 +63,7 @@ public class HomeTest
     {
         // Arrange
         var owner = new global::BusinessLogic.Users.Entities.User();
-        var home = new Home(owner, "Main St 123", 123.456, 456.789, 5);
+        var home = new Home(owner, "Main St 123", 85.2, 456.789, 5);
         var member = new Member(new global::BusinessLogic.Users.Entities.User());
 
         // Act
@@ -83,7 +83,7 @@ public class HomeTest
         // Arrange
         var owner = new global::BusinessLogic.Users.Entities.User();
         var ownerMember = new Member(owner);
-        var home = new Home(owner, "Main St 123", 123.456, 456.789, 5);
+        var home = new Home(owner, "Main St 123", 50.456, 100.789, 5);
 
         // Act
         var act = () => home.AddMember(ownerMember);
@@ -97,7 +97,7 @@ public class HomeTest
     {
         // Arrange
         var owner = new global::BusinessLogic.Users.Entities.User();
-        var home = new Home(owner, "Main St 123", 123.456, 456.789, 5);
+        var home = new Home(owner, "Main St 123", 50.456, 100.789, 5);
         var otherUser = new global::BusinessLogic.Users.Entities.User();
         var member = new Member(otherUser);
         home.AddMember(member);
@@ -114,7 +114,7 @@ public class HomeTest
     {
         // Arrange
         var owner = new global::BusinessLogic.Users.Entities.User();
-        var home = new Home(owner, "Main St 123", 123.456, 456.789, 1);
+        var home = new Home(owner, "Main St 123", 50, 100.789, 1);
         var member = new Member(new global::BusinessLogic.Users.Entities.User());
         home.AddMember(member);
 

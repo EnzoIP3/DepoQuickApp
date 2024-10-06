@@ -25,9 +25,10 @@ public class SensorController(
     [AuthorizationFilter(SystemPermission.CreateSensor)]
     public CreateSensorResponse CreateSensor([FromBody] CreateSensorRequest request)
     {
+        var userLoggedIn = HttpContext.Items[Item.UserLogged] as BusinessLogic.Users.Entities.User;
         var args = new CreateDeviceArgs()
         {
-            BusinessRut = request.BusinessRut,
+            Owner = userLoggedIn!,
             Description = request.Description,
             MainPhoto = request.MainPhoto,
             ModelNumber = request.ModelNumber,

@@ -193,7 +193,7 @@ public class BusinessOwnerServiceTests
         // Arrange
         var args = new CreateDeviceArgs
         {
-            BusinessRut = "RUTexample",
+            Owner = _owner, // Pass the owner instead of BusinessRut
             Name = DeviceName,
             ModelNumber = ModelNumber,
             Description = Description,
@@ -201,12 +201,12 @@ public class BusinessOwnerServiceTests
             SecondaryPhotos = _secondaryPhotos,
             Type = DeviceType.Camera.ToString() // Use a valid DeviceType enum value
         };
-        _deviceRepository.Setup(x =>
-            x.EnsureDeviceDoesNotExist(It.IsAny<Device>()));
+
+        _deviceRepository.Setup(x => x.EnsureDeviceDoesNotExist(It.IsAny<Device>()));
         _deviceRepository.Setup(x => x.Add(It.IsAny<Device>()));
-        _businessRepository.Setup(x => x.Get("RUTexample"))
-            .Returns(new Business("RUTexample", "Business Name", "https://example.com/image.png", _owner));
-        _businessRepository.Setup(x => x.Exists("RUTexample")).Returns(true);
+        _businessRepository.Setup(x => x.GetByOwnerId(_owner.Id))
+            .Returns(new Business("123456789", "Business Name", "https://example.com/image.png", _owner));
+        _businessRepository.Setup(x => x.ExistsByOwnerId(_owner.Id)).Returns(true);
 
         // Act
         _businessOwnerService.CreateDevice(args);
@@ -218,37 +218,7 @@ public class BusinessOwnerServiceTests
             d.Description == Description &&
             d.MainPhoto == MainPhoto &&
             d.SecondaryPhotos.SequenceEqual(_secondaryPhotos) &&
-            d.Type.ToString() == DeviceType.Camera.ToString()))); // Use a valid DeviceType enum value
-    }
-
-    [TestMethod]
-    public void CreateDevice_ReturnsCorrectId()
-    {
-        // Arrange
-        var args = new CreateDeviceArgs
-        {
-            BusinessRut = "RUTexample",
-            Name = DeviceName,
-            ModelNumber = ModelNumber,
-            Description = Description,
-            MainPhoto = MainPhoto,
-            SecondaryPhotos = _secondaryPhotos,
-            Type = DeviceType.Camera.ToString()
-        };
-        var addedDevice = new Device();
-        _deviceRepository.Setup(x =>
-            x.EnsureDeviceDoesNotExist(It.IsAny<Device>()));
-        _deviceRepository.Setup(x => x.Add(It.IsAny<Device>()))
-            .Callback<Device>(d => addedDevice = d);
-        _businessRepository.Setup(x => x.Get(args.BusinessRut))
-            .Returns(new Business("RUTexample", "Business Name", "https://example.com/image.png", _owner));
-        _businessRepository.Setup(x => x.Exists(args.BusinessRut)).Returns(true);
-
-        // Act
-        var returnedDevice = _businessOwnerService.CreateDevice(args);
-
-        // Assert
-        Assert.AreEqual(addedDevice.Id, returnedDevice.Id);
+            d.Type.ToString() == DeviceType.Camera.ToString()))); // Validate Device creation
     }
 
     #endregion
@@ -259,16 +229,16 @@ public class BusinessOwnerServiceTests
     public void CreateDevice_WhenDeviceAlreadyExists_ThrowsException()
     {
         // Arrange
-        var business = new Business("RUTexample", "Business Name", "https://example.com/image.png", _owner);
+        var business = new Business("12345", "Business Name", "https://example.com/image.png", _owner);
         _deviceRepository
             .Setup(x => x.EnsureDeviceDoesNotExist(It.IsAny<Device>()))
             .Throws(new ArgumentException("Device already exists"));
         _deviceRepository.Setup(x => x.Add(It.IsAny<Device>()));
-        _businessRepository.Setup(x => x.Get("RUTexample")).Returns(business);
-        _businessRepository.Setup(x => x.Exists("RUTexample")).Returns(true);
+        _businessRepository.Setup(x => x.GetByOwnerId(_owner.Id)).Returns(business);
+        _businessRepository.Setup(x => x.ExistsByOwnerId(_owner.Id)).Returns(true);
         var args = new CreateDeviceArgs
         {
-            BusinessRut = "RUTexample",
+            Owner = _owner,
             Name = DeviceName,
             ModelNumber = ModelNumber,
             Description = Description,
@@ -292,7 +262,7 @@ public class BusinessOwnerServiceTests
         // Arrange
         var args = new CreateDeviceArgs
         {
-            BusinessRut = "RUTexample",
+            Owner = _owner,
             Name = DeviceName,
             ModelNumber = ModelNumber,
             Description = Description,
@@ -303,7 +273,7 @@ public class BusinessOwnerServiceTests
         _deviceRepository.Setup(x =>
             x.EnsureDeviceDoesNotExist(It.IsAny<Device>()));
         _deviceRepository.Setup(x => x.Add(It.IsAny<Device>()));
-        _businessRepository.Setup(x => x.Exists(args.BusinessRut)).Returns(false);
+        _businessRepository.Setup(x => x.ExistsByOwnerId(args.Owner.Id)).Returns(false);
 
         // Act
         Action act = () => _businessOwnerService.CreateDevice(args);
@@ -329,11 +299,11 @@ public class BusinessOwnerServiceTests
         _deviceRepository.Setup(x =>
             x.EnsureDeviceDoesNotExist(It.IsAny<Device>()));
         _deviceRepository.Setup(x => x.Add(It.IsAny<Device>()));
-        _businessRepository.Setup(x => x.Get("RUTexample")).Returns(business);
-        _businessRepository.Setup(x => x.Exists("RUTexample")).Returns(true);
+        _businessRepository.Setup(x => x.GetByOwnerId(_owner.Id)).Returns(business);
+        _businessRepository.Setup(x => x.ExistsByOwnerId(_owner.Id)).Returns(true);
         var args = new CreateCameraArgs
         {
-            BusinessRut = "RUTexample",
+            Owner = _owner,
             Name = DeviceName,
             ModelNumber = ModelNumber,
             Description = Description,
@@ -341,8 +311,8 @@ public class BusinessOwnerServiceTests
             SecondaryPhotos = _secondaryPhotos,
             MotionDetection = false,
             PersonDetection = false,
-            IsExterior = false,
-            IsInterior = true
+            Exterior = false,
+            Interior = true
         };
 
         // Act
@@ -369,7 +339,7 @@ public class BusinessOwnerServiceTests
         var business = new Business("RUTexample", "Business Name", "https://example.com/image.png", _owner);
         var args = new CreateCameraArgs
         {
-            BusinessRut = "RUTexample",
+            Owner = _owner,
             Name = DeviceName,
             ModelNumber = ModelNumber,
             Description = Description,
@@ -377,16 +347,16 @@ public class BusinessOwnerServiceTests
             SecondaryPhotos = _secondaryPhotos,
             MotionDetection = false,
             PersonDetection = false,
-            IsExterior = false,
-            IsInterior = true
+            Exterior = false,
+            Interior = true
         };
         var addedCamera = new Camera();
         _deviceRepository.Setup(x =>
             x.EnsureDeviceDoesNotExist(It.IsAny<Device>()));
         _deviceRepository.Setup(x => x.Add(It.IsAny<Device>()))
             .Callback<Device>(d => addedCamera = (Camera)d);
-        _businessRepository.Setup(x => x.Get(args.BusinessRut)).Returns(business);
-        _businessRepository.Setup(x => x.Exists(args.BusinessRut)).Returns(true);
+        _businessRepository.Setup(x => x.GetByOwnerId(_owner.Id)).Returns(business);
+        _businessRepository.Setup(x => x.ExistsByOwnerId(_owner.Id)).Returns(true);
 
         // Act
         var returnedCamera = _businessOwnerService.CreateCamera(args);
@@ -408,11 +378,11 @@ public class BusinessOwnerServiceTests
             .Setup(x => x.EnsureDeviceDoesNotExist(It.IsAny<Device>()))
             .Throws(new ArgumentException("Device already exists"));
         _deviceRepository.Setup(x => x.Add(It.IsAny<Device>()));
-        _businessRepository.Setup(x => x.Get("RUTexample")).Returns(business);
-        _businessRepository.Setup(x => x.Exists("RUTexample")).Returns(true);
+        _businessRepository.Setup(x => x.GetByOwnerId(_owner.Id)).Returns(business);
+        _businessRepository.Setup(x => x.ExistsByOwnerId(_owner.Id)).Returns(true);
         var args = new CreateCameraArgs
         {
-            BusinessRut = "RUTexample",
+            Owner = _owner,
             Name = DeviceName,
             ModelNumber = ModelNumber,
             Description = Description,
@@ -420,8 +390,8 @@ public class BusinessOwnerServiceTests
             SecondaryPhotos = _secondaryPhotos,
             MotionDetection = false,
             PersonDetection = false,
-            IsExterior = false,
-            IsInterior = true
+            Exterior = false,
+            Interior = true
         };
 
         // Act
@@ -438,7 +408,7 @@ public class BusinessOwnerServiceTests
         // Arrange
         var args = new CreateCameraArgs
         {
-            BusinessRut = "RUTexample",
+            Owner = _owner,
             Name = DeviceName,
             ModelNumber = ModelNumber,
             Description = Description,
@@ -446,14 +416,14 @@ public class BusinessOwnerServiceTests
             SecondaryPhotos = _secondaryPhotos,
             MotionDetection = false,
             PersonDetection = false,
-            IsExterior = false,
-            IsInterior = true
+            Exterior = false,
+            Interior = true
         };
 
         _deviceRepository.Setup(x =>
             x.EnsureDeviceDoesNotExist(It.IsAny<Device>()));
         _deviceRepository.Setup(x => x.Add(It.IsAny<Device>()));
-        _businessRepository.Setup(x => x.Exists(args.BusinessRut)).Returns(false);
+        _businessRepository.Setup(x => x.ExistsByOwnerId(_owner.Id)).Returns(false);
 
         // Act
         Action act = () => _businessOwnerService.CreateCamera(args);

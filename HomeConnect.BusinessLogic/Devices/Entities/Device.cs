@@ -79,7 +79,7 @@ public class Device
         string type, Business business)
     {
         Name = name;
-        ModelNumber = modelNumber ?? 0;
+        ModelNumber = modelNumber ?? throw new ArgumentException("Model number is missing");
         Description = description;
         MainPhoto = mainPhoto;
         SecondaryPhotos = secondaryPhotos ?? [];

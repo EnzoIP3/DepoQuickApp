@@ -2,7 +2,6 @@ namespace HomeConnect.WebApi.Controllers.Sensor.Models;
 
 public record CreateSensorRequest
 {
-    public string BusinessRut { get; set; } = null!;
     public string Description { get; set; } = null!;
     public string MainPhoto { get; set; } = null!;
     public int ModelNumber { get; set; }

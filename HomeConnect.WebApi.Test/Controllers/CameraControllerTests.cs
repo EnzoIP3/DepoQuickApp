@@ -5,11 +5,13 @@ using BusinessLogic.Devices.Entities;
 using BusinessLogic.Devices.Services;
 using BusinessLogic.Notifications.Models;
 using BusinessLogic.Notifications.Services;
+using BusinessLogic.Users.Entities;
 using BusinessLogic.Users.Services;
 using FluentAssertions;
 using HomeConnect.WebApi.Controllers.Camera;
 using HomeConnect.WebApi.Controllers.Camera.Models;
 using HomeConnect.WebApi.Controllers.Sensor;
+using Microsoft.AspNetCore.Http;
 using Moq;
 
 namespace HomeConnect.WebApi.Test.Controllers;
@@ -17,6 +19,7 @@ namespace HomeConnect.WebApi.Test.Controllers;
 [TestClass]
 public class CameraControllerTests
 {
+    private Mock<HttpContext> _httpContextMock = null!;
     private Mock<IDeviceService> _deviceServiceMock = null!;
     private Mock<INotificationService> _notificationServiceMock = null!;
     private Mock<IBusinessOwnerService> _businessOwnerService = null!;
@@ -26,12 +29,16 @@ public class CameraControllerTests
     [TestInitialize]
     public void TestInitialize()
     {
+        _httpContextMock = new Mock<HttpContext>();
         _deviceServiceMock = new Mock<IDeviceService>();
         _notificationServiceMock = new Mock<INotificationService>();
         _businessOwnerService = new Mock<IBusinessOwnerService>();
         _userService = new Mock<IUserService>();
         _cameraController = new CameraController(_notificationServiceMock.Object, _deviceServiceMock.Object,
-            _businessOwnerService.Object, _userService.Object);
+            _businessOwnerService.Object, _userService.Object)
+        {
+            ControllerContext = { HttpContext = _httpContextMock.Object }
+        };
     }
 
     #region MovementDetected
@@ -79,9 +86,7 @@ public class CameraControllerTests
         var request = new PersonDetectedRequest { UserId = "userId" };
         var args = new NotificationArgs
         {
-            HardwareId = hardwareId,
-            Date = DateTime.Now,
-            Event = $"person detected with id: {request.UserId}"
+            HardwareId = hardwareId, Date = DateTime.Now, Event = $"person detected with id: {request.UserId}"
         };
         _deviceServiceMock.Setup(x => x.IsConnected(hardwareId)).Returns(true);
         _notificationServiceMock.Setup(x => x.Notify(args));
@@ -103,9 +108,7 @@ public class CameraControllerTests
         var request = new PersonDetectedRequest { UserId = "userId" };
         var args = new NotificationArgs
         {
-            HardwareId = hardwareId,
-            Date = DateTime.Now,
-            Event = $"person detected with id: {request.UserId}"
+            HardwareId = hardwareId, Date = DateTime.Now, Event = $"person detected with id: {request.UserId}"
         };
         _deviceServiceMock.Setup(x => x.IsConnected(hardwareId)).Returns(true);
         _notificationServiceMock.Setup(x => x.Notify(args)).Throws<ArgumentException>();
@@ -146,6 +149,7 @@ public class CameraControllerTests
     public void CreateCamera_WhenCalledWithValidRequest_ReturnsCreatedResponse()
     {
         // Arrange
+        var user = new User();
         var camera = new Camera("Name", 123, "Description", "https://example.com/photo.png", [],
             new Business(), true, true,
             true,
@@ -153,10 +157,10 @@ public class CameraControllerTests
         var cameraArgs = new CreateCameraArgs()
         {
             Name = "Name",
-            BusinessRut = "306869575",
+            Owner = user,
             Description = "Description",
-            IsExterior = true,
-            IsInterior = true,
+            Exterior = true,
+            Interior = true,
             MainPhoto = "MainPhoto",
             ModelNumber = 123,
             MotionDetection = true,
@@ -166,10 +170,9 @@ public class CameraControllerTests
         var cameraRequest = new CreateCameraRequest
         {
             Name = cameraArgs.Name,
-            BusinessRut = cameraArgs.BusinessRut,
             Description = cameraArgs.Description,
-            IsExterior = cameraArgs.IsExterior,
-            IsInterior = cameraArgs.IsInterior,
+            Exterior = cameraArgs.Exterior,
+            Interior = cameraArgs.Interior,
             MainPhoto = cameraArgs.MainPhoto,
             ModelNumber = cameraArgs.ModelNumber,
             MotionDetection = cameraArgs.MotionDetection,
@@ -177,6 +180,8 @@ public class CameraControllerTests
             SecondaryPhotos = cameraArgs.SecondaryPhotos
         };
         _businessOwnerService.Setup(x => x.CreateCamera(cameraArgs)).Returns(camera);
+        var items = new Dictionary<object, object?> { { Item.UserLogged, user } };
+        _httpContextMock.Setup(h => h.Items).Returns(items);
 
         // Act
         var response = _cameraController.CreateCamera(cameraRequest);

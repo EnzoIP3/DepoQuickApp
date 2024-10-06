@@ -43,8 +43,8 @@ public class BusinessOwnerService : IBusinessOwnerService
 
     public Device CreateDevice(CreateDeviceArgs args)
     {
-        EnsureBusinessExists(args.BusinessRut);
-        var business = BusinessRepository.Get(args.BusinessRut);
+        EnsureBusinessExists(args.Owner.Id);
+        var business = BusinessRepository.GetByOwnerId(args.Owner.Id);
         var device = new Device(args.Name, args.ModelNumber, args.Description, args.MainPhoto, args.SecondaryPhotos,
             args.Type, business);
         DeviceRepository.EnsureDeviceDoesNotExist(device);
@@ -54,18 +54,18 @@ public class BusinessOwnerService : IBusinessOwnerService
 
     public Camera CreateCamera(CreateCameraArgs args)
     {
-        EnsureBusinessExists(args.BusinessRut);
-        var business = BusinessRepository.Get(args.BusinessRut);
+        EnsureBusinessExists(args.Owner.Id);
+        var business = BusinessRepository.GetByOwnerId(args.Owner.Id);
         var camera = new Camera(args.Name, args.ModelNumber, args.Description, args.MainPhoto, args.SecondaryPhotos,
-            business, args.MotionDetection, args.PersonDetection, args.IsExterior, args.IsInterior);
+            business, args.MotionDetection, args.PersonDetection, args.Exterior, args.Interior);
         DeviceRepository.EnsureDeviceDoesNotExist(camera);
         DeviceRepository.Add(camera);
         return camera;
     }
 
-    private void EnsureBusinessExists(string rut)
+    private void EnsureBusinessExists(Guid ownerId)
     {
-        if (!BusinessRepository.Exists(rut))
+        if (!BusinessRepository.ExistsByOwnerId(ownerId))
         {
             throw new ArgumentException("That business does not exist.");
         }

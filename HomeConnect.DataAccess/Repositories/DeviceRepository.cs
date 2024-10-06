@@ -1,5 +1,6 @@
 using BusinessLogic;
 using BusinessLogic.Devices.Entities;
+using BusinessLogic.Devices.Models;
 using BusinessLogic.Devices.Repositories;
 
 namespace HomeConnect.DataAccess.Repositories;
@@ -36,19 +37,18 @@ public class DeviceRepository : PaginatedRepositoryBase<Device>, IDeviceReposito
     {
         if (_context.Devices.Any(d => d.ModelNumber == device.ModelNumber))
         {
-            throw new ArgumentException("Device already exists.");
+            throw new InvalidOperationException("Device already exists.");
         }
     }
 
-    public PagedData<Device> GetDevices(int currentPage, int? pageSize, string? deviceNameFilter = null,
-        int? modelNumberFilter = null, string? businessNameFilter = null, string? deviceTypeFilter = null)
+    public PagedData<Device> GetDevices(GetDeviceArgs args)
     {
         var filters = new object[4];
-        filters[0] = deviceNameFilter ?? string.Empty;
-        filters[1] = modelNumberFilter;
-        filters[2] = businessNameFilter ?? string.Empty;
-        filters[3] = deviceTypeFilter ?? string.Empty;
-        return GetAllPaged(currentPage, pageSize ?? 10, filters);
+        filters[0] = args.DeviceNameFilter ?? string.Empty;
+        filters[1] = args.ModelNumberFilter;
+        filters[2] = args.BusinessNameFilter ?? string.Empty;
+        filters[3] = args.DeviceTypeFilter ?? string.Empty;
+        return GetAllPaged(args.Page ?? 1, args.PageSize ?? 20, filters);
     }
 
     protected override IQueryable<Device> GetQueryable()

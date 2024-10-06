@@ -5,9 +5,11 @@ using BusinessLogic.Devices.Entities;
 using BusinessLogic.Devices.Services;
 using BusinessLogic.Notifications.Models;
 using BusinessLogic.Notifications.Services;
+using BusinessLogic.Users.Entities;
 using FluentAssertions;
 using HomeConnect.WebApi.Controllers.Sensor;
 using HomeConnect.WebApi.Controllers.Sensor.Models;
+using Microsoft.AspNetCore.Http;
 using Moq;
 
 namespace HomeConnect.WebApi.Test.Controllers;
@@ -15,6 +17,7 @@ namespace HomeConnect.WebApi.Test.Controllers;
 [TestClass]
 public class SensorControllerTests
 {
+    private Mock<HttpContext> _httpContextMock = null!;
     private Mock<INotificationService> _notificationServiceMock = null!;
     private Mock<IDeviceService> _deviceServiceMock = null!;
     private Mock<IBusinessOwnerService> _businessOwnerServiceMock = null!;
@@ -23,11 +26,12 @@ public class SensorControllerTests
     [TestInitialize]
     public void TestInitialize()
     {
+        _httpContextMock = new Mock<HttpContext>();
         _notificationServiceMock = new Mock<INotificationService>();
         _deviceServiceMock = new Mock<IDeviceService>();
         _businessOwnerServiceMock = new Mock<IBusinessOwnerService>();
         _sensorController = new SensorController(_notificationServiceMock.Object, _deviceServiceMock.Object,
-            _businessOwnerServiceMock.Object);
+            _businessOwnerServiceMock.Object) { ControllerContext = { HttpContext = _httpContextMock.Object } };
     }
 
     #region Notify
@@ -104,11 +108,13 @@ public class SensorControllerTests
     public void CreateSensor_WhenCalledWithValidRequest_ReturnsCreatedResponse()
     {
         // Arrange
-        var sensor = new Device("name", 123, "description", "http://example.com/photo.png", [], DeviceType.Sensor.ToString(),
+        var user = new User();
+        var sensor = new Device("name", 123, "description", "http://example.com/photo.png", [],
+            DeviceType.Sensor.ToString(),
             new Business());
         var sensorArgs = new CreateDeviceArgs()
         {
-            BusinessRut = sensor.Business.Rut,
+            Owner = user,
             Description = sensor.Description,
             MainPhoto = sensor.MainPhoto,
             ModelNumber = sensor.ModelNumber,
@@ -118,7 +124,6 @@ public class SensorControllerTests
         };
         var sensorRequest = new CreateSensorRequest()
         {
-            BusinessRut = sensor.Business.Rut,
             Description = sensor.Description,
             MainPhoto = sensor.MainPhoto,
             ModelNumber = sensor.ModelNumber,
@@ -126,6 +131,8 @@ public class SensorControllerTests
             SecondaryPhotos = sensor.SecondaryPhotos
         };
         _businessOwnerServiceMock.Setup(x => x.CreateDevice(sensorArgs)).Returns(sensor);
+        var items = new Dictionary<object, object?> { { Item.UserLogged, user } };
+        _httpContextMock.Setup(h => h.Items).Returns(items);
 
         // Act
         var response = _sensorController.CreateSensor(sensorRequest);

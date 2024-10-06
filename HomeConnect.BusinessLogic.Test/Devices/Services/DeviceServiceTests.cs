@@ -94,9 +94,14 @@ public class DeviceServiceTests
     public void GetDevices_WhenCalled_ReturnsDeviceList()
     {
         // Arrange
-        _deviceRepository.Setup(x => x.GetDevices(_parameters.Page ?? 1, _parameters.PageSize ?? 10,
-            _parameters.DeviceNameFilter, _parameters.ModelNumberFilter, _parameters.BusinessNameFilter,
-            _parameters.DeviceTypeFilter)).Returns(_pagedDeviceList);
+        _deviceRepository.Setup(x => x.GetDevices(It.Is<GetDeviceArgs>(args =>
+            args.Page == _parameters.Page &&
+            args.PageSize == _parameters.PageSize &&
+            args.DeviceNameFilter == _parameters.DeviceNameFilter &&
+            args.ModelNumberFilter == _parameters.ModelNumberFilter &&
+            args.BusinessNameFilter == _parameters.BusinessNameFilter &&
+            args.DeviceTypeFilter == _parameters.DeviceTypeFilter
+        ))).Returns(_pagedDeviceList);
 
         // Act
         var result = _deviceService.GetDevices(_parameters);
@@ -110,12 +115,14 @@ public class DeviceServiceTests
         result.Should().BeEquivalentTo(expectedPagedDeviceList,
             options => options.ComparingByMembers<PagedData<Device>>());
         _deviceRepository.Verify(x => x.GetDevices(
-            It.Is<int>(a => a == _parameters.Page),
-            It.Is<int>(a => a == _parameters.PageSize),
-            It.Is<string>(a => a == _parameters.DeviceNameFilter),
-            It.Is<int?>(a => a == _parameters.ModelNumberFilter),
-            It.Is<string>(a => a == _parameters.BusinessNameFilter),
-            It.Is<string>(a => a == _parameters.DeviceTypeFilter)), Times.Once);
+            It.Is<GetDeviceArgs>(args =>
+                args.Page == _parameters.Page &&
+                args.PageSize == _parameters.PageSize &&
+                args.DeviceNameFilter == _parameters.DeviceNameFilter &&
+                args.ModelNumberFilter == _parameters.ModelNumberFilter &&
+                args.BusinessNameFilter == _parameters.BusinessNameFilter &&
+                args.DeviceTypeFilter == _parameters.DeviceTypeFilter
+            )), Times.Once);
     }
 
     [TestMethod]

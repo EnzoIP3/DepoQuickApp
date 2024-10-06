@@ -28,14 +28,16 @@ public class CameraController(
     [AuthorizationFilter(SystemPermission.CreateCamera)]
     public CreateCameraResponse CreateCamera([FromBody] CreateCameraRequest request)
     {
+        var userLoggedIn = HttpContext.Items[Item.UserLogged] as BusinessLogic.Users.Entities.User;
+
         var args = new CreateCameraArgs()
         {
-            Name = request.Name,
-            BusinessRut = request.BusinessRut,
-            Description = request.Description,
-            IsExterior = request.IsExterior,
-            IsInterior = request.IsInterior,
-            MainPhoto = request.MainPhoto,
+            Owner = userLoggedIn!,
+            Name = request.Name ?? string.Empty,
+            Description = request.Description ?? string.Empty,
+            Exterior = request.Exterior,
+            Interior = request.Interior,
+            MainPhoto = request.MainPhoto ?? string.Empty,
             ModelNumber = request.ModelNumber,
             MotionDetection = request.MotionDetection,
             PersonDetection = request.PersonDetection,

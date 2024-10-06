@@ -19,9 +19,7 @@ public class DeviceService : IDeviceService
     {
         parameters.Page ??= 1;
         parameters.PageSize ??= 10;
-        var devices = DeviceRepository.GetDevices((int)parameters.Page, (int)parameters.PageSize,
-            parameters.DeviceNameFilter, parameters.ModelNumberFilter, parameters.BusinessNameFilter,
-            parameters.DeviceTypeFilter);
+        var devices = DeviceRepository.GetDevices(parameters);
         return devices;
     }
 

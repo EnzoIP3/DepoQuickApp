@@ -25,6 +25,13 @@ public class ExceptionFilter : IExceptionFilter
                 }
             },
             {
+                typeof(KeyNotFoundException),
+                ex => new ObjectResult(new { InnerCode = "NotFound", ex.Message })
+                {
+                    StatusCode = (int)HttpStatusCode.NotFound
+                }
+            },
+            {
                 typeof(AuthException),
                 ex => new ObjectResult(new { InnerCode = "Unauthorized", ex.Message })
                 {

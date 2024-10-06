@@ -70,7 +70,7 @@ public class AdminService : IAdminService
     {
         if (!UserRepository.Exists(id))
         {
-            throw new InvalidOperationException("Admin does not exist.");
+            throw new KeyNotFoundException("Admin does not exist.");
         }
     }
 

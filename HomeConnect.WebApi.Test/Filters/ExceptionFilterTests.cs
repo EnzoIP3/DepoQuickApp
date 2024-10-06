@@ -100,4 +100,21 @@ public class ExceptionFilterTests
         FilterTestsUtils.GetInnerCode(concreteResponse.Value).Should().Be("Unauthorized");
         FilterTestsUtils.GetMessage(concreteResponse.Value).Should().Be(exceptionMessage);
     }
+
+    [TestMethod]
+    public void OnException_WhenExceptionIsKeyNotFoundException_ShouldResponseNotFound()
+    {
+        var exceptionMessage = "Key not found";
+        _context.Exception = new KeyNotFoundException(exceptionMessage);
+        _attribute.OnException(_context);
+
+        var response = _context.Result;
+
+        response.Should().NotBeNull();
+        var concreteResponse = response as ObjectResult;
+        concreteResponse.Should().NotBeNull();
+        concreteResponse!.StatusCode.Should().Be((int)HttpStatusCode.NotFound);
+        FilterTestsUtils.GetInnerCode(concreteResponse.Value).Should().Be("NotFound");
+        FilterTestsUtils.GetMessage(concreteResponse.Value).Should().Be(exceptionMessage);
+    }
 }

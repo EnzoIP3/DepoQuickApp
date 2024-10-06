@@ -134,7 +134,7 @@ public sealed class AdminServiceTests
         Action act = () => _adminService.Delete(id.ToString());
 
         // Assert
-        act.Should().Throw<Exception>().WithMessage("Admin does not exist.");
+        act.Should().Throw<KeyNotFoundException>().WithMessage("Admin does not exist.");
     }
 
     [TestMethod]

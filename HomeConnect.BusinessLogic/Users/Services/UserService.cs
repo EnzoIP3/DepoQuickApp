@@ -28,6 +28,11 @@ public class UserService : IUserService
         return user;
     }
 
+    public bool Exists(string requestUserId)
+    {
+        throw new NotImplementedException();
+    }
+
     private static void ValidateHomeOwner(CreateUserArgs args, Role role)
     {
         if (role.Name == Role.HomeOwner && args.ProfilePicture == null)

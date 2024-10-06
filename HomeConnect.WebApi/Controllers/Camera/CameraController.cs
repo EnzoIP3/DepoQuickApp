@@ -4,6 +4,7 @@ using BusinessLogic.Devices.Services;
 using BusinessLogic.Notifications.Models;
 using BusinessLogic.Notifications.Services;
 using BusinessLogic.Roles.Entities;
+using BusinessLogic.Users.Services;
 using HomeConnect.WebApi.Controllers.Camera.Models;
 using HomeConnect.WebApi.Controllers.Device;
 using HomeConnect.WebApi.Controllers.Device.Models;
@@ -18,7 +19,8 @@ namespace HomeConnect.WebApi.Controllers.Camera;
 public class CameraController(
     INotificationService notificationService,
     IDeviceService deviceService,
-    IBusinessOwnerService businessOwnerService)
+    IBusinessOwnerService businessOwnerService,
+    IUserService userService)
     : BaseDeviceController(deviceService)
 {
     [HttpPost]
@@ -62,8 +64,17 @@ public class CameraController(
     public NotifyResponse PersonDetected([FromRoute] string hardwareId, PersonDetectedRequest request)
     {
         NotificationArgs args = CreatePersonDetectedNotificationArgs(hardwareId, request.UserId);
+        EnsureDetectedUserIsRegistered(request.UserId);
         notificationService.Notify(args);
         return new NotifyResponse { HardwareId = hardwareId };
+    }
+
+    private void EnsureDetectedUserIsRegistered(string requestUserId)
+    {
+        if (!userService.Exists(requestUserId))
+        {
+            throw new ArgumentException("User detected by camera is not found");
+        }
     }
 
     private static NotificationArgs CreatePersonDetectedNotificationArgs(string hardwareId, string userId)

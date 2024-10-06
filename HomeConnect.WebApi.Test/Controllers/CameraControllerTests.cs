@@ -5,6 +5,7 @@ using BusinessLogic.Devices.Entities;
 using BusinessLogic.Devices.Services;
 using BusinessLogic.Notifications.Models;
 using BusinessLogic.Notifications.Services;
+using BusinessLogic.Users.Services;
 using FluentAssertions;
 using HomeConnect.WebApi.Controllers.Camera;
 using HomeConnect.WebApi.Controllers.Camera.Models;
@@ -19,6 +20,7 @@ public class CameraControllerTests
     private Mock<IDeviceService> _deviceServiceMock = null!;
     private Mock<INotificationService> _notificationServiceMock = null!;
     private Mock<IBusinessOwnerService> _businessOwnerService = null!;
+    private Mock<IUserService> _userService = null!;
     private CameraController _cameraController = null!;
 
     [TestInitialize]
@@ -27,8 +29,9 @@ public class CameraControllerTests
         _deviceServiceMock = new Mock<IDeviceService>();
         _notificationServiceMock = new Mock<INotificationService>();
         _businessOwnerService = new Mock<IBusinessOwnerService>();
+        _userService = new Mock<IUserService>();
         _cameraController = new CameraController(_notificationServiceMock.Object, _deviceServiceMock.Object,
-            _businessOwnerService.Object);
+            _businessOwnerService.Object, _userService.Object);
     }
 
     [TestMethod]
@@ -60,6 +63,7 @@ public class CameraControllerTests
             Event = $"person detected with id: {request.UserId}"
         };
         _notificationServiceMock.Setup(x => x.Notify(args));
+        _userService.Setup(x => x.Exists(request.UserId)).Returns(true);
 
         // Act
         var result = _cameraController.PersonDetected(hardwareId, request);
@@ -67,6 +71,28 @@ public class CameraControllerTests
         // Assert
         result.Should().NotBeNull();
         result.HardwareId.Should().Be(hardwareId);
+    }
+
+    [TestMethod]
+    public void PersonDetected_WhenDetectedPersonIsNotRegistered_ThrowsArgumentException()
+    {
+        // Arrange
+        var hardwareId = "hardwareId";
+        var request = new PersonDetectedRequest { UserId = "userId" };
+        var args = new NotificationArgs
+        {
+            HardwareId = hardwareId,
+            Date = DateTime.Now,
+            Event = $"person detected with id: {request.UserId}"
+        };
+        _notificationServiceMock.Setup(x => x.Notify(args)).Throws<ArgumentException>();
+        _userService.Setup(x => x.Exists(request.UserId)).Returns(false);
+
+        // Act
+        var act = () => _cameraController.PersonDetected(hardwareId, request);
+
+        // Assert
+        act.Should().Throw<ArgumentException>().WithMessage("User detected by camera is not found");
     }
 
     [TestMethod]

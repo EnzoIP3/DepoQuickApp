@@ -28,6 +28,16 @@ public class UserService : IUserService
         return user;
     }
 
+    public bool Exists(string requestUserId)
+    {
+        return UserIdIsValid(requestUserId) && _userRepository.Exists(Guid.Parse(requestUserId));
+    }
+
+    private bool UserIdIsValid(string requestUserId)
+    {
+        return Guid.TryParse(requestUserId, out _);
+    }
+
     private static void ValidateHomeOwner(CreateUserArgs args, Role role)
     {
         if (role.Name == Role.HomeOwner && args.ProfilePicture == null)

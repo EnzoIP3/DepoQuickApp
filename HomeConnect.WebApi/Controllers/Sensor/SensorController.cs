@@ -36,9 +36,9 @@ public class SensorController(
             Type = "Sensor"
         };
 
-        var createdDevice = businessOwnerService.CreateDevice(args);
+        var createdSensor = businessOwnerService.CreateDevice(args);
 
-        return new CreateSensorResponse { Id = createdDevice };
+        return new CreateSensorResponse { Id = createdSensor.Id };
     }
 
     [HttpPost("{hardwareId}/open")]

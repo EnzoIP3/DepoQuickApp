@@ -43,7 +43,7 @@ public class CameraController(
 
         var createdCamera = businessOwnerService.CreateCamera(args);
 
-        return new CreateCameraResponse { Id = createdCamera };
+        return new CreateCameraResponse { Id = createdCamera.Id };
     }
 
     [HttpPost("{hardwareId}/movement-detected")]

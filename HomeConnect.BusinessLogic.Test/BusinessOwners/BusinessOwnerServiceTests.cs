@@ -90,14 +90,14 @@ public class BusinessOwnerServiceTests
         _businessRepository.Setup(x => x.ExistsByOwnerId(_owner.Id)).Returns(false);
 
         // Act
-        var returnedRut = _businessOwnerService.CreateBusiness(args);
+        var returnedBusiness = _businessOwnerService.CreateBusiness(args);
 
         // Assert
         _businessRepository.Verify(x => x.Add(It.Is<Business>(b =>
             b.Rut == _businessRut &&
             b.Name == _businessName &&
             b.Owner.Email == _ownerEmail)), Times.Once);
-        returnedRut.Should().Be(_businessRut);
+        returnedBusiness.Rut.Should().Be(_businessRut);
     }
 
     #endregion
@@ -237,10 +237,10 @@ public class BusinessOwnerServiceTests
         _businessRepository.Setup(x => x.Exists(args.BusinessRut)).Returns(true);
 
         // Act
-        var returnedId = _businessOwnerService.CreateDevice(args);
+        var returnedDevice = _businessOwnerService.CreateDevice(args);
 
         // Assert
-        Assert.AreEqual(addedDevice.Id, returnedId);
+        Assert.AreEqual(addedDevice.Id, returnedDevice.Id);
     }
 
     #endregion
@@ -381,10 +381,10 @@ public class BusinessOwnerServiceTests
         _businessRepository.Setup(x => x.Exists(args.BusinessRut)).Returns(true);
 
         // Act
-        var returnedId = _businessOwnerService.CreateCamera(args);
+        var returnedCamera = _businessOwnerService.CreateCamera(args);
 
         // Assert
-        Assert.AreEqual(addedCamera.Id, returnedId);
+        Assert.AreEqual(addedCamera.Id, returnedCamera.Id);
     }
 
     #endregion

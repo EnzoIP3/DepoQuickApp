@@ -1,10 +1,12 @@
+using BusinessLogic.BusinessOwners.Entities;
 using BusinessLogic.BusinessOwners.Models;
+using BusinessLogic.Devices.Entities;
 
 namespace BusinessLogic.BusinessOwners.Services;
 
 public interface IBusinessOwnerService
 {
-    public string CreateBusiness(CreateBusinessArgs businessArgs);
-    public Guid CreateDevice(CreateDeviceArgs args);
-    public Guid CreateCamera(CreateCameraArgs args);
+    public Business CreateBusiness(CreateBusinessArgs businessArgs);
+    public Device CreateDevice(CreateDeviceArgs args);
+    public Camera CreateCamera(CreateCameraArgs args);
 }

@@ -129,7 +129,7 @@ public class CameraControllerTests
             PersonDetection = cameraArgs.PersonDetection,
             SecondaryPhotos = cameraArgs.SecondaryPhotos
         };
-        _businessOwnerService.Setup(x => x.CreateCamera(cameraArgs)).Returns(camera.Id);
+        _businessOwnerService.Setup(x => x.CreateCamera(cameraArgs)).Returns(camera);
 
         // Act
         var response = _cameraController.CreateCamera(cameraRequest);

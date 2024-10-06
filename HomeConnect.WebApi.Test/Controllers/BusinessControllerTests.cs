@@ -6,8 +6,9 @@ using BusinessLogic.BusinessOwners.Services;
 using BusinessLogic.Roles.Entities;
 using BusinessLogic.Users.Entities;
 using FluentAssertions;
-using HomeConnect.WebApi.Controllers.Business;
+using HomeConnect.WebApi.Controllers.Businesses;
 using HomeConnect.WebApi.Controllers.Businesses.Models;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Moq;
 
@@ -19,6 +20,7 @@ public class BusinessControllerTests
     private BusinessController _controller = null!;
     private Mock<IBusinessOwnerService> _businessOwnerService = null!;
     private Mock<IAdminService> _adminService = null!;
+    private Mock<HttpContext> _httpContextMock = null!;
     private Role _role = null!;
     private User _user = null!;
     private User _otherUser = null!;
@@ -33,16 +35,18 @@ public class BusinessControllerTests
     {
         _adminService = new Mock<IAdminService>();
         _businessOwnerService = new Mock<IBusinessOwnerService>();
+        _httpContextMock = new Mock<HttpContext>();
         _controller = new BusinessController(_adminService.Object, _businessOwnerService.Object);
+        _controller.ControllerContext = new ControllerContext { HttpContext = _httpContextMock.Object };
 
         _role = new Role("BusinessOwner", []);
         _user = new User("Name", "Surname", "email@email.com", "Password@100", _role);
         _otherUser = new User("Name1", "Surname1", "email1@email.com", "Password@100", _role);
-        _businesses = new List<Business>
-        {
+        _businesses =
+        [
             new Business("123456789123", "Business 1", _user),
             new Business("123456789124", "Business 2", _otherUser)
-        };
+        ];
         _expectedPagination = new Pagination { Page = 1, PageSize = 10, TotalPages = 1 };
         _pagedList = new PagedData<Business>
         {
@@ -51,8 +55,9 @@ public class BusinessControllerTests
             PageSize = _expectedPagination.PageSize,
             TotalPages = _expectedPagination.TotalPages
         };
-        _businessArgs = new CreateBusinessArgs { Name = "Business 1" };
-        _businessRequest = new CreateBusinessRequest { Name = "Business 1" };
+        _businessArgs =
+            new CreateBusinessArgs { Name = "Business 1", OwnerId = _user.Id.ToString(), Rut = "123456789123" };
+        _businessRequest = new CreateBusinessRequest { Name = "Business 1", Rut = _businesses[0].Rut };
     }
 
     #region GetBusinesses
@@ -152,7 +157,9 @@ public class BusinessControllerTests
     public void CreateBusiness_WhenCalledWithValidRequest_ReturnsCreatedResponse()
     {
         // Arrange
-        _businessOwnerService.Setup(x => x.CreateBusiness(_businessArgs)).Returns(_businesses[0].Rut);
+        _businessOwnerService.Setup(x => x.CreateBusiness(_businessArgs)).Returns(_businesses[0]);
+        var items = new Dictionary<object, object?> { { Item.UserLogged, _user } };
+        _httpContextMock.Setup(h => h.Items).Returns(items);
 
         var expectedResponse = new CreateBusinessResponse { Rut = _businesses[0].Rut };
 

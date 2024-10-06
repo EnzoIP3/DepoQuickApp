@@ -89,7 +89,7 @@ public class SensorControllerTests
             Name = sensor.Name,
             SecondaryPhotos = sensor.SecondaryPhotos
         };
-        _businessOwnerServiceMock.Setup(x => x.CreateDevice(sensorArgs)).Returns(sensor.Id);
+        _businessOwnerServiceMock.Setup(x => x.CreateDevice(sensorArgs)).Returns(sensor);
 
         // Act
         var response = _sensorController.CreateSensor(sensorRequest);

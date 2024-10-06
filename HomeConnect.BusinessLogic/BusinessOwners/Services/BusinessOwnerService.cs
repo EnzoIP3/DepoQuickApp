@@ -21,7 +21,7 @@ public class BusinessOwnerService : IBusinessOwnerService
         DeviceRepository = deviceRepository;
     }
 
-    public string CreateBusiness(CreateBusinessArgs args)
+    public Business CreateBusiness(CreateBusinessArgs args)
     {
         EnsureIsValidGuid(args.OwnerId);
         EnsureOwnerExists(Guid.Parse(args.OwnerId));
@@ -30,7 +30,7 @@ public class BusinessOwnerService : IBusinessOwnerService
         var owner = UserRepository.Get(Guid.Parse(args.OwnerId));
         var business = new Business(args.Rut, args.Name, owner);
         BusinessRepository.Add(business);
-        return business.Rut;
+        return business;
     }
 
     private static void EnsureIsValidGuid(string id)
@@ -41,7 +41,7 @@ public class BusinessOwnerService : IBusinessOwnerService
         }
     }
 
-    public Guid CreateDevice(CreateDeviceArgs args)
+    public Device CreateDevice(CreateDeviceArgs args)
     {
         EnsureBusinessExists(args.BusinessRut);
         var business = BusinessRepository.Get(args.BusinessRut);
@@ -49,10 +49,10 @@ public class BusinessOwnerService : IBusinessOwnerService
             args.Type, business);
         DeviceRepository.EnsureDeviceDoesNotExist(device);
         DeviceRepository.Add(device);
-        return device.Id;
+        return device;
     }
 
-    public Guid CreateCamera(CreateCameraArgs args)
+    public Camera CreateCamera(CreateCameraArgs args)
     {
         EnsureBusinessExists(args.BusinessRut);
         var business = BusinessRepository.Get(args.BusinessRut);
@@ -60,7 +60,7 @@ public class BusinessOwnerService : IBusinessOwnerService
             business, args.MotionDetection, args.PersonDetection, args.IsExterior, args.IsInterior);
         DeviceRepository.EnsureDeviceDoesNotExist(camera);
         DeviceRepository.Add(camera);
-        return camera.Id;
+        return camera;
     }
 
     private void EnsureBusinessExists(string rut)

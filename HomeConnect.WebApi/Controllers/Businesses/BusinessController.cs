@@ -7,7 +7,7 @@ using HomeConnect.WebApi.Controllers.Businesses.Models;
 using HomeConnect.WebApi.Filters;
 using Microsoft.AspNetCore.Mvc;
 
-namespace HomeConnect.WebApi.Controllers.Business;
+namespace HomeConnect.WebApi.Controllers.Businesses;
 
 [ApiController]
 [Route("businesses")]
@@ -27,9 +27,15 @@ public class BusinessController(IAdminService adminService, IBusinessOwnerServic
     [AuthorizationFilter(SystemPermission.CreateBusiness)]
     public CreateBusinessResponse CreateBusiness([FromBody] CreateBusinessRequest request)
     {
-        var args = new CreateBusinessArgs() { Name = request.Name, OwnerId = request.OwnerId, Rut = request.Rut };
-        var createdBusiness = businessOwnerService.CreateBusiness(args);
-        return new CreateBusinessResponse { Rut = createdBusiness };
+        var userLoggedIn = HttpContext.Items[Item.UserLogged] as BusinessLogic.Users.Entities.User;
+        var args = new CreateBusinessArgs()
+        {
+            Name = request.Name ?? string.Empty,
+            OwnerId = userLoggedIn?.Id.ToString() ?? string.Empty,
+            Rut = request.Rut ?? string.Empty
+        };
+        var business = businessOwnerService.CreateBusiness(args);
+        return new CreateBusinessResponse { Rut = business.Rut };
     }
 
     private static GetBusinessesResponse ResponseFromBusinesses(

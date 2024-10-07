@@ -59,7 +59,8 @@ public class Context(DbContextOptions<Context> options) : DbContext(options)
             new SystemPermission { Value = SystemPermission.GetMembers },
             new SystemPermission { Value = SystemPermission.CreateBusiness },
             new SystemPermission { Value = SystemPermission.CreateCamera },
-            new SystemPermission { Value = SystemPermission.CreateSensor });
+            new SystemPermission { Value = SystemPermission.CreateSensor },
+            new SystemPermission { Value = SystemPermission.UpdateMember });
     }
 
     private void ConfigureRolePermissions(ModelBuilder modelBuilder)
@@ -78,6 +79,7 @@ public class Context(DbContextOptions<Context> options) : DbContext(options)
                 new { RolesName = Role.HomeOwner, PermissionsValue = SystemPermission.AddDevice },
                 new { RolesName = Role.HomeOwner, PermissionsValue = SystemPermission.GetDevices },
                 new { RolesName = Role.HomeOwner, PermissionsValue = SystemPermission.GetMembers },
+                new { RolesName = Role.HomeOwner, PermissionsValue = SystemPermission.UpdateMember },
                 new { RolesName = Role.BusinessOwner, PermissionsValue = SystemPermission.CreateBusiness },
                 new { RolesName = Role.BusinessOwner, PermissionsValue = SystemPermission.CreateCamera },
                 new { RolesName = Role.BusinessOwner, PermissionsValue = SystemPermission.CreateSensor }));

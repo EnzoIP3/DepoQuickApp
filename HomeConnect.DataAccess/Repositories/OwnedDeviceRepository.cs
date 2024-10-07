@@ -37,6 +37,7 @@ public class OwnedDeviceRepository : IOwnedDeviceRepository
 
     public void Update(OwnedDevice ownedDevice)
     {
-        throw new NotImplementedException();
+        _context.OwnedDevices.Update(ownedDevice);
+        _context.SaveChanges();
     }
 }

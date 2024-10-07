@@ -66,16 +66,20 @@ public class DeviceServiceTests
     public void Toggle_WhenHardwareIdIsValid_ShouldReturnConnectionState()
     {
         // Arrange
+        var ownedDevice =
+            new OwnedDevice(new Home(user1, "Street 3420", 50, 100, 5), validDevice) { Connected = true };
         var hardwareId = Guid.NewGuid().ToString();
         _ownedDeviceRepository.Setup(x => x.Exists(Guid.Parse(hardwareId))).Returns(true);
         _ownedDeviceRepository.Setup(x => x.GetByHardwareId(Guid.Parse(hardwareId)))
-            .Returns(new OwnedDevice(new Home(user1, "Street 3420", 50, 100, 5), validDevice));
+            .Returns(ownedDevice);
+        _ownedDeviceRepository.Setup(x => x.Update(ownedDevice)).Verifiable();
 
         // Act
         var result = _deviceService.Toggle(hardwareId);
 
         // Assert
         result.Should().BeFalse();
+        _ownedDeviceRepository.VerifyAll();
     }
 
     [TestMethod]

@@ -170,7 +170,7 @@ public class HomeOwnerServiceTests
         _userRepositoryMock.Setup(x => x.Get(Guid.Parse(model.MemberId))).Returns(invitedUser);
         _homeRepositoryMock.Setup(x => x.Exists(Guid.Parse(model.HomeId))).Returns(true);
         _homeRepositoryMock.Setup(x => x.Get(Guid.Parse(model.HomeId))).Returns(home);
-        _homeRepositoryMock.Setup(x => x.Update(home)).Verifiable();
+        _memberRepositoryMock.Setup(x => x.Add(It.IsAny<Member>())).Verifiable();
 
         // Act
         Guid result = _homeOwnerService.AddMemberToHome(model);
@@ -178,6 +178,7 @@ public class HomeOwnerServiceTests
         // Assert
         home.Members.Should().ContainSingle(x => x.User == invitedUser);
         result.Should().Be(invitedUser.Id);
+        _memberRepositoryMock.Verify(x => x.Add(It.IsAny<Member>()), Times.Once);
     }
 
     #endregion

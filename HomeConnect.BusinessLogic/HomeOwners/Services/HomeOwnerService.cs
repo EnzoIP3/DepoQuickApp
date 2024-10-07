@@ -53,6 +53,11 @@ public class HomeOwnerService : IHomeOwnerService
 
     public void AddDeviceToHome(AddDevicesArgs addDevicesArgs)
     {
+        if (!addDevicesArgs.DeviceIds.Any())
+        {
+            throw new ArgumentException("At least one device must be added to the home.");
+        }
+
         ValidateAddDeviceModel(addDevicesArgs);
         Home home = GetHome(Guid.Parse(addDevicesArgs.HomeId));
         EnsureDevicesAreNotAdded(addDevicesArgs.DeviceIds, home);

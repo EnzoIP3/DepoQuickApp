@@ -193,7 +193,7 @@ public class AuthenticationFilterTests
         concreteResponse.Should().NotBeNull();
         concreteResponse.StatusCode.Should().Be((int)HttpStatusCode.Unauthorized);
         FilterTestsUtils.GetInnerCode(concreteResponse.Value).Should().Be("Unauthorized");
-        FilterTestsUtils.GetMessage(concreteResponse.Value).Should().Be("The provided authorization header is expired");
+        FilterTestsUtils.GetMessage(concreteResponse.Value).Should().Be("The provided authorization header is invalid");
     }
 
     #endregion

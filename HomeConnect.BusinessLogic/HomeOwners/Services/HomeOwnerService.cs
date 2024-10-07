@@ -89,6 +89,11 @@ public class HomeOwnerService : IHomeOwnerService
 
     public void UpdateMemberNotifications(Guid memberId, bool? requestShouldBeNotified)
     {
+        if (requestShouldBeNotified == null)
+        {
+            throw new ArgumentException("ShouldBeNotified must be provided.");
+        }
+
         Member member = GetMemberById(memberId);
         ChangeMemberPermissions(requestShouldBeNotified.Value, member);
     }

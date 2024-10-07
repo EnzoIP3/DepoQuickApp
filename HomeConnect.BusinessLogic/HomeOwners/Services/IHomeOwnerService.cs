@@ -11,7 +11,7 @@ public interface IHomeOwnerService
     List<Member> GetHomeMembers(string homeId);
     public IEnumerable<OwnedDevice> GetHomeDevices(string homeId);
     public Member GetMemberById(Guid memberId);
-    void UpdateMemberNotifications(Guid membersId, bool requestShouldBeNotified);
+    void UpdateMemberNotifications(Guid membersId, bool? requestShouldBeNotified);
     public void AddDeviceToHome(AddDevicesArgs addDevicesArgs);
     Home GetHome(Guid homeId);
 }

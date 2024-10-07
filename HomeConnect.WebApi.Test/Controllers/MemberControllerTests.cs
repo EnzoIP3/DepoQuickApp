@@ -29,7 +29,7 @@ public class MemberControllerTests
         _homeOwnerService.Setup(x => x.UpdateMemberNotifications(Guid.Parse(memberId), request.ShouldBeNotified));
         var expectedResult = new UpdateMemberNotificationsResponse
         {
-            MemberId = memberId, ShouldBeNotified = request.ShouldBeNotified
+            MemberId = memberId, ShouldBeNotified = request.ShouldBeNotified.Value
         };
 
         // Act

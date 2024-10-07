@@ -515,6 +515,22 @@ public class HomeOwnerServiceTests
         act.Should().Throw<ArgumentException>().WithMessage("Member does not exist.");
     }
 
+    [TestMethod]
+    public void UpdateMemberNotifications_WhenShouldBeNotifiedIsNull_ThrowsException()
+    {
+        // Arrange
+        var member = new Member(_user);
+        Guid memberId = member.Id;
+        _homeRepositoryMock.Setup(x => x.ExistsMember(memberId)).Returns(true);
+        _homeRepositoryMock.Setup(x => x.GetMemberById(memberId)).Returns(member);
+
+        // Act
+        Action act = () => _homeOwnerService.UpdateMemberNotifications(memberId, null);
+
+        // Assert
+        act.Should().Throw<ArgumentException>().WithMessage("ShouldBeNotified must be provided.");
+    }
+
     #endregion
 
     #region success

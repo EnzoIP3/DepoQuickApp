@@ -87,10 +87,10 @@ public class HomeOwnerService : IHomeOwnerService
         return OwnedDeviceRepository.GetOwnedDevicesByHome(home);
     }
 
-    public void UpdateMemberNotifications(Guid memberId, bool requestShouldBeNotified)
+    public void UpdateMemberNotifications(Guid memberId, bool? requestShouldBeNotified)
     {
         Member member = GetMemberById(memberId);
-        ChangeMemberPermissions(requestShouldBeNotified, member);
+        ChangeMemberPermissions(requestShouldBeNotified.Value, member);
     }
 
     private void ValidateCreateHomeArgs(CreateHomeArgs args)

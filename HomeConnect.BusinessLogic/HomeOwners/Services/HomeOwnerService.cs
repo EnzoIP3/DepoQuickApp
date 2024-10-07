@@ -56,7 +56,6 @@ public class HomeOwnerService : IHomeOwnerService
         EnsureDevicesAreNotEmpty(addDevicesArgs);
         ValidateAddDeviceModel(addDevicesArgs);
         Home home = GetHome(Guid.Parse(addDevicesArgs.HomeId));
-        EnsureDevicesAreNotAdded(addDevicesArgs.DeviceIds, home);
         List<Device> devices = GetDevices(addDevicesArgs.DeviceIds);
         AddDevicesToHome(home, devices);
     }
@@ -166,20 +165,6 @@ public class HomeOwnerService : IHomeOwnerService
         foreach (var id in addDevicesArgs.DeviceIds)
         {
             EnsureGuidIsValid(id, "Device ID");
-        }
-    }
-
-    private void EnsureDevicesAreNotAdded(IEnumerable<string> deviceIds, Home home)
-    {
-        var existingDeviceIds = OwnedDeviceRepository
-            .GetOwnedDevicesByHome(home)
-            .Select(od => od.Device.Id.ToString());
-
-        var duplicateDevices = deviceIds.Intersect(existingDeviceIds).ToList();
-        if (duplicateDevices.Any())
-        {
-            throw new InvalidOperationException(
-                $"Devices with ids {string.Join(", ", duplicateDevices)} are already added to the home");
         }
     }
 

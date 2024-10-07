@@ -143,4 +143,17 @@ public class AuthServiceTests
         // Assert
         result.Should().BeFalse();
     }
+
+    [TestMethod]
+    public void Exists_WithInvalidToken_ShouldThrowException()
+    {
+        // Arrange
+        const string token = "guid";
+
+        // Act
+        var act = () => _authService.Exists(token);
+
+        // Assert
+        act.Should().Throw<ArgumentException>();
+    }
 }

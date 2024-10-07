@@ -86,6 +86,7 @@ public class AuthService : IAuthService
 
     public bool Exists(string token)
     {
-        throw new NotImplementedException();
+        EnsureIsValidGuid(token);
+        return false;
     }
 }

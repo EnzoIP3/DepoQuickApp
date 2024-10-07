@@ -119,4 +119,29 @@ public class HomeAuthorizationFilterAttributeTests
         FilterTestsUtils.GetInnerCode(concreteResponse?.Value).Should().Be("Forbidden");
         FilterTestsUtils.GetMessage(concreteResponse?.Value).Should().Be("Missing home permission: some-permission");
     }
+
+    [TestMethod]
+    public void OnAuthorization_IfHomeDoesNotExist_ShouldReturnBadRequestResult()
+    {
+        var homeId = Guid.NewGuid();
+        var items = new Dictionary<object, object?> { { Item.UserLogged, _user } };
+        _httpContextMock.Setup(h => h.Items).Returns(items);
+        _context.RouteData.Values.Add(_homeIdRoute, homeId.ToString());
+        _homeOwnerServiceMock.Setup(h => h.GetHome(homeId)).Throws<ArgumentException>();
+        _httpContextMock.Setup(h => h.RequestServices.GetService(typeof(IHomeOwnerService)))
+            .Returns(_homeOwnerServiceMock.Object);
+
+        _attribute.OnAuthorization(_context);
+
+        var response = _context.Result;
+
+        _httpContextMock.VerifyAll();
+        _userRepositoryMock.VerifyAll();
+        response.Should().NotBeNull();
+        var concreteResponse = response as ObjectResult;
+        concreteResponse.Should().NotBeNull();
+        concreteResponse!.StatusCode.Should().Be((int)HttpStatusCode.BadRequest);
+        FilterTestsUtils.GetInnerCode(concreteResponse.Value).Should().Be("BadRequest");
+        FilterTestsUtils.GetMessage(concreteResponse.Value).Should().Be("The home does not exist");
+    }
 }

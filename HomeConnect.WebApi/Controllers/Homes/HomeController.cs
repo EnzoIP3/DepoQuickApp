@@ -101,12 +101,12 @@ public class HomeController(IHomeOwnerService homeOwnerService) : ControllerBase
     {
         AddDevicesArgs addDevicesArgs = FromRequestToAddDevicesArgs(homesId, request);
         homeOwnerService.AddDeviceToHome(addDevicesArgs);
-        return new AddDevicesResponse { HomeId = homesId, DeviceIds = request.DeviceIds };
+        return new AddDevicesResponse { HomeId = homesId, DeviceIds = request.DeviceIds! };
     }
 
     private static AddDevicesArgs FromRequestToAddDevicesArgs(string homesId, AddDevicesRequest request)
     {
-        var addDevicesArgs = new AddDevicesArgs { HomeId = homesId, DeviceIds = request.DeviceIds };
+        var addDevicesArgs = new AddDevicesArgs { HomeId = homesId, DeviceIds = request.DeviceIds ?? [] };
         return addDevicesArgs;
     }
 }

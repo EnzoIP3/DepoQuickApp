@@ -385,6 +385,23 @@ public class HomeOwnerServiceTests
             .WithMessage($"Devices with ids {device.Id.ToString()} are already added to the home");
     }
 
+    [TestMethod]
+    public void AddDevicesToHome_WhenDevicesAreEmpty_ThrowsException()
+    {
+        // Arrange
+        var home = new Home(_user, "Main St 123", 1.0, 2.0, 5);
+        var addDeviceModel = new AddDevicesArgs { HomeId = home.Id.ToString(), DeviceIds = [] };
+        _homeRepositoryMock.Setup(x => x.Exists(home.Id)).Returns(true);
+        _homeRepositoryMock.Setup(x => x.Get(home.Id)).Returns(home);
+        _ownedDeviceRepositoryMock.Setup(x => x.GetOwnedDevicesByHome(home)).Returns(new List<OwnedDevice>());
+
+        // Act
+        Action act = () => _homeOwnerService.AddDeviceToHome(addDeviceModel);
+
+        // Assert
+        act.Should().Throw<ArgumentException>();
+    }
+
     #endregion
 
     #endregion

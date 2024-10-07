@@ -39,8 +39,17 @@ public class HomeAuthorizationFilterAttribute(string permission) : Attribute, IA
             return;
         }
 
-        var homeOwnerService = GetHomeOwnerService(context);
-        var home = homeOwnerService.GetHome(homeIdParsed);
+        Home? home = GetHomeById(context, homeIdParsed);
+        if (home == null)
+        {
+            context.Result =
+                new ObjectResult(new { InnerCode = "BadRequest", Message = "The home does not exist" })
+                {
+                    StatusCode = (int)HttpStatusCode.BadRequest
+                };
+            return;
+        }
+
         var userLoggedMap = (User)userLoggedIn!;
         var homePermission = new HomePermission(permission);
         var hasPermission = home.Owner.Id == userLoggedMap.Id;
@@ -60,6 +69,22 @@ public class HomeAuthorizationFilterAttribute(string permission) : Attribute, IA
                 InnerCode = "Forbidden", Message = $"Missing home permission: {permission}"
             }) { StatusCode = (int)HttpStatusCode.Forbidden };
         }
+    }
+
+    private static Home? GetHomeById(AuthorizationFilterContext context, Guid homeIdParsed)
+    {
+        var homeOwnerService = GetHomeOwnerService(context);
+        Home? home;
+        try
+        {
+            home = homeOwnerService.GetHome(homeIdParsed);
+        }
+        catch (ArgumentException)
+        {
+            return null;
+        }
+
+        return home;
     }
 
     private static IHomeOwnerService GetHomeOwnerService(AuthorizationFilterContext context)

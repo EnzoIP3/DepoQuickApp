@@ -9,10 +9,10 @@ using Moq;
 namespace HomeConnect.WebApi.Test.Controllers;
 
 [TestClass]
-public class DeviceTypesControllerTests
+public class DeviceTypeControllerTests
 {
     private readonly string _defaultCacheTime = "2592000";
-    private DeviceTypesController _controller = null!;
+    private DeviceTypeController _controller = null!;
     private Mock<IDeviceService> _deviceService = null!;
     private Mock<HttpContext> _httpContextMock = null!;
 
@@ -21,7 +21,7 @@ public class DeviceTypesControllerTests
     {
         _httpContextMock = new Mock<HttpContext>();
         _deviceService = new Mock<IDeviceService>();
-        _controller = new DeviceTypesController(_deviceService.Object);
+        _controller = new DeviceTypeController(_deviceService.Object);
         _controller.ControllerContext = new ControllerContext { HttpContext = _httpContextMock.Object };
     }
 

@@ -60,6 +60,12 @@ public class HomeAuthorizationFilterAttribute(string permission) : Attribute, IA
             if (home == null)
             {
                 SetNotFoundResult(context, "The member does not exist");
+                return;
+            }
+
+            if (!UserHasRequiredPermission(user, home, permission))
+            {
+                SetForbiddenResult(context, permission);
             }
         }
     }

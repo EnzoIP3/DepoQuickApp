@@ -187,4 +187,34 @@ public class HomeAuthorizationFilterAttributeTests
         FilterTestsUtils.GetInnerCode(concreteResponse.Value).Should().Be("NotFound");
         FilterTestsUtils.GetMessage(concreteResponse.Value).Should().Be("The member does not exist");
     }
+
+    [TestMethod]
+    public void OnAuthorization_WhenUserIsMemberButLacksPermission_ShouldReturnForbiddenResult()
+    {
+        // Arrange
+        var owner = new User();
+        var home = new Home(owner, "street 123", 50.456, 123.456, 2);
+        var member = new Member(_user) { Home = home };
+
+        var items = new Dictionary<object, object?> { { Item.UserLogged, _user } };
+        _httpContextMock.Setup(h => h.Items).Returns(items);
+        _context.RouteData.Values.Add("membersId", member.Id.ToString());
+
+        _homeOwnerServiceMock.Setup(h => h.GetMemberById(member.Id)).Returns(member);
+        _httpContextMock.Setup(h => h.RequestServices.GetService(typeof(IHomeOwnerService)))
+            .Returns(_homeOwnerServiceMock.Object);
+
+        // Act
+        _attribute.OnAuthorization(_context);
+
+        // Assert
+        IActionResult? response = _context.Result;
+        _httpContextMock.VerifyAll();
+        response.Should().NotBeNull();
+        var concreteResponse = response as ObjectResult;
+        concreteResponse.Should().NotBeNull();
+        concreteResponse!.StatusCode.Should().Be((int)HttpStatusCode.Forbidden);
+        FilterTestsUtils.GetInnerCode(concreteResponse.Value).Should().Be("Forbidden");
+        FilterTestsUtils.GetMessage(concreteResponse.Value).Should().Be("Missing home permission: some-permission");
+    }
 }

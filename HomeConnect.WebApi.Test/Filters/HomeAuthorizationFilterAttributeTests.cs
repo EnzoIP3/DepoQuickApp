@@ -64,14 +64,11 @@ public class HomeAuthorizationFilterAttributeTests
     }
 
     [TestMethod]
-    [DataRow("")]
-    [DataRow(null)]
-    [DataRow(" ")]
-    public void OnAuthorization_WhenHomeIdIsInvalid_ShouldReturnUnauthorizedResult(string homeId)
+    public void OnAuthorization_WhenHomeIdIsInvalid_ShouldReturnUnauthorizedResult()
     {
         var items = new Dictionary<object, object?> { { Item.UserLogged, _user } };
         _httpContextMock.Setup(h => h.Items).Returns(items);
-        _context.RouteData.Values.Add("homesId", homeId);
+        _context.RouteData.Values.Add("homesId", " ");
         _attribute.OnAuthorization(_context);
 
         IActionResult? response = _context.Result;
@@ -82,7 +79,7 @@ public class HomeAuthorizationFilterAttributeTests
         concreteResponse.Should().NotBeNull();
         concreteResponse!.StatusCode.Should().Be((int)HttpStatusCode.BadRequest);
         FilterTestsUtils.GetInnerCode(concreteResponse.Value).Should().Be("BadRequest");
-        FilterTestsUtils.GetMessage(concreteResponse.Value).Should().Be("The home id is invalid");
+        FilterTestsUtils.GetMessage(concreteResponse.Value).Should().Be("The home ID is invalid");
     }
 
     [TestMethod]
@@ -139,5 +136,27 @@ public class HomeAuthorizationFilterAttributeTests
         concreteResponse!.StatusCode.Should().Be((int)HttpStatusCode.NotFound);
         FilterTestsUtils.GetInnerCode(concreteResponse.Value).Should().Be("NotFound");
         FilterTestsUtils.GetMessage(concreteResponse.Value).Should().Be("The home does not exist");
+    }
+
+    [TestMethod]
+    public void OnAuthorization_WhenMemberIdIsInvalid_ShouldReturnBadRequestResult()
+    {
+        // Arrange
+        var items = new Dictionary<object, object?> { { Item.UserLogged, _user } };
+        _httpContextMock.Setup(h => h.Items).Returns(items);
+        _context.RouteData.Values.Add("membersId", " ");
+
+        // Act
+        _attribute.OnAuthorization(_context);
+
+        // Assert
+        IActionResult? response = _context.Result;
+        _httpContextMock.VerifyAll();
+        response.Should().NotBeNull();
+        var concreteResponse = response as ObjectResult;
+        concreteResponse.Should().NotBeNull();
+        concreteResponse!.StatusCode.Should().Be((int)HttpStatusCode.BadRequest);
+        FilterTestsUtils.GetInnerCode(concreteResponse.Value).Should().Be("BadRequest");
+        FilterTestsUtils.GetMessage(concreteResponse.Value).Should().Be("The member ID is invalid");
     }
 }

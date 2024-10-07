@@ -44,7 +44,7 @@ public class DeviceController : ControllerBase
         {
             Devices = devices.Data.Select(d => new ListDeviceInfo
             {
-                Id = d.Id.ToString(),
+                HardwareId = d.Id.ToString(),
                 Name = d.Name,
                 BusinessName = d.Business.Name,
                 Type = d.Type.ToString(),

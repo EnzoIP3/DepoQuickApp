@@ -13,6 +13,7 @@ public record SystemPermission
     public const string AddMember = "add-member";
     public const string AddDevice = "add-device";
     public const string GetDevices = "get-devices";
+    public const string UpdateMember = "update-member";
     public const string GetMembers = "get-members";
     public const string CreateBusiness = "create-business";
     public const string CreateCamera = "create-camera";

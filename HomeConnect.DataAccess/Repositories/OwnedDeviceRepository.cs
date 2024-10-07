@@ -1,6 +1,7 @@
 using BusinessLogic.Devices.Entities;
 using BusinessLogic.Devices.Repositories;
 using BusinessLogic.HomeOwners.Entities;
+using Microsoft.EntityFrameworkCore;
 
 namespace HomeConnect.DataAccess.Repositories;
 
@@ -21,7 +22,7 @@ public class OwnedDeviceRepository : IOwnedDeviceRepository
 
     public IEnumerable<OwnedDevice> GetOwnedDevicesByHome(Home home)
     {
-        return _context.OwnedDevices.Where(od => od.Home == home);
+        return _context.OwnedDevices.Include(od => od.Device).ThenInclude(d => d.Business).Where(od => od.Home == home);
     }
 
     public bool ToggleConnection(string hardwareId)

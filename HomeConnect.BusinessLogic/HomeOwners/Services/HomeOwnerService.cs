@@ -43,12 +43,12 @@ public class HomeOwnerService : IHomeOwnerService
     public Guid AddMemberToHome(AddMemberArgs args)
     {
         ValidateAddMemberArgs(args);
-        User user = GetUserById(args.MemberId);
+        User user = GetUserById(args.UserId);
         Home home = GetHome(Guid.Parse(args.HomeId));
         var member = CreateMember(user, args);
         home.AddMember(member);
         MemberRepository.Add(member);
-        return user.Id;
+        return member.Id;
     }
 
     public void AddDeviceToHome(AddDevicesArgs addDevicesArgs)
@@ -105,15 +105,15 @@ public class HomeOwnerService : IHomeOwnerService
 
     private void ValidateAddMemberArgs(AddMemberArgs args)
     {
-        if (string.IsNullOrWhiteSpace(args.HomeId) || string.IsNullOrWhiteSpace(args.MemberId))
+        if (string.IsNullOrWhiteSpace(args.HomeId) || string.IsNullOrWhiteSpace(args.UserId))
         {
             throw new ArgumentException("All arguments are required.");
         }
 
         EnsureGuidIsValid(args.HomeId, "Home ID");
-        EnsureGuidIsValid(args.MemberId, "Member ID");
+        EnsureGuidIsValid(args.UserId, "Member ID");
         EnsureMemberIsNotAlreadyAdded(args);
-        EnsureUserExists(args.MemberId);
+        EnsureUserExists(args.UserId);
     }
 
     private void EnsureAddressIsUnique(string address)
@@ -203,13 +203,13 @@ public class HomeOwnerService : IHomeOwnerService
     private void EnsureMemberIsNotAlreadyAdded(AddMemberArgs args)
     {
         Home home = GetHome(Guid.Parse(args.HomeId));
-        if (home.Members.Any(m => m.User.Id.ToString() == args.MemberId))
+        if (home.Members.Any(m => m.User.Id.ToString() == args.UserId))
         {
             throw new InvalidOperationException("The member is already added to the home.");
         }
     }
 
-    private Member GetMemberById(Guid memberId)
+    public Member GetMemberById(Guid memberId)
     {
         if (!HomeRepository.ExistsMember(memberId))
         {

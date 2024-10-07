@@ -54,19 +54,19 @@ public class AdminService : IAdminService
         UserRepository.Delete(adminId);
     }
 
-    public PagedData<User> GetUsers(int? currentPage = 1, int? pageSize = 10, string? fullNameFilter = null,
+    public PagedData<User> GetUsers(int? currentPage = null, int? pageSize = null, string? fullNameFilter = null,
         string? roleFilter = null)
     {
         PagedData<User> users =
-            UserRepository.GetAllPaged(currentPage!.Value, pageSize!.Value, fullNameFilter, roleFilter);
+            UserRepository.GetAllPaged(currentPage ?? 1, pageSize ?? 10, fullNameFilter, roleFilter);
         return users;
     }
 
-    public PagedData<Business> GetBusinesses(int? currentPage = 1, int? pageSize = 10, string? nameFilter = null,
+    public PagedData<Business> GetBusinesses(int? currentPage = null, int? pageSize = null, string? nameFilter = null,
         string? fullNameFilter = null)
     {
         PagedData<Business> businesses =
-            BusinessRepository.GetPagedData(currentPage!.Value, pageSize!.Value, fullNameFilter, nameFilter);
+            BusinessRepository.GetPagedData(currentPage ?? 1, pageSize ?? 10, fullNameFilter, nameFilter);
         return businesses;
     }
 

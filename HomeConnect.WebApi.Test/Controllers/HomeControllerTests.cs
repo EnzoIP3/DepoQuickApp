@@ -97,7 +97,7 @@ public class HomeControllerTests
         var args = new AddMemberArgs
         {
             HomeId = _home.Id.ToString(),
-            MemberId = _user.Id.ToString(),
+            UserId = _user.Id.ToString(),
             CanAddDevices = request.CanAddDevices,
             CanListDevices = request.CanListDevices
         };
@@ -178,10 +178,11 @@ public class HomeControllerTests
 
         var expectedResponse = new GetDevicesResponse
         {
-            Device =
+            Devices =
             [
                 new ListDeviceInfo
                 {
+                    HardwareId = device1.HardwareId.ToString(),
                     Name = device1.Device.Name,
                     BusinessName = device1.Device.Business.Name,
                     Type = device1.Device.Type.ToString(),
@@ -191,6 +192,7 @@ public class HomeControllerTests
                 },
                 new ListDeviceInfo
                 {
+                    HardwareId = device2.HardwareId.ToString(),
                     Name = device2.Device.Name,
                     BusinessName = device2.Device.Business.Name,
                     Type = device2.Device.Type.ToString(),
@@ -203,14 +205,14 @@ public class HomeControllerTests
         };
 
         // Act
-        GetDevicesResponse response = _controller.GetDevices(_home.Id.ToString(), _context);
+        GetDevicesResponse response = _controller.GetDevices(_home.Id.ToString());
 
         // Assert
         _homeOwnerService.VerifyAll();
         response.Should().NotBeNull();
-        response.Device.Should().NotBeNullOrEmpty();
-        response.Device.Should().HaveCount(2);
-        response.Device.Should().BeEquivalentTo(expectedResponse.Device);
+        response.Devices.Should().NotBeNullOrEmpty();
+        response.Devices.Should().HaveCount(2);
+        response.Devices.Should().BeEquivalentTo(expectedResponse.Devices);
     }
 
     #endregion
@@ -226,11 +228,11 @@ public class HomeControllerTests
         var home = new Home(owner, "Road 123", 50.456, 100.789, 3);
         var member = new Member(_user,
         [
-            new HomePermission("canAddDevices"),
-            new HomePermission("canListDevices"),
-            new HomePermission("shouldBeNotified")
+            new HomePermission(HomePermission.AddDevice),
+            new HomePermission(HomePermission.GetDevices)
         ]);
-        var otherMember = new Member(_otherUser, [new HomePermission("canAddDevices")]);
+        var otherMember = new Member(_otherUser,
+            [new HomePermission(HomePermission.AddDevice), new HomePermission(HomePermission.GetDevices)]);
         home.AddMember(member);
         home.AddMember(otherMember);
         var items = new Dictionary<object, object?> { { Item.UserLogged, _user } };
@@ -241,7 +243,7 @@ public class HomeControllerTests
         GetMembersResponse expectedResponse = CreateGetMembersResponse(member, otherMember);
 
         // Act
-        GetMembersResponse response = _controller.GetMembers(home.Id.ToString(), _context);
+        GetMembersResponse response = _controller.GetMembers(home.Id.ToString());
 
         // Assert
         _homeOwnerService.VerifyAll();
@@ -263,9 +265,9 @@ public class HomeControllerTests
                     Name = member.User.Name,
                     Surname = member.User.Surname,
                     Photo = member.User.ProfilePicture ?? string.Empty,
-                    CanAddDevices = member.HasPermission(new HomePermission("canAddDevices")),
-                    CanListDevices = member.HasPermission(new HomePermission("canListDevices")),
-                    ShouldBeNotified = member.HasPermission(new HomePermission("shouldBeNotified"))
+                    CanAddDevices = member.HasPermission(new HomePermission(HomePermission.AddDevice)),
+                    CanListDevices = member.HasPermission(new HomePermission(HomePermission.GetDevices)),
+                    ShouldBeNotified = member.HasPermission(new HomePermission(HomePermission.GetNotifications))
                 },
 
                 new ListMemberInfo
@@ -274,9 +276,10 @@ public class HomeControllerTests
                     Name = otherMember.User.Name,
                     Surname = otherMember.User.Surname,
                     Photo = otherMember.User.ProfilePicture ?? string.Empty,
-                    CanAddDevices = otherMember.HasPermission(new HomePermission("canAddDevices")),
-                    CanListDevices = otherMember.HasPermission(new HomePermission("canListDevices")),
-                    ShouldBeNotified = otherMember.HasPermission(new HomePermission("shouldBeNotified"))
+                    CanAddDevices = otherMember.HasPermission(new HomePermission(HomePermission.AddDevice)),
+                    CanListDevices = otherMember.HasPermission(new HomePermission(HomePermission.GetDevices)),
+                    ShouldBeNotified =
+                        otherMember.HasPermission(new HomePermission(HomePermission.GetNotifications))
                 }
 
             ]

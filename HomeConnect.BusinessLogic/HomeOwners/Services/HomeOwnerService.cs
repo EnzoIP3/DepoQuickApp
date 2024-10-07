@@ -14,18 +14,21 @@ public class HomeOwnerService : IHomeOwnerService
         IHomeRepository homeRepository,
         IUserRepository userRepository,
         IDeviceRepository deviceRepository,
-        IOwnedDeviceRepository ownedDeviceRepository)
+        IOwnedDeviceRepository ownedDeviceRepository,
+        IMemberRepository memberRepository)
     {
         HomeRepository = homeRepository;
         UserRepository = userRepository;
         DeviceRepository = deviceRepository;
         OwnedDeviceRepository = ownedDeviceRepository;
+        MemberRepository = memberRepository;
     }
 
     private IHomeRepository HomeRepository { get; }
     private IUserRepository UserRepository { get; }
     private IDeviceRepository DeviceRepository { get; }
     private IOwnedDeviceRepository OwnedDeviceRepository { get; }
+    private IMemberRepository MemberRepository { get; }
 
     public Guid CreateHome(CreateHomeArgs args)
     {
@@ -44,7 +47,7 @@ public class HomeOwnerService : IHomeOwnerService
         Home home = GetHome(Guid.Parse(args.HomeId));
         var member = CreateMember(user, args);
         home.AddMember(member);
-        HomeRepository.Update(home);
+        MemberRepository.Add(member);
         return user.Id;
     }
 

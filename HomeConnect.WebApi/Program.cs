@@ -52,6 +52,7 @@ services.AddScoped<IDeviceRepository, DeviceRepository>();
 services.AddScoped<IBusinessRepository, BusinessRepository>();
 services.AddScoped<IOwnedDeviceRepository, OwnedDeviceRepository>();
 services.AddScoped<INotificationRepository, NotificationRepository>();
+services.AddScoped<IMemberRepository, MemberRepository>();
 services.AddScoped<IAuthService, AuthService>();
 services.AddScoped<IUserService, UserService>();
 services.AddScoped<IHomeOwnerService, HomeOwnerService>();

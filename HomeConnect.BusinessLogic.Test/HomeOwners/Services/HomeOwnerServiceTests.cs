@@ -25,6 +25,7 @@ public class HomeOwnerServiceTests
     private Mock<IHomeRepository> _homeRepositoryMock = null!;
     private Mock<IOwnedDeviceRepository> _ownedDeviceRepositoryMock = null!;
     private Mock<IUserRepository> _userRepositoryMock = null!;
+    private Mock<IMemberRepository> _memberRepositoryMock = null!;
 
     [TestInitialize]
     public void Initialize()
@@ -33,8 +34,9 @@ public class HomeOwnerServiceTests
         _userRepositoryMock = new Mock<IUserRepository>(MockBehavior.Strict);
         _ownedDeviceRepositoryMock = new Mock<IOwnedDeviceRepository>(MockBehavior.Strict);
         _deviceRepositoryMock = new Mock<IDeviceRepository>(MockBehavior.Strict);
+        _memberRepositoryMock = new Mock<IMemberRepository>(MockBehavior.Strict);
         _homeOwnerService = new HomeOwnerService(_homeRepositoryMock.Object, _userRepositoryMock.Object,
-            _deviceRepositoryMock.Object, _ownedDeviceRepositoryMock.Object);
+            _deviceRepositoryMock.Object, _ownedDeviceRepositoryMock.Object, _memberRepositoryMock.Object);
     }
 
     #region CreateHome

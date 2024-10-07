@@ -6,7 +6,7 @@ namespace HomeConnect.DataAccess.Repositories;
 
 public class HomeRepository : IHomeRepository
 {
-    private readonly Context _context = null!;
+    private readonly Context _context;
 
     public HomeRepository(Context context)
     {

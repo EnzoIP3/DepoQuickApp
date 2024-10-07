@@ -25,7 +25,7 @@ public class NotificationService : INotificationService
         EnsureOwnedDeviceExists(args.HardwareId);
         OwnedDevice ownedDevice = OwnedDeviceRepository.GetByHardwareId(Guid.Parse(args.HardwareId));
         EnsureOwnedDeviceIsNotNull(ownedDevice);
-        Home home = ownedDevice.Home;
+        var home = ownedDevice.Home;
         var shouldReceiveNotification = new HomePermission(HomePermission.GetNotifications);
         NotifyUsersWithPermission(args, home, shouldReceiveNotification, ownedDevice);
     }

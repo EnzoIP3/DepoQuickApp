@@ -15,7 +15,6 @@ namespace HomeConnect.WebApi.Controllers.Camera;
 
 [ApiController]
 [Route("cameras")]
-[AuthenticationFilter]
 public class CameraController(
     INotificationService notificationService,
     IDeviceService deviceService,
@@ -24,6 +23,7 @@ public class CameraController(
     : BaseDeviceController(deviceService)
 {
     [HttpPost]
+    [AuthenticationFilter]
     [AuthorizationFilter(SystemPermission.CreateCamera)]
     public CreateCameraResponse CreateCamera([FromBody] CreateCameraRequest request)
     {

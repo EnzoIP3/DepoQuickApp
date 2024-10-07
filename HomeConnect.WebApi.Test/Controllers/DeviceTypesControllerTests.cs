@@ -1,10 +1,5 @@
-using BusinessLogic;
-using BusinessLogic.BusinessOwners.Entities;
-using BusinessLogic.Devices.Entities;
-using BusinessLogic.Devices.Models;
 using BusinessLogic.Devices.Services;
 using FluentAssertions;
-using HomeConnect.WebApi.Controllers.Device;
 using HomeConnect.WebApi.Controllers.DeviceTypes;
 using HomeConnect.WebApi.Controllers.DeviceTypes.Models;
 using Microsoft.AspNetCore.Http;
@@ -16,10 +11,10 @@ namespace HomeConnect.WebApi.Test.Controllers;
 [TestClass]
 public class DeviceTypesControllerTests
 {
+    private readonly string _defaultCacheTime = "2592000";
     private DeviceTypesController _controller = null!;
     private Mock<IDeviceService> _deviceService = null!;
     private Mock<HttpContext> _httpContextMock = null!;
-    private readonly string _defaultCacheTime = "2592000";
 
     [TestInitialize]
     public void Initialize()
@@ -39,7 +34,7 @@ public class DeviceTypesControllerTests
         _httpContextMock.Setup(x => x.Response.Headers).Returns(new HeaderDictionary());
 
         // Act
-        var response = _controller.GetDeviceTypes();
+        GetDeviceTypesResponse response = _controller.GetDeviceTypes();
 
         // Assert
         response.Should().NotBeNull();

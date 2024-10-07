@@ -1,6 +1,5 @@
 using BusinessLogic;
 using BusinessLogic.BusinessOwners.Entities;
-using BusinessLogic.BusinessOwners.Models;
 using BusinessLogic.Devices.Entities;
 using BusinessLogic.Devices.Models;
 using BusinessLogic.Devices.Services;
@@ -9,7 +8,6 @@ using FluentAssertions;
 using HomeConnect.WebApi.Controllers.Device;
 using HomeConnect.WebApi.Controllers.Device.Models;
 using HomeConnect.WebApi.Controllers.Home.Models;
-using Microsoft.AspNetCore.Mvc;
 using Moq;
 using GetDevicesResponse = HomeConnect.WebApi.Controllers.Device.Models.GetDevicesResponse;
 
@@ -19,11 +17,11 @@ namespace HomeConnect.WebApi.Test.Controllers;
 public class DeviceControllerTests
 {
     private DeviceController _controller = null!;
-    private Mock<IDeviceService> _deviceService = null!;
     private Device _device = null!;
-    private Device _otherDevice = null!;
+    private Mock<IDeviceService> _deviceService = null!;
     private List<Device> _expectedDevices = null!;
     private Pagination _expectedPagination = null!;
+    private Device _otherDevice = null!;
     private PagedData<Device> _pagedList = null!;
 
     [TestInitialize]
@@ -69,7 +67,7 @@ public class DeviceControllerTests
         _deviceService.Setup(x => x.GetDevices(It.IsAny<GetDevicesArgs>())).Returns(_pagedList);
 
         // Act
-        var response = _controller.GetDevices(new GetDevicesRequest());
+        GetDevicesResponse response = _controller.GetDevices(new GetDevicesRequest());
 
         // Assert
         _deviceService.Verify(x => x.GetDevices(It.IsAny<GetDevicesArgs>()), Times.Once);

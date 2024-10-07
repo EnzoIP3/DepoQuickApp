@@ -5,61 +5,55 @@ namespace BusinessLogic.Devices.Entities;
 public class Camera : Device
 {
     private const string CameraType = "Camera";
-    public bool MotionDetection { get; set; }
-    public bool PersonDetection { get; set; }
-    public bool IsExterior { get; set; }
-    public bool IsInterior { get; set; }
 
     public Camera()
     {
     }
 
-    private void EnsureMotionDetectionIsNotNull(bool? motionDetection)
-    {
-        if (motionDetection == null)
-        {
-            throw new ArgumentException("Motion detection must be provided");
-        }
-    }
-
-    private void EnsurePersonDetectionIsNotNull(bool? personDetection)
-    {
-        if (personDetection == null)
-        {
-            throw new ArgumentException("Person detection must be provided");
-        }
-    }
-
-    private void EnsureIsExteriorIsNotNull(bool? isExterior)
-    {
-        if (isExterior == null)
-        {
-            throw new ArgumentException("Is exterior must be provided");
-        }
-    }
-
-    private void EnsureIsInteriorIsNotNull(bool? isInterior)
-    {
-        if (isInterior == null)
-        {
-            throw new ArgumentException("Is interior must be provided");
-        }
-    }
-
-    public Camera(string name, int? modelNumber, string description, string mainPhoto, List<string>? secondaryPhotos,
+    public Camera(
+        string name,
+        int? modelNumber,
+        string description,
+        string mainPhoto,
+        List<string>? secondaryPhotos,
         Business business,
-        bool? motionDetection, bool? personDetection, bool? isExterior, bool? isInterior)
+        bool? motionDetection,
+        bool? personDetection,
+        bool? isExterior,
+        bool? isInterior)
         : base(name, modelNumber, description, mainPhoto, secondaryPhotos, CameraType, business)
     {
-        EnsurePersonDetectionIsNotNull(personDetection);
-        EnsureIsExteriorIsNotNull(isExterior);
-        EnsureIsInteriorIsNotNull(isInterior);
-        EnsureMotionDetectionIsNotNull(motionDetection);
+        ValidateCameraProperties(motionDetection, personDetection, isExterior, isInterior);
         MotionDetection = motionDetection!.Value;
         PersonDetection = personDetection!.Value;
         IsExterior = isExterior!.Value;
         IsInterior = isInterior!.Value;
         EnsureExteriorOrInterior();
+    }
+
+    public bool MotionDetection { get; private set; }
+    public bool PersonDetection { get; private set; }
+    public bool IsExterior { get; private set; }
+    public bool IsInterior { get; private set; }
+
+    private void ValidateCameraProperties(
+        bool? motionDetection,
+        bool? personDetection,
+        bool? isExterior,
+        bool? isInterior)
+    {
+        CheckPropertyIsNotNull(motionDetection, "Motion detection must be provided");
+        CheckPropertyIsNotNull(personDetection, "Person detection must be provided");
+        CheckPropertyIsNotNull(isExterior, "Is exterior must be provided");
+        CheckPropertyIsNotNull(isInterior, "Is interior must be provided");
+    }
+
+    private void CheckPropertyIsNotNull(bool? property, string errorMessage)
+    {
+        if (!property.HasValue)
+        {
+            throw new ArgumentException(errorMessage);
+        }
     }
 
     private void EnsureExteriorOrInterior()

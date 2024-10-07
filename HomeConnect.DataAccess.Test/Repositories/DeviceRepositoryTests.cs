@@ -1,3 +1,4 @@
+using BusinessLogic;
 using BusinessLogic.BusinessOwners.Entities;
 using BusinessLogic.Devices.Entities;
 using BusinessLogic.Devices.Models;
@@ -13,10 +14,10 @@ public class DeviceRepositoryTests
 {
     private readonly Context _context = DbContextBuilder.BuildTestDbContext();
     private DeviceRepository _deviceRepository = null!;
-    private Device _validDevice = null!;
-    private Device _secondValidDevice = null!;
-    private User _validUser = null!;
     private Role _role = null!;
+    private Device _secondValidDevice = null!;
+    private Device _validDevice = null!;
+    private User _validUser = null!;
 
     [TestInitialize]
     public void Initialize()
@@ -98,7 +99,7 @@ public class DeviceRepositoryTests
         _context.SaveChanges();
 
         // Act
-        var result = _deviceRepository.Get(device.Id);
+        Device result = _deviceRepository.Get(device.Id);
 
         // Assert
         result.Should().BeEquivalentTo(device);
@@ -128,18 +129,15 @@ public class DeviceRepositoryTests
     #region GetDevices
 
     #region Success
+
     [TestMethod]
     public void GetDevices_WhenCalled_ReturnsPaginatedDevices()
     {
         // Arrange
-        var args = new GetDevicesArgs
-        {
-            Page = 1,
-            PageSize = 2
-        };
+        var args = new GetDevicesArgs { Page = 1, PageSize = 2 };
 
         // Act
-        var result = _deviceRepository.GetDevices(args);
+        PagedData<Device> result = _deviceRepository.GetDevices(args);
 
         // Assert
         result.Data.Should().HaveCount(2);
@@ -152,15 +150,10 @@ public class DeviceRepositoryTests
     {
         // Arrange
         var deviceNameFilter = "DeviceValid";
-        var args = new GetDevicesArgs
-        {
-            Page = 1,
-            PageSize = 10,
-            DeviceNameFilter = deviceNameFilter
-        };
+        var args = new GetDevicesArgs { Page = 1, PageSize = 10, DeviceNameFilter = deviceNameFilter };
 
         // Act
-        var result = _deviceRepository.GetDevices(args);
+        PagedData<Device> result = _deviceRepository.GetDevices(args);
 
         // Assert
         result.Data.Should().HaveCount(1);
@@ -172,15 +165,10 @@ public class DeviceRepositoryTests
     {
         // Arrange
         var modelNumberFilter = 1234567;
-        var args = new GetDevicesArgs
-        {
-            Page = 1,
-            PageSize = 10,
-            ModelNumberFilter = modelNumberFilter
-        };
+        var args = new GetDevicesArgs { Page = 1, PageSize = 10, ModelNumberFilter = modelNumberFilter };
 
         // Act
-        var result = _deviceRepository.GetDevices(args);
+        PagedData<Device> result = _deviceRepository.GetDevices(args);
 
         // Assert
         result.Data.Should().HaveCount(1);
@@ -194,15 +182,10 @@ public class DeviceRepositoryTests
     {
         // Arrange
         DeviceType deviceType = Enum.Parse<DeviceType>(deviceTypeFilter);
-        var args = new GetDevicesArgs
-        {
-            Page = 1,
-            PageSize = 2,
-            DeviceTypeFilter = deviceType.ToString()
-        };
+        var args = new GetDevicesArgs { Page = 1, PageSize = 2, DeviceTypeFilter = deviceType.ToString() };
 
         // Act
-        var result = _deviceRepository.GetDevices(args);
+        PagedData<Device> result = _deviceRepository.GetDevices(args);
 
         // Assert
         result.Data.Should().HaveCount(1);
@@ -214,15 +197,10 @@ public class DeviceRepositoryTests
     {
         // Arrange
         var deviceTypeFilter = "Sensor";
-        var args = new GetDevicesArgs
-        {
-            Page = 1,
-            PageSize = 2,
-            DeviceTypeFilter = deviceTypeFilter
-        };
+        var args = new GetDevicesArgs { Page = 1, PageSize = 2, DeviceTypeFilter = deviceTypeFilter };
 
         // Act
-        var result = _deviceRepository.GetDevices(args);
+        PagedData<Device> result = _deviceRepository.GetDevices(args);
 
         // Assert
         result.Data.Should().HaveCount(1);

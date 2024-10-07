@@ -20,7 +20,8 @@ public class NotificationRepository : INotificationRepository
         _context.SaveChanges();
     }
 
-    public List<Notification> Get(Guid userId, string? deviceFilter = null, DateTime? dateFilter = null, bool? readFilter = null)
+    public List<Notification> Get(Guid userId, string? deviceFilter = null, DateTime? dateFilter = null,
+        bool? readFilter = null)
     {
         DeviceType? deviceTypeFilter = null;
         if (!string.IsNullOrEmpty(deviceFilter))

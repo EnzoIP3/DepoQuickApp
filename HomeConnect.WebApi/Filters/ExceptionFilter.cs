@@ -8,7 +8,7 @@ namespace HomeConnect.WebApi.Filters;
 public class ExceptionFilter : IExceptionFilter
 {
     private readonly Dictionary<Type, Func<Exception, IActionResult>> _errors =
-        new Dictionary<Type, Func<Exception, IActionResult>>
+        new()
         {
             {
                 typeof(ArgumentException),
@@ -42,10 +42,10 @@ public class ExceptionFilter : IExceptionFilter
 
     public void OnException(ExceptionContext context)
     {
-        var exceptionType = context.Exception.GetType();
+        Type exceptionType = context.Exception.GetType();
         var exceptionMessage = context.Exception.Message;
 
-        var response = _errors.GetValueOrDefault(exceptionType)?.Invoke(context.Exception);
+        IActionResult? response = _errors.GetValueOrDefault(exceptionType)?.Invoke(context.Exception);
 
         if (response == null)
         {

@@ -21,14 +21,30 @@ public class Context(DbContextOptions<Context> options) : DbContext(options)
     public DbSet<Home> Homes { get; set; } = null!;
     public DbSet<OwnedDevice> OwnedDevices { get; set; } = null!;
     public DbSet<Token> Tokens { get; set; } = null!;
+    public DbSet<Member> Members { get; set; } = null!;
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
+    {
+        SeedRoles(modelBuilder);
+        SeedPermissions(modelBuilder);
+        ConfigureRolePermissions(modelBuilder);
+        ConfigureUserRole(modelBuilder);
+        ConfigureMemberRelations(modelBuilder);
+        SeedAdminUser(modelBuilder);
+
+        base.OnModelCreating(modelBuilder);
+    }
+
+    private void SeedRoles(ModelBuilder modelBuilder)
     {
         modelBuilder.Entity<Role>().HasData(
             new Role { Name = Role.Admin },
             new Role { Name = Role.HomeOwner },
             new Role { Name = Role.BusinessOwner });
+    }
 
+    private void SeedPermissions(ModelBuilder modelBuilder)
+    {
         modelBuilder.Entity<SystemPermission>().HasData(
             new SystemPermission { Value = SystemPermission.CreateAdministrator },
             new SystemPermission { Value = SystemPermission.DeleteAdministrator },
@@ -43,7 +59,10 @@ public class Context(DbContextOptions<Context> options) : DbContext(options)
             new SystemPermission { Value = SystemPermission.CreateBusiness },
             new SystemPermission { Value = SystemPermission.CreateCamera },
             new SystemPermission { Value = SystemPermission.CreateSensor });
+    }
 
+    private void ConfigureRolePermissions(ModelBuilder modelBuilder)
+    {
         modelBuilder.Entity<Role>()
             .HasMany(r => r.Permissions)
             .WithMany(p => p.Roles)
@@ -61,12 +80,31 @@ public class Context(DbContextOptions<Context> options) : DbContext(options)
                 new { RolesName = Role.BusinessOwner, PermissionsValue = SystemPermission.CreateBusiness },
                 new { RolesName = Role.BusinessOwner, PermissionsValue = SystemPermission.CreateCamera },
                 new { RolesName = Role.BusinessOwner, PermissionsValue = SystemPermission.CreateSensor }));
+    }
 
+    private void ConfigureUserRole(ModelBuilder modelBuilder)
+    {
         modelBuilder.Entity<User>()
             .HasOne(u => u.Role)
             .WithMany()
             .HasForeignKey("RoleName");
+    }
 
+    private void ConfigureMemberRelations(ModelBuilder modelBuilder)
+    {
+        modelBuilder.Entity<Member>()
+            .HasOne(m => m.User)
+            .WithMany()
+            .OnDelete(DeleteBehavior.Restrict);
+
+        modelBuilder.Entity<Member>()
+            .HasOne(m => m.Home)
+            .WithMany(u => u.Members)
+            .OnDelete(DeleteBehavior.Restrict);
+    }
+
+    private void SeedAdminUser(ModelBuilder modelBuilder)
+    {
         modelBuilder.Entity<User>().HasData(new
         {
             Id = Guid.Parse("f1b3b3b3-3b3b-3b3b-3b3b-3b3b3b3b3b3b"),
@@ -77,7 +115,5 @@ public class Context(DbContextOptions<Context> options) : DbContext(options)
             RoleName = "Admin",
             CreatedAt = new DateOnly(2024, 1, 1)
         });
-
-        base.OnModelCreating(modelBuilder);
     }
 }

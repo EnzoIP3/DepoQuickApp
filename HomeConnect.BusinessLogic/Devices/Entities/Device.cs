@@ -4,24 +4,32 @@ namespace BusinessLogic.Devices.Entities;
 
 public class Device
 {
-    private string _name = string.Empty;
     private string _description = string.Empty;
     private string _mainPhoto = string.Empty;
+    private string _name = string.Empty;
     private List<string> _secondaryPhotos = [];
-    private DeviceType _type;
-    private Business _business = null!;
 
-    public bool ConnectionState { get; set; } = false;
+    public Device(string name, int? modelNumber, string description, string mainPhoto, List<string>? secondaryPhotos,
+        string type, Business business)
+    {
+        Name = name;
+        EnsureModelNumberIsNotNull(modelNumber);
+        ModelNumber = modelNumber!.Value;
+        Description = description;
+        MainPhoto = mainPhoto;
+        SecondaryPhotos = secondaryPhotos ?? [];
+        Type = ParseDeviceType(type);
+        Business = business;
+    }
+
+    public Device()
+    {
+    }
+
+    public bool ConnectionState { get; set; }
     public Guid Id { get; init; } = Guid.NewGuid();
 
-    public Business Business
-    {
-        get => _business;
-        set
-        {
-            _business = value;
-        }
-    }
+    public Business Business { get; set; } = null!;
 
     public string Name
     {
@@ -66,39 +74,7 @@ public class Device
         }
     }
 
-    public DeviceType Type
-    {
-        get => _type;
-        set
-        {
-            _type = value;
-        }
-    }
-
-    public Device(string name, int? modelNumber, string description, string mainPhoto, List<string>? secondaryPhotos,
-        string type, Business business)
-    {
-        Name = name;
-        ModelNumber = modelNumber ?? throw new ArgumentException("Model number is missing");
-        Description = description;
-        MainPhoto = mainPhoto;
-        SecondaryPhotos = secondaryPhotos ?? [];
-
-        if (Enum.TryParse(type, true, out DeviceType parsedType))
-        {
-            Type = parsedType;
-        }
-        else
-        {
-            throw new ArgumentException("Invalid device type");
-        }
-
-        Business = business;
-    }
-
-    public Device()
-    {
-    }
+    public DeviceType Type { get; set; }
 
     private static void EnsurePhotoUrlIsValid(string photoUrl)
     {
@@ -110,9 +86,27 @@ public class Device
 
     private static void EnsureFieldIsNotEmpty(string field, string value)
     {
-        if (value == string.Empty)
+        if (string.IsNullOrEmpty(value))
         {
             throw new ArgumentException($"{field} is missing");
         }
+    }
+
+    private static void EnsureModelNumberIsNotNull(int? modelNumber)
+    {
+        if (modelNumber == null)
+        {
+            throw new ArgumentException("Model number is missing");
+        }
+    }
+
+    private static DeviceType ParseDeviceType(string type)
+    {
+        if (Enum.TryParse(type, true, out DeviceType parsedType))
+        {
+            return parsedType;
+        }
+
+        throw new ArgumentException("Invalid device type");
     }
 }

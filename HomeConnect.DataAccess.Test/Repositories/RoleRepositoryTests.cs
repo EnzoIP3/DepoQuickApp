@@ -8,8 +8,8 @@ namespace HomeConnect.DataAccess.Test.Repositories;
 public class RoleRepositoryTests
 {
     private readonly Context _context = DbContextBuilder.BuildTestDbContext();
+    private readonly Role _role = new() { Name = "Role" };
     private RoleRepository _roleRepository = null!;
-    private readonly Role _role = new Role { Name = "Role" };
 
     [TestInitialize]
     public void Initialize()
@@ -26,6 +26,24 @@ public class RoleRepositoryTests
         _context.Database.EnsureDeleted();
     }
 
+    #region Exists
+
+    #region Success
+
+    [TestMethod]
+    public void Exists_WhenRoleExists_ShouldReturnTrue()
+    {
+        // Act
+        var result = _roleRepository.Exists("Role");
+
+        // Assert
+        result.Should().BeTrue();
+    }
+
+    #endregion
+
+    #endregion
+
     #region GetRole
 
     #region Success
@@ -34,7 +52,7 @@ public class RoleRepositoryTests
     public void GetRole_WhenRoleExists_ShouldReturnRole()
     {
         // Act
-        var result = _roleRepository.Get("Role");
+        Role result = _roleRepository.Get("Role");
 
         // Assert
         result.Name.Should().Be("Role");
@@ -52,24 +70,6 @@ public class RoleRepositoryTests
 
         // Assert
         action.Should().Throw<ArgumentException>();
-    }
-
-    #endregion
-
-    #endregion
-
-    #region Exists
-
-    #region Success
-
-    [TestMethod]
-    public void Exists_WhenRoleExists_ShouldReturnTrue()
-    {
-        // Act
-        var result = _roleRepository.Exists("Role");
-
-        // Assert
-        result.Should().BeTrue();
     }
 
     #endregion

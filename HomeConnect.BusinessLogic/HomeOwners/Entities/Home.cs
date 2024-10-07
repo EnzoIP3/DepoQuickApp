@@ -4,45 +4,23 @@ namespace BusinessLogic.HomeOwners.Entities;
 
 public class Home
 {
-    private string _address = string.Empty;
     private readonly double _latitude;
     private readonly double _longitude;
+    private string _address = string.Empty;
+
+    private int _maxMembers;
 
     public Home()
     {
     }
 
-    private void EnsureLatitudeIsNotNull(double? latitude)
-    {
-        if (latitude == null)
-        {
-            throw new ArgumentException("Latitude is required.");
-        }
-    }
-
-    private void EnsureLongitudeIsNotNull(double? longitude)
-    {
-        if (longitude == null)
-        {
-            throw new ArgumentException("Longitude is required.");
-        }
-    }
-
-    private void EnsureMaxMembersIsNotNull(int? maxMembers)
-    {
-        if (maxMembers == null)
-        {
-            throw new ArgumentException("Max members is required.");
-        }
-    }
-
     public Home(User owner, string address, double? latitude, double? longitude, int? maxMembers)
     {
-        Owner = owner;
-        Address = address;
         EnsureLatitudeIsNotNull(latitude);
         EnsureLongitudeIsNotNull(longitude);
         EnsureMaxMembersIsNotNull(maxMembers);
+        Owner = owner;
+        Address = address;
         Latitude = latitude!.Value;
         Longitude = longitude!.Value;
         MaxMembers = maxMembers!.Value;
@@ -93,7 +71,6 @@ public class Home
         }
     }
 
-    private int _maxMembers;
     public int MaxMembers
     {
         get => _maxMembers;
@@ -101,6 +78,30 @@ public class Home
         {
             EnsureMaxMembersIsPositive(value);
             _maxMembers = value;
+        }
+    }
+
+    private void EnsureLatitudeIsNotNull(double? latitude)
+    {
+        if (latitude == null)
+        {
+            throw new ArgumentException("Latitude is required.");
+        }
+    }
+
+    private void EnsureLongitudeIsNotNull(double? longitude)
+    {
+        if (longitude == null)
+        {
+            throw new ArgumentException("Longitude is required.");
+        }
+    }
+
+    private void EnsureMaxMembersIsNotNull(int? maxMembers)
+    {
+        if (maxMembers == null)
+        {
+            throw new ArgumentException("Max members is required.");
         }
     }
 

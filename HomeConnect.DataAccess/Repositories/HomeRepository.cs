@@ -20,14 +20,6 @@ public class HomeRepository : IHomeRepository
         _context.SaveChanges();
     }
 
-    private void EnsureHomeDoesNotExist(Home home)
-    {
-        if (_context.Homes.Any(h => h.Address == home.Address))
-        {
-            throw new ArgumentException("Home already exists");
-        }
-    }
-
     public Home Get(Guid homeId)
     {
         Home? home = _context.Homes.Include(h => h.Members).ThenInclude(h => h.User).Include(h => h.Owner)
@@ -76,5 +68,13 @@ public class HomeRepository : IHomeRepository
     public bool ExistsMember(Guid memberId)
     {
         return _context.Homes.Any(h => h.Members.Any(m => m.Id == memberId));
+    }
+
+    private void EnsureHomeDoesNotExist(Home home)
+    {
+        if (_context.Homes.Any(h => h.Address == home.Address))
+        {
+            throw new ArgumentException("Home already exists");
+        }
     }
 }

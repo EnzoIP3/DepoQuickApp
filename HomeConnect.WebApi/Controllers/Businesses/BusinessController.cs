@@ -1,5 +1,6 @@
 using BusinessLogic;
 using BusinessLogic.Admins.Services;
+using BusinessLogic.BusinessOwners.Entities;
 using BusinessLogic.BusinessOwners.Models;
 using BusinessLogic.BusinessOwners.Services;
 using BusinessLogic.Roles.Entities;
@@ -18,8 +19,9 @@ public class BusinessController(IAdminService adminService, IBusinessOwnerServic
     [AuthorizationFilter(SystemPermission.GetAllBusinesses)]
     public GetBusinessesResponse GetBusinesses([FromQuery] GetBusinessesRequest request)
     {
-        var businesses = adminService.GetBusinesses(request.CurrentPage, request.PageSize, request.Name, request.OwnerName);
-        var response = ResponseFromBusinesses(businesses);
+        PagedData<Business> businesses =
+            adminService.GetBusinesses(request.CurrentPage, request.PageSize, request.Name, request.OwnerName);
+        GetBusinessesResponse response = ResponseFromBusinesses(businesses);
         return response;
     }
 
@@ -28,23 +30,23 @@ public class BusinessController(IAdminService adminService, IBusinessOwnerServic
     public CreateBusinessResponse CreateBusiness([FromBody] CreateBusinessRequest request)
     {
         var userLoggedIn = HttpContext.Items[Item.UserLogged] as BusinessLogic.Users.Entities.User;
-        var args = new CreateBusinessArgs()
+        var args = new CreateBusinessArgs
         {
             Name = request.Name ?? string.Empty,
             Logo = request.Logo ?? string.Empty,
             OwnerId = userLoggedIn?.Id.ToString() ?? string.Empty,
             Rut = request.Rut ?? string.Empty
         };
-        var business = businessOwnerService.CreateBusiness(args);
-        return new CreateBusinessResponse() { Rut = business.Rut };
+        Business business = businessOwnerService.CreateBusiness(args);
+        return new CreateBusinessResponse { Rut = business.Rut };
     }
 
     private static GetBusinessesResponse ResponseFromBusinesses(
-        PagedData<BusinessLogic.BusinessOwners.Entities.Business> businesses)
+        PagedData<Business> businesses)
     {
         return new GetBusinessesResponse
         {
-            Businesses = businesses.Data.Select(b => new ListBusinessInfo()
+            Businesses = businesses.Data.Select(b => new ListBusinessInfo
             {
                 Name = b.Name,
                 OwnerEmail = b.Owner.Email,
@@ -52,7 +54,7 @@ public class BusinessController(IAdminService adminService, IBusinessOwnerServic
                 OwnerSurname = b.Owner.Surname,
                 Rut = b.Rut
             }).ToList(),
-            Pagination = new Pagination()
+            Pagination = new Pagination
             {
                 Page = businesses.Page, PageSize = businesses.PageSize, TotalPages = businesses.TotalPages
             }

@@ -12,8 +12,8 @@ public class AuthController(IAuthService authService)
     [HttpPost]
     public CreateTokenResponse CreateToken([FromBody] CreateTokenRequest request)
     {
-        var args = new CreateTokenArgs() { Email = request.Email, Password = request.Password };
+        var args = new CreateTokenArgs { Email = request.Email, Password = request.Password };
         var token = authService.CreateToken(args);
-        return new CreateTokenResponse() { Token = token };
+        return new CreateTokenResponse { Token = token };
     }
 }

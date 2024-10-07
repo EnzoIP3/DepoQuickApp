@@ -14,7 +14,7 @@ public class BusinessTests
         var user = new User();
 
         // Act
-        var act = () => new Business("RUT", "Business", "https://example.com/image.png", user);
+        Func<Business> act = () => new Business("RUT", "Business", "https://example.com/image.png", user);
 
         // Assert
         act.Should().NotThrow();
@@ -27,7 +27,7 @@ public class BusinessTests
         var user = new User();
 
         // Act
-        var act = () => new Business("RUT", "Business", "not-a-url", user);
+        Func<Business> act = () => new Business("RUT", "Business", "not-a-url", user);
 
         // Assert
         act.Should().Throw<ArgumentException>();
@@ -43,7 +43,7 @@ public class BusinessTests
         var user = new User();
 
         // Act
-        var act = () => new Business(rut, name, logo, user);
+        Func<Business> act = () => new Business(rut, name, logo, user);
 
         // Assert
         act.Should().Throw<ArgumentException>();

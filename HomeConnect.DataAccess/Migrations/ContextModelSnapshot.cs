@@ -185,7 +185,7 @@ namespace HomeConnect.DataAccess.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("uniqueidentifier");
 
-                    b.Property<Guid?>("HomeId")
+                    b.Property<Guid>("HomeId")
                         .HasColumnType("uniqueidentifier");
 
                     b.Property<Guid>("UserId")
@@ -197,7 +197,7 @@ namespace HomeConnect.DataAccess.Migrations
 
                     b.HasIndex("UserId");
 
-                    b.ToTable("Member");
+                    b.ToTable("Members");
                 });
 
             modelBuilder.Entity("BusinessLogic.Notifications.Entities.Notification", b =>
@@ -541,15 +541,19 @@ namespace HomeConnect.DataAccess.Migrations
 
             modelBuilder.Entity("BusinessLogic.HomeOwners.Entities.Member", b =>
                 {
-                    b.HasOne("BusinessLogic.HomeOwners.Entities.Home", null)
+                    b.HasOne("BusinessLogic.HomeOwners.Entities.Home", "Home")
                         .WithMany("Members")
-                        .HasForeignKey("HomeId");
+                        .HasForeignKey("HomeId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
 
                     b.HasOne("BusinessLogic.Users.Entities.User", "User")
                         .WithMany()
                         .HasForeignKey("UserId")
-                        .OnDelete(DeleteBehavior.Cascade)
+                        .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
+
+                    b.Navigation("Home");
 
                     b.Navigation("User");
                 });

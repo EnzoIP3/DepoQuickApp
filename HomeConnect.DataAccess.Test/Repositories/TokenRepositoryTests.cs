@@ -47,7 +47,7 @@ public class TokenRepositoryTests
         _tokenRepository.Add(token);
 
         // Act
-        var result = _tokenRepository.Get(token.Id);
+        Token result = _tokenRepository.Get(token.Id);
 
         // Assert
         result.Should().NotBeNull();

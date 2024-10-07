@@ -12,10 +12,10 @@ namespace HomeConnect.WebApi.Test.Controllers;
 public class BusinessOwnerControllerTests
 {
     private Mock<IAdminService> _adminService = null!;
-    private BusinessOwnerController _controller = null!;
     private CreateBusinessOwnerRequest _businessOwnerRequest = null!;
-    private CreateUserArgs _userModel = null!;
+    private BusinessOwnerController _controller = null!;
     private Guid _guid;
+    private CreateUserArgs _userModel = null!;
 
     [TestInitialize]
     public void Initialize()
@@ -25,10 +25,7 @@ public class BusinessOwnerControllerTests
 
         _businessOwnerRequest = new CreateBusinessOwnerRequest
         {
-            Name = "John",
-            Surname = "Doe",
-            Email = "email@email.com",
-            Password = "password"
+            Name = "John", Surname = "Doe", Email = "email@email.com", Password = "password"
         };
         _userModel = new CreateUserArgs
         {
@@ -50,7 +47,7 @@ public class BusinessOwnerControllerTests
         _adminService.Setup(x => x.CreateBusinessOwner(_userModel)).Returns(_guid);
 
         // Act
-        var response = _controller.CreateBusinessOwner(_businessOwnerRequest);
+        CreateBusinessOwnerResponse response = _controller.CreateBusinessOwner(_businessOwnerRequest);
 
         // Assert
         _adminService.VerifyAll();

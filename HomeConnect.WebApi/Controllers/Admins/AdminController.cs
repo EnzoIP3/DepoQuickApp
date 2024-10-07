@@ -17,7 +17,7 @@ public class AdminController(IAdminService adminService) : ControllerBase
     public CreateAdminResponse CreateAdmin([FromBody] CreateAdminRequest request)
     {
         CreateUserArgs createUserArgs = UserModelFromRequest(request);
-        var adminId = adminService.Create(createUserArgs);
+        Guid adminId = adminService.Create(createUserArgs);
         return new CreateAdminResponse { Id = adminId.ToString() };
     }
 
@@ -39,6 +39,6 @@ public class AdminController(IAdminService adminService) : ControllerBase
     public DeleteAdminResponse DeleteAdmin([FromRoute] string adminId)
     {
         adminService.Delete(adminId);
-        return new DeleteAdminResponse() { Id = adminId };
+        return new DeleteAdminResponse { Id = adminId };
     }
 }

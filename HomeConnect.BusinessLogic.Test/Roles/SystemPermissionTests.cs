@@ -17,7 +17,7 @@ public class SystemPermissionTests
         const string value = "create_admin";
 
         // Act
-        var act = () => new SystemPermission(value);
+        Func<SystemPermission> act = () => new SystemPermission(value);
 
         // Assert
         act.Should().NotThrow();

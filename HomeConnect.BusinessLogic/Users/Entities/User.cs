@@ -7,8 +7,25 @@ public class User
 {
     private readonly string _email = string.Empty;
     private readonly string _name = string.Empty;
-    private readonly string _surname = string.Empty;
     private readonly string _password = string.Empty;
+
+    private readonly string? _profilePicture;
+    private readonly string _surname = string.Empty;
+
+    public User()
+    {
+    }
+
+    public User(string name, string surname, string email, string password, Role role, string? profilePicture = null)
+    {
+        Name = name;
+        Surname = surname;
+        Email = email;
+        Password = password;
+        CreatedAt = DateOnly.FromDateTime(DateTime.Now);
+        Role = role;
+        ProfilePicture = profilePicture;
+    }
 
     public Guid Id { get; init; } = Guid.NewGuid();
 
@@ -55,10 +72,8 @@ public class User
     }
 
     public string RoleName { get; set; } = string.Empty;
-    public Role Role { get; set; } = new Role();
+    public Role Role { get; set; } = new();
     public DateOnly CreatedAt { get; set; }
-
-    private readonly string? _profilePicture;
 
     public string? ProfilePicture
     {
@@ -75,21 +90,6 @@ public class User
 
             _profilePicture = value;
         }
-    }
-
-    public User()
-    {
-    }
-
-    public User(string name, string surname, string email, string password, Role role, string? profilePicture = null)
-    {
-        Name = name;
-        Surname = surname;
-        Email = email;
-        Password = password;
-        CreatedAt = DateOnly.FromDateTime(DateTime.Now);
-        Role = role;
-        ProfilePicture = profilePicture;
     }
 
     private static void ValidateNotEmpty(string value, string propertyName)
@@ -111,43 +111,45 @@ public class User
 
     private static void ValidatePassword(string password)
     {
-        if (!ContainsCapitalLetter(password))
+        EnsureContainsCapitalLetter(password);
+        EnsureContainsDigit(password);
+        EnsureContainsSpecialCharacter(password);
+        EnsurePasswordLength(password);
+    }
+
+    private static void EnsureContainsCapitalLetter(string input)
+    {
+        const string capitalLetterPattern = @"[A-Z]";
+        if (!Regex.IsMatch(input, capitalLetterPattern))
         {
             throw new ArgumentException("Password must contain at least one capital letter.");
         }
+    }
 
-        if (!ContainsDigit(password))
+    private static void EnsureContainsDigit(string input)
+    {
+        const string digitPattern = @"\d";
+        if (!Regex.IsMatch(input, digitPattern))
         {
             throw new ArgumentException("Password must contain at least one digit.");
         }
+    }
 
-        if (!ContainsSpecialCharacter(password))
+    private static void EnsureContainsSpecialCharacter(string input)
+    {
+        const string specialCharacterPattern = @"[\W_]";
+        if (!Regex.IsMatch(input, specialCharacterPattern))
         {
             throw new ArgumentException("Password must contain at least one special character.");
         }
+    }
 
-        if (password.Length < 8)
+    private static void EnsurePasswordLength(string input)
+    {
+        if (input.Length < 8)
         {
             throw new ArgumentException("Password must be at least 8 characters long.");
         }
-    }
-
-    private static bool ContainsCapitalLetter(string input)
-    {
-        const string capitalLetterPattern = @"[A-Z]";
-        return Regex.IsMatch(input, capitalLetterPattern);
-    }
-
-    private static bool ContainsDigit(string input)
-    {
-        const string digitPattern = @"\d";
-        return Regex.IsMatch(input, digitPattern);
-    }
-
-    private static bool ContainsSpecialCharacter(string input)
-    {
-        const string specialCharacterPattern = @"[\W_]";
-        return Regex.IsMatch(input, specialCharacterPattern);
     }
 
     public bool HasPermission(string permission)

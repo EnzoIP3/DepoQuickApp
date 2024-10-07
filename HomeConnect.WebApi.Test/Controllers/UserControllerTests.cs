@@ -5,7 +5,6 @@ using BusinessLogic.Users.Entities;
 using FluentAssertions;
 using HomeConnect.WebApi.Controllers.User;
 using HomeConnect.WebApi.Controllers.User.Models;
-using Microsoft.AspNetCore.Mvc;
 using Moq;
 
 namespace HomeConnect.WebApi.Test.Controllers;
@@ -13,13 +12,13 @@ namespace HomeConnect.WebApi.Test.Controllers;
 [TestClass]
 public class UserControllerTests
 {
-    private UserController _controller = null!;
     private Mock<IAdminService> _adminService = null!;
-    private User _user = null!;
-    private User _otherUser = null!;
-    private List<User> _expectedUsers = null!;
+    private UserController _controller = null!;
     private Pagination _expectedPagination = null!;
+    private List<User> _expectedUsers = null!;
+    private User _otherUser = null!;
     private PagedData<User> _pagedList = null!;
+    private User _user = null!;
 
     [TestInitialize]
     public void Initialize()
@@ -57,7 +56,7 @@ public class UserControllerTests
             parameters.Role)).Returns(_pagedList);
 
         // Act
-        var response = _controller.GetUsers(parameters);
+        GetUsersResponse response = _controller.GetUsers(parameters);
 
         // Assert
         _adminService.VerifyAll();
@@ -84,7 +83,7 @@ public class UserControllerTests
             parameters.Role)).Returns(_pagedList);
 
         // Act
-        var response = _controller.GetUsers(parameters);
+        GetUsersResponse response = _controller.GetUsers(parameters);
 
         // Assert
         _adminService.VerifyAll();
@@ -111,7 +110,7 @@ public class UserControllerTests
             parameters.Role)).Returns(_pagedList);
 
         // Act
-        var response = _controller.GetUsers(parameters);
+        GetUsersResponse response = _controller.GetUsers(parameters);
 
         // Assert
         _adminService.VerifyAll();
@@ -141,7 +140,7 @@ public class UserControllerTests
             parameters.Role)).Returns(_pagedList);
 
         // Act
-        var response = _controller.GetUsers(parameters);
+        GetUsersResponse response = _controller.GetUsers(parameters);
 
         // Assert
         _adminService.VerifyAll();

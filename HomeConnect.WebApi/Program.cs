@@ -18,7 +18,7 @@ using HomeConnect.DataAccess.Repositories;
 using HomeConnect.WebApi.Filters;
 using Microsoft.EntityFrameworkCore;
 
-var builder = WebApplication.CreateBuilder(args);
+WebApplicationBuilder builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 
@@ -33,8 +33,8 @@ builder.Services
         options.SuppressMapClientErrors = true;
     });
 
-var services = builder.Services;
-var configuration = builder.Configuration;
+IServiceCollection services = builder.Services;
+ConfigurationManager configuration = builder.Configuration;
 var connectionString = configuration.GetConnectionString("DefaultConnection");
 
 if (string.IsNullOrEmpty(connectionString))
@@ -60,7 +60,7 @@ services.AddScoped<IAdminService, AdminService>();
 services.AddScoped<IBusinessOwnerService, BusinessOwnerService>();
 services.AddScoped<INotificationService, NotificationService>();
 
-var app = builder.Build();
+WebApplication app = builder.Build();
 
 // Configure the HTTP request pipeline.
 
@@ -75,7 +75,7 @@ app.Run();
 namespace HomeConnect.WebApi
 {
     [ExcludeFromCodeCoverage]
-    public partial class Program
+    public class Program
     {
     }
 }

@@ -6,20 +6,20 @@ namespace BusinessLogic.Devices.Services;
 
 public class DeviceService : IDeviceService
 {
-    private IDeviceRepository DeviceRepository { get; init; }
-    private IOwnedDeviceRepository OwnedDeviceRepository { get; init; }
-
     public DeviceService(IDeviceRepository deviceRepository, IOwnedDeviceRepository ownedDeviceRepository)
     {
         DeviceRepository = deviceRepository;
         OwnedDeviceRepository = ownedDeviceRepository;
     }
 
+    private IDeviceRepository DeviceRepository { get; }
+    private IOwnedDeviceRepository OwnedDeviceRepository { get; }
+
     public PagedData<Device> GetDevices(GetDevicesArgs parameters)
     {
         parameters.Page ??= 1;
         parameters.PageSize ??= 10;
-        var devices = DeviceRepository.GetDevices(parameters);
+        PagedData<Device> devices = DeviceRepository.GetDevices(parameters);
         return devices;
     }
 

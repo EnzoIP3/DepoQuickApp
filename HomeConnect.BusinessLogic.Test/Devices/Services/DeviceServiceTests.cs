@@ -14,15 +14,15 @@ namespace HomeConnect.BusinessLogic.Test.Devices.Services;
 [TestClass]
 public class DeviceServiceTests
 {
-    private Mock<IOwnedDeviceRepository> _ownedDeviceRepository = null!;
     private Mock<IDeviceRepository> _deviceRepository = null!;
-    private DeviceService _deviceService = null!;
     private List<Device> _devices = null!;
+    private DeviceService _deviceService = null!;
+    private Mock<IOwnedDeviceRepository> _ownedDeviceRepository = null!;
     private PagedData<Device> _pagedDeviceList = null!;
     private GetDevicesArgs _parameters = null!;
+    private Device otherDevice = null!;
     private User user1 = null!;
     private User user2 = null!;
-    private Device otherDevice = null!;
     private Device validDevice = null!;
 
     [TestInitialize]
@@ -55,7 +55,7 @@ public class DeviceServiceTests
     public void Toggle_WhenHardwareIdIsInvalid_ShouldThrowArgumentException(string id)
     {
         // Act
-        var act = () => _deviceService.Toggle(id);
+        Func<bool> act = () => _deviceService.Toggle(id);
 
         // Assert
         act.Should().Throw<ArgumentException>().WithMessage("Hardware ID is invalid.");
@@ -84,7 +84,7 @@ public class DeviceServiceTests
         _ownedDeviceRepository.Setup(x => x.Exists(hardwareId)).Returns(false);
 
         // Act
-        var act = () => _deviceService.Toggle(hardwareId);
+        Func<bool> act = () => _deviceService.Toggle(hardwareId);
 
         // Assert
         act.Should().Throw<ArgumentException>().WithMessage("Owned device does not exist.");
@@ -104,7 +104,7 @@ public class DeviceServiceTests
         ))).Returns(_pagedDeviceList);
 
         // Act
-        var result = _deviceService.GetDevices(_parameters);
+        PagedData<Device> result = _deviceService.GetDevices(_parameters);
 
         // Assert
         var expectedPagedDeviceList = new PagedData<Device>
@@ -132,14 +132,16 @@ public class DeviceServiceTests
         var expectedDeviceTypes = Enum.GetNames(typeof(DeviceType));
 
         // Act
-        var result = _deviceService.GetAllDeviceTypes();
+        IEnumerable<string> result = _deviceService.GetAllDeviceTypes();
 
         // Assert
         result.Should().BeEquivalentTo(expectedDeviceTypes);
     }
 
     #region IsConnected
+
     #region Error
+
     [TestMethod]
     public void IsConnected_WhenHardwareIdIsInvalid_ShouldThrowArgumentException()
     {
@@ -147,7 +149,7 @@ public class DeviceServiceTests
         var hardwareId = "hardwareId";
 
         // Act
-        var act = () => _deviceService.IsConnected(hardwareId);
+        Func<bool> act = () => _deviceService.IsConnected(hardwareId);
 
         // Assert
         act.Should().Throw<ArgumentException>().WithMessage("Hardware ID is invalid.");
@@ -161,11 +163,12 @@ public class DeviceServiceTests
         _ownedDeviceRepository.Setup(x => x.Exists(hardwareId)).Returns(false);
 
         // Act
-        var act = () => _deviceService.IsConnected(hardwareId);
+        Func<bool> act = () => _deviceService.IsConnected(hardwareId);
 
         // Assert
         act.Should().Throw<ArgumentException>().WithMessage("Owned device does not exist.");
     }
+
     #endregion
 
     [TestMethod]
@@ -183,5 +186,6 @@ public class DeviceServiceTests
         _ownedDeviceRepository.VerifyAll();
         result.Should().BeTrue();
     }
+
     #endregion
 }

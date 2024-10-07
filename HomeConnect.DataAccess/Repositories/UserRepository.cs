@@ -46,7 +46,7 @@ public class UserRepository : PaginatedRepositoryBase<User>, IUserRepository
 
     public void Delete(Guid id)
     {
-        var user = Get(id);
+        User user = Get(id);
         _context.Users.Remove(user);
         _context.SaveChanges();
     }

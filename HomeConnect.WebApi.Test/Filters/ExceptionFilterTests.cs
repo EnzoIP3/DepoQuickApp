@@ -14,8 +14,8 @@ namespace HomeConnect.WebApi.Test.Filters;
 [TestClass]
 public class ExceptionFilterTests
 {
-    private ExceptionContext _context = null!;
     private readonly ExceptionFilter _attribute;
+    private ExceptionContext _context = null!;
 
     public ExceptionFilterTests()
     {
@@ -39,7 +39,7 @@ public class ExceptionFilterTests
         _context.Exception = new Exception("Not registered");
         _attribute.OnException(_context);
 
-        var response = _context.Result;
+        IActionResult? response = _context.Result;
 
         response.Should().NotBeNull();
         var concreteResponse = response as ObjectResult;
@@ -57,7 +57,7 @@ public class ExceptionFilterTests
         _context.Exception = new ArgumentException(exceptionMessage);
         _attribute.OnException(_context);
 
-        var response = _context.Result;
+        IActionResult? response = _context.Result;
 
         response.Should().NotBeNull();
         var concreteResponse = response as ObjectResult;
@@ -74,7 +74,7 @@ public class ExceptionFilterTests
         _context.Exception = new InvalidOperationException(exceptionMessage);
         _attribute.OnException(_context);
 
-        var response = _context.Result;
+        IActionResult? response = _context.Result;
 
         response.Should().NotBeNull();
         var concreteResponse = response as ObjectResult;
@@ -91,7 +91,7 @@ public class ExceptionFilterTests
         _context.Exception = new AuthException(exceptionMessage);
         _attribute.OnException(_context);
 
-        var response = _context.Result;
+        IActionResult? response = _context.Result;
 
         response.Should().NotBeNull();
         var concreteResponse = response as ObjectResult;
@@ -108,7 +108,7 @@ public class ExceptionFilterTests
         _context.Exception = new KeyNotFoundException(exceptionMessage);
         _attribute.OnException(_context);
 
-        var response = _context.Result;
+        IActionResult? response = _context.Result;
 
         response.Should().NotBeNull();
         var concreteResponse = response as ObjectResult;

@@ -17,18 +17,18 @@ namespace HomeConnect.WebApi.Test.Controllers;
 [TestClass]
 public class BusinessControllerTests
 {
-    private BusinessController _controller = null!;
-    private Mock<IBusinessOwnerService> _businessOwnerService = null!;
     private Mock<IAdminService> _adminService = null!;
+    private CreateBusinessArgs _businessArgs = null!;
+    private List<Business> _businesses = null!;
+    private Mock<IBusinessOwnerService> _businessOwnerService = null!;
+    private CreateBusinessRequest _businessRequest = null!;
+    private BusinessController _controller = null!;
+    private Pagination _expectedPagination = null!;
     private Mock<HttpContext> _httpContextMock = null!;
+    private User _otherUser = null!;
+    private PagedData<Business> _pagedList = null!;
     private Role _role = null!;
     private User _user = null!;
-    private User _otherUser = null!;
-    private CreateBusinessArgs _businessArgs = null!;
-    private CreateBusinessRequest _businessRequest = null!;
-    private List<Business> _businesses = null!;
-    private Pagination _expectedPagination = null!;
-    private PagedData<Business> _pagedList = null!;
 
     [TestInitialize]
     public void Initialize()
@@ -69,6 +69,29 @@ public class BusinessControllerTests
         };
     }
 
+    #region CreateBusiness
+
+    [TestMethod]
+    public void CreateBusiness_WhenCalledWithValidRequest_ReturnsCreatedResponse()
+    {
+        // Arrange
+        _businessOwnerService.Setup(x => x.CreateBusiness(_businessArgs)).Returns(_businesses[0]);
+        var items = new Dictionary<object, object?> { { Item.UserLogged, _user } };
+        _httpContextMock.Setup(h => h.Items).Returns(items);
+
+        var expectedResponse = new CreateBusinessResponse { Rut = _businesses[0].Rut };
+
+        // Act
+        CreateBusinessResponse response = _controller.CreateBusiness(_businessRequest);
+
+        // Assert
+        _businessOwnerService.VerifyAll();
+        response.Should().NotBeNull();
+        response.Should().BeEquivalentTo(expectedResponse);
+    }
+
+    #endregion
+
     #region GetBusinesses
 
     [TestMethod]
@@ -92,7 +115,7 @@ public class BusinessControllerTests
         };
 
         // Act
-        var response = _controller.GetBusinesses(new GetBusinessesRequest());
+        GetBusinessesResponse response = _controller.GetBusinesses(new GetBusinessesRequest());
 
         // Assert
         _adminService.VerifyAll();
@@ -121,7 +144,8 @@ public class BusinessControllerTests
         };
 
         // Act
-        var response = _controller.GetBusinesses(new GetBusinessesRequest { Name = _businesses.First().Name });
+        GetBusinessesResponse response =
+            _controller.GetBusinesses(new GetBusinessesRequest { Name = _businesses.First().Name });
 
         // Assert
         _adminService.VerifyAll();
@@ -150,33 +174,11 @@ public class BusinessControllerTests
         };
 
         // Act
-        var response = _controller.GetBusinesses(new GetBusinessesRequest { CurrentPage = 1, PageSize = 1 });
+        GetBusinessesResponse response =
+            _controller.GetBusinesses(new GetBusinessesRequest { CurrentPage = 1, PageSize = 1 });
 
         // Assert
         _adminService.VerifyAll();
-        response.Should().NotBeNull();
-        response.Should().BeEquivalentTo(expectedResponse);
-    }
-
-    #endregion
-
-    #region CreateBusiness
-
-    [TestMethod]
-    public void CreateBusiness_WhenCalledWithValidRequest_ReturnsCreatedResponse()
-    {
-        // Arrange
-        _businessOwnerService.Setup(x => x.CreateBusiness(_businessArgs)).Returns(_businesses[0]);
-        var items = new Dictionary<object, object?> { { Item.UserLogged, _user } };
-        _httpContextMock.Setup(h => h.Items).Returns(items);
-
-        var expectedResponse = new CreateBusinessResponse { Rut = _businesses[0].Rut };
-
-        // Act
-        var response = _controller.CreateBusiness(_businessRequest);
-
-        // Assert
-        _businessOwnerService.VerifyAll();
         response.Should().NotBeNull();
         response.Should().BeEquivalentTo(expectedResponse);
     }

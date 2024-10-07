@@ -5,12 +5,6 @@ namespace BusinessLogic.Devices.Entities;
 
 public class OwnedDevice
 {
-    [Key]
-    public Guid HardwareId { get; set; } = Guid.NewGuid();
-    public Home Home { get; init; } = null!;
-    public Device Device { get; init; } = null!;
-    public bool Connected { get; } = true;
-
     public OwnedDevice()
     {
     }
@@ -20,4 +14,11 @@ public class OwnedDevice
         Home = home;
         Device = device;
     }
+
+    [Key]
+    public Guid HardwareId { get; set; } = Guid.NewGuid();
+
+    public Home Home { get; init; } = null!;
+    public Device Device { get; init; } = null!;
+    public bool Connected { get; } = true;
 }

@@ -12,8 +12,8 @@ namespace HomeConnect.WebApi.Test.Controllers;
 [TestClass]
 public class AuthControllerTests
 {
-    private Mock<IAuthService> _tokenService = null!;
     private AuthController _controller = null!;
+    private Mock<IAuthService> _tokenService = null!;
 
     [TestInitialize]
     public void Initialize()
@@ -32,7 +32,7 @@ public class AuthControllerTests
         _tokenService.Setup(x => x.CreateToken(args)).Returns(token.Id.ToString());
 
         // Act
-        var response = _controller.CreateToken(request);
+        CreateTokenResponse response = _controller.CreateToken(request);
 
         // Assert
         _tokenService.Verify(x => x.CreateToken(args), Times.Once);

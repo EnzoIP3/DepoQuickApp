@@ -7,6 +7,7 @@ using BusinessLogic.Notifications.Models;
 using BusinessLogic.Notifications.Services;
 using BusinessLogic.Users.Entities;
 using FluentAssertions;
+using HomeConnect.WebApi.Controllers.Device.Models;
 using HomeConnect.WebApi.Controllers.Sensor;
 using HomeConnect.WebApi.Controllers.Sensor.Models;
 using Microsoft.AspNetCore.Http;
@@ -17,10 +18,10 @@ namespace HomeConnect.WebApi.Test.Controllers;
 [TestClass]
 public class SensorControllerTests
 {
+    private Mock<IBusinessOwnerService> _businessOwnerServiceMock = null!;
+    private Mock<IDeviceService> _deviceServiceMock = null!;
     private Mock<HttpContext> _httpContextMock = null!;
     private Mock<INotificationService> _notificationServiceMock = null!;
-    private Mock<IDeviceService> _deviceServiceMock = null!;
-    private Mock<IBusinessOwnerService> _businessOwnerServiceMock = null!;
     private SensorController _sensorController = null!;
 
     [TestInitialize]
@@ -34,7 +35,51 @@ public class SensorControllerTests
             _businessOwnerServiceMock.Object) { ControllerContext = { HttpContext = _httpContextMock.Object } };
     }
 
+    #region CreateDevices
+
+    [TestMethod]
+    public void CreateSensor_WhenCalledWithValidRequest_ReturnsCreatedResponse()
+    {
+        // Arrange
+        var user = new User();
+        var sensor = new Device("name", 123, "description", "http://example.com/photo.png", [],
+            DeviceType.Sensor.ToString(),
+            new Business());
+        var sensorArgs = new CreateDeviceArgs
+        {
+            Owner = user,
+            Description = sensor.Description,
+            MainPhoto = sensor.MainPhoto,
+            ModelNumber = sensor.ModelNumber,
+            Name = sensor.Name,
+            SecondaryPhotos = sensor.SecondaryPhotos,
+            Type = sensor.Type.ToString()
+        };
+        var sensorRequest = new CreateSensorRequest
+        {
+            Description = sensor.Description,
+            MainPhoto = sensor.MainPhoto,
+            ModelNumber = sensor.ModelNumber,
+            Name = sensor.Name,
+            SecondaryPhotos = sensor.SecondaryPhotos
+        };
+        _businessOwnerServiceMock.Setup(x => x.CreateDevice(sensorArgs)).Returns(sensor);
+        var items = new Dictionary<object, object?> { { Item.UserLogged, user } };
+        _httpContextMock.Setup(h => h.Items).Returns(items);
+
+        // Act
+        CreateSensorResponse response = _sensorController.CreateSensor(sensorRequest);
+
+        // Assert
+        _businessOwnerServiceMock.VerifyAll();
+        response.Should().NotBeNull();
+        response.Id.Should().Be(sensor.Id);
+    }
+
+    #endregion
+
     #region Notify
+
     [TestMethod]
     public void NotifyOpen_WithHardwareId_ReturnsNotifyResponse()
     {
@@ -45,7 +90,7 @@ public class SensorControllerTests
         _notificationServiceMock.Setup(x => x.Notify(args));
 
         // Act
-        var result = _sensorController.NotifyOpen(hardwareId);
+        NotifyResponse result = _sensorController.NotifyOpen(hardwareId);
 
         // Assert
         result.Should().NotBeNull();
@@ -62,7 +107,7 @@ public class SensorControllerTests
         _notificationServiceMock.Setup(x => x.Notify(args));
 
         // Act
-        var result = _sensorController.NotifyOpen(hardwareId);
+        NotifyResponse result = _sensorController.NotifyOpen(hardwareId);
 
         // Assert
         result.Should().NotBeNull();
@@ -78,7 +123,7 @@ public class SensorControllerTests
         _deviceServiceMock.Setup(x => x.IsConnected(hardwareId)).Returns(false);
 
         // Act
-        var act = () => _sensorController.NotifyOpen(hardwareId);
+        Func<NotifyResponse> act = () => _sensorController.NotifyOpen(hardwareId);
 
         // Assert
         act.Should().Throw<ArgumentException>().WithMessage("Device is not connected");
@@ -93,54 +138,11 @@ public class SensorControllerTests
         _deviceServiceMock.Setup(x => x.IsConnected(hardwareId)).Returns(false);
 
         // Act
-        var act = () => _sensorController.NotifyClose(hardwareId);
+        Func<NotifyResponse> act = () => _sensorController.NotifyClose(hardwareId);
 
         // Assert
         act.Should().Throw<ArgumentException>().WithMessage("Device is not connected");
         _deviceServiceMock.VerifyAll();
-    }
-
-    #endregion
-
-    #region CreateDevices
-
-    [TestMethod]
-    public void CreateSensor_WhenCalledWithValidRequest_ReturnsCreatedResponse()
-    {
-        // Arrange
-        var user = new User();
-        var sensor = new Device("name", 123, "description", "http://example.com/photo.png", [],
-            DeviceType.Sensor.ToString(),
-            new Business());
-        var sensorArgs = new CreateDeviceArgs()
-        {
-            Owner = user,
-            Description = sensor.Description,
-            MainPhoto = sensor.MainPhoto,
-            ModelNumber = sensor.ModelNumber,
-            Name = sensor.Name,
-            SecondaryPhotos = sensor.SecondaryPhotos,
-            Type = sensor.Type.ToString()
-        };
-        var sensorRequest = new CreateSensorRequest()
-        {
-            Description = sensor.Description,
-            MainPhoto = sensor.MainPhoto,
-            ModelNumber = sensor.ModelNumber,
-            Name = sensor.Name,
-            SecondaryPhotos = sensor.SecondaryPhotos
-        };
-        _businessOwnerServiceMock.Setup(x => x.CreateDevice(sensorArgs)).Returns(sensor);
-        var items = new Dictionary<object, object?> { { Item.UserLogged, user } };
-        _httpContextMock.Setup(h => h.Items).Returns(items);
-
-        // Act
-        var response = _sensorController.CreateSensor(sensorRequest);
-
-        // Assert
-        _businessOwnerServiceMock.VerifyAll();
-        response.Should().NotBeNull();
-        response.Id.Should().Be(sensor.Id);
     }
 
     #endregion

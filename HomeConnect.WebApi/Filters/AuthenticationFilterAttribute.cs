@@ -17,7 +17,7 @@ public sealed class AuthenticationFilterAttribute : Attribute, IAuthorizationFil
     {
         try
         {
-            var authorizationHeader = GetAuthorizationHeader(context);
+            StringValues authorizationHeader = GetAuthorizationHeader(context);
 
             if (string.IsNullOrEmpty(authorizationHeader))
             {
@@ -44,7 +44,7 @@ public sealed class AuthenticationFilterAttribute : Attribute, IAuthorizationFil
                 return;
             }
 
-            var user = GetUserOfAuthorization(authorizationHeader, context);
+            User user = GetUserOfAuthorization(authorizationHeader, context);
 
             context.HttpContext.Items[Item.UserLogged] = user;
         }
@@ -56,7 +56,7 @@ public sealed class AuthenticationFilterAttribute : Attribute, IAuthorizationFil
 
     private bool AuthorizationExists(AuthorizationFilterContext context, StringValues authorizationHeader)
     {
-        var tokenService = GetTokenService(context);
+        IAuthService tokenService = GetTokenService(context);
         return tokenService.Exists(ExtractTokenFromAuthorization(authorizationHeader));
     }
 
@@ -77,22 +77,20 @@ public sealed class AuthenticationFilterAttribute : Attribute, IAuthorizationFil
     {
         context.Result = new ObjectResult(new
         {
-            InnerCode = "InternalError",
-            Message = "An error occurred while processing the request"
-        })
-        { StatusCode = (int)HttpStatusCode.InternalServerError };
+            InnerCode = "InternalError", Message = "An error occurred while processing the request"
+        }) { StatusCode = (int)HttpStatusCode.InternalServerError };
     }
 
     private static User GetUserOfAuthorization(StringValues authorization, AuthorizationFilterContext context)
     {
         var token = ExtractTokenFromAuthorization(authorization);
-        var tokenService = GetTokenService(context);
+        IAuthService tokenService = GetTokenService(context);
         return tokenService.GetUserFromToken(token);
     }
 
     private static bool IsTokenExpired(StringValues authorizationHeader, AuthorizationFilterContext context)
     {
-        var tokenService = GetTokenService(context);
+        IAuthService tokenService = GetTokenService(context);
         var token = ExtractTokenFromAuthorization(authorizationHeader);
         return tokenService.IsTokenExpired(token);
     }

@@ -14,9 +14,9 @@ namespace HomeConnect.BusinessLogic.Test.Auth.Services;
 [TestClass]
 public class AuthServiceTests
 {
+    private IAuthService _authService = null!;
     private Mock<ITokenRepository> _tokenRepository = null!;
     private Mock<IUserRepository> _userRepository = null!;
-    private IAuthService _authService = null!;
 
     [TestInitialize]
     public void Initialize()
@@ -35,7 +35,7 @@ public class AuthServiceTests
         _tokenRepository.Setup(x => x.Get(token)).Returns(new Token(user));
 
         // Act
-        var act = () => _authService.GetUserFromToken(token.ToString());
+        Func<User> act = () => _authService.GetUserFromToken(token.ToString());
 
         // Assert
         act.Should().NotThrow();
@@ -48,7 +48,7 @@ public class AuthServiceTests
         const string token = "not-a-guid";
 
         // Act
-        var act = () => _authService.GetUserFromToken(token);
+        Func<User> act = () => _authService.GetUserFromToken(token);
 
         // Assert
         act.Should().Throw<ArgumentException>();
@@ -58,7 +58,7 @@ public class AuthServiceTests
     public void CreateToken_WithValidArguments_ShouldCreateToken()
     {
         // Arrange
-        var args = new CreateTokenArgs() { Email = "test@example.com", Password = "password1M@" };
+        var args = new CreateTokenArgs { Email = "test@example.com", Password = "password1M@" };
         var user = new User("Name", "Surname", args.Email, args.Password, new Role());
         _tokenRepository.Setup(x => x.Add(It.IsAny<Token>())).Verifiable();
         _userRepository.Setup(x => x.ExistsByEmail(args.Email)).Returns(true);
@@ -76,11 +76,11 @@ public class AuthServiceTests
     public void CreateToken_WithNonExistingEmail_ShouldThrowException()
     {
         // Arrange
-        var args = new CreateTokenArgs() { Email = "test@example.com", Password = "password1M@" };
+        var args = new CreateTokenArgs { Email = "test@example.com", Password = "password1M@" };
         _userRepository.Setup(x => x.ExistsByEmail(args.Email)).Returns(false);
 
         // Act
-        var act = () => _authService.CreateToken(args);
+        Func<string> act = () => _authService.CreateToken(args);
 
         // Assert
         act.Should().Throw<AuthException>();
@@ -90,13 +90,13 @@ public class AuthServiceTests
     public void CreateToken_WithInvalidPassword_ShouldThrowException()
     {
         // Arrange
-        var args = new CreateTokenArgs() { Email = "test@example.com", Password = "password" };
+        var args = new CreateTokenArgs { Email = "test@example.com", Password = "password" };
         var user = new User("Name", "Surname", args.Email, "otherPassword1@", new Role());
         _userRepository.Setup(x => x.ExistsByEmail(args.Email)).Returns(true);
         _userRepository.Setup(x => x.GetByEmail(args.Email)).Returns(user);
 
         // Act
-        var act = () => _authService.CreateToken(args);
+        Func<string> act = () => _authService.CreateToken(args);
 
         // Assert
         act.Should().Throw<AuthException>();
@@ -106,10 +106,10 @@ public class AuthServiceTests
     public void CreateToken_WithMissingEmail_ShouldThrowException()
     {
         // Arrange
-        var args = new CreateTokenArgs() { Password = "password1M@" };
+        var args = new CreateTokenArgs { Password = "password1M@" };
 
         // Act
-        var act = () => _authService.CreateToken(args);
+        Func<string> act = () => _authService.CreateToken(args);
 
         // Assert
         act.Should().Throw<ArgumentException>();
@@ -119,12 +119,12 @@ public class AuthServiceTests
     public void CreateToken_WithMissingPassword_ShouldThrowException()
     {
         // Arrange
-        var args = new CreateTokenArgs() { Email = "test@example.com" };
+        var args = new CreateTokenArgs { Email = "test@example.com" };
         _userRepository.Setup(x => x.ExistsByEmail(args.Email)).Returns(true);
         _userRepository.Setup(x => x.GetByEmail(args.Email)).Returns(new User());
 
         // Act
-        var act = () => _authService.CreateToken(args);
+        Func<string> act = () => _authService.CreateToken(args);
 
         // Assert
         act.Should().Throw<ArgumentException>();
@@ -151,7 +151,7 @@ public class AuthServiceTests
         const string token = "guid";
 
         // Act
-        var act = () => _authService.Exists(token);
+        Func<bool> act = () => _authService.Exists(token);
 
         // Assert
         act.Should().Throw<ArgumentException>();

@@ -21,11 +21,6 @@ public class BusinessRepository : PaginatedRepositoryBase<Business>, IBusinessRe
         return GetAllPaged(currentPage, pageSize, filters);
     }
 
-    public Business? GetBusinessByOwnerId(string ownerEmail)
-    {
-        return Context.Businesses.FirstOrDefault(b => b.Owner.Email == ownerEmail);
-    }
-
     public Business Get(string rut)
     {
         return Context.Businesses.First(b => b.Rut == rut);
@@ -51,6 +46,11 @@ public class BusinessRepository : PaginatedRepositoryBase<Business>, IBusinessRe
         EnsureBusinessDoesNotExist(business);
         Context.Businesses.Add(business);
         Context.SaveChanges();
+    }
+
+    public Business? GetBusinessByOwnerId(string ownerEmail)
+    {
+        return Context.Businesses.FirstOrDefault(b => b.Owner.Email == ownerEmail);
     }
 
     protected override IQueryable<Business> GetQueryable()

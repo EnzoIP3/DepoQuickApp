@@ -17,12 +17,6 @@ public sealed class AdminServiceTests
 {
     private readonly int _defaultCurrentPage = 1;
     private readonly int _defaultPageSize = 10;
-    private AdminService _adminService = null!;
-    private Mock<IBusinessRepository> _businessRepository = null!;
-    private User _otherOwner = null!;
-    private User _owner = null!;
-    private Mock<IRoleRepository> _roleRepository = null!;
-    private Mock<IUserRepository> _userRepository = null!;
 
     private readonly CreateUserArgs _validCreateUserArgs = new()
     {
@@ -32,6 +26,13 @@ public sealed class AdminServiceTests
         Password = "Password#100",
         Role = "Admin"
     };
+
+    private AdminService _adminService = null!;
+    private Mock<IBusinessRepository> _businessRepository = null!;
+    private User _otherOwner = null!;
+    private User _owner = null!;
+    private Mock<IRoleRepository> _roleRepository = null!;
+    private Mock<IUserRepository> _userRepository = null!;
 
     private User _validUser = null!;
 

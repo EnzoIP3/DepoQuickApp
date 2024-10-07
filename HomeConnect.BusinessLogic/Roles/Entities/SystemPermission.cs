@@ -18,11 +18,6 @@ public record SystemPermission
     public const string CreateCamera = "create-camera";
     public const string CreateSensor = "create-sensor";
 
-    [Key]
-    public string Value { get; init; } = null!;
-
-    public List<Role>? Roles { get; set; }
-
     public SystemPermission()
     {
     }
@@ -32,6 +27,11 @@ public record SystemPermission
         Value = value;
         Roles = roles;
     }
+
+    [Key]
+    public string Value { get; init; } = null!;
+
+    public List<Role>? Roles { get; set; }
 
     public override string ToString()
     {

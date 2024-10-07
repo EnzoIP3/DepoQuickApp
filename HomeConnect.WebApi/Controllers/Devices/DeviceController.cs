@@ -24,7 +24,7 @@ public class DeviceController : ControllerBase
     [HttpGet]
     public GetDevicesResponse GetDevices([FromQuery] GetDevicesRequest parameters)
     {
-        var args = new GetDevicesArgs()
+        var args = new GetDevicesArgs
         {
             BusinessNameFilter = parameters.BusinessName,
             DeviceTypeFilter = parameters.Type,
@@ -33,16 +33,16 @@ public class DeviceController : ControllerBase
             DeviceNameFilter = parameters.Name,
             ModelNumberFilter = parameters.Model
         };
-        var devices = _deviceService.GetDevices(args);
-        var response = ResponseFromDevices(devices);
+        PagedData<BusinessLogic.Devices.Entities.Device> devices = _deviceService.GetDevices(args);
+        GetDevicesResponse response = ResponseFromDevices(devices);
         return response;
     }
 
     private static GetDevicesResponse ResponseFromDevices(PagedData<BusinessLogic.Devices.Entities.Device> devices)
     {
-        return new GetDevicesResponse()
+        return new GetDevicesResponse
         {
-            Devices = devices.Data.Select(d => new ListDeviceInfo()
+            Devices = devices.Data.Select(d => new ListDeviceInfo
             {
                 Id = d.Id.ToString(),
                 Name = d.Name,
@@ -52,7 +52,7 @@ public class DeviceController : ControllerBase
                 Photo = d.MainPhoto,
                 IsConnected = d.ConnectionState
             }).ToList(),
-            Pagination = new Pagination()
+            Pagination = new Pagination
             {
                 Page = devices.Page, PageSize = devices.PageSize, TotalPages = devices.TotalPages
             }

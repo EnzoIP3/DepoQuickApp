@@ -1,5 +1,6 @@
 using BusinessLogic.BusinessOwners.Entities;
 using BusinessLogic.Devices.Entities;
+using BusinessLogic.Roles.Entities;
 using BusinessLogic.Users.Entities;
 using FluentAssertions;
 
@@ -13,21 +14,22 @@ public class CameraTest
     private const string Description = "Description";
     private const string MainPhoto = "https://www.example.com/photo1.jpg";
 
-    private readonly List<string> secondaryPhotos =
-        ["https://www.example.com/photo2.jpg", "https://www.example.com/photo3.jpg"];
-
     private const bool MotionDetection = true;
     private const bool PersonDetection = false;
     private const bool IsExterior = true;
     private const bool IsInterior = false;
-    private User _owner = null!;
+
+    private readonly List<string> secondaryPhotos =
+        ["https://www.example.com/photo2.jpg", "https://www.example.com/photo3.jpg"];
+
     private Business _business = null!;
+    private User _owner = null!;
 
     [TestInitialize]
     public void TestInitialize()
     {
         _owner = new User("John", "Doe", "JohnDoe@example.com", "Password123!",
-            new global::BusinessLogic.Roles.Entities.Role());
+            new Role());
         _business = new Business("RUTexample", "Business Name", "https://example.com/image.png", _owner);
     }
 
@@ -41,7 +43,7 @@ public class CameraTest
         // Arrange
 
         // Act
-        var act = () => new Camera(Name, ModelNumber, Description, MainPhoto, secondaryPhotos, _business,
+        Func<Camera> act = () => new Camera(Name, ModelNumber, Description, MainPhoto, secondaryPhotos, _business,
             MotionDetection,
             PersonDetection, IsExterior, IsInterior);
 
@@ -61,7 +63,7 @@ public class CameraTest
         const bool isInterior = false;
 
         // Act
-        var act = () => new Camera(Name, ModelNumber, Description, MainPhoto, secondaryPhotos, _business,
+        Func<Camera> act = () => new Camera(Name, ModelNumber, Description, MainPhoto, secondaryPhotos, _business,
             MotionDetection,
             PersonDetection, isExterior, isInterior);
 
@@ -73,7 +75,7 @@ public class CameraTest
     public void Constructor_WhenMotionDetectionIsNull_ThrowsArgumentException()
     {
         // Act
-        var act = () => new Camera(Name, ModelNumber, Description, MainPhoto, secondaryPhotos, _business,
+        Func<Camera> act = () => new Camera(Name, ModelNumber, Description, MainPhoto, secondaryPhotos, _business,
             null,
             PersonDetection, IsExterior, IsInterior);
 
@@ -85,7 +87,7 @@ public class CameraTest
     public void Constructor_WhenPersonDetectionIsNull_ThrowsArgumentException()
     {
         // Act
-        var act = () => new Camera(Name, ModelNumber, Description, MainPhoto, secondaryPhotos, _business,
+        Func<Camera> act = () => new Camera(Name, ModelNumber, Description, MainPhoto, secondaryPhotos, _business,
             MotionDetection,
             null, IsExterior, IsInterior);
 
@@ -97,7 +99,7 @@ public class CameraTest
     public void Constructor_WhenIsExteriorIsNull_ThrowsArgumentException()
     {
         // Act
-        var act = () => new Camera(Name, ModelNumber, Description, MainPhoto, secondaryPhotos, _business,
+        Func<Camera> act = () => new Camera(Name, ModelNumber, Description, MainPhoto, secondaryPhotos, _business,
             MotionDetection,
             PersonDetection, null, IsInterior);
 
@@ -109,7 +111,7 @@ public class CameraTest
     public void Constructor_WhenIsInteriorIsNull_ThrowsArgumentException()
     {
         // Act
-        var act = () => new Camera(Name, ModelNumber, Description, MainPhoto, secondaryPhotos, _business,
+        Func<Camera> act = () => new Camera(Name, ModelNumber, Description, MainPhoto, secondaryPhotos, _business,
             MotionDetection,
             PersonDetection, IsExterior, null);
 

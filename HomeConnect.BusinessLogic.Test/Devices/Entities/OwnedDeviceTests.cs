@@ -1,6 +1,7 @@
 using BusinessLogic.BusinessOwners.Entities;
 using BusinessLogic.Devices.Entities;
 using BusinessLogic.HomeOwners.Entities;
+using BusinessLogic.Users.Entities;
 using FluentAssertions;
 
 namespace HomeConnect.BusinessLogic.Test.Devices;
@@ -16,11 +17,12 @@ public class OwnedDeviceTests
     public void Constructor_WhenArgumentsAreValid_CreatesInstance()
     {
         // Arrange
-        var home = new Home(new global::BusinessLogic.Users.Entities.User(), "Main St 123", 12.5, 12.5, 5);
-        var device = new global::BusinessLogic.Devices.Entities.Device("Sensor", 12345, "A sensor", "https://sensor.com/image.png", [], "Sensor", new Business());
+        var home = new Home(new User(), "Main St 123", 12.5, 12.5, 5);
+        var device = new Device("Sensor", 12345, "A sensor", "https://sensor.com/image.png", [], "Sensor",
+            new Business());
 
         // Act
-        var act = () => new OwnedDevice(home, device);
+        Func<OwnedDevice> act = () => new OwnedDevice(home, device);
 
         // Assert
         act.Should().NotThrow();
@@ -30,8 +32,9 @@ public class OwnedDeviceTests
     public void Constructor_WhenArgumentsAreValid_GeneratesHardwareId()
     {
         // Arrange
-        var home = new Home(new global::BusinessLogic.Users.Entities.User(), "Main St 123", 12.5, 12.5, 5);
-        var device = new global::BusinessLogic.Devices.Entities.Device("Sensor", 12345, "A sensor", "https://sensor.com/image.png", [], "Sensor", new Business());
+        var home = new Home(new User(), "Main St 123", 12.5, 12.5, 5);
+        var device = new Device("Sensor", 12345, "A sensor", "https://sensor.com/image.png", [], "Sensor",
+            new Business());
 
         // Act
         var ownedDevice = new OwnedDevice(home, device);
@@ -44,8 +47,9 @@ public class OwnedDeviceTests
     public void Constructor_WhenArgumentsAreValid_SetsConnected()
     {
         // Arrange
-        var home = new Home(new global::BusinessLogic.Users.Entities.User(), "Main St 123", 12.5, 12.5, 5);
-        var device = new global::BusinessLogic.Devices.Entities.Device("Sensor", 12345, "A sensor", "https://sensor.com/image.png", [], "Sensor", new Business());
+        var home = new Home(new User(), "Main St 123", 12.5, 12.5, 5);
+        var device = new Device("Sensor", 12345, "A sensor", "https://sensor.com/image.png", [], "Sensor",
+            new Business());
 
         // Act
         var ownedDevice = new OwnedDevice(home, device);

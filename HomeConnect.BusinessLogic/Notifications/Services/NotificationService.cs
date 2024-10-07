@@ -10,29 +10,36 @@ namespace BusinessLogic.Notifications.Services;
 
 public class NotificationService : INotificationService
 {
-    private INotificationRepository NotificationRepository { get; init; }
-    private IOwnedDeviceRepository OwnedDeviceRepository { get; init; }
-
-    public NotificationService(INotificationRepository notificationRepository, IOwnedDeviceRepository ownedDeviceRepository)
+    public NotificationService(INotificationRepository notificationRepository,
+        IOwnedDeviceRepository ownedDeviceRepository)
     {
         NotificationRepository = notificationRepository;
         OwnedDeviceRepository = ownedDeviceRepository;
     }
 
-    public void CreateNotification(OwnedDevice ownedDevice, string @event, User user)
-    {
-        var notification = new Entities.Notification(Guid.NewGuid(), DateTime.Now, false, @event, ownedDevice, user);
-        NotificationRepository.Add(notification);
-    }
+    private INotificationRepository NotificationRepository { get; }
+    private IOwnedDeviceRepository OwnedDeviceRepository { get; }
 
     public void Notify(NotificationArgs args)
     {
         EnsureOwnedDeviceExists(args.HardwareId);
-        var ownedDevice = OwnedDeviceRepository.GetByHardwareId(args.HardwareId);
+        OwnedDevice ownedDevice = OwnedDeviceRepository.GetByHardwareId(args.HardwareId);
         EnsureOwnedDeviceIsNotNull(ownedDevice);
-        var home = ownedDevice.Home;
+        Home home = ownedDevice.Home;
         var shouldReceiveNotification = new HomePermission(HomePermission.GetNotifications);
         NotifyUsersWithPermission(args, home, shouldReceiveNotification, ownedDevice);
+    }
+
+    public List<Notification> GetNotifications(Guid userId, string? deviceFilter = null, DateTime? dateFilter = null,
+        bool? readFilter = null)
+    {
+        return NotificationRepository.Get(userId, deviceFilter, dateFilter, readFilter);
+    }
+
+    public void CreateNotification(OwnedDevice ownedDevice, string @event, User user)
+    {
+        var notification = new Notification(Guid.NewGuid(), DateTime.Now, false, @event, ownedDevice, user);
+        NotificationRepository.Add(notification);
     }
 
     private void EnsureOwnedDeviceExists(string argsHardwareId)
@@ -41,12 +48,6 @@ public class NotificationService : INotificationService
         {
             throw new ArgumentException("Owned device does not exist.");
         }
-    }
-
-    public List<Notification> GetNotifications(Guid userId, string? deviceFilter = null, DateTime? dateFilter = null,
-        bool? readFilter = null)
-    {
-        return NotificationRepository.Get(userId, deviceFilter, dateFilter, readFilter);
     }
 
     private void NotifyUsersWithPermission(NotificationArgs args, Home home, HomePermission shouldReceiveNotification,

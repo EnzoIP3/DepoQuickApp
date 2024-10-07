@@ -26,7 +26,7 @@ public class SensorController(
     public CreateSensorResponse CreateSensor([FromBody] CreateSensorRequest request)
     {
         var userLoggedIn = HttpContext.Items[Item.UserLogged] as BusinessLogic.Users.Entities.User;
-        var args = new CreateDeviceArgs()
+        var args = new CreateDeviceArgs
         {
             Owner = userLoggedIn!,
             Description = request.Description ?? string.Empty,
@@ -37,7 +37,7 @@ public class SensorController(
             Type = "Sensor"
         };
 
-        var createdSensor = businessOwnerService.CreateDevice(args);
+        BusinessLogic.Devices.Entities.Device createdSensor = businessOwnerService.CreateDevice(args);
 
         return new CreateSensorResponse { Id = createdSensor.Id };
     }

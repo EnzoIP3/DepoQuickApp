@@ -8,29 +8,29 @@ namespace BusinessLogic.Users.Services;
 
 public class UserService : IUserService
 {
-    private readonly IUserRepository _userRepository;
-    private readonly IRoleRepository _roleRepository;
-
     public UserService(IUserRepository userRepository, IRoleRepository roleRepository)
     {
-        _userRepository = userRepository;
-        _roleRepository = roleRepository;
+        UserRepository = userRepository;
+        RoleRepository = roleRepository;
     }
+
+    private IUserRepository UserRepository { get; }
+    private IRoleRepository RoleRepository { get; }
 
     public User CreateUser(CreateUserArgs args)
     {
         EnsureRoleExists(args);
         EnsureUserDoesNotExist(args);
-        var role = _roleRepository.Get(args.Role);
+        Role role = RoleRepository.Get(args.Role);
         ValidateHomeOwner(args, role);
         var user = new User(args.Name, args.Surname, args.Email, args.Password, role, args.ProfilePicture);
-        _userRepository.Add(user);
+        UserRepository.Add(user);
         return user;
     }
 
     public bool Exists(string requestUserId)
     {
-        return UserIdIsValid(requestUserId) && _userRepository.Exists(Guid.Parse(requestUserId));
+        return UserIdIsValid(requestUserId) && UserRepository.Exists(Guid.Parse(requestUserId));
     }
 
     private bool UserIdIsValid(string requestUserId)
@@ -48,7 +48,7 @@ public class UserService : IUserService
 
     private void EnsureUserDoesNotExist(CreateUserArgs args)
     {
-        if (_userRepository.ExistsByEmail(args.Email))
+        if (UserRepository.ExistsByEmail(args.Email))
         {
             throw new InvalidOperationException("User already exists.");
         }
@@ -56,7 +56,7 @@ public class UserService : IUserService
 
     private void EnsureRoleExists(CreateUserArgs args)
     {
-        if (!_roleRepository.Exists(args.Role))
+        if (!RoleRepository.Exists(args.Role))
         {
             throw new ArgumentException("Invalid role.");
         }

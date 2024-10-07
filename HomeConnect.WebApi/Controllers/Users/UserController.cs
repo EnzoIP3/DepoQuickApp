@@ -16,9 +16,10 @@ public class UserController(IAdminService adminService) : ControllerBase
     [AuthorizationFilter(SystemPermission.GetAllUsers)]
     public GetUsersResponse GetUsers([FromQuery] GetUsersRequest request)
     {
-        var users = adminService.GetUsers(request.CurrentPage, request.PageSize, request.FullName,
+        PagedData<BusinessLogic.Users.Entities.User> users = adminService.GetUsers(request.CurrentPage,
+            request.PageSize, request.FullName,
             request.Role);
-        var response = ResponseFromUsers(users);
+        GetUsersResponse response = ResponseFromUsers(users);
         return response;
     }
 
@@ -36,7 +37,7 @@ public class UserController(IAdminService adminService) : ControllerBase
             }).ToList(),
             Pagination = new Pagination
             {
-                Page = users.Page, PageSize = users.PageSize, TotalPages = users.TotalPages,
+                Page = users.Page, PageSize = users.PageSize, TotalPages = users.TotalPages
             }
         };
         return response;

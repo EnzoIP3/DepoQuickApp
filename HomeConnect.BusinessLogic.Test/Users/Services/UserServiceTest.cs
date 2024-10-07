@@ -12,11 +12,7 @@ namespace HomeConnect.BusinessLogic.Test.Users.Services;
 [TestClass]
 public class UserServiceTest
 {
-    private Mock<IUserRepository> _userRepository = null!;
-    private Mock<IRoleRepository> _roleRepository = null!;
-    private IUserService _userService = null!;
-
-    private CreateUserArgs _args = new CreateUserArgs()
+    private readonly CreateUserArgs _args = new()
     {
         Email = "john.doe@gmail.com",
         Password = "password1M@",
@@ -24,6 +20,10 @@ public class UserServiceTest
         Surname = "Doe",
         Role = "Administrator"
     };
+
+    private Mock<IRoleRepository> _roleRepository = null!;
+    private Mock<IUserRepository> _userRepository = null!;
+    private IUserService _userService = null!;
 
     [TestInitialize]
     public void Initialize()
@@ -56,7 +56,7 @@ public class UserServiceTest
         _roleRepository.Setup(x => x.Exists(_args.Role)).Returns(false);
 
         // Act
-        var act = () => _userService.CreateUser(_args);
+        Func<User> act = () => _userService.CreateUser(_args);
 
         // Assert
         act.Should().Throw<ArgumentException>();
@@ -70,7 +70,7 @@ public class UserServiceTest
         _userRepository.Setup(x => x.ExistsByEmail(_args.Email)).Returns(true);
 
         // Act
-        var act = () => _userService.CreateUser(_args);
+        Func<User> act = () => _userService.CreateUser(_args);
 
         // Assert
         act.Should().Throw<InvalidOperationException>();
@@ -87,7 +87,7 @@ public class UserServiceTest
         _userRepository.Setup(x => x.ExistsByEmail(_args.Email)).Returns(false);
 
         // Act
-        var act = () => _userService.CreateUser(_args);
+        Func<User> act = () => _userService.CreateUser(_args);
 
         // Assert
         act.Should().Throw<ArgumentException>();

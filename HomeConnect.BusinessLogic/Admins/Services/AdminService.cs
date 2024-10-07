@@ -1,5 +1,6 @@
 using BusinessLogic.BusinessOwners.Entities;
 using BusinessLogic.BusinessOwners.Repositories;
+using BusinessLogic.Roles.Entities;
 using BusinessLogic.Roles.Repositories;
 using BusinessLogic.Users.Entities;
 using BusinessLogic.Users.Models;
@@ -9,10 +10,6 @@ namespace BusinessLogic.Admins.Services;
 
 public class AdminService : IAdminService
 {
-    private IUserRepository UserRepository { get; init; }
-    private IBusinessRepository BusinessRepository { get; init; }
-    private IRoleRepository RoleRepository { get; init; }
-
     public AdminService(IUserRepository userRepository, IBusinessRepository businessRepository,
         IRoleRepository roleRepository)
     {
@@ -21,32 +18,59 @@ public class AdminService : IAdminService
         RoleRepository = roleRepository;
     }
 
+    private IUserRepository UserRepository { get; }
+    private IBusinessRepository BusinessRepository { get; }
+    private IRoleRepository RoleRepository { get; }
+
     public Guid Create(CreateUserArgs args)
     {
-        ValidateAdminModel(args);
+        ValidateUserArgs(args);
         EnsureUserEmailIsUnique(args.Email);
-        var role = RoleRepository.Get(args.Role);
-        var admin = new User(args.Name, args.Surname, args.Email, args.Password, role);
+
+        Role role = GetRoleByName(args.Role);
+        var admin = CreateNewUser(args, role);
+
         UserRepository.Add(admin);
         return admin.Id;
     }
 
-    public void Delete(string id)
+    public Guid CreateBusinessOwner(CreateUserArgs args)
     {
-        EnsureIsValidGuid(id);
-        EnsureAdminExists(Guid.Parse(id));
-        UserRepository.Delete(Guid.Parse(id));
+        ValidateUserArgs(args);
+        EnsureUserEmailIsUnique(args.Email);
+
+        Role role = GetRoleByName(args.Role);
+        var businessOwner = CreateNewUser(args, role);
+
+        UserRepository.Add(businessOwner);
+        return businessOwner.Id;
     }
 
-    private static void EnsureIsValidGuid(string id)
+    public void Delete(string adminIdStr)
     {
-        if (Guid.TryParse(id, out _) == false)
-        {
-            throw new ArgumentException("The id is not a valid GUID.");
-        }
+        EnsureValidGuid(adminIdStr, out Guid adminId);
+        EnsureEntityExists(adminId);
+
+        UserRepository.Delete(adminId);
     }
 
-    private static void ValidateAdminModel(CreateUserArgs args)
+    public PagedData<User> GetUsers(int? currentPage = 1, int? pageSize = 10, string? fullNameFilter = null,
+        string? roleFilter = null)
+    {
+        PagedData<User> users =
+            UserRepository.GetAllPaged(currentPage!.Value, pageSize!.Value, fullNameFilter, roleFilter);
+        return users;
+    }
+
+    public PagedData<Business> GetBusinesses(int? currentPage = 1, int? pageSize = 10, string? nameFilter = null,
+        string? fullNameFilter = null)
+    {
+        PagedData<Business> businesses =
+            BusinessRepository.GetPagedData(currentPage!.Value, pageSize!.Value, fullNameFilter, nameFilter);
+        return businesses;
+    }
+
+    private static void ValidateUserArgs(CreateUserArgs args)
     {
         if (string.IsNullOrWhiteSpace(args.Name) ||
             string.IsNullOrWhiteSpace(args.Surname) ||
@@ -66,7 +90,17 @@ public class AdminService : IAdminService
         }
     }
 
-    private void EnsureAdminExists(Guid id)
+    private Role GetRoleByName(string roleName)
+    {
+        return RoleRepository.Get(roleName) ?? throw new KeyNotFoundException("Role does not exist.");
+    }
+
+    private User CreateNewUser(CreateUserArgs args, Role role)
+    {
+        return new User(args.Name, args.Surname, args.Email, args.Password, role);
+    }
+
+    private void EnsureEntityExists(Guid id)
     {
         if (!UserRepository.Exists(id))
         {
@@ -74,39 +108,11 @@ public class AdminService : IAdminService
         }
     }
 
-    public Guid CreateBusinessOwner(CreateUserArgs args)
+    private static void EnsureValidGuid(string idStr, out Guid id)
     {
-        EnsureUserEmailIsUnique(args.Email);
-        var role = RoleRepository.Get(args.Role);
-        var user = new User(args.Name, args.Surname, args.Email, args.Password, role);
-        UserRepository.Add(user);
-        return user.Id;
-    }
-
-    public PagedData<User> GetUsers(int? currentPage = null, int? pageSize = null, string? fullNameFilter = null,
-        string? roleFilter = null)
-    {
-        currentPage ??= 1;
-        pageSize ??= 10;
-        var users = UserRepository.GetAllPaged((int)currentPage, (int)pageSize, fullNameFilter, roleFilter);
-        return new PagedData<User>
+        if (!Guid.TryParse(idStr, out id))
         {
-            Data = users.Data, Page = users.Page, PageSize = users.PageSize, TotalPages = users.TotalPages
-        };
-    }
-
-    public PagedData<Business> GetBusinesses(int? currentPage = null, int? pageSize = null, string? nameFilter = null,
-        string? fullNameFilter = null)
-    {
-        currentPage ??= 1;
-        pageSize ??= 10;
-        var businesses = BusinessRepository.GetPagedData((int)currentPage, (int)pageSize, fullNameFilter, nameFilter);
-        return new PagedData<Business>
-        {
-            Data = businesses.Data,
-            Page = businesses.Page,
-            PageSize = businesses.PageSize,
-            TotalPages = businesses.TotalPages
-        };
+            throw new ArgumentException("The id is not a valid GUID.");
+        }
     }
 }

@@ -4,7 +4,6 @@ using BusinessLogic.Users.Models;
 using FluentAssertions;
 using HomeConnect.WebApi.Controllers.Admin;
 using HomeConnect.WebApi.Controllers.Admin.Models;
-using Microsoft.AspNetCore.Mvc;
 using Moq;
 
 namespace HomeConnect.WebApi.Test.Controllers;
@@ -23,16 +22,14 @@ public class AdminControllerTests
     }
 
     #region CreateAdmin
+
     [TestMethod]
     public void CreateAdmin_WhenCalledWithValidRequest_ReturnsCreatedResponse()
     {
         // Arrange
         var request = new CreateAdminRequest
         {
-            Name = "John",
-            Surname = "Doe",
-            Email = "email@email.com",
-            Password = "password"
+            Name = "John", Surname = "Doe", Email = "email@email.com", Password = "password"
         };
         var userModel = new CreateUserArgs
         {
@@ -47,16 +44,18 @@ public class AdminControllerTests
         _adminService.Setup(x => x.Create(userModel)).Returns(guid);
 
         // Act
-        var response = _controller.CreateAdmin(request);
+        CreateAdminResponse response = _controller.CreateAdmin(request);
 
         // Assert
         _adminService.VerifyAll();
         response.Should().NotBeNull();
         response.Id.Should().Be(guid.ToString());
     }
+
     #endregion
 
     #region DeleteAdmin
+
     [TestMethod]
     public void DeleteAdmin_WhenCalledWithValidRequest_ReturnsNoContentResponse()
     {
@@ -65,11 +64,12 @@ public class AdminControllerTests
         _adminService.Setup(x => x.Delete(guid));
 
         // Act
-        var response = _controller.DeleteAdmin(guid);
+        DeleteAdminResponse response = _controller.DeleteAdmin(guid);
 
         // Assert
         _adminService.VerifyAll();
         response.Id.Should().Be(guid);
     }
+
     #endregion
 }

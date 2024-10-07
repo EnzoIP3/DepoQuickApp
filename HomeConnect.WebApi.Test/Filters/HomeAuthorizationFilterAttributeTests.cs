@@ -18,14 +18,16 @@ namespace HomeConnect.WebApi.Test.Filters;
 [TestClass]
 public class HomeAuthorizationFilterAttributeTests
 {
-    private Mock<HttpContext> _httpContextMock = null!;
-    private Mock<IUserRepository> _userRepositoryMock = null!;
-    private Mock<IHomeOwnerService> _homeOwnerServiceMock = null!;
-    private AuthorizationFilterContext _context = null!;
-    private HomeAuthorizationFilterAttribute _attribute = null!;
     private readonly string _homeIdRoute = "homesId";
+
     private readonly User _user = new("name", "surname", "email@email.com", "Password@100",
         new Role { Name = "HomeOwner", Permissions = [] });
+
+    private HomeAuthorizationFilterAttribute _attribute = null!;
+    private AuthorizationFilterContext _context = null!;
+    private Mock<IHomeOwnerService> _homeOwnerServiceMock = null!;
+    private Mock<HttpContext> _httpContextMock = null!;
+    private Mock<IUserRepository> _userRepositoryMock = null!;
 
     [TestInitialize]
     public void Initialize()
@@ -50,7 +52,7 @@ public class HomeAuthorizationFilterAttributeTests
         _httpContextMock.Setup(h => h.Items).Returns(items);
         _attribute.OnAuthorization(_context);
 
-        var response = _context.Result;
+        IActionResult? response = _context.Result;
 
         _httpContextMock.VerifyAll();
         response.Should().NotBeNull();
@@ -72,7 +74,7 @@ public class HomeAuthorizationFilterAttributeTests
         _context.RouteData.Values.Add("homesId", homeId);
         _attribute.OnAuthorization(_context);
 
-        var response = _context.Result;
+        IActionResult? response = _context.Result;
 
         _httpContextMock.VerifyAll();
         response.Should().NotBeNull();
@@ -90,13 +92,7 @@ public class HomeAuthorizationFilterAttributeTests
             new Role { Name = "HomeOwner", Permissions = [] });
         var home = new Home(otherUser, "street 123", 50.456, 123.456, 2);
         home.AddMember(new Member(_user));
-        var items = new Dictionary<object, object?>
-        {
-            {
-                Item.UserLogged,
-                _user
-            }
-        };
+        var items = new Dictionary<object, object?> { { Item.UserLogged, _user } };
         _httpContextMock.Setup(h => h.Items).Returns(items);
         _homeOwnerServiceMock.Setup(h => h.GetHome(home.Id)).Returns(home);
         _httpContextMock.Setup(h => h.RequestServices.GetService(typeof(IHomeOwnerService)))
@@ -108,7 +104,7 @@ public class HomeAuthorizationFilterAttributeTests
 
         _attribute.OnAuthorization(_context);
 
-        var response = _context.Result;
+        IActionResult? response = _context.Result;
 
         _httpContextMock.VerifyAll();
         _userRepositoryMock.VerifyAll();
@@ -133,7 +129,7 @@ public class HomeAuthorizationFilterAttributeTests
 
         _attribute.OnAuthorization(_context);
 
-        var response = _context.Result;
+        IActionResult? response = _context.Result;
 
         _httpContextMock.VerifyAll();
         _userRepositoryMock.VerifyAll();

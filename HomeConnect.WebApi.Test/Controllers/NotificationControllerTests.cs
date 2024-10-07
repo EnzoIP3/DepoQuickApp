@@ -16,10 +16,10 @@ namespace HomeConnect.WebApi.Test.Controllers;
 [TestClass]
 public class NotificationControllerTests
 {
-    private Mock<INotificationService> _notificationService = null!;
-    private NotificationController _notificationController = null!;
-    private Mock<HttpContext> _httpContextMock = null!;
     private AuthorizationFilterContext _context = null!;
+    private Mock<HttpContext> _httpContextMock = null!;
+    private NotificationController _notificationController = null!;
+    private Mock<INotificationService> _notificationService = null!;
 
     [TestInitialize]
     public void Initialize()
@@ -41,9 +41,7 @@ public class NotificationControllerTests
         // Arrange
         var request = new GetNotificationsRequest
         {
-            Device = Guid.NewGuid().ToString(),
-            DateCreated = DateTime.Now,
-            Read = false
+            Device = Guid.NewGuid().ToString(), DateCreated = DateTime.Now, Read = false
         };
         var user = new User("John", "Doe", "email@email.com", "Password@100",
             new Role { Name = "HomeOwner", Permissions = [] });
@@ -54,19 +52,13 @@ public class NotificationControllerTests
             Read = false,
             Date = DateTime.Now
         };
-        var items = new Dictionary<object, object?>
-        {
-            {
-                Item.UserLogged,
-                user
-            }
-        };
+        var items = new Dictionary<object, object?> { { Item.UserLogged, user } };
         _httpContextMock.SetupGet(h => h.Items).Returns(items);
         _notificationService.Setup(n => n.GetNotifications(user.Id, request.Device, request.DateCreated, request.Read))
             .Returns([notification]);
 
         // Act
-        var response = _notificationController.GetNotifications(request, _context);
+        GetNotificationsResponse response = _notificationController.GetNotifications(request, _context);
 
         // Assert
         _notificationService.VerifyAll();

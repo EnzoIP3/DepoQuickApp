@@ -15,26 +15,26 @@ namespace HomeConnect.BusinessLogic.Test.BusinessOwners;
 [TestClass]
 public class BusinessOwnerServiceTests
 {
-    private Mock<IUserRepository> _userRepository = null!;
-    private Mock<IBusinessRepository> _businessRepository = null!;
-    private Mock<IDeviceRepository> _deviceRepository = null!;
-    private BusinessOwnerService _businessOwnerService = null!;
-    private string _ownerEmail = null!;
-    private string _businessRut = null!;
-    private string _businessName = null!;
-    private string _businessLogo = null!;
-    private User _owner = null!;
-    private Business _existingBusiness = null!;
-
     private const string DeviceName = "Device Name";
     private const int ModelNumber = 123;
     private const string Description = "Device Description";
     private const string MainPhoto = "https://www.example.com/photo1.jpg";
 
+    private const string Type = "Device Type";
+
     private readonly List<string> _secondaryPhotos =
         ["https://www.example.com/photo2.jpg", "https://www.example.com/photo3.jpg"];
 
-    private const string Type = "Device Type";
+    private string _businessLogo = null!;
+    private string _businessName = null!;
+    private BusinessOwnerService _businessOwnerService = null!;
+    private Mock<IBusinessRepository> _businessRepository = null!;
+    private string _businessRut = null!;
+    private Mock<IDeviceRepository> _deviceRepository = null!;
+    private Business _existingBusiness = null!;
+    private User _owner = null!;
+    private string _ownerEmail = null!;
+    private Mock<IUserRepository> _userRepository = null!;
 
     [TestInitialize]
     public void TestInitialize()
@@ -98,7 +98,7 @@ public class BusinessOwnerServiceTests
         _businessRepository.Setup(x => x.ExistsByOwnerId(_owner.Id)).Returns(false);
 
         // Act
-        var returnedBusiness = _businessOwnerService.CreateBusiness(args);
+        Business returnedBusiness = _businessOwnerService.CreateBusiness(args);
 
         // Assert
         _businessRepository.Verify(x => x.Add(It.Is<Business>(b =>
@@ -359,7 +359,7 @@ public class BusinessOwnerServiceTests
         _businessRepository.Setup(x => x.ExistsByOwnerId(_owner.Id)).Returns(true);
 
         // Act
-        var returnedCamera = _businessOwnerService.CreateCamera(args);
+        Camera returnedCamera = _businessOwnerService.CreateCamera(args);
 
         // Assert
         Assert.AreEqual(addedCamera.Id, returnedCamera.Id);

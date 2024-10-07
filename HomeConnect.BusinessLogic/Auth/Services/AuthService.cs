@@ -9,64 +9,96 @@ namespace BusinessLogic.Auth.Services;
 
 public class AuthService : IAuthService
 {
-    private readonly ITokenRepository _tokenRepository;
-    private readonly IUserRepository _userRepository;
-
     public AuthService(ITokenRepository tokenRepository, IUserRepository userRepository)
     {
-        _tokenRepository = tokenRepository;
-        _userRepository = userRepository;
+        TokenRepository = tokenRepository;
+        UserRepository = userRepository;
     }
+
+    private ITokenRepository TokenRepository { get; }
+    private IUserRepository UserRepository { get; }
 
     public string CreateToken(CreateTokenArgs args)
     {
-        EnsureEmailIsNotEmpty(args.Email);
-        EnsurePasswordIsNotEmpty(args.Password);
-        EnsureUserExists(args.Email);
-        var user = _userRepository.GetByEmail(args.Email);
-        ValidatePassword(args, user);
-        var session = new Token(user);
-        _tokenRepository.Add(session);
+        ValidateCreateTokenArgs(args);
+        var user = GetUserByEmail(args.Email);
+        EnsurePasswordIsValid(args.Password, user);
+        var session = CreateSessionToken(user);
+        TokenRepository.Add(session);
         return session.Id.ToString();
     }
 
-    private void EnsurePasswordIsNotEmpty(string password)
+    public User GetUserFromToken(string token)
     {
-        if (string.IsNullOrWhiteSpace(password))
+        var session = GetValidatedSession(token);
+        return session.User;
+    }
+
+    public bool IsTokenExpired(string token)
+    {
+        var session = GetValidatedSession(token);
+        return session.IsExpired();
+    }
+
+    public bool Exists(string token)
+    {
+        EnsureIsValidGuid(token);
+        return TokenRepository.Exists(Guid.Parse(token));
+    }
+
+    private void ValidateCreateTokenArgs(CreateTokenArgs args)
+    {
+        EnsureEmailIsNotEmpty(args);
+        EnsurePasswordIsNotEmpty(args);
+        EnsureUserExists(args.Email);
+    }
+
+    private static void EnsurePasswordIsNotEmpty(CreateTokenArgs args)
+    {
+        if (string.IsNullOrWhiteSpace(args.Password))
         {
             throw new ArgumentException("Password is required.");
         }
     }
 
-    private void EnsureEmailIsNotEmpty(string email)
+    private static void EnsureEmailIsNotEmpty(CreateTokenArgs args)
     {
-        if (string.IsNullOrWhiteSpace(email))
+        if (string.IsNullOrWhiteSpace(args.Email))
         {
             throw new ArgumentException("Email is required.");
         }
     }
 
-    private void EnsureUserExists(string email)
+    private User GetUserByEmail(string email)
     {
-        if (!_userRepository.ExistsByEmail(email))
+        return UserRepository.GetByEmail(email);
+    }
+
+    private static void EnsurePasswordIsValid(string password, User user)
+    {
+        if (!user.Password.Equals(password))
         {
             throw new AuthException("Invalid email or password.");
         }
     }
 
-    private static void ValidatePassword(CreateTokenArgs args, User user)
+    private Token CreateSessionToken(User user)
     {
-        if (!user.Password.Equals(args.Password))
-        {
-            throw new AuthException("Invalid email or password.");
-        }
+        return new Token(user);
     }
 
-    public User GetUserFromToken(string token)
+    private Token GetValidatedSession(string token)
     {
         EnsureIsValidGuid(token);
-        var session = _tokenRepository.Get(Guid.Parse(token));
-        return session.User;
+        return TokenRepository.Get(Guid.Parse(token));
+    }
+
+    private void EnsureUserExists(string email)
+    {
+        if (!UserRepository.ExistsByEmail(email))
+        {
+            throw new AuthException("Invalid email or password.");
+        }
     }
 
     private static void EnsureIsValidGuid(string id)
@@ -75,18 +107,5 @@ public class AuthService : IAuthService
         {
             throw new ArgumentException("Token is not a valid GUID.");
         }
-    }
-
-    public bool IsTokenExpired(string token)
-    {
-        EnsureIsValidGuid(token);
-        var session = _tokenRepository.Get(Guid.Parse(token));
-        return session.IsExpired();
-    }
-
-    public bool Exists(string token)
-    {
-        EnsureIsValidGuid(token);
-        return _tokenRepository.Exists(Guid.Parse(token));
     }
 }

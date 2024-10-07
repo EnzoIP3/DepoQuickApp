@@ -14,7 +14,7 @@ public class TokenTests
         var user = new User();
 
         // Act
-        var act = () => new Token(user);
+        Func<Token> act = () => new Token(user);
 
         // Assert
         act.Should().NotThrow();

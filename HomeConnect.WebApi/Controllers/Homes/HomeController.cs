@@ -1,3 +1,4 @@
+using BusinessLogic.Devices.Entities;
 using BusinessLogic.HomeOwners.Entities;
 using BusinessLogic.HomeOwners.Models;
 using BusinessLogic.HomeOwners.Services;
@@ -20,7 +21,7 @@ public class HomeController(IHomeOwnerService homeOwnerService) : ControllerBase
     {
         var userLoggedIn = HttpContext.Items[Item.UserLogged];
         CreateHomeArgs createHomeArgs = HomeArgsFromRequest(request, (BusinessLogic.Users.Entities.User)userLoggedIn!);
-        var homeId = homeOwnerService.CreateHome(createHomeArgs);
+        Guid homeId = homeOwnerService.CreateHome(createHomeArgs);
         return new CreateHomeResponse { Id = homeId.ToString() };
     }
 
@@ -36,7 +37,7 @@ public class HomeController(IHomeOwnerService homeOwnerService) : ControllerBase
             CanAddDevices = request.CanAddDevices,
             CanListDevices = request.CanListDevices
         };
-        var addedMemberId = homeOwnerService.AddMemberToHome(addMemberArgs);
+        Guid addedMemberId = homeOwnerService.AddMemberToHome(addMemberArgs);
         return new AddMemberResponse { HomeId = homesId, MemberId = addedMemberId.ToString() };
     }
 
@@ -58,18 +59,18 @@ public class HomeController(IHomeOwnerService homeOwnerService) : ControllerBase
     public GetMembersResponse GetMembers([FromRoute] string homesId, AuthorizationFilterContext context)
     {
         var userLoggedIn = context.HttpContext.Items[Item.UserLogged];
-        var members = homeOwnerService.GetHomeMembers(homesId);
+        List<BusinessLogic.HomeOwners.Entities.Member> members = homeOwnerService.GetHomeMembers(homesId);
         var memberInfos = members.Select(m => new ListMemberInfo
         {
             Id = m.User.Id.ToString(),
             Name = m.User.Name,
             Surname = m.User.Surname,
             Photo = m.User.ProfilePicture ?? string.Empty,
-            CanAddDevices = m.HasPermission(new BusinessLogic.HomeOwners.Entities.HomePermission("canAddDevices")),
+            CanAddDevices = m.HasPermission(new HomePermission("canAddDevices")),
             CanListDevices =
-                m.HasPermission(new BusinessLogic.HomeOwners.Entities.HomePermission("canListDevices")),
+                m.HasPermission(new HomePermission("canListDevices")),
             ShouldBeNotified =
-                m.HasPermission(new BusinessLogic.HomeOwners.Entities.HomePermission("shouldBeNotified"))
+                m.HasPermission(new HomePermission("shouldBeNotified"))
         }).ToList();
         return new GetMembersResponse { Members = memberInfos };
     }
@@ -80,7 +81,7 @@ public class HomeController(IHomeOwnerService homeOwnerService) : ControllerBase
     public GetDevicesResponse GetDevices([FromRoute] string homesId, AuthorizationFilterContext context)
     {
         var userLoggedIn = context.HttpContext.Items[Item.UserLogged];
-        var devices = homeOwnerService.GetHomeDevices(homesId);
+        IEnumerable<OwnedDevice> devices = homeOwnerService.GetHomeDevices(homesId);
         var deviceInfos = devices.Select(d => new ListDeviceInfo
         {
             Name = d.Device.Name,

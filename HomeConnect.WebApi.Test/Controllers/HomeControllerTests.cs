@@ -20,18 +20,18 @@ namespace HomeConnect.WebApi.Test.Controllers;
 [TestClass]
 public class HomeControllerTests
 {
-    private HomeController _controller = null!;
-    private Mock<HttpContext> _httpContextMock = null!;
-    private Mock<IHomeOwnerService> _homeOwnerService = null!;
+    private static readonly User _user = new("John", "Doe", "email@email.com", "Password@100",
+        new Role { Name = "HomeOwner", Permissions = [] });
+
+    private readonly Home _home = new(_user, "Road 123", 50.456, 100.789, 3);
+
+    private readonly User _otherUser = new("Jane", "Doe", "email2@email.com", "Password@100",
+        new Role { Name = "HomeOwner", Permissions = [] });
+
     private AuthorizationFilterContext _context = null!;
-
-    private static readonly User _user = new User("John", "Doe", "email@email.com", "Password@100",
-        new Role { Name = "HomeOwner", Permissions = [] });
-
-    private readonly User _otherUser = new User("Jane", "Doe", "email2@email.com", "Password@100",
-        new Role { Name = "HomeOwner", Permissions = [] });
-
-    private readonly Home _home = new Home(_user, "Road 123", 50.456, 100.789, 3);
+    private HomeController _controller = null!;
+    private Mock<IHomeOwnerService> _homeOwnerService = null!;
+    private Mock<HttpContext> _httpContextMock = null!;
 
     [TestInitialize]
     public void Initialize()
@@ -72,7 +72,7 @@ public class HomeControllerTests
         _homeOwnerService.Setup(x => x.CreateHome(args)).Returns(home.Id);
 
         // Act
-        var response = _controller.CreateHome(request);
+        CreateHomeResponse response = _controller.CreateHome(request);
 
         // Assert
         _homeOwnerService.VerifyAll();
@@ -90,9 +90,7 @@ public class HomeControllerTests
         // Arrange
         var request = new AddMemberRequest
         {
-            MemberId = _user.Id.ToString(),
-            CanAddDevices = true,
-            CanListDevices = false
+            MemberId = _user.Id.ToString(), CanAddDevices = true, CanListDevices = false
         };
         var items = new Dictionary<object, object?> { { Item.UserLogged, _user } };
         _httpContextMock.Setup(h => h.Items).Returns(items);
@@ -106,7 +104,7 @@ public class HomeControllerTests
         _homeOwnerService.Setup(x => x.AddMemberToHome(args)).Returns(_user.Id);
 
         // Act
-        var response = _controller.AddMember(_home.Id.ToString(), request);
+        AddMemberResponse response = _controller.AddMember(_home.Id.ToString(), request);
 
         // Assert
         _homeOwnerService.VerifyAll();
@@ -138,83 +136,13 @@ public class HomeControllerTests
         _homeOwnerService.Setup(x => x.AddDeviceToHome(args));
 
         // Act
-        var response = _controller.AddDevices(_home.Id.ToString(), request);
+        AddDevicesResponse response = _controller.AddDevices(_home.Id.ToString(), request);
 
         // Assert
         _homeOwnerService.VerifyAll();
         response.Should().NotBeNull();
         response.DeviceIds.Should().BeEquivalentTo(request.DeviceIds);
         response.HomeId.Should().Be(_home.Id.ToString());
-    }
-
-    #endregion
-
-    #region GetMembers
-
-    [TestMethod]
-    public void GetMembers_WhenCalledWithValidRequest_ReturnsMembers()
-    {
-        // Arrange
-        var owner = new User("owner", "owner", "email@email.com", "Password@100",
-            new Role { Name = "HomeOwner", Permissions = [] });
-        var home = new Home(owner, "Road 123", 50.456, 100.789, 3);
-        var member = new Member(_user,
-        [
-            new HomePermission("canAddDevices"),
-            new HomePermission("canListDevices"),
-            new HomePermission("shouldBeNotified")
-        ]);
-        var otherMember = new Member(_otherUser, [new HomePermission("canAddDevices")]);
-        home.AddMember(member);
-        home.AddMember(otherMember);
-        var items = new Dictionary<object, object?> { { Item.UserLogged, _user } };
-        _httpContextMock.Setup(h => h.Items).Returns(items);
-        _homeOwnerService.Setup(x => x.GetHomeMembers(home.Id.ToString()))
-            .Returns([member, otherMember]);
-
-        var expectedResponse = CreateGetMembersResponse(member, otherMember);
-
-        // Act
-        var response = _controller.GetMembers(home.Id.ToString(), _context);
-
-        // Assert
-        _homeOwnerService.VerifyAll();
-        response.Should().NotBeNull();
-        response.Members.Should().NotBeNullOrEmpty();
-        response.Members.Should().HaveCount(2);
-        response.Members.Should().BeEquivalentTo(expectedResponse.Members);
-    }
-
-    private static GetMembersResponse CreateGetMembersResponse(Member member, Member otherMember)
-    {
-        return new GetMembersResponse
-        {
-            Members =
-            [
-                new ListMemberInfo
-                {
-                    Id = member.User.Id.ToString(),
-                    Name = member.User.Name,
-                    Surname = member.User.Surname,
-                    Photo = member.User.ProfilePicture ?? string.Empty,
-                    CanAddDevices = member.HasPermission(new HomePermission("canAddDevices")),
-                    CanListDevices = member.HasPermission(new HomePermission("canListDevices")),
-                    ShouldBeNotified = member.HasPermission(new HomePermission("shouldBeNotified"))
-                },
-
-                new ListMemberInfo
-                {
-                    Id = otherMember.User.Id.ToString(),
-                    Name = otherMember.User.Name,
-                    Surname = otherMember.User.Surname,
-                    Photo = otherMember.User.ProfilePicture ?? string.Empty,
-                    CanAddDevices = otherMember.HasPermission(new HomePermission("canAddDevices")),
-                    CanListDevices = otherMember.HasPermission(new HomePermission("canListDevices")),
-                    ShouldBeNotified = otherMember.HasPermission(new HomePermission("shouldBeNotified"))
-                }
-
-            ]
-        };
     }
 
     #endregion
@@ -275,7 +203,7 @@ public class HomeControllerTests
         };
 
         // Act
-        var response = _controller.GetDevices(_home.Id.ToString(), _context);
+        GetDevicesResponse response = _controller.GetDevices(_home.Id.ToString(), _context);
 
         // Assert
         _homeOwnerService.VerifyAll();
@@ -283,6 +211,76 @@ public class HomeControllerTests
         response.Device.Should().NotBeNullOrEmpty();
         response.Device.Should().HaveCount(2);
         response.Device.Should().BeEquivalentTo(expectedResponse.Device);
+    }
+
+    #endregion
+
+    #region GetMembers
+
+    [TestMethod]
+    public void GetMembers_WhenCalledWithValidRequest_ReturnsMembers()
+    {
+        // Arrange
+        var owner = new User("owner", "owner", "email@email.com", "Password@100",
+            new Role { Name = "HomeOwner", Permissions = [] });
+        var home = new Home(owner, "Road 123", 50.456, 100.789, 3);
+        var member = new Member(_user,
+        [
+            new HomePermission("canAddDevices"),
+            new HomePermission("canListDevices"),
+            new HomePermission("shouldBeNotified")
+        ]);
+        var otherMember = new Member(_otherUser, [new HomePermission("canAddDevices")]);
+        home.AddMember(member);
+        home.AddMember(otherMember);
+        var items = new Dictionary<object, object?> { { Item.UserLogged, _user } };
+        _httpContextMock.Setup(h => h.Items).Returns(items);
+        _homeOwnerService.Setup(x => x.GetHomeMembers(home.Id.ToString()))
+            .Returns([member, otherMember]);
+
+        GetMembersResponse expectedResponse = CreateGetMembersResponse(member, otherMember);
+
+        // Act
+        GetMembersResponse response = _controller.GetMembers(home.Id.ToString(), _context);
+
+        // Assert
+        _homeOwnerService.VerifyAll();
+        response.Should().NotBeNull();
+        response.Members.Should().NotBeNullOrEmpty();
+        response.Members.Should().HaveCount(2);
+        response.Members.Should().BeEquivalentTo(expectedResponse.Members);
+    }
+
+    private static GetMembersResponse CreateGetMembersResponse(Member member, Member otherMember)
+    {
+        return new GetMembersResponse
+        {
+            Members =
+            [
+                new ListMemberInfo
+                {
+                    Id = member.User.Id.ToString(),
+                    Name = member.User.Name,
+                    Surname = member.User.Surname,
+                    Photo = member.User.ProfilePicture ?? string.Empty,
+                    CanAddDevices = member.HasPermission(new HomePermission("canAddDevices")),
+                    CanListDevices = member.HasPermission(new HomePermission("canListDevices")),
+                    ShouldBeNotified = member.HasPermission(new HomePermission("shouldBeNotified"))
+                },
+
+                new ListMemberInfo
+                {
+                    Id = otherMember.User.Id.ToString(),
+                    Name = otherMember.User.Name,
+                    Surname = otherMember.User.Surname,
+                    Photo = otherMember.User.ProfilePicture ?? string.Empty,
+                    CanAddDevices = otherMember.HasPermission(new HomePermission("canAddDevices")),
+                    CanListDevices = otherMember.HasPermission(new HomePermission("canListDevices")),
+                    ShouldBeNotified = otherMember.HasPermission(new HomePermission("shouldBeNotified"))
+                }
+
+            ]
+        };
     }
 
     #endregion

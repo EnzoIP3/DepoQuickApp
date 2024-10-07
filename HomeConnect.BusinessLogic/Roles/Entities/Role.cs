@@ -8,10 +8,6 @@ public class Role
     public const string HomeOwner = "HomeOwner";
     public const string BusinessOwner = "BusinessOwner";
 
-    [Key]
-    public string Name { get; init; } = string.Empty;
-    public List<SystemPermission> Permissions { get; set; } = [];
-
     public Role()
     {
     }
@@ -21,6 +17,11 @@ public class Role
         Name = name;
         Permissions = permissions;
     }
+
+    [Key]
+    public string Name { get; init; } = string.Empty;
+
+    public List<SystemPermission> Permissions { get; set; } = [];
 
     public bool HasPermission(string permission)
     {

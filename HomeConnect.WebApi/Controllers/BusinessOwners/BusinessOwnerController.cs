@@ -18,8 +18,8 @@ public class BusinessOwnerController(IAdminService adminService)
     public CreateBusinessOwnerResponse CreateBusinessOwner(CreateBusinessOwnerRequest request)
     {
         CreateUserArgs createUserArgs = UserModelFromRequest(request);
-        var businessOwnerId = adminService.CreateBusinessOwner(createUserArgs);
-        return new CreateBusinessOwnerResponse() { Id = businessOwnerId.ToString() };
+        Guid businessOwnerId = adminService.CreateBusinessOwner(createUserArgs);
+        return new CreateBusinessOwnerResponse { Id = businessOwnerId.ToString() };
     }
 
     private static CreateUserArgs UserModelFromRequest(CreateBusinessOwnerRequest request)

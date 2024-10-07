@@ -16,10 +16,10 @@ namespace HomeConnect.WebApi.Test.Filters;
 [TestClass]
 public class AuthorizationFilterTests
 {
+    private AuthorizationFilterAttribute _attribute = null!;
+    private AuthorizationFilterContext _context = null!;
     private Mock<HttpContext> _httpContextMock = null!;
     private Mock<IUserRepository> _userRepositoryMock = null!;
-    private AuthorizationFilterContext _context = null!;
-    private AuthorizationFilterAttribute _attribute = null;
 
     [TestInitialize]
     public void Initialize()
@@ -43,7 +43,7 @@ public class AuthorizationFilterTests
         _httpContextMock.Setup(h => h.Items).Returns(items);
         _attribute.OnAuthorization(_context);
 
-        var response = _context.Result;
+        IActionResult? response = _context.Result;
 
         _httpContextMock.VerifyAll();
         response.Should().NotBeNull();
@@ -68,7 +68,7 @@ public class AuthorizationFilterTests
 
         _attribute.OnAuthorization(_context);
 
-        var response = _context.Result;
+        IActionResult? response = _context.Result;
 
         _httpContextMock.VerifyAll();
         _userRepositoryMock.VerifyAll();

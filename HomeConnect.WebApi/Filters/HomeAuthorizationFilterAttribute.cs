@@ -28,7 +28,7 @@ public class HomeAuthorizationFilterAttribute(string permission) : Attribute, IA
         }
 
         var homeId = context.RouteData.Values[HomeIdRoute]?.ToString();
-        var homeIsNotIdentified = !Guid.TryParse(homeId, out var homeIdParsed);
+        var homeIsNotIdentified = !Guid.TryParse(homeId, out Guid homeIdParsed);
         if (homeIsNotIdentified)
         {
             context.Result =
@@ -58,7 +58,7 @@ public class HomeAuthorizationFilterAttribute(string permission) : Attribute, IA
 
         if (!hasPermission)
         {
-            var member = home.Members.FirstOrDefault(m => m.User.Id == userLoggedMap.Id);
+            Member? member = home.Members.FirstOrDefault(m => m.User.Id == userLoggedMap.Id);
             hasPermission = member != null && member.HasPermission(homePermission);
         }
 
@@ -73,7 +73,7 @@ public class HomeAuthorizationFilterAttribute(string permission) : Attribute, IA
 
     private static Home? GetHomeById(AuthorizationFilterContext context, Guid homeIdParsed)
     {
-        var homeOwnerService = GetHomeOwnerService(context);
+        IHomeOwnerService homeOwnerService = GetHomeOwnerService(context);
         Home? home;
         try
         {

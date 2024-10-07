@@ -19,7 +19,7 @@ namespace HomeConnect.WebApi.Test.Filters;
 public class AuthenticationFilterTests
 {
     private Mock<HttpContext> _httpContextMock = null!;
-    private Mock<IAuthService> _sessionServiceMock = null!;
+    private Mock<IAuthService> _authServiceMock = null!;
     private AuthorizationFilterContext _context = null!;
     private AuthenticationFilterAttribute _attribute = null!;
 
@@ -27,7 +27,7 @@ public class AuthenticationFilterTests
     public void Initialize()
     {
         _httpContextMock = new Mock<HttpContext>(MockBehavior.Strict);
-        _sessionServiceMock = new Mock<IAuthService>(MockBehavior.Strict);
+        _authServiceMock = new Mock<IAuthService>(MockBehavior.Strict);
         _attribute = new AuthenticationFilterAttribute();
 
         _context = new AuthorizationFilterContext(
@@ -110,15 +110,16 @@ public class AuthenticationFilterTests
             { "Authorization", $"Bearer {guid}" }
         }));
         _httpContextMock.Setup(h => h.RequestServices.GetService(typeof(IAuthService)))
-            .Returns(_sessionServiceMock.Object);
-        _sessionServiceMock.Setup(a => a.IsTokenExpired(guid)).Returns(true);
+            .Returns(_authServiceMock.Object);
+        _authServiceMock.Setup(a => a.Exists(guid)).Returns(true);
+        _authServiceMock.Setup(a => a.IsTokenExpired(guid)).Returns(true);
 
         _attribute.OnAuthorization(_context);
 
         var response = _context.Result;
 
         _httpContextMock.VerifyAll();
-        _sessionServiceMock.VerifyAll();
+        _authServiceMock.VerifyAll();
         response.Should().NotBeNull();
         var concreteResponse = response as ObjectResult;
         concreteResponse.Should().NotBeNull();
@@ -127,6 +128,31 @@ public class AuthenticationFilterTests
         FilterTestsUtils.GetMessage(concreteResponse.Value).Should().Be("The provided authorization header is expired");
     }
 
+    [TestMethod]
+    public void OnAuthorization_WhenAuthorizationDoesNotExist_ShouldReturnUnauthorizedResponse()
+    {
+        var guid = Guid.NewGuid().ToString();
+        _httpContextMock.Setup(h => h.Request.Headers).Returns(new HeaderDictionary(new Dictionary<string, StringValues>
+        {
+            { "Authorization", $"Bearer {guid}" }
+        }));
+        _httpContextMock.Setup(h => h.RequestServices.GetService(typeof(IAuthService)))
+            .Returns(_authServiceMock.Object);
+        _authServiceMock.Setup(a => a.Exists(guid)).Returns(false);
+
+        _attribute.OnAuthorization(_context);
+
+        var response = _context.Result;
+
+        _httpContextMock.VerifyAll();
+        _authServiceMock.VerifyAll();
+        response.Should().NotBeNull();
+        var concreteResponse = response as ObjectResult;
+        concreteResponse.Should().NotBeNull();
+        concreteResponse.StatusCode.Should().Be((int)HttpStatusCode.Unauthorized);
+        FilterTestsUtils.GetInnerCode(concreteResponse.Value).Should().Be("Unauthorized");
+        FilterTestsUtils.GetMessage(concreteResponse.Value).Should().Be("The provided authorization header is expired");
+    }
     #endregion
 
     #region Success
@@ -150,17 +176,18 @@ public class AuthenticationFilterTests
         var adminRole = new Role("Admin", []);
         var user = new User(validUserModel.Name, validUserModel.Surname, validUserModel.Email, validUserModel.Password,
             adminRole);
-        _sessionServiceMock.Setup(a => a.IsTokenExpired(guid)).Returns(false);
-        _sessionServiceMock.Setup(a => a.GetUserFromToken(guid)).Returns(user);
+        _authServiceMock.Setup(a => a.IsTokenExpired(guid)).Returns(false);
+        _authServiceMock.Setup(a => a.GetUserFromToken(guid)).Returns(user);
         var items = new Dictionary<object, object> { { Item.UserLogged, user } };
         _httpContextMock.Setup(h => h.Items).Returns(items);
         _httpContextMock.Setup(h => h.RequestServices.GetService(typeof(IAuthService)))
-            .Returns(_sessionServiceMock.Object);
+            .Returns(_authServiceMock.Object);
+        _authServiceMock.Setup(a => a.Exists(guid)).Returns(true);
 
         _attribute.OnAuthorization(_context);
 
         _httpContextMock.VerifyAll();
-        _sessionServiceMock.VerifyAll();
+        _authServiceMock.VerifyAll();
 
         _context.HttpContext.Items[Item.UserLogged].Should().NotBeNull();
         var userLogged = _context.HttpContext.Items[Item.UserLogged] as User;

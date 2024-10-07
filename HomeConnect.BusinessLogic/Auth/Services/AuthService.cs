@@ -83,4 +83,9 @@ public class AuthService : IAuthService
         var session = _tokenRepository.Get(Guid.Parse(token));
         return session.IsExpired();
     }
+
+    public bool Exists(string token)
+    {
+        throw new NotImplementedException();
+    }
 }

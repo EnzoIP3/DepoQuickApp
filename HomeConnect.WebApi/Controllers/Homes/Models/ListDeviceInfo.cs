@@ -8,5 +8,4 @@ public record ListDeviceInfo
     public string Type { get; set; } = null!;
     public int ModelNumber { get; set; }
     public string Photo { get; set; } = null!;
-    public bool IsConnected { get; set; }
 }

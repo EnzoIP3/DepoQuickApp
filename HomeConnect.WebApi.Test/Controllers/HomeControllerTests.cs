@@ -187,8 +187,7 @@ public class HomeControllerTests
                     BusinessName = device1.Device.Business.Name,
                     Type = device1.Device.Type.ToString(),
                     ModelNumber = device1.Device.ModelNumber,
-                    Photo = device1.Device.MainPhoto,
-                    IsConnected = device1.Connected
+                    Photo = device1.Device.MainPhoto
                 },
                 new ListDeviceInfo
                 {
@@ -197,8 +196,7 @@ public class HomeControllerTests
                     BusinessName = device2.Device.Business.Name,
                     Type = device2.Device.Type.ToString(),
                     ModelNumber = device2.Device.ModelNumber,
-                    Photo = device2.Device.MainPhoto,
-                    IsConnected = device2.Connected
+                    Photo = device2.Device.MainPhoto
                 }
 
             ]

@@ -35,7 +35,7 @@ public class OwnedDeviceRepositoryTests
         _business = new Business("123456789123", "Business Name", "https://example.com/image.png", _businessOwner);
         _device = new Device("Sensor", 12345, "A sensor", "https://sensor.com/image.png", [], "Sensor", _business);
 
-        _ownedDevice = new OwnedDevice(_home, _device);
+        _ownedDevice = new OwnedDevice(_home, _device) { Connected = false };
 
         _context.Users.Add(_homeOwner);
         _context.Users.Add(_businessOwner);
@@ -132,7 +132,7 @@ public class OwnedDeviceRepositoryTests
     public void IsConnected_WhenDeviceIsConnected_ReturnsTrue()
     {
         // Assert
-        _ownedDevice.Device.ConnectionState = true;
+        _ownedDevice.Connected = true;
         _context.SaveChanges();
 
         // Act

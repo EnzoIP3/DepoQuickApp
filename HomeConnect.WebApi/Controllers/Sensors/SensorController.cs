@@ -14,7 +14,6 @@ namespace HomeConnect.WebApi.Controllers.Sensor;
 
 [ApiController]
 [Route("sensors")]
-[AuthenticationFilter]
 public class SensorController(
     INotificationService notificationService,
     IDeviceService deviceService,
@@ -22,6 +21,7 @@ public class SensorController(
     : BaseDeviceController(deviceService)
 {
     [HttpPost]
+    [AuthenticationFilter]
     [AuthorizationFilter(SystemPermission.CreateSensor)]
     public CreateSensorResponse CreateSensor([FromBody] CreateSensorRequest request)
     {

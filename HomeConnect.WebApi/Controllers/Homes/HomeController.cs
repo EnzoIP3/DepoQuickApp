@@ -6,7 +6,6 @@ using BusinessLogic.Roles.Entities;
 using HomeConnect.WebApi.Controllers.Home.Models;
 using HomeConnect.WebApi.Filters;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.Filters;
 
 namespace HomeConnect.WebApi.Controllers.Home;
 
@@ -88,8 +87,7 @@ public class HomeController(IHomeOwnerService homeOwnerService) : ControllerBase
             BusinessName = d.Device.Business.Name,
             Type = d.Device.Type.ToString(),
             ModelNumber = d.Device.ModelNumber,
-            Photo = d.Device.MainPhoto,
-            IsConnected = d.Connected
+            Photo = d.Device.MainPhoto
         }).ToList();
         return new GetDevicesResponse { Devices = deviceInfos };
     }

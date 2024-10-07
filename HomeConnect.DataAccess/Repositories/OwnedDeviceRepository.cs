@@ -28,8 +28,8 @@ public class OwnedDeviceRepository : IOwnedDeviceRepository
     public bool ToggleConnection(string hardwareId)
     {
         OwnedDevice ownedDevice = _context.OwnedDevices.FirstOrDefault(od => od.HardwareId == Guid.Parse(hardwareId));
-        var desiredState = !ownedDevice.Device.ConnectionState;
-        ownedDevice.Device.ConnectionState = desiredState;
+        var desiredState = !ownedDevice.Connected;
+        ownedDevice.Connected = desiredState;
         _context.SaveChanges();
         return desiredState;
     }
@@ -46,6 +46,6 @@ public class OwnedDeviceRepository : IOwnedDeviceRepository
 
     public bool IsConnected(string hardwareId)
     {
-        return _context.OwnedDevices.First(od => od.HardwareId == Guid.Parse(hardwareId)).Device.ConnectionState;
+        return _context.OwnedDevices.First(od => od.HardwareId == Guid.Parse(hardwareId)).Connected;
     }
 }

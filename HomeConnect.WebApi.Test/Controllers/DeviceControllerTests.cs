@@ -59,8 +59,7 @@ public class DeviceControllerTests
                 BusinessName = d.Business.Name,
                 Type = d.Type.ToString(),
                 ModelNumber = d.ModelNumber,
-                Photo = d.MainPhoto,
-                IsConnected = d.ConnectionState
+                Photo = d.MainPhoto
             }).ToList(),
             Pagination = _expectedPagination
         };

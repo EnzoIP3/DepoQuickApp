@@ -26,7 +26,6 @@ public class Device
     {
     }
 
-    public bool ConnectionState { get; set; }
     public Guid Id { get; init; } = Guid.NewGuid();
 
     public Business Business { get; set; } = null!;

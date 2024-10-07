@@ -32,6 +32,6 @@ public class BaseDeviceControllerTests
         // Assert
         result.Should().NotBeNull();
         result.HardwareId.Should().Be(hardwareId);
-        result.ConnectionState.Should().BeTrue();
+        result.Connected.Should().BeTrue();
     }
 }

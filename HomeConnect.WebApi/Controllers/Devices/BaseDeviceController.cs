@@ -10,6 +10,6 @@ public class BaseDeviceController(IDeviceService deviceService) : ControllerBase
     public virtual ConnectionResponse Toggle([FromRoute] string hardwareId)
     {
         var connectionState = deviceService.Toggle(hardwareId);
-        return new ConnectionResponse { ConnectionState = connectionState, HardwareId = hardwareId };
+        return new ConnectionResponse { Connected = connectionState, HardwareId = hardwareId };
     }
 }

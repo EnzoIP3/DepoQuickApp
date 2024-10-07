@@ -3,6 +3,7 @@ using BusinessLogic.Notifications.Entities;
 using BusinessLogic.Notifications.Services;
 using BusinessLogic.Roles.Entities;
 using BusinessLogic.Users.Entities;
+using FluentAssertions;
 using HomeConnect.WebApi.Controllers.Notification;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
@@ -16,7 +17,6 @@ namespace HomeConnect.WebApi.Test.Controllers;
 [TestClass]
 public class NotificationControllerTests
 {
-    private AuthorizationFilterContext _context = null!;
     private Mock<HttpContext> _httpContextMock = null!;
     private NotificationController _notificationController = null!;
     private Mock<INotificationService> _notificationService = null!;
@@ -24,15 +24,12 @@ public class NotificationControllerTests
     [TestInitialize]
     public void Initialize()
     {
-        _notificationService = new Mock<INotificationService>();
-        _notificationController = new NotificationController(_notificationService.Object);
+        _notificationService = new Mock<INotificationService>(MockBehavior.Strict);
         _httpContextMock = new Mock<HttpContext>(MockBehavior.Strict);
-        _context = new AuthorizationFilterContext(
-            new ActionContext(
-                _httpContextMock.Object,
-                new RouteData(),
-                new ActionDescriptor()),
-            new List<IFilterMetadata>());
+        _notificationController = new NotificationController(_notificationService.Object)
+        {
+            ControllerContext = new ControllerContext { HttpContext = _httpContextMock.Object }
+        };
     }
 
     [TestMethod]
@@ -58,15 +55,15 @@ public class NotificationControllerTests
             .Returns([notification]);
 
         // Act
-        GetNotificationsResponse response = _notificationController.GetNotifications(request, _context);
+        GetNotificationsResponse response = _notificationController.GetNotifications(request);
 
         // Assert
         _notificationService.VerifyAll();
-        Assert.IsNotNull(response);
-        Assert.AreEqual(1, response.Notifications.Count);
-        Assert.AreEqual(notification.Event, response.Notifications[0].Event);
-        Assert.AreEqual(notification.OwnedDevice.HardwareId.ToString(), response.Notifications[0].DeviceId);
-        Assert.AreEqual(notification.Read, response.Notifications[0].Read);
-        Assert.AreEqual(notification.Date, response.Notifications[0].DateCreated);
+        response.Should().NotBeNull();
+        response.Notifications.Count.Should().Be(1);
+        response.Notifications[0].Event.Should().Be(notification.Event);
+        response.Notifications[0].DeviceId.Should().Be(notification.OwnedDevice.HardwareId.ToString());
+        response.Notifications[0].Read.Should().Be(notification.Read);
+        response.Notifications[0].DateCreated.Should().Be(notification.Date);
     }
 }

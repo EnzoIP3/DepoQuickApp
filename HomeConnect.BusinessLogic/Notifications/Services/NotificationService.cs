@@ -46,7 +46,7 @@ public class NotificationService : INotificationService
     {
         if (!OwnedDeviceRepository.Exists(Guid.Parse(argsHardwareId)))
         {
-            throw new ArgumentException("Owned device does not exist.");
+            throw new KeyNotFoundException("The device is not registered in this home.");
         }
     }
 

@@ -93,7 +93,7 @@ public class DeviceServiceTests
         Func<bool> act = () => _deviceService.Toggle(hardwareId);
 
         // Assert
-        act.Should().Throw<ArgumentException>().WithMessage("Owned device does not exist.");
+        act.Should().Throw<KeyNotFoundException>().WithMessage("The device is not registered in this home.");
     }
 
     [TestMethod]
@@ -172,7 +172,7 @@ public class DeviceServiceTests
         Func<bool> act = () => _deviceService.IsConnected(hardwareId);
 
         // Assert
-        act.Should().Throw<ArgumentException>().WithMessage("Owned device does not exist.");
+        act.Should().Throw<KeyNotFoundException>().WithMessage("The device is not registered in this home.");
     }
 
     #endregion

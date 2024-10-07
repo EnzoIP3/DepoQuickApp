@@ -112,7 +112,7 @@ public class NotificationServiceTest
         Action act = () => _notificationService.Notify(args);
 
         // Assert
-        act.Should().Throw<ArgumentException>();
+        act.Should().Throw<KeyNotFoundException>();
     }
 
     [TestMethod]

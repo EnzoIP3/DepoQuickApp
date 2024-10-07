@@ -50,7 +50,17 @@ public class HomeAuthorizationFilterAttribute(string permission) : Attribute, IA
 
         if (memberId != null)
         {
-            SetBadRequestResult(context, "The member ID is invalid");
+            if (!IsValidGuid(memberId, out var memberIdParsed))
+            {
+                SetBadRequestResult(context, "The member ID is invalid");
+                return;
+            }
+
+            var home = GetHomeFromMember(context, memberIdParsed);
+            if (home == null)
+            {
+                SetNotFoundResult(context, "The member does not exist");
+            }
         }
     }
 

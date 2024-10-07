@@ -28,7 +28,7 @@ public class TokenRepository : ITokenRepository
 
     public bool Exists(Guid token)
     {
-        throw new NotImplementedException();
+        return _context.Tokens.Find(token) != null;
     }
 
     private void EnsureSessionExists(Guid sessionId)

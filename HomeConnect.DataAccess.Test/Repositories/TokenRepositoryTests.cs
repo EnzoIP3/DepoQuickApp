@@ -67,4 +67,19 @@ public class TokenRepositoryTests
         // Assert
         act.Should().Throw<ArgumentException>();
     }
+
+    [TestMethod]
+    public void Exists_WhenTokenExists_ShouldReturnTrue()
+    {
+        // Arrange
+        var user = new User();
+        var token = new Token(user);
+        _tokenRepository.Add(token);
+
+        // Act
+        var result = _tokenRepository.Exists(token.Id);
+
+        // Assert
+        result.Should().BeTrue();
+    }
 }

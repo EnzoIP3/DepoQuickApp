@@ -9,4 +9,5 @@ public interface IOwnedDeviceRepository
     IEnumerable<OwnedDevice> GetOwnedDevicesByHome(Home home);
     OwnedDevice GetByHardwareId(Guid hardwareId);
     bool Exists(Guid hardwareId);
+    void Update(OwnedDevice ownedDevice);
 }

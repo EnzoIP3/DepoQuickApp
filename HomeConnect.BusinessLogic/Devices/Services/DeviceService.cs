@@ -29,6 +29,7 @@ public class DeviceService : IDeviceService
         EnsureOwnedDeviceExists(hardwareId);
         var ownedDevice = OwnedDeviceRepository.GetByHardwareId(Guid.Parse(hardwareId));
         ownedDevice.Connected = !ownedDevice.Connected;
+        OwnedDeviceRepository.Update(ownedDevice);
         return ownedDevice.Connected;
     }
 

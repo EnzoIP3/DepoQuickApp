@@ -34,4 +34,9 @@ public class OwnedDeviceRepository : IOwnedDeviceRepository
     {
         return _context.OwnedDevices.Any(od => od.HardwareId == hardwareId);
     }
+
+    public void Update(OwnedDevice ownedDevice)
+    {
+        throw new NotImplementedException();
+    }
 }

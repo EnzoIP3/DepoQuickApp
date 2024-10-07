@@ -23,7 +23,7 @@ public class NotificationService : INotificationService
     public void Notify(NotificationArgs args)
     {
         EnsureOwnedDeviceExists(args.HardwareId);
-        OwnedDevice ownedDevice = OwnedDeviceRepository.GetByHardwareId(args.HardwareId);
+        OwnedDevice ownedDevice = OwnedDeviceRepository.GetByHardwareId(Guid.Parse(args.HardwareId));
         EnsureOwnedDeviceIsNotNull(ownedDevice);
         Home home = ownedDevice.Home;
         var shouldReceiveNotification = new HomePermission(HomePermission.GetNotifications);
@@ -44,7 +44,7 @@ public class NotificationService : INotificationService
 
     private void EnsureOwnedDeviceExists(string argsHardwareId)
     {
-        if (!OwnedDeviceRepository.Exists(argsHardwareId))
+        if (!OwnedDeviceRepository.Exists(Guid.Parse(argsHardwareId)))
         {
             throw new ArgumentException("Owned device does not exist.");
         }

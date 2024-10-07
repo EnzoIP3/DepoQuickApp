@@ -27,8 +27,9 @@ public class DeviceService : IDeviceService
     {
         EnsureHardwareIdIsValid(hardwareId);
         EnsureOwnedDeviceExists(hardwareId);
-        var connectionState = OwnedDeviceRepository.ToggleConnection(hardwareId);
-        return connectionState;
+        var ownedDevice = OwnedDeviceRepository.GetByHardwareId(Guid.Parse(hardwareId));
+        ownedDevice.Connected = !ownedDevice.Connected;
+        return ownedDevice.Connected;
     }
 
     public IEnumerable<string> GetAllDeviceTypes()
@@ -40,12 +41,13 @@ public class DeviceService : IDeviceService
     {
         EnsureHardwareIdIsValid(hardwareId);
         EnsureOwnedDeviceExists(hardwareId);
-        return OwnedDeviceRepository.IsConnected(hardwareId);
+        var ownedDevice = OwnedDeviceRepository.GetByHardwareId(Guid.Parse(hardwareId));
+        return ownedDevice.Connected;
     }
 
     private void EnsureOwnedDeviceExists(string hardwareId)
     {
-        if (!OwnedDeviceRepository.Exists(hardwareId))
+        if (!OwnedDeviceRepository.Exists(Guid.Parse(hardwareId)))
         {
             throw new ArgumentException("Owned device does not exist.");
         }

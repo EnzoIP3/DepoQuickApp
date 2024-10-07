@@ -25,27 +25,13 @@ public class OwnedDeviceRepository : IOwnedDeviceRepository
         return _context.OwnedDevices.Include(od => od.Device).ThenInclude(d => d.Business).Where(od => od.Home == home);
     }
 
-    public bool ToggleConnection(string hardwareId)
+    public OwnedDevice GetByHardwareId(Guid hardwareId)
     {
-        OwnedDevice ownedDevice = _context.OwnedDevices.FirstOrDefault(od => od.HardwareId == Guid.Parse(hardwareId));
-        var desiredState = !ownedDevice.Connected;
-        ownedDevice.Connected = desiredState;
-        _context.SaveChanges();
-        return desiredState;
+        return _context.OwnedDevices.First(od => od.HardwareId == hardwareId);
     }
 
-    public OwnedDevice GetByHardwareId(string hardwareId)
+    public bool Exists(Guid hardwareId)
     {
-        return _context.OwnedDevices.FirstOrDefault(od => od.HardwareId == Guid.Parse(hardwareId));
-    }
-
-    public bool Exists(string hardwareId)
-    {
-        return _context.OwnedDevices.Any(od => od.HardwareId == Guid.Parse(hardwareId));
-    }
-
-    public bool IsConnected(string hardwareId)
-    {
-        return _context.OwnedDevices.First(od => od.HardwareId == Guid.Parse(hardwareId)).Connected;
+        return _context.OwnedDevices.Any(od => od.HardwareId == hardwareId);
     }
 }

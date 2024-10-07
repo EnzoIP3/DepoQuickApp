@@ -7,8 +7,6 @@ public interface IOwnedDeviceRepository
 {
     void Add(OwnedDevice ownedDevice);
     IEnumerable<OwnedDevice> GetOwnedDevicesByHome(Home home);
-    bool ToggleConnection(string hardwareId);
-    OwnedDevice GetByHardwareId(string hardwareId);
-    bool Exists(string hardwareId);
-    bool IsConnected(string hardwareId);
+    OwnedDevice GetByHardwareId(Guid hardwareId);
+    bool Exists(Guid hardwareId);
 }

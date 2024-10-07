@@ -4,6 +4,7 @@ using BusinessLogic.Devices.Entities;
 using BusinessLogic.Devices.Models;
 using BusinessLogic.Devices.Repositories;
 using BusinessLogic.Devices.Services;
+using BusinessLogic.HomeOwners.Entities;
 using BusinessLogic.Roles.Entities;
 using BusinessLogic.Users.Entities;
 using FluentAssertions;
@@ -28,8 +29,8 @@ public class DeviceServiceTests
     [TestInitialize]
     public void TestInitialize()
     {
-        _deviceRepository = new Mock<IDeviceRepository>();
-        _ownedDeviceRepository = new Mock<IOwnedDeviceRepository>();
+        _deviceRepository = new Mock<IDeviceRepository>(MockBehavior.Strict);
+        _ownedDeviceRepository = new Mock<IOwnedDeviceRepository>(MockBehavior.Strict);
         _deviceService = new DeviceService(_deviceRepository.Object, _ownedDeviceRepository.Object);
 
         user1 = new User("name", "surname", "email1@email.com", "Password#100", new Role());
@@ -66,14 +67,15 @@ public class DeviceServiceTests
     {
         // Arrange
         var hardwareId = Guid.NewGuid().ToString();
-        _ownedDeviceRepository.Setup(x => x.Exists(hardwareId)).Returns(true);
-        _ownedDeviceRepository.Setup(x => x.ToggleConnection(hardwareId)).Returns(true);
+        _ownedDeviceRepository.Setup(x => x.Exists(Guid.Parse(hardwareId))).Returns(true);
+        _ownedDeviceRepository.Setup(x => x.GetByHardwareId(Guid.Parse(hardwareId)))
+            .Returns(new OwnedDevice(new Home(user1, "Street 3420", 50, 100, 5), validDevice));
 
         // Act
         var result = _deviceService.Toggle(hardwareId);
 
         // Assert
-        result.Should().BeTrue();
+        result.Should().BeFalse();
     }
 
     [TestMethod]
@@ -81,7 +83,7 @@ public class DeviceServiceTests
     {
         // Arrange
         var hardwareId = Guid.NewGuid().ToString();
-        _ownedDeviceRepository.Setup(x => x.Exists(hardwareId)).Returns(false);
+        _ownedDeviceRepository.Setup(x => x.Exists(Guid.Parse(hardwareId))).Returns(false);
 
         // Act
         Func<bool> act = () => _deviceService.Toggle(hardwareId);
@@ -160,7 +162,7 @@ public class DeviceServiceTests
     {
         // Arrange
         var hardwareId = Guid.NewGuid().ToString();
-        _ownedDeviceRepository.Setup(x => x.Exists(hardwareId)).Returns(false);
+        _ownedDeviceRepository.Setup(x => x.Exists(Guid.Parse(hardwareId))).Returns(false);
 
         // Act
         Func<bool> act = () => _deviceService.IsConnected(hardwareId);
@@ -175,9 +177,12 @@ public class DeviceServiceTests
     public void IsConnected_WhenDeviceIsConnected_ReturnsTrue()
     {
         // Arrange
+        var ownedDevice =
+            new OwnedDevice(new Home(user1, "Street 3420", 50, 100, 5), validDevice) { Connected = true };
         var hardwareId = Guid.NewGuid().ToString();
-        _ownedDeviceRepository.Setup(x => x.Exists(hardwareId)).Returns(true);
-        _ownedDeviceRepository.Setup(x => x.IsConnected(hardwareId)).Returns(true);
+        _ownedDeviceRepository.Setup(x => x.Exists(Guid.Parse(hardwareId))).Returns(true);
+        _ownedDeviceRepository.Setup(x => x.GetByHardwareId(Guid.Parse(hardwareId)))
+            .Returns(ownedDevice);
 
         // Act
         var result = _deviceService.IsConnected(hardwareId);

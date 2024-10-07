@@ -106,7 +106,7 @@ public class NotificationServiceTest
             HardwareId = Guid.NewGuid().ToString(), Event = "Test Event", Date = DateTime.Now
         };
 
-        _mockOwnedDeviceRepository.Setup(x => x.Exists(args.HardwareId)).Returns(false);
+        _mockOwnedDeviceRepository.Setup(x => x.Exists(Guid.Parse(args.HardwareId))).Returns(false);
 
         // Act
         Action act = () => _notificationService.Notify(args);
@@ -135,8 +135,8 @@ public class NotificationServiceTest
         {
             HardwareId = ownedDevice.HardwareId.ToString(), Event = "Test Event", Date = DateTime.Now
         };
-        _mockOwnedDeviceRepository.Setup(x => x.Exists(args.HardwareId)).Returns(true);
-        _mockOwnedDeviceRepository.Setup(x => x.GetByHardwareId(args.HardwareId)).Returns(ownedDevice);
+        _mockOwnedDeviceRepository.Setup(x => x.Exists(Guid.Parse(args.HardwareId))).Returns(true);
+        _mockOwnedDeviceRepository.Setup(x => x.GetByHardwareId(Guid.Parse(args.HardwareId))).Returns(ownedDevice);
 
         // Act
         _notificationService.Notify(args);

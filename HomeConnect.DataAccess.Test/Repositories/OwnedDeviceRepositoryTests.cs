@@ -90,24 +90,10 @@ public class OwnedDeviceRepositoryTests
     public void GetByHardwareId_WhenOwnedDeviceExists_ReturnsOwnedDevice()
     {
         // Act
-        OwnedDevice result = _ownedDeviceRepository.GetByHardwareId(_ownedDevice.HardwareId.ToString());
+        OwnedDevice result = _ownedDeviceRepository.GetByHardwareId(_ownedDevice.HardwareId);
 
         // Assert
         result.Should().BeEquivalentTo(_ownedDevice);
-    }
-
-    #endregion
-
-    #region ToggleConnection
-
-    [TestMethod]
-    public void ToggleConnection_WhenOwnedDeviceExists_TogglesConnection()
-    {
-        // Act
-        var result = _ownedDeviceRepository.ToggleConnection(_ownedDevice.HardwareId.ToString());
-
-        // Assert
-        result.Should().BeTrue();
     }
 
     #endregion
@@ -118,25 +104,7 @@ public class OwnedDeviceRepositoryTests
     public void Exists_WhenOwnedDeviceExists_ReturnsTrue()
     {
         // Act
-        var result = _ownedDeviceRepository.Exists(_ownedDevice.HardwareId.ToString());
-
-        // Assert
-        result.Should().BeTrue();
-    }
-
-    #endregion
-
-    #region IsConnected
-
-    [TestMethod]
-    public void IsConnected_WhenDeviceIsConnected_ReturnsTrue()
-    {
-        // Assert
-        _ownedDevice.Connected = true;
-        _context.SaveChanges();
-
-        // Act
-        var result = _ownedDeviceRepository.IsConnected(_ownedDevice.HardwareId.ToString());
+        var result = _ownedDeviceRepository.Exists(_ownedDevice.HardwareId);
 
         // Assert
         result.Should().BeTrue();

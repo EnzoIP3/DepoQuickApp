@@ -43,9 +43,9 @@ public class HomeAuthorizationFilterAttribute(string permission) : Attribute, IA
         if (home == null)
         {
             context.Result =
-                new ObjectResult(new { InnerCode = "BadRequest", Message = "The home does not exist" })
+                new ObjectResult(new { InnerCode = "NotFound", Message = "The home does not exist" })
                 {
-                    StatusCode = (int)HttpStatusCode.BadRequest
+                    StatusCode = (int)HttpStatusCode.NotFound
                 };
             return;
         }

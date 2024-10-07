@@ -14,6 +14,6 @@ public class HomePermission
         Value = value;
     }
 
-    [Key]
+    public Guid Id { get; set; } = new();
     public string Value { get; init; }
 }

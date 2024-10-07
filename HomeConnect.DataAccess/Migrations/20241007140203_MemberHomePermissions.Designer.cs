@@ -4,6 +4,7 @@ using HomeConnect.DataAccess;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace HomeConnect.DataAccess.Migrations
 {
     [DbContext(typeof(Context))]
-    partial class ContextModelSnapshot : ModelSnapshot
+    [Migration("20241007140203_MemberHomePermissions")]
+    partial class MemberHomePermissions
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -166,15 +169,10 @@ namespace HomeConnect.DataAccess.Migrations
 
             modelBuilder.Entity("BusinessLogic.HomeOwners.Entities.HomePermission", b =>
                 {
-                    b.Property<Guid>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("uniqueidentifier");
-
                     b.Property<string>("Value")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                        .HasColumnType("nvarchar(450)");
 
-                    b.HasKey("Id");
+                    b.HasKey("Value");
 
                     b.ToTable("HomePermissions");
                 });
@@ -372,13 +370,13 @@ namespace HomeConnect.DataAccess.Migrations
 
             modelBuilder.Entity("HomePermissionMember", b =>
                 {
-                    b.Property<Guid>("HomePermissionsId")
-                        .HasColumnType("uniqueidentifier");
+                    b.Property<string>("HomePermissionsValue")
+                        .HasColumnType("nvarchar(450)");
 
                     b.Property<Guid>("MemberId")
                         .HasColumnType("uniqueidentifier");
 
-                    b.HasKey("HomePermissionsId", "MemberId");
+                    b.HasKey("HomePermissionsValue", "MemberId");
 
                     b.HasIndex("MemberId");
 
@@ -598,7 +596,7 @@ namespace HomeConnect.DataAccess.Migrations
                 {
                     b.HasOne("BusinessLogic.HomeOwners.Entities.HomePermission", null)
                         .WithMany()
-                        .HasForeignKey("HomePermissionsId")
+                        .HasForeignKey("HomePermissionsValue")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 

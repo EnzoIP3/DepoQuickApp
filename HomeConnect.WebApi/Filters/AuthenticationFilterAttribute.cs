@@ -34,7 +34,7 @@ public sealed class AuthenticationFilterAttribute : Attribute, IAuthorizationFil
 
             if (!AuthorizationExists(context, authorizationHeader))
             {
-                SetUnauthorizedResult(context, "Unauthorized", "The provided authorization header is expired");
+                SetUnauthorizedResult(context, "Unauthorized", "The provided authorization header is invalid");
                 return;
             }
 

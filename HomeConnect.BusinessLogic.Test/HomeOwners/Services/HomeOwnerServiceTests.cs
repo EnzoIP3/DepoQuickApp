@@ -290,7 +290,7 @@ public class HomeOwnerServiceTests
         Func<Guid> act = () => _homeOwnerService.AddMemberToHome(args);
 
         // Assert
-        act.Should().Throw<ArgumentException>().WithMessage("Member is already added to the home.");
+        act.Should().Throw<InvalidOperationException>().WithMessage("The member is already added to the home.");
     }
 
     #endregion

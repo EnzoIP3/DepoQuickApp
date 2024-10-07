@@ -137,7 +137,7 @@ public class HomeAuthorizationFilterAttributeTests
         var concreteResponse = response as ObjectResult;
         concreteResponse.Should().NotBeNull();
         concreteResponse!.StatusCode.Should().Be((int)HttpStatusCode.BadRequest);
-        FilterTestsUtils.GetInnerCode(concreteResponse.Value).Should().Be("BadRequest");
+        FilterTestsUtils.GetInnerCode(concreteResponse.Value).Should().Be("NotFound");
         FilterTestsUtils.GetMessage(concreteResponse.Value).Should().Be("The home does not exist");
     }
 }

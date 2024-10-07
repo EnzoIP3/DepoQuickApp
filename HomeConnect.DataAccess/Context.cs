@@ -22,6 +22,7 @@ public class Context(DbContextOptions<Context> options) : DbContext(options)
     public DbSet<OwnedDevice> OwnedDevices { get; set; } = null!;
     public DbSet<Token> Tokens { get; set; } = null!;
     public DbSet<Member> Members { get; set; } = null!;
+    public DbSet<HomePermission> HomePermissions { get; set; } = null!;
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
@@ -101,6 +102,11 @@ public class Context(DbContextOptions<Context> options) : DbContext(options)
             .HasOne(m => m.Home)
             .WithMany(u => u.Members)
             .OnDelete(DeleteBehavior.Restrict);
+
+        modelBuilder.Entity<Member>()
+            .HasMany(m => m.HomePermissions)
+            .WithMany()
+            .UsingEntity(j => j.ToTable("MemberHomePermissions"));
     }
 
     private void SeedAdminUser(ModelBuilder modelBuilder)

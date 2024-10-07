@@ -196,7 +196,7 @@ public class HomeOwnerService : IHomeOwnerService
         Home home = GetHome(Guid.Parse(args.HomeId));
         if (home.Members.Any(m => m.User.Id.ToString() == args.MemberId))
         {
-            throw new ArgumentException("Member is already added to the home.");
+            throw new InvalidOperationException("The member is already added to the home.");
         }
     }
 

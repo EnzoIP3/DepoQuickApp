@@ -156,4 +156,18 @@ public class AuthServiceTests
         // Assert
         act.Should().Throw<ArgumentException>();
     }
+
+    [TestMethod]
+    public void Exists_WithValidToken_ShouldReturnTrue()
+    {
+        // Arrange
+        var token = Guid.NewGuid();
+        _tokenRepository.Setup(x => x.Exists(token)).Returns(true);
+
+        // Act
+        var result = _authService.Exists(token.ToString());
+
+        // Assert
+        result.Should().BeTrue();
+    }
 }

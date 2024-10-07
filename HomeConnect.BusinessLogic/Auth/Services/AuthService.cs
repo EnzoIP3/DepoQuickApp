@@ -87,6 +87,6 @@ public class AuthService : IAuthService
     public bool Exists(string token)
     {
         EnsureIsValidGuid(token);
-        return false;
+        return _tokenRepository.Exists(Guid.Parse(token));
     }
 }

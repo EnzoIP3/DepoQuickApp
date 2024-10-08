@@ -1,3 +1,4 @@
+using System.Globalization;
 using BusinessLogic.Notifications.Services;
 using HomeConnect.WebApi.Filters;
 using Microsoft.AspNetCore.Mvc;
@@ -13,9 +14,10 @@ public class NotificationController(INotificationService notificationService) : 
     [HttpGet]
     public GetNotificationsResponse GetNotifications([FromQuery] GetNotificationsRequest request)
     {
+        DateTime? dateCreated = GetDateFromRequest(request);
         var user = HttpContext.Items[Item.UserLogged] as BusinessLogic.Users.Entities.User;
         List<BusinessLogic.Notifications.Entities.Notification> notifications =
-            notificationService.GetNotifications(user!.Id, request.Device, request.DateCreated, request.Read);
+            notificationService.GetNotifications(user!.Id, request.Device, dateCreated, request.Read);
         var response = new GetNotificationsResponse
         {
             Notifications = notifications.Select(n => new NotificationData
@@ -27,5 +29,31 @@ public class NotificationController(INotificationService notificationService) : 
             }).ToList()
         };
         return response;
+    }
+
+    private static DateTime? GetDateFromRequest(GetNotificationsRequest request)
+    {
+        DateTime? dateCreated = null;
+        try
+        {
+            dateCreated = ParseDateCreated(request, dateCreated);
+        }
+        catch (FormatException)
+        {
+            throw new ArgumentException("The date created filter is invalid");
+        }
+
+        return dateCreated;
+    }
+
+    private static DateTime? ParseDateCreated(GetNotificationsRequest request, DateTime? dateCreated)
+    {
+        if (request.DateCreated != null)
+        {
+            dateCreated = DateTime.ParseExact(request.DateCreated, "yyyy-MM-ddTHH:mm:ss",
+                CultureInfo.InvariantCulture);
+        }
+
+        return dateCreated;
     }
 }

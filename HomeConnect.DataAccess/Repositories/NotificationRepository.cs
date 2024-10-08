@@ -55,4 +55,9 @@ public class NotificationRepository : INotificationRepository
             throw new InvalidOperationException("Notification already exists.");
         }
     }
+
+    public void UpdateRange(List<Notification> notifications)
+    {
+        throw new NotImplementedException();
+    }
 }

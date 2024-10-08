@@ -158,4 +158,22 @@ public class NotificationRepositoryTest
     }
 
     #endregion
+
+    #region UpdateRange
+
+    [TestMethod]
+    public void UpdateRange_WhenCalled_ShouldUpdateNotifications()
+    {
+        // Arrange
+        var notifications = new List<Notification> { _notification, _otherNotification };
+        notifications.ForEach(n => n.Read = true);
+
+        // Act
+        _notificationRepository.UpdateRange(notifications);
+
+        // Assert
+        _context.Notifications.Should().BeEquivalentTo(notifications);
+    }
+
+    #endregion
 }

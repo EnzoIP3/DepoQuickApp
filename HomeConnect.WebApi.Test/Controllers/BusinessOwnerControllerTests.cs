@@ -1,4 +1,3 @@
-using BusinessLogic.Admins.Services;
 using BusinessLogic.Roles.Entities;
 using BusinessLogic.Users.Entities;
 using BusinessLogic.Users.Models;
@@ -27,7 +26,10 @@ public class BusinessOwnerControllerTests
 
         _businessOwnerRequest = new CreateBusinessOwnerRequest
         {
-            Name = "John", Surname = "Doe", Email = "email@email.com", Password = "password"
+            Name = "John",
+            Surname = "Doe",
+            Email = "email@email.com",
+            Password = "password"
         };
         _userModel = new CreateUserArgs
         {

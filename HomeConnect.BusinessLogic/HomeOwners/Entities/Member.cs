@@ -5,8 +5,6 @@ namespace BusinessLogic.HomeOwners.Entities;
 
 public class Member
 {
-    [Key]
-    public Guid Id { get; set; } = Guid.NewGuid();
     public Member()
     {
     }
@@ -22,8 +20,16 @@ public class Member
         HomePermissions = homePermissions;
     }
 
+    [Key]
+    public Guid Id { get; set; } = Guid.NewGuid();
+
     public User User { get; init; } = null!;
+    public Guid UserId { get; set; }
+
     public List<HomePermission> HomePermissions { get; set; } = [];
+
+    public Home Home { get; set; } = null!;
+    public Guid HomeId { get; set; }
 
     public void AddPermission(HomePermission permission)
     {
@@ -35,7 +41,7 @@ public class Member
     {
         if (HasPermission(permission))
         {
-            throw new InvalidOperationException("Permission is already added");
+            throw new InvalidOperationException("That permission is already added.");
         }
     }
 
@@ -43,7 +49,7 @@ public class Member
     {
         if (!HasPermission(permission))
         {
-            throw new InvalidOperationException("Permission does not exist");
+            throw new ArgumentException("That permission does not exist");
         }
     }
 

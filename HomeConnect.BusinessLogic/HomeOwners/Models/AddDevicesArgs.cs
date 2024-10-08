@@ -1,7 +1,7 @@
 namespace BusinessLogic.HomeOwners.Models;
 
-public struct AddDevicesArgs
+public record AddDevicesArgs
 {
-    public string HomeId { get; set; }
-    public IEnumerable<string> DeviceIds { get; set; }
+    public string HomeId { get; set; } = null!;
+    public List<string> DeviceIds { get; set; } = null!;
 }

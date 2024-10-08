@@ -7,8 +7,25 @@ public class User
 {
     private readonly string _email = string.Empty;
     private readonly string _name = string.Empty;
-    private readonly string _surname = string.Empty;
     private readonly string _password = string.Empty;
+
+    private readonly string? _profilePicture;
+    private readonly string _surname = string.Empty;
+
+    public User()
+    {
+    }
+
+    public User(string name, string surname, string email, string password, Role role, string? profilePicture = null)
+    {
+        Name = name;
+        Surname = surname;
+        Email = email;
+        Password = password;
+        CreatedAt = DateOnly.FromDateTime(DateTime.Now);
+        Role = role;
+        ProfilePicture = profilePicture;
+    }
 
     public Guid Id { get; init; } = Guid.NewGuid();
 
@@ -35,7 +52,7 @@ public class User
     public string Email
     {
         get => _email;
-        private init
+        init
         {
             ValidateNotEmpty(value, nameof(Email));
             ValidateEmailFormat(value);
@@ -46,7 +63,7 @@ public class User
     public string Password
     {
         get => _password;
-        private init
+        init
         {
             ValidateNotEmpty(value, nameof(Password));
             ValidatePassword(value);
@@ -54,10 +71,9 @@ public class User
         }
     }
 
-    public Role Role { get; set; } = new Role();
+    public string RoleName { get; set; } = string.Empty;
+    public Role Role { get; set; } = new();
     public DateOnly CreatedAt { get; set; }
-
-    private readonly string? _profilePicture;
 
     public string? ProfilePicture
     {
@@ -76,26 +92,11 @@ public class User
         }
     }
 
-    public User()
-    {
-    }
-
-    public User(string name, string surname, string email, string password, Role role, string? profilePicture = null)
-    {
-        Name = name;
-        Surname = surname;
-        Email = email;
-        Password = password;
-        CreatedAt = DateOnly.FromDateTime(DateTime.Now);
-        Role = role;
-        ProfilePicture = profilePicture;
-    }
-
     private static void ValidateNotEmpty(string value, string propertyName)
     {
         if (string.IsNullOrEmpty(value) || string.IsNullOrWhiteSpace(value))
         {
-            throw new Exception($"{propertyName} cannot be blank.");
+            throw new ArgumentException($"{propertyName} cannot be blank.");
         }
     }
 
@@ -110,43 +111,45 @@ public class User
 
     private static void ValidatePassword(string password)
     {
-        if (!ContainsCapitalLetter(password))
-        {
-            throw new Exception("Password must contain at least one capital letter.");
-        }
-
-        if (!ContainsDigit(password))
-        {
-            throw new Exception("Password must contain at least one digit.");
-        }
-
-        if (!ContainsSpecialCharacter(password))
-        {
-            throw new Exception("Password must contain at least one special character.");
-        }
-
-        if (password.Length < 8)
-        {
-            throw new Exception("Password must be at least 8 characters long.");
-        }
+        EnsureContainsCapitalLetter(password);
+        EnsureContainsDigit(password);
+        EnsureContainsSpecialCharacter(password);
+        EnsurePasswordLength(password);
     }
 
-    private static bool ContainsCapitalLetter(string input)
+    private static void EnsureContainsCapitalLetter(string input)
     {
         const string capitalLetterPattern = @"[A-Z]";
-        return Regex.IsMatch(input, capitalLetterPattern);
+        if (!Regex.IsMatch(input, capitalLetterPattern))
+        {
+            throw new ArgumentException("Password must contain at least one capital letter.");
+        }
     }
 
-    private static bool ContainsDigit(string input)
+    private static void EnsureContainsDigit(string input)
     {
         const string digitPattern = @"\d";
-        return Regex.IsMatch(input, digitPattern);
+        if (!Regex.IsMatch(input, digitPattern))
+        {
+            throw new ArgumentException("Password must contain at least one digit.");
+        }
     }
 
-    private static bool ContainsSpecialCharacter(string input)
+    private static void EnsureContainsSpecialCharacter(string input)
     {
         const string specialCharacterPattern = @"[\W_]";
-        return Regex.IsMatch(input, specialCharacterPattern);
+        if (!Regex.IsMatch(input, specialCharacterPattern))
+        {
+            throw new ArgumentException("Password must contain at least one special character.");
+        }
+    }
+
+    private static void EnsurePasswordLength(string input)
+    {
+        if (input.Length < 8)
+        {
+            throw new ArgumentException("Password must be at least 8 characters long.");
+        }
     }
 
     public bool HasPermission(string permission)

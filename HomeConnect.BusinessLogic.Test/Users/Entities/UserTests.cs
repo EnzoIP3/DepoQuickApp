@@ -2,7 +2,7 @@ using BusinessLogic.Roles.Entities;
 using BusinessLogic.Users.Entities;
 using FluentAssertions;
 
-namespace HomeConnect.BusinessLogic.Test.Users;
+namespace HomeConnect.BusinessLogic.Test.Users.Entities;
 
 [TestClass]
 public class UserTests
@@ -12,8 +12,7 @@ public class UserTests
     private const string Email = "email@email.com";
     private const string Password = "Password#100";
 
-    private readonly Role _role =
-        new Role("Admin", []);
+    private readonly Role _role = new("Admin", []);
 
     #region Constructor
 
@@ -28,7 +27,7 @@ public class UserTests
         string password)
     {
         // Act
-        var act = () => new User(name, surname, email, password, _role);
+        Func<User> act = () => new User(name, surname, email, password, _role);
 
         // Assert
         act.Should().Throw<Exception>().WithMessage("* cannot be blank.");
@@ -38,7 +37,7 @@ public class UserTests
     public void Constructor_WhenEmailHasInvalidFormat_ThrowsException()
     {
         // Act
-        var act = () => new User(Name, Surname, "email.com", Password, _role);
+        Func<User> act = () => new User(Name, Surname, "email.com", Password, _role);
 
         // Assert
         act.Should().Throw<ArgumentException>().WithMessage("Email format invalid.");
@@ -48,7 +47,7 @@ public class UserTests
     public void Constructor_WhenPasswordHasNoCapitalLetter_ThrowsException()
     {
         // Act
-        var act = () => new User(Name, Surname, Email, "password100!", _role);
+        Func<User> act = () => new User(Name, Surname, Email, "password100!", _role);
 
         // Assert
         act.Should().Throw<Exception>().WithMessage("Password must contain at least one capital letter.");
@@ -58,7 +57,7 @@ public class UserTests
     public void Constructor_WhenPasswordHasNoDigit_ThrowsException()
     {
         // Act
-        var act = () => new User(Name, Surname, Email, "Password!", _role);
+        Func<User> act = () => new User(Name, Surname, Email, "Password!", _role);
 
         // Assert
         act.Should().Throw<Exception>().WithMessage("Password must contain at least one digit.");
@@ -68,7 +67,7 @@ public class UserTests
     public void Constructor_WhenPasswordHasNoSpecialCharacter_ThrowsException()
     {
         // Act
-        var act = () => new User(Name, Surname, Email, "Password100", _role);
+        Func<User> act = () => new User(Name, Surname, Email, "Password100", _role);
 
         // Assert
         act.Should().Throw<Exception>().WithMessage("Password must contain at least one special character.");
@@ -78,7 +77,7 @@ public class UserTests
     public void Constructor_WhenPasswordIsTooShort_ThrowsException()
     {
         // Act
-        var act = () => new User(Name, Surname, Email, "Pwd1!", _role);
+        Func<User> act = () => new User(Name, Surname, Email, "Pwd1!", _role);
 
         // Assert
         act.Should().Throw<Exception>().WithMessage("Password must be at least 8 characters long.");
@@ -91,7 +90,7 @@ public class UserTests
         const string profilePicture = "not-a-url";
 
         // Act
-        var act = () => new User(Name, Surname, Email, Password, _role, profilePicture);
+        Func<User> act = () => new User(Name, Surname, Email, Password, _role, profilePicture);
 
         // Assert
         act.Should().Throw<ArgumentException>().WithMessage("Profile picture must be a valid URL.");

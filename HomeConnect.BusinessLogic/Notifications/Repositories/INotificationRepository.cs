@@ -4,6 +4,7 @@ namespace BusinessLogic.Notifications.Repositories;
 
 public interface INotificationRepository
 {
-    void Add(Entities.Notification notification);
-    List<Notification> Get(Guid userId, string? deviceFilter, DateTime? dateFilter, bool? readFilter);
+    void Add(Notification notification);
+    void UpdateRange(List<Notification> notifications);
+    List<Notification> GetRange(Guid userId, string? deviceFilter, DateTime? dateFilter, bool? readFilter);
 }

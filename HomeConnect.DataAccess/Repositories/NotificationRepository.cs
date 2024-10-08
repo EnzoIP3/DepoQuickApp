@@ -1,6 +1,7 @@
 using BusinessLogic.Devices.Entities;
 using BusinessLogic.Notifications.Entities;
 using BusinessLogic.Notifications.Repositories;
+using Microsoft.EntityFrameworkCore;
 
 namespace HomeConnect.DataAccess.Repositories;
 
@@ -20,27 +21,25 @@ public class NotificationRepository : INotificationRepository
         _context.SaveChanges();
     }
 
-    public List<Notification> Get(Guid userId, string? deviceFilter = null, DateTime? dateFilter = null, bool? readFilter = null)
+    public List<Notification> GetRange(Guid userId, string? deviceFilter = null, DateTime? dateFilter = null,
+        bool? readFilter = null)
     {
-        DeviceType? deviceTypeFilter = null;
-        if (!string.IsNullOrEmpty(deviceFilter))
-        {
-            if (Enum.TryParse(deviceFilter, out DeviceType deviceType))
-            {
-                deviceTypeFilter = deviceType;
-            }
-            else
-            {
-                throw new ArgumentException("Invalid device type filter");
-            }
-        }
-
+        DeviceType? deviceTypeFilter = deviceFilter != null ? Enum.Parse<DeviceType>(deviceFilter) : null;
         return _context.Notifications
-            .Where(n => n.OwnedDevice.Home.Owner.Id == userId)
+            .Include(n => n.User)
+            .Include(n => n.OwnedDevice).ThenInclude(od => od.Device)
+            .Include(od => od.OwnedDevice).ThenInclude(od => od.Home).ThenInclude(h => h.Owner)
+            .Where(n => n.User!.Id == userId)
             .Where(n => deviceTypeFilter == null || n.OwnedDevice.Device.Type == deviceTypeFilter)
             .Where(n => dateFilter == null || n.Date.Date == dateFilter.Value.Date)
             .Where(n => readFilter == null || n.Read == readFilter)
             .ToList();
+    }
+
+    public void UpdateRange(List<Notification> notifications)
+    {
+        _context.Notifications.UpdateRange(notifications);
+        _context.SaveChanges();
     }
 
     private void EnsureNotificationDoesNotExist(Notification notification)

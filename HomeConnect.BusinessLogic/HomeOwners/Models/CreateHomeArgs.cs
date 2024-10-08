@@ -1,10 +1,10 @@
 namespace BusinessLogic.HomeOwners.Models;
 
-public struct CreateHomeArgs
+public record CreateHomeArgs
 {
-    public string HomeOwnerId { get; set; }
-    public string Address { get; set; }
-    public double Latitude { get; set; }
-    public double Longitude { get; set; }
-    public int MaxMembers { get; set; }
+    public string HomeOwnerId { get; set; } = null!;
+    public string Address { get; set; } = null!;
+    public double? Latitude { get; set; }
+    public double? Longitude { get; set; }
+    public int? MaxMembers { get; set; }
 }

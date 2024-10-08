@@ -1,6 +1,7 @@
 using BusinessLogic.Devices.Services;
 using FluentAssertions;
-using HomeConnect.WebApi.Controllers.Device;
+using HomeConnect.WebApi.Controllers.Devices;
+using HomeConnect.WebApi.Controllers.Devices.Models;
 using Moq;
 
 namespace HomeConnect.WebApi.Test.Controllers;
@@ -8,8 +9,8 @@ namespace HomeConnect.WebApi.Test.Controllers;
 [TestClass]
 public class BaseDeviceControllerTests
 {
-    private Mock<IDeviceService> _deviceServiceMock = null!;
     private BaseDeviceController _deviceController = null!;
+    private Mock<IDeviceService> _deviceServiceMock = null!;
 
     [TestInitialize]
     public void TestInitialize()
@@ -23,14 +24,14 @@ public class BaseDeviceControllerTests
     {
         // Arrange
         var hardwareId = "hardwareId";
-        _deviceServiceMock.Setup(x => x.Toggle(hardwareId)).Returns(true);
+        _deviceServiceMock.Setup(x => x.ToggleDevice(hardwareId)).Returns(true);
 
         // Act
-        var result = _deviceController.Toggle(hardwareId);
+        ConnectionResponse result = _deviceController.Toggle(hardwareId);
 
         // Assert
         result.Should().NotBeNull();
         result.HardwareId.Should().Be(hardwareId);
-        result.ConnectionState.Should().BeTrue();
+        result.Connected.Should().BeTrue();
     }
 }

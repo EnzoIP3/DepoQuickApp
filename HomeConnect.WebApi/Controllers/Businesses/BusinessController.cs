@@ -1,13 +1,15 @@
 using BusinessLogic;
 using BusinessLogic.Admins.Services;
+using BusinessLogic.BusinessOwners.Entities;
 using BusinessLogic.BusinessOwners.Models;
 using BusinessLogic.BusinessOwners.Services;
 using BusinessLogic.Roles.Entities;
+using BusinessLogic.Users.Entities;
 using HomeConnect.WebApi.Controllers.Businesses.Models;
 using HomeConnect.WebApi.Filters;
 using Microsoft.AspNetCore.Mvc;
 
-namespace HomeConnect.WebApi.Controllers.Business;
+namespace HomeConnect.WebApi.Controllers.Businesses;
 
 [ApiController]
 [Route("businesses")]
@@ -16,28 +18,43 @@ public class BusinessController(IAdminService adminService, IBusinessOwnerServic
 {
     [HttpGet]
     [AuthorizationFilter(SystemPermission.GetAllBusinesses)]
-    public IActionResult GetBusinesses([FromQuery] int? currentPage = null, [FromQuery] int? pageSize = null,
-        [FromQuery] string? nameFilter = null, [FromQuery] string? ownerFilter = null)
+    public GetBusinessesResponse GetBusinesses([FromQuery] GetBusinessesRequest request)
     {
-        var businesses = adminService.GetBusinesses(currentPage, pageSize, nameFilter, ownerFilter);
-        var response = ResponseFromBusinesses(businesses);
-        return Ok(response);
+        PagedData<Business> businesses =
+            adminService.GetBusinesses(request.CurrentPage, request.PageSize, request.Name, request.OwnerName);
+        GetBusinessesResponse response = ResponseFromBusinesses(businesses);
+        return response;
     }
 
     [HttpPost]
     [AuthorizationFilter(SystemPermission.CreateBusiness)]
     public CreateBusinessResponse CreateBusiness([FromBody] CreateBusinessRequest request)
     {
-        var args = new CreateBusinessArgs() { Name = request.Name, OwnerId = request.OwnerId, Rut = request.Rut };
-        var createdBusiness = businessOwnerService.CreateBusiness(args);
-        return new CreateBusinessResponse { Rut = createdBusiness };
+        var userLoggedIn = HttpContext.Items[Item.UserLogged] as User;
+        var args = new CreateBusinessArgs
+        {
+            Name = request.Name ?? string.Empty,
+            Logo = request.Logo ?? string.Empty,
+            OwnerId = userLoggedIn?.Id.ToString() ?? string.Empty,
+            Rut = request.Rut ?? string.Empty
+        };
+        Business business = businessOwnerService.CreateBusiness(args);
+        return new CreateBusinessResponse { Rut = business.Rut };
     }
 
-    private static object ResponseFromBusinesses(PagedData<BusinessLogic.BusinessOwners.Entities.Business> businesses)
+    private static GetBusinessesResponse ResponseFromBusinesses(
+        PagedData<Business> businesses)
     {
-        var response = new
+        return new GetBusinessesResponse
         {
-            businesses.Data,
+            Businesses = businesses.Data.Select(b => new ListBusinessInfo
+            {
+                Name = b.Name,
+                OwnerEmail = b.Owner.Email,
+                OwnerName = b.Owner.Name,
+                OwnerSurname = b.Owner.Surname,
+                Rut = b.Rut
+            }).ToList(),
             Pagination = new Pagination
             {
                 Page = businesses.Page,
@@ -45,6 +62,5 @@ public class BusinessController(IAdminService adminService, IBusinessOwnerServic
                 TotalPages = businesses.TotalPages
             }
         };
-        return response;
     }
 }

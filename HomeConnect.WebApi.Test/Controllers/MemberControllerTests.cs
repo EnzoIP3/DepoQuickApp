@@ -1,6 +1,7 @@
 using BusinessLogic.HomeOwners.Services;
 using FluentAssertions;
-using HomeConnect.WebApi.Controllers.Member;
+using HomeConnect.WebApi.Controllers.Members;
+using HomeConnect.WebApi.Controllers.Members.Models;
 using Moq;
 
 namespace HomeConnect.WebApi.Test.Controllers;
@@ -19,29 +20,28 @@ public class MemberControllerTests
     }
 
     #region UpdateMemberNotifications
+
     [TestMethod]
-    public void UpdateMemberNotifications_WhenCalled_ShouldUpdateMemberNotifications()
+    public void UpdateMemberNotifications_WhenCalled_UpdatesMemberNotifications()
     {
         // Arrange
         var memberId = Guid.NewGuid().ToString();
-        var request = new UpdateMemberNotificationsRequest
-        {
-            ShouldBeNotified = true
-        };
+        var request = new UpdateMemberNotificationsRequest { ShouldBeNotified = true };
         _homeOwnerService.Setup(x => x.UpdateMemberNotifications(Guid.Parse(memberId), request.ShouldBeNotified));
         var expectedResult = new UpdateMemberNotificationsResponse
         {
             MemberId = memberId,
-            ShouldBeNotified = request.ShouldBeNotified
+            ShouldBeNotified = request.ShouldBeNotified.Value
         };
 
         // Act
-        var result = _memberController.UpdateMemberNotifications(memberId, request);
+        UpdateMemberNotificationsResponse result = _memberController.UpdateMemberNotifications(memberId, request);
 
         // Assert
         _homeOwnerService.Verify(x => x.UpdateMemberNotifications(Guid.Parse(memberId), request.ShouldBeNotified));
         result.Should().NotBeNull();
         result.Should().BeEquivalentTo(expectedResult);
     }
+
     #endregion
 }

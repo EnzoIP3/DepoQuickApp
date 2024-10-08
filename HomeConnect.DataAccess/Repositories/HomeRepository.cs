@@ -6,7 +6,7 @@ namespace HomeConnect.DataAccess.Repositories;
 
 public class HomeRepository : IHomeRepository
 {
-    private readonly Context _context = null!;
+    private readonly Context _context;
 
     public HomeRepository(Context context)
     {
@@ -20,17 +20,11 @@ public class HomeRepository : IHomeRepository
         _context.SaveChanges();
     }
 
-    private void EnsureHomeDoesNotExist(Home home)
-    {
-        if (_context.Homes.Any(h => h.Address == home.Address))
-        {
-            throw new ArgumentException("Home already exists");
-        }
-    }
-
     public Home Get(Guid homeId)
     {
-        Home? home = _context.Homes.FirstOrDefault(h => h.Id == homeId);
+        Home? home = _context.Homes.Include(h => h.Members).ThenInclude(h => h.User).Include(h => h.Members)
+            .ThenInclude(h => h.HomePermissions).Include(h => h.Owner)
+            .FirstOrDefault(h => h.Id == homeId);
         if (home == null)
         {
             throw new ArgumentException("Home does not exist");
@@ -41,16 +35,19 @@ public class HomeRepository : IHomeRepository
 
     public Member GetMemberById(Guid memberId)
     {
-        Home home = _context.Homes.Include(home => home.Members).FirstOrDefault(m => m.Members.Any(h => h.Id == memberId));
-        Member member = home!.Members.FirstOrDefault(m => m.Id == memberId);
+        Home home = _context.Homes.Include(home => home.Members).ThenInclude(member => member.User)
+            .Include(home => home.Owner)
+            .First(m => m.Members.Any(h => h.Id == memberId));
+        Member member = home.Members.First(m => m.Id == memberId);
         return member;
     }
 
     public void UpdateMember(Member member)
     {
-        Home home = _context.Homes.Include(home => home.Members).FirstOrDefault(m => m.Members.Any(h => h.Id == member.Id));
-        Member memberToUpdate = home.Members.FirstOrDefault(m => m.Id == member.Id);
-        memberToUpdate!.HomePermissions = member.HomePermissions;
+        Home home = _context.Homes.Include(home => home.Members)
+            .First(m => m.Members.Any(h => h.Id == member.Id));
+        Member memberToUpdate = home.Members.First(m => m.Id == member.Id);
+        memberToUpdate.HomePermissions = member.HomePermissions;
         _context.SaveChanges();
     }
 
@@ -66,6 +63,14 @@ public class HomeRepository : IHomeRepository
 
     public bool ExistsMember(Guid memberId)
     {
-        return _context.Homes.Any(h => h.Members.Any(m => m.Id == memberId));
+        return _context.Homes.Include(h => h.Members).Any(h => h.Members.Any(m => m.Id == memberId));
+    }
+
+    private void EnsureHomeDoesNotExist(Home home)
+    {
+        if (_context.Homes.Any(h => h.Address == home.Address))
+        {
+            throw new ArgumentException("Home already exists");
+        }
     }
 }

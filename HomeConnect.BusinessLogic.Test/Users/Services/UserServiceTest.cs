@@ -12,11 +12,7 @@ namespace HomeConnect.BusinessLogic.Test.Users.Services;
 [TestClass]
 public class UserServiceTest
 {
-    private Mock<IUserRepository> _userRepository = null!;
-    private Mock<IRoleRepository> _roleRepository = null!;
-    private IUserService _userService = null!;
-
-    private CreateUserArgs _args = new CreateUserArgs()
+    private readonly CreateUserArgs _args = new()
     {
         Email = "john.doe@gmail.com",
         Password = "password1M@",
@@ -24,6 +20,10 @@ public class UserServiceTest
         Surname = "Doe",
         Role = "Administrator"
     };
+
+    private Mock<IRoleRepository> _roleRepository = null!;
+    private Mock<IUserRepository> _userRepository = null!;
+    private IUserService _userService = null!;
 
     [TestInitialize]
     public void Initialize()
@@ -34,11 +34,11 @@ public class UserServiceTest
     }
 
     [TestMethod]
-    public void CreateUser_WithValidArguments_ShouldCreateUser()
+    public void CreateUser_WhenArgumentsAreValid_CreatesUser()
     {
         // Arrange
         _userRepository.Setup(x => x.Add(It.IsAny<User>()));
-        _userRepository.Setup(x => x.Exists(_args.Email)).Returns(false);
+        _userRepository.Setup(x => x.ExistsByEmail(_args.Email)).Returns(false);
         _roleRepository.Setup(x => x.Exists(_args.Role)).Returns(true);
         _roleRepository.Setup(x => x.Get(_args.Role)).Returns(new Role());
 
@@ -50,46 +50,73 @@ public class UserServiceTest
     }
 
     [TestMethod]
-    public void CreateUser_WithInvalidRole_ShouldThrowException()
+    public void CreateUser_WhenRoleIsInvalid_ThrowsException()
     {
         // Arrange
         _roleRepository.Setup(x => x.Exists(_args.Role)).Returns(false);
 
         // Act
-        var act = () => _userService.CreateUser(_args);
+        Func<User> act = () => _userService.CreateUser(_args);
 
         // Assert
         act.Should().Throw<ArgumentException>();
     }
 
     [TestMethod]
-    public void CreateUser_WithAlreadyExistingUser_ShouldThrowException()
+    public void CreateUser_WhenUserAlreadyExists_ThrowsException()
     {
         // Arrange
         _roleRepository.Setup(x => x.Exists(_args.Role)).Returns(true);
-        _userRepository.Setup(x => x.Exists(_args.Email)).Returns(true);
+        _userRepository.Setup(x => x.ExistsByEmail(_args.Email)).Returns(true);
 
         // Act
-        var act = () => _userService.CreateUser(_args);
+        Func<User> act = () => _userService.CreateUser(_args);
 
         // Assert
-        act.Should().Throw<ArgumentException>();
+        act.Should().Throw<InvalidOperationException>();
     }
 
     [TestMethod]
-    public void CreateUser_WithHomeOwnerRoleAndWithoutProfilePicture_ShouldThrowException()
+    public void CreateUser_WhenHomeOwnerRoleAndNoProfilePicture_ThrowsException()
     {
         // Arrange
         _args.Role = "HomeOwner";
         _args.ProfilePicture = null;
         _roleRepository.Setup(x => x.Exists(_args.Role)).Returns(true);
         _roleRepository.Setup(x => x.Get(_args.Role)).Returns(new Role(Role.HomeOwner, []));
-        _userRepository.Setup(x => x.Exists(_args.Email)).Returns(false);
+        _userRepository.Setup(x => x.ExistsByEmail(_args.Email)).Returns(false);
 
         // Act
-        var act = () => _userService.CreateUser(_args);
+        Func<User> act = () => _userService.CreateUser(_args);
 
         // Assert
         act.Should().Throw<ArgumentException>();
+    }
+
+    [TestMethod]
+    public void Exists_WhenUserIsNotAValidGuid_ReturnsFalse()
+    {
+        // Arrange
+        var requestUserId = "invalidGuid";
+
+        // Act
+        var result = _userService.Exists(requestUserId);
+
+        // Assert
+        result.Should().BeFalse();
+    }
+
+    [TestMethod]
+    public void Exists_WhenUserIdCorrespondsToARegisteredUser_ReturnsTrue()
+    {
+        // Arrange
+        var requestUserId = Guid.NewGuid().ToString();
+        _userRepository.Setup(x => x.Exists(Guid.Parse(requestUserId))).Returns(true);
+
+        // Act
+        var result = _userService.Exists(requestUserId);
+
+        // Assert
+        result.Should().BeTrue();
     }
 }

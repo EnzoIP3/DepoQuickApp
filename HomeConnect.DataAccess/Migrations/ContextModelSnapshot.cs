@@ -46,6 +46,10 @@ namespace HomeConnect.DataAccess.Migrations
                     b.Property<string>("Rut")
                         .HasColumnType("nvarchar(450)");
 
+                    b.Property<string>("Logo")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
                     b.Property<string>("Name")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
@@ -69,12 +73,14 @@ namespace HomeConnect.DataAccess.Migrations
                     b.Property<string>("BusinessRut")
                         .HasColumnType("nvarchar(450)");
 
-                    b.Property<bool>("ConnectionState")
-                        .HasColumnType("bit");
-
                     b.Property<string>("Description")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Discriminator")
+                        .IsRequired()
+                        .HasMaxLength(8)
+                        .HasColumnType("nvarchar(8)");
 
                     b.Property<string>("MainPhoto")
                         .IsRequired()
@@ -91,15 +97,18 @@ namespace HomeConnect.DataAccess.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<string>("Type")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                    b.Property<int>("Type")
+                        .HasColumnType("int");
 
                     b.HasKey("Id");
 
                     b.HasIndex("BusinessRut");
 
                     b.ToTable("Devices");
+
+                    b.HasDiscriminator().HasValue("Device");
+
+                    b.UseTphMappingStrategy();
                 });
 
             modelBuilder.Entity("BusinessLogic.Devices.Entities.OwnedDevice", b =>
@@ -107,6 +116,9 @@ namespace HomeConnect.DataAccess.Migrations
                     b.Property<Guid>("HardwareId")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("uniqueidentifier");
+
+                    b.Property<bool>("Connected")
+                        .HasColumnType("bit");
 
                     b.Property<Guid>("DeviceId")
                         .HasColumnType("uniqueidentifier");
@@ -154,17 +166,17 @@ namespace HomeConnect.DataAccess.Migrations
 
             modelBuilder.Entity("BusinessLogic.HomeOwners.Entities.HomePermission", b =>
                 {
-                    b.Property<string>("Value")
-                        .HasColumnType("nvarchar(450)");
-
-                    b.Property<Guid?>("MemberId")
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
                         .HasColumnType("uniqueidentifier");
 
-                    b.HasKey("Value");
+                    b.Property<string>("Value")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
 
-                    b.HasIndex("MemberId");
+                    b.HasKey("Id");
 
-                    b.ToTable("HomePermission");
+                    b.ToTable("HomePermissions");
                 });
 
             modelBuilder.Entity("BusinessLogic.HomeOwners.Entities.Member", b =>
@@ -173,7 +185,7 @@ namespace HomeConnect.DataAccess.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("uniqueidentifier");
 
-                    b.Property<Guid?>("HomeId")
+                    b.Property<Guid>("HomeId")
                         .HasColumnType("uniqueidentifier");
 
                     b.Property<Guid>("UserId")
@@ -185,7 +197,7 @@ namespace HomeConnect.DataAccess.Migrations
 
                     b.HasIndex("UserId");
 
-                    b.ToTable("Member");
+                    b.ToTable("Members");
                 });
 
             modelBuilder.Entity("BusinessLogic.Notifications.Entities.Notification", b =>
@@ -295,6 +307,10 @@ namespace HomeConnect.DataAccess.Migrations
                         },
                         new
                         {
+                            Value = "get-notifications"
+                        },
+                        new
+                        {
                             Value = "create-business"
                         },
                         new
@@ -304,6 +320,10 @@ namespace HomeConnect.DataAccess.Migrations
                         new
                         {
                             Value = "create-sensor"
+                        },
+                        new
+                        {
+                            Value = "update-member"
                         });
                 });
 
@@ -332,6 +352,7 @@ namespace HomeConnect.DataAccess.Migrations
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("RoleName")
+                        .IsRequired()
                         .HasColumnType("nvarchar(450)");
 
                     b.Property<string>("Surname")
@@ -343,6 +364,33 @@ namespace HomeConnect.DataAccess.Migrations
                     b.HasIndex("RoleName");
 
                     b.ToTable("Users");
+
+                    b.HasData(
+                        new
+                        {
+                            Id = new Guid("f1b3b3b3-3b3b-3b3b-3b3b-3b3b3b3b3b3b"),
+                            CreatedAt = new DateOnly(2024, 1, 1),
+                            Email = "admin@admin.com",
+                            Name = "Administrator",
+                            Password = "Admin123@",
+                            RoleName = "Admin",
+                            Surname = "Account"
+                        });
+                });
+
+            modelBuilder.Entity("HomePermissionMember", b =>
+                {
+                    b.Property<Guid>("HomePermissionsId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<Guid>("MemberId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.HasKey("HomePermissionsId", "MemberId");
+
+                    b.HasIndex("MemberId");
+
+                    b.ToTable("MemberHomePermissions", (string)null);
                 });
 
             modelBuilder.Entity("RoleSystemPermission", b =>
@@ -412,6 +460,16 @@ namespace HomeConnect.DataAccess.Migrations
                         },
                         new
                         {
+                            PermissionsValue = "update-member",
+                            RolesName = "HomeOwner"
+                        },
+                        new
+                        {
+                            PermissionsValue = "get-notifications",
+                            RolesName = "HomeOwner"
+                        },
+                        new
+                        {
                             PermissionsValue = "create-business",
                             RolesName = "BusinessOwner"
                         },
@@ -425,6 +483,19 @@ namespace HomeConnect.DataAccess.Migrations
                             PermissionsValue = "create-sensor",
                             RolesName = "BusinessOwner"
                         });
+                });
+
+            modelBuilder.Entity("BusinessLogic.Devices.Entities.Camera", b =>
+                {
+                    b.HasBaseType("BusinessLogic.Devices.Entities.Device");
+
+                    b.Property<bool>("MotionDetection")
+                        .HasColumnType("bit");
+
+                    b.Property<bool>("PersonDetection")
+                        .HasColumnType("bit");
+
+                    b.HasDiscriminator().HasValue("Camera");
                 });
 
             modelBuilder.Entity("BusinessLogic.Auth.Entities.Token", b =>
@@ -488,24 +559,21 @@ namespace HomeConnect.DataAccess.Migrations
                     b.Navigation("Owner");
                 });
 
-            modelBuilder.Entity("BusinessLogic.HomeOwners.Entities.HomePermission", b =>
-                {
-                    b.HasOne("BusinessLogic.HomeOwners.Entities.Member", null)
-                        .WithMany("HomePermissions")
-                        .HasForeignKey("MemberId");
-                });
-
             modelBuilder.Entity("BusinessLogic.HomeOwners.Entities.Member", b =>
                 {
-                    b.HasOne("BusinessLogic.HomeOwners.Entities.Home", null)
+                    b.HasOne("BusinessLogic.HomeOwners.Entities.Home", "Home")
                         .WithMany("Members")
-                        .HasForeignKey("HomeId");
+                        .HasForeignKey("HomeId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
 
                     b.HasOne("BusinessLogic.Users.Entities.User", "User")
                         .WithMany()
                         .HasForeignKey("UserId")
-                        .OnDelete(DeleteBehavior.Cascade)
+                        .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
+
+                    b.Navigation("Home");
 
                     b.Navigation("User");
                 });
@@ -531,9 +599,26 @@ namespace HomeConnect.DataAccess.Migrations
                 {
                     b.HasOne("BusinessLogic.Roles.Entities.Role", "Role")
                         .WithMany()
-                        .HasForeignKey("RoleName");
+                        .HasForeignKey("RoleName")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
 
                     b.Navigation("Role");
+                });
+
+            modelBuilder.Entity("HomePermissionMember", b =>
+                {
+                    b.HasOne("BusinessLogic.HomeOwners.Entities.HomePermission", null)
+                        .WithMany()
+                        .HasForeignKey("HomePermissionsId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("BusinessLogic.HomeOwners.Entities.Member", null)
+                        .WithMany()
+                        .HasForeignKey("MemberId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
                 });
 
             modelBuilder.Entity("RoleSystemPermission", b =>
@@ -554,11 +639,6 @@ namespace HomeConnect.DataAccess.Migrations
             modelBuilder.Entity("BusinessLogic.HomeOwners.Entities.Home", b =>
                 {
                     b.Navigation("Members");
-                });
-
-            modelBuilder.Entity("BusinessLogic.HomeOwners.Entities.Member", b =>
-                {
-                    b.Navigation("HomePermissions");
                 });
 #pragma warning restore 612, 618
         }

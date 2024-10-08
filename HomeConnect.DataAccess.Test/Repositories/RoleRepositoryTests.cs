@@ -8,8 +8,8 @@ namespace HomeConnect.DataAccess.Test.Repositories;
 public class RoleRepositoryTests
 {
     private readonly Context _context = DbContextBuilder.BuildTestDbContext();
+    private readonly Role _role = new() { Name = "Role" };
     private RoleRepository _roleRepository = null!;
-    private readonly Role _role = new Role { Name = "Role" };
 
     [TestInitialize]
     public void Initialize()
@@ -26,15 +26,33 @@ public class RoleRepositoryTests
         _context.Database.EnsureDeleted();
     }
 
+    #region Exists
+
+    #region Success
+
+    [TestMethod]
+    public void Exists_WhenRoleExists_ReturnsTrue()
+    {
+        // Act
+        var result = _roleRepository.Exists("Role");
+
+        // Assert
+        result.Should().BeTrue();
+    }
+
+    #endregion
+
+    #endregion
+
     #region GetRole
 
     #region Success
 
     [TestMethod]
-    public void GetRole_WhenRoleExists_ShouldReturnRole()
+    public void GetRole_WhenRoleExists_ReturnsRole()
     {
         // Act
-        var result = _roleRepository.Get("Role");
+        Role result = _roleRepository.Get("Role");
 
         // Assert
         result.Name.Should().Be("Role");
@@ -45,31 +63,13 @@ public class RoleRepositoryTests
     #region Error
 
     [TestMethod]
-    public void GetRole_WhenRoleDoesNotExist_ShouldThrowException()
+    public void GetRole_WhenRoleDoesNotExist_ThrowsException()
     {
         // Act
         Action action = () => _roleRepository.Get("Role2");
 
         // Assert
         action.Should().Throw<ArgumentException>();
-    }
-
-    #endregion
-
-    #endregion
-
-    #region Exists
-
-    #region Success
-
-    [TestMethod]
-    public void Exists_WhenRoleExists_ShouldReturnTrue()
-    {
-        // Act
-        var result = _roleRepository.Exists("Role");
-
-        // Assert
-        result.Should().BeTrue();
     }
 
     #endregion

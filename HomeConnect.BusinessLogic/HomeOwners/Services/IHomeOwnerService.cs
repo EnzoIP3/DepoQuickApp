@@ -10,7 +10,8 @@ public interface IHomeOwnerService
     public Guid AddMemberToHome(AddMemberArgs args);
     List<Member> GetHomeMembers(string homeId);
     public IEnumerable<OwnedDevice> GetHomeDevices(string homeId);
-    void UpdateMemberNotifications(Guid membersId, bool requestShouldBeNotified);
+    public Member GetMemberById(Guid memberId);
+    void UpdateMemberNotifications(Guid membersId, bool? requestShouldBeNotified);
     public void AddDeviceToHome(AddDevicesArgs addDevicesArgs);
     Home GetHome(Guid homeId);
 }

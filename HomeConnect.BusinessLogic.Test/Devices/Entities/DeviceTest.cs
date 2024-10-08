@@ -1,8 +1,10 @@
 using BusinessLogic.BusinessOwners.Entities;
 using BusinessLogic.Devices.Entities;
+using BusinessLogic.Roles.Entities;
+using BusinessLogic.Users.Entities;
 using FluentAssertions;
 
-namespace HomeConnect.BusinessLogic.Test.Devices;
+namespace HomeConnect.BusinessLogic.Test.Devices.Entities;
 
 [TestClass]
 public class DeviceTest
@@ -12,9 +14,13 @@ public class DeviceTest
     private const string Description = "Description";
     private const string MainPhoto = "https://www.example.com/photo1.jpg";
     private const string Type = "Camera";
-    private readonly List<string> secondaryPhotos = ["https://www.example.com/photo2.jpg", "https://www.example.com/photo3.jpg"];
-    private static readonly global::BusinessLogic.Users.Entities.User _owner = new global::BusinessLogic.Users.Entities.User("John", "Doe", "JohnDoe@example.com", "Password123!", new global::BusinessLogic.Roles.Entities.Role());
-    private readonly Business business = new Business("RUTexample", "Business Name", _owner);
+
+    private static readonly User Owner = new("John", "Doe", "JohnDoe@example.com", "Password123!", new Role());
+
+    private readonly Business _business = new("RUTexample", "Business Name", "https://example.com/image.png", Owner);
+
+    private readonly List<string> _secondaryPhotos =
+        ["https://www.example.com/photo2.jpg", "https://www.example.com/photo3.jpg"];
 
     #region Create
 
@@ -24,7 +30,8 @@ public class DeviceTest
     public void Constructor_WhenArgumentsAreValid_CreatesInstance()
     {
         // Act
-        var act = () => new global::BusinessLogic.Devices.Entities.Device(Name, ModelNumber, Description, MainPhoto, secondaryPhotos, DeviceType.Camera.ToString(), business);
+        Func<Device> act = () => new Device(Name, ModelNumber, Description, MainPhoto, _secondaryPhotos,
+            DeviceType.Camera.ToString(), _business);
 
         // Assert
         act.Should().NotThrow();
@@ -42,7 +49,7 @@ public class DeviceTest
         string mainPhoto, DeviceType type)
     {
         // Act
-        var act = () => new global::BusinessLogic.Devices.Entities.Device(name, modelNumber, description, mainPhoto, [], type.ToString(), business);
+        Func<Device> act = () => new Device(name, modelNumber, description, mainPhoto, [], type.ToString(), _business);
 
         // Assert
         act.Should().Throw<ArgumentException>();
@@ -55,7 +62,8 @@ public class DeviceTest
         const string mainPhoto = "photo1.jpg";
 
         // Act
-        var act = () => new global::BusinessLogic.Devices.Entities.Device(Name, ModelNumber, Description, mainPhoto, secondaryPhotos, Type, business);
+        Func<Device> act = () =>
+            new Device(Name, ModelNumber, Description, mainPhoto, _secondaryPhotos, Type, _business);
 
         // Assert
         act.Should().Throw<ArgumentException>();
@@ -68,7 +76,18 @@ public class DeviceTest
         var secondaryPhotos = new List<string> { "photo2.jpg", "https://www.example.com/photo3.jpg" };
 
         // Act
-        var act = () => new global::BusinessLogic.Devices.Entities.Device(Name, ModelNumber, Description, MainPhoto, secondaryPhotos, Type, business);
+        Func<Device> act = () =>
+            new Device(Name, ModelNumber, Description, MainPhoto, secondaryPhotos, Type, _business);
+
+        // Assert
+        act.Should().Throw<ArgumentException>();
+    }
+
+    [TestMethod]
+    public void Constructor_WhenModelNumberIsNull_ThrowsException()
+    {
+        // Act
+        Func<Device> act = () => new Device(Name, null, Description, MainPhoto, _secondaryPhotos, Type, _business);
 
         // Assert
         act.Should().Throw<ArgumentException>();

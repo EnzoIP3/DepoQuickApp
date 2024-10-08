@@ -1,6 +1,7 @@
 using BusinessLogic.Devices.Entities;
 using BusinessLogic.Devices.Repositories;
 using BusinessLogic.HomeOwners.Entities;
+using Microsoft.EntityFrameworkCore;
 
 namespace HomeConnect.DataAccess.Repositories;
 
@@ -21,25 +22,25 @@ public class OwnedDeviceRepository : IOwnedDeviceRepository
 
     public IEnumerable<OwnedDevice> GetOwnedDevicesByHome(Home home)
     {
-        return _context.OwnedDevices.Where(od => od.Home == home);
+        return _context.OwnedDevices.Include(od => od.Device).ThenInclude(d => d.Business).Where(od => od.Home == home);
     }
 
-    public bool ToggleConnection(string hardwareId)
+    public OwnedDevice GetByHardwareId(Guid hardwareId)
     {
-        OwnedDevice ownedDevice = _context.OwnedDevices.FirstOrDefault(od => od.HardwareId == Guid.Parse(hardwareId));
-        var desiredState = !ownedDevice.Device.ConnectionState;
-        ownedDevice.Device.ConnectionState = desiredState;
+        return _context.OwnedDevices.Include(od => od.Home).ThenInclude(h => h.Members)
+            .ThenInclude(m => m.User).Include(od => od.Home).ThenInclude(h => h.Members)
+            .ThenInclude(m => m.HomePermissions).Include(od => od.Home).ThenInclude(h => h.Owner)
+            .First(od => od.HardwareId == hardwareId);
+    }
+
+    public bool Exists(Guid hardwareId)
+    {
+        return _context.OwnedDevices.Any(od => od.HardwareId == hardwareId);
+    }
+
+    public void Update(OwnedDevice ownedDevice)
+    {
+        _context.OwnedDevices.Update(ownedDevice);
         _context.SaveChanges();
-        return desiredState;
-    }
-
-    public OwnedDevice GetByHardwareId(string hardwareId)
-    {
-        return _context.OwnedDevices.FirstOrDefault(od => od.HardwareId == Guid.Parse(hardwareId));
-    }
-
-    public bool Exists(string hardwareId)
-    {
-        return _context.OwnedDevices.Any(od => od.HardwareId == Guid.Parse(hardwareId));
     }
 }

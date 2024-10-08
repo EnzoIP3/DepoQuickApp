@@ -1,49 +1,56 @@
 using BusinessLogic.Devices.Entities;
+using BusinessLogic.Devices.Models;
 using BusinessLogic.Devices.Repositories;
-using HomeConnect.WebApi.Controllers.Devices.Models;
 
 namespace BusinessLogic.Devices.Services;
 
 public class DeviceService : IDeviceService
 {
-    private IDeviceRepository DeviceRepository { get; init; }
-    private IOwnedDeviceRepository OwnedDeviceRepository { get; init; }
-
     public DeviceService(IDeviceRepository deviceRepository, IOwnedDeviceRepository ownedDeviceRepository)
     {
         DeviceRepository = deviceRepository;
         OwnedDeviceRepository = ownedDeviceRepository;
     }
 
-    public PagedData<Device> GetDevices(GetDeviceArgs parameters)
+    private IDeviceRepository DeviceRepository { get; }
+    private IOwnedDeviceRepository OwnedDeviceRepository { get; }
+
+    public PagedData<Device> GetDevices(GetDevicesArgs parameters)
     {
         parameters.Page ??= 1;
         parameters.PageSize ??= 10;
-        var devices = DeviceRepository.GetDevices((int)parameters.Page, (int)parameters.PageSize,
-            parameters.DeviceNameFilter, parameters.ModelNumberFilter, parameters.BusinessNameFilter,
-            parameters.DeviceTypeFilter);
+        PagedData<Device> devices = DeviceRepository.GetPaged(parameters);
         return devices;
     }
 
-    public bool Toggle(string hardwareId)
+    public bool ToggleDevice(string hardwareId)
     {
         EnsureHardwareIdIsValid(hardwareId);
         EnsureOwnedDeviceExists(hardwareId);
-        var connectionState = OwnedDeviceRepository.ToggleConnection(hardwareId);
-        return connectionState;
+        OwnedDevice ownedDevice = OwnedDeviceRepository.GetByHardwareId(Guid.Parse(hardwareId));
+        ownedDevice.Connected = !ownedDevice.Connected;
+        OwnedDeviceRepository.Update(ownedDevice);
+        return ownedDevice.Connected;
     }
 
     public IEnumerable<string> GetAllDeviceTypes()
     {
-        var devices = DeviceRepository.GetDevices(1, int.MaxValue, null, null, null, null).Data;
-        return devices.Select(device => device.Type.ToString()).Distinct();
+        return Enum.GetNames(typeof(DeviceType));
+    }
+
+    public bool IsConnected(string hardwareId)
+    {
+        EnsureHardwareIdIsValid(hardwareId);
+        EnsureOwnedDeviceExists(hardwareId);
+        OwnedDevice ownedDevice = OwnedDeviceRepository.GetByHardwareId(Guid.Parse(hardwareId));
+        return ownedDevice.Connected;
     }
 
     private void EnsureOwnedDeviceExists(string hardwareId)
     {
-        if (!OwnedDeviceRepository.Exists(hardwareId))
+        if (!OwnedDeviceRepository.Exists(Guid.Parse(hardwareId)))
         {
-            throw new ArgumentException("Owned device does not exist");
+            throw new KeyNotFoundException("The device is not registered in this home.");
         }
     }
 
@@ -51,7 +58,7 @@ public class DeviceService : IDeviceService
     {
         if (string.IsNullOrWhiteSpace(hardwareId) || !Guid.TryParse(hardwareId, out _))
         {
-            throw new ArgumentException("Hardware ID is invalid");
+            throw new ArgumentException("Hardware ID is invalid.");
         }
     }
 }

@@ -17,11 +17,11 @@ public sealed class AuthenticationFilterAttribute : Attribute, IAuthorizationFil
     {
         try
         {
-            var authorizationHeader = GetAuthorizationHeader(context);
+            StringValues authorizationHeader = GetAuthorizationHeader(context);
 
             if (string.IsNullOrEmpty(authorizationHeader))
             {
-                SetUnauthorizedResult(context, "Unauthenticated", "You are not authenticated");
+                SetUnauthorizedResult(context, "Unauthorized", "You are not authenticated");
                 return;
             }
 
@@ -32,13 +32,19 @@ public sealed class AuthenticationFilterAttribute : Attribute, IAuthorizationFil
                 return;
             }
 
+            if (!AuthorizationExists(context, authorizationHeader))
+            {
+                SetUnauthorizedResult(context, "Unauthorized", "The provided authorization header is invalid");
+                return;
+            }
+
             if (IsTokenExpired(authorizationHeader, context))
             {
                 SetUnauthorizedResult(context, "ExpiredAuthorization", "The provided authorization header is expired");
                 return;
             }
 
-            var user = GetUserOfAuthorization(authorizationHeader, context);
+            User user = GetUserOfAuthorization(authorizationHeader, context);
 
             context.HttpContext.Items[Item.UserLogged] = user;
         }
@@ -46,6 +52,12 @@ public sealed class AuthenticationFilterAttribute : Attribute, IAuthorizationFil
         {
             SetInternalServerErrorResult(context);
         }
+    }
+
+    private bool AuthorizationExists(AuthorizationFilterContext context, StringValues authorizationHeader)
+    {
+        IAuthService tokenService = GetTokenService(context);
+        return tokenService.Exists(ExtractTokenFromAuthorization(authorizationHeader));
     }
 
     private static StringValues GetAuthorizationHeader(AuthorizationFilterContext context)
@@ -74,13 +86,13 @@ public sealed class AuthenticationFilterAttribute : Attribute, IAuthorizationFil
     private static User GetUserOfAuthorization(StringValues authorization, AuthorizationFilterContext context)
     {
         var token = ExtractTokenFromAuthorization(authorization);
-        var tokenService = GetTokenService(context);
+        IAuthService tokenService = GetTokenService(context);
         return tokenService.GetUserFromToken(token);
     }
 
     private static bool IsTokenExpired(StringValues authorizationHeader, AuthorizationFilterContext context)
     {
-        var tokenService = GetTokenService(context);
+        IAuthService tokenService = GetTokenService(context);
         var token = ExtractTokenFromAuthorization(authorizationHeader);
         return tokenService.IsTokenExpired(token);
     }

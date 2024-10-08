@@ -9,6 +9,7 @@ public interface IBusinessRepository
     Business GetByOwnerId(Guid ownerId);
     bool ExistsByOwnerId(Guid ownerId);
     void Add(Business business);
-    PagedData<Business> GetPagedData(int currentPage, int pageSize, string? fullNameFilter = null,
+
+    PagedData<Business> GetPaged(int currentPage, int pageSize, string? fullNameFilter = null,
         string? nameFilter = null);
 }

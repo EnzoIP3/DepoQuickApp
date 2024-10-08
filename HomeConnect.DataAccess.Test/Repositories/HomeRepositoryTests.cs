@@ -1,4 +1,5 @@
 using BusinessLogic.HomeOwners.Entities;
+using BusinessLogic.Roles.Entities;
 using BusinessLogic.Users.Entities;
 using FluentAssertions;
 using HomeConnect.DataAccess.Repositories;
@@ -9,18 +10,18 @@ namespace HomeConnect.DataAccess.Test.Repositories;
 public class HomeRepositoryTests
 {
     private readonly Context _context = DbContextBuilder.BuildTestDbContext();
-    private HomeRepository _homeRepository = null!;
-    private User _homeOwner = null!;
-    private User _otherOwner = null!;
-    private Member _member = null!;
     private Home _home = null!;
+    private User _homeOwner = null!;
+    private HomeRepository _homeRepository = null!;
+    private Member _member = null!;
+    private User _otherOwner = null!;
 
     [TestInitialize]
     public void Initialize()
     {
         _context.Database.EnsureCreated();
 
-        var homeOwnerRole = _context.Roles.First(r => r.Name == "HomeOwner");
+        Role homeOwnerRole = _context.Roles.First(r => r.Name == "HomeOwner");
         _homeOwner = new User("John", "Doe", "email@email.com", "Password#100", homeOwnerRole);
         _otherOwner = new User("Jane", "Doe", "email2@email.com", "Password#100", homeOwnerRole);
         _home = new Home(_homeOwner, "Main St 123", 12.5, 12.5, 5);
@@ -40,9 +41,79 @@ public class HomeRepositoryTests
         _context.Database.EnsureDeleted();
     }
 
+    #region GetMemberById
+
+    #region Success
+
+    [TestMethod]
+    public void GetMemberById_WhenMemberExists_ReturnsMember()
+    {
+        // Act
+        Member result = _homeRepository.GetMemberById(_member.Id);
+
+        // Assert
+        result.Should().BeEquivalentTo(_member);
+    }
+
+    #endregion
+
+    #endregion
+
+    #region UpdateMember
+
+    #region Success
+
+    [TestMethod]
+    public void UpdateMember_WhenMemberExists_UpdatesMember()
+    {
+        // Arrange
+        Member member = _home.Members.First();
+        member.HomePermissions = [new HomePermission("ExamplePermission")];
+
+        // Act
+        _homeRepository.UpdateMember(member);
+
+        // Assert
+        _context.Homes.Should().Contain(h =>
+            h.Members.Any(m => m.Id == member.Id && m.HomePermissions.Any(hp => hp.Value == "ExamplePermission")));
+    }
+
+    #endregion
+
+    #endregion
+
+    #region Exists
+
+    [TestMethod]
+    public void Exists_WhenHomeExists_ReturnsTrue()
+    {
+        // Act
+        var result = _homeRepository.Exists(_home.Id);
+
+        // Assert
+        result.Should().BeTrue();
+    }
+
+    #endregion
+
+    #region ExistsMember
+
+    [TestMethod]
+    public void ExistsMember_WhenMemberExists_ReturnsTrue()
+    {
+        // Act
+        var result = _homeRepository.ExistsMember(_member.Id);
+
+        // Assert
+        result.Should().BeTrue();
+    }
+
+    #endregion
+
     #region Add
 
     #region Success
+
     [TestMethod]
     public void Add_WhenHomeDoesNotExist_AddsHome()
     {
@@ -55,9 +126,11 @@ public class HomeRepositoryTests
         // Assert
         _context.Homes.Should().Contain(home);
     }
+
     #endregion
 
     #region Error
+
     [TestMethod]
     public void Add_WhenHomeExists_ThrowsException()
     {
@@ -65,80 +138,57 @@ public class HomeRepositoryTests
         var home = new Home(_homeOwner, "Main St 123", 12.5, 12.5, 5);
 
         // Act
-        var action = () => _homeRepository.Add(home);
+        Action action = () => _homeRepository.Add(home);
 
         // Assert
         action.Should().Throw<ArgumentException>().WithMessage("Home already exists");
     }
+
     #endregion
+
     #endregion
 
     #region Get
+
     #region Success
+
     [TestMethod]
     public void Get_WhenHomeExists_ReturnsHome()
     {
         // Act
-        var result = _homeRepository.Get(_home.Id);
+        Home result = _homeRepository.Get(_home.Id);
 
         // Assert
         result.Should().BeEquivalentTo(_home);
     }
+
     #endregion
+
     #region Error
+
     [TestMethod]
-    public void Get_WhenHomeDoesNotExist_ShouldThrowException()
+    public void Get_WhenHomeDoesNotExist_ThrowsException()
     {
         // Act
-        var action = () => _homeRepository.Get(Guid.NewGuid());
+        Func<Home> action = () => _homeRepository.Get(Guid.NewGuid());
 
         // Assert
         action.Should().Throw<ArgumentException>().WithMessage("Home does not exist");
     }
-    #endregion
-    #endregion
 
-    #region GetMemberById
-    #region Success
-    [TestMethod]
-    public void GetMemberById_WhenMemberExists_ReturnsMember()
-    {
-        // Act
-        var result = _homeRepository.GetMemberById(_member.Id);
-
-        // Assert
-        result.Should().BeEquivalentTo(_member);
-    }
-    #endregion
     #endregion
 
-    #region UpdateMember
-    #region Success
-    [TestMethod]
-    public void UpdateMember_WhenMemberExists_UpdatesMember()
-    {
-        // Arrange
-        var member = _home.Members.First();
-        member.HomePermissions = [new HomePermission("ExamplePermission")];
-
-        // Act
-        _homeRepository.UpdateMember(member);
-
-        // Assert
-        _context.Homes.Should().Contain(h =>
-            h.Members.Any(m => m.Id == member.Id && m.HomePermissions.
-                Any(hp => hp.Value == "ExamplePermission")));
-    }
-    #endregion
     #endregion
 
     #region GetByAddress
+
     #region Success
+
     [TestMethod]
     public void GetByAddress_WhenHomeDoesNotExist_ReturnsNull()
     {
         // Act
-        var result = _homeRepository.GetByAddress("Main St 456");
+        Home? result = _homeRepository.GetByAddress("Main St 456");
 
         // Assert
         result.Should().BeNull();
@@ -148,35 +198,13 @@ public class HomeRepositoryTests
     public void GetByAddress_WhenHomeExists_ReturnsHome()
     {
         // Act
-        var result = _homeRepository.GetByAddress("Main St 123");
+        Home? result = _homeRepository.GetByAddress("Main St 123");
 
         // Assert
         result.Should().BeEquivalentTo(_home);
     }
-    #endregion
-    #endregion
 
-    #region Exists
-    [TestMethod]
-    public void Exists_WhenHomeExists_ReturnsTrue()
-    {
-        // Act
-        var result = _homeRepository.Exists(_home.Id);
-
-        // Assert
-        result.Should().BeTrue();
-    }
     #endregion
 
-    #region ExistsMember
-    [TestMethod]
-    public void ExistsMember_WhenMemberExists_ReturnsTrue()
-    {
-        // Act
-        var result = _homeRepository.ExistsMember(_member.Id);
-
-        // Assert
-        result.Should().BeTrue();
-    }
     #endregion
 }

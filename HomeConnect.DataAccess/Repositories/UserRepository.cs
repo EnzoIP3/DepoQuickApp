@@ -14,7 +14,7 @@ public class UserRepository : PaginatedRepositoryBase<User>, IUserRepository
         _context = context;
     }
 
-    public PagedData<User> GetAllPaged(int currentPage, int pageSize, string? fullNameFilter = null,
+    public PagedData<User> GetPaged(int currentPage, int pageSize, string? fullNameFilter = null,
         string? roleFilter = null)
     {
         var filters = new object[2];
@@ -23,7 +23,7 @@ public class UserRepository : PaginatedRepositoryBase<User>, IUserRepository
         return GetAllPaged(currentPage, pageSize, filters);
     }
 
-    public User Get(string email)
+    public User GetByEmail(string email)
     {
         return _context.Users.First(u => u.Email == email);
     }
@@ -39,14 +39,14 @@ public class UserRepository : PaginatedRepositoryBase<User>, IUserRepository
         return _context.Users.Any(u => u.Id == id);
     }
 
-    public bool Exists(string email)
+    public bool ExistsByEmail(string email)
     {
         return _context.Users.Any(u => u.Email == email);
     }
 
     public void Delete(Guid id)
     {
-        var user = Get(id);
+        User user = Get(id);
         _context.Users.Remove(user);
         _context.SaveChanges();
     }

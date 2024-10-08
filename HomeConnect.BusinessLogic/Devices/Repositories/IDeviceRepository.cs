@@ -1,11 +1,12 @@
 using BusinessLogic.Devices.Entities;
+using BusinessLogic.Devices.Models;
 
 namespace BusinessLogic.Devices.Repositories;
 
 public interface IDeviceRepository
 {
-    PagedData<Device> GetDevices(int currentPage, int? pageSize, string? deviceNameFilter, int? modelNumberFilter, string? businessNameFilter, string? deviceTypeFilter);
+    PagedData<Device> GetPaged(GetDevicesArgs args);
     Device Get(Guid deviceId);
     void Add(Device device);
-    void EnsureDeviceDoesNotExist(Device device);
+    bool ExistsByModelNumber(int modelNumber);
 }

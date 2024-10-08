@@ -25,7 +25,7 @@ public class TokenRepositoryTests
     }
 
     [TestMethod]
-    public void Add_WithValidToken_ShouldAddToken()
+    public void Add_WithValidToken_AddsToken()
     {
         // Arrange
         var user = new User();
@@ -39,7 +39,7 @@ public class TokenRepositoryTests
     }
 
     [TestMethod]
-    public void Get_WithValidToken_ShouldReturnToken()
+    public void Get_WithValidToken_ReturnsToken()
     {
         // Arrange
         var user = new User();
@@ -47,14 +47,14 @@ public class TokenRepositoryTests
         _tokenRepository.Add(token);
 
         // Act
-        var result = _tokenRepository.Get(token.Id);
+        Token result = _tokenRepository.Get(token.Id);
 
         // Assert
         result.Should().NotBeNull();
     }
 
     [TestMethod]
-    public void Get_WithInvalidToken_ShouldThrowException()
+    public void Get_WithInvalidToken_ThrowsException()
     {
         // Arrange
         var user = new User();
@@ -66,5 +66,20 @@ public class TokenRepositoryTests
 
         // Assert
         act.Should().Throw<ArgumentException>();
+    }
+
+    [TestMethod]
+    public void Exists_WhenTokenExists_ReturnsTrue()
+    {
+        // Arrange
+        var user = new User();
+        var token = new Token(user);
+        _tokenRepository.Add(token);
+
+        // Act
+        var result = _tokenRepository.Exists(token.Id);
+
+        // Assert
+        result.Should().BeTrue();
     }
 }

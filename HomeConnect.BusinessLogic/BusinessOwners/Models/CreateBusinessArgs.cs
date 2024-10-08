@@ -1,8 +1,9 @@
 namespace BusinessLogic.BusinessOwners.Models;
 
-public struct CreateBusinessArgs
+public record CreateBusinessArgs
 {
-    public string Name { get; set; }
-    public string Rut { get; set; }
-    public string OwnerId { get; set; }
+    public string Name { get; init; } = null!;
+    public string Logo { get; init; } = null!;
+    public string Rut { get; init; } = null!;
+    public string OwnerId { get; init; } = null!;
 }

@@ -1,14 +1,14 @@
+using System.Globalization;
 using BusinessLogic.Devices.Entities;
 using BusinessLogic.Notifications.Entities;
 using BusinessLogic.Notifications.Services;
 using BusinessLogic.Roles.Entities;
 using BusinessLogic.Users.Entities;
-using HomeConnect.WebApi.Controllers.Notification;
+using FluentAssertions;
+using HomeConnect.WebApi.Controllers.Notifications;
+using HomeConnect.WebApi.Controllers.Notifications.Models;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.Abstractions;
-using Microsoft.AspNetCore.Mvc.Filters;
-using Microsoft.AspNetCore.Routing;
 using Moq;
 
 namespace HomeConnect.WebApi.Test.Controllers;
@@ -16,23 +16,19 @@ namespace HomeConnect.WebApi.Test.Controllers;
 [TestClass]
 public class NotificationControllerTests
 {
-    private Mock<INotificationService> _notificationService = null!;
-    private NotificationController _notificationController = null!;
     private Mock<HttpContext> _httpContextMock = null!;
-    private AuthorizationFilterContext _context = null!;
+    private NotificationController _notificationController = null!;
+    private Mock<INotificationService> _notificationService = null!;
 
     [TestInitialize]
     public void Initialize()
     {
-        _notificationService = new Mock<INotificationService>();
-        _notificationController = new NotificationController(_notificationService.Object);
+        _notificationService = new Mock<INotificationService>(MockBehavior.Strict);
         _httpContextMock = new Mock<HttpContext>(MockBehavior.Strict);
-        _context = new AuthorizationFilterContext(
-            new ActionContext(
-                _httpContextMock.Object,
-                new RouteData(),
-                new ActionDescriptor()),
-            new List<IFilterMetadata>());
+        _notificationController = new NotificationController(_notificationService.Object)
+        {
+            ControllerContext = new ControllerContext { HttpContext = _httpContextMock.Object }
+        };
     }
 
     [TestMethod]
@@ -42,7 +38,7 @@ public class NotificationControllerTests
         var request = new GetNotificationsRequest
         {
             Device = Guid.NewGuid().ToString(),
-            DateCreated = DateTime.Now,
+            DateCreated = DateToString(DateTime.Now),
             Read = false
         };
         var user = new User("John", "Doe", "email@email.com", "Password@100",
@@ -54,27 +50,54 @@ public class NotificationControllerTests
             Read = false,
             Date = DateTime.Now
         };
-        var items = new Dictionary<object, object?>
-        {
-            {
-                Item.UserLogged,
-                user
-            }
-        };
+        var items = new Dictionary<object, object?> { { Item.UserLogged, user } };
+        List<Notification> notifications = [notification];
+        DateTime dateCreated = DateFromString(request.DateCreated);
         _httpContextMock.SetupGet(h => h.Items).Returns(items);
-        _notificationService.Setup(n => n.GetNotifications(user.Id, request.Device, request.DateCreated, request.Read))
+        _notificationService.Setup(n => n.GetNotifications(user.Id, request.Device, dateCreated, request.Read))
             .Returns([notification]);
+        _notificationService.Setup(n => n.MarkNotificationsAsRead(notifications))
+            .Verifiable();
 
         // Act
-        var response = _notificationController.GetNotifications(request, _context);
+        GetNotificationsResponse response = _notificationController.GetNotifications(request);
 
         // Assert
         _notificationService.VerifyAll();
-        Assert.IsNotNull(response);
-        Assert.AreEqual(1, response.Notifications.Count);
-        Assert.AreEqual(notification.Event, response.Notifications[0].Event);
-        Assert.AreEqual(notification.OwnedDevice.HardwareId.ToString(), response.Notifications[0].DeviceId);
-        Assert.AreEqual(notification.Read, response.Notifications[0].Read);
-        Assert.AreEqual(notification.Date, response.Notifications[0].DateCreated);
+        response.Should().NotBeNull();
+        response.Notifications.Count.Should().Be(1);
+        response.Notifications[0].Event.Should().Be(notification.Event);
+        response.Notifications[0].DeviceId.Should().Be(notification.OwnedDevice.HardwareId.ToString());
+        response.Notifications[0].Read.Should().Be(notification.Read);
+        response.Notifications[0].DateCreated.Should().Be(notification.Date);
+    }
+
+    [TestMethod]
+    public void GetNotifications_WhenInvalidFormatDateCreated_ThrowsArgumentException()
+    {
+        // Arrange
+        var request = new GetNotificationsRequest
+        {
+            Device = Guid.NewGuid().ToString(),
+            DateCreated = "2024/12/2",
+            Read = false
+        };
+
+        // Act
+        Func<GetNotificationsResponse> action = () => _notificationController.GetNotifications(request);
+
+        // Assert
+        _notificationService.VerifyAll();
+        action.Should().Throw<ArgumentException>().WithMessage("The date created filter is invalid");
+    }
+
+    private static string DateToString(DateTime date)
+    {
+        return date.ToString("dd-MM-yyyy");
+    }
+
+    private static DateTime DateFromString(string date)
+    {
+        return DateTime.ParseExact(date, "dd-MM-yyyy", CultureInfo.InvariantCulture);
     }
 }

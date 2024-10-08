@@ -1,4 +1,5 @@
 using BusinessLogic.HomeOwners.Entities;
+using BusinessLogic.Users.Entities;
 using FluentAssertions;
 
 namespace HomeConnect.BusinessLogic.Test.HomeOwners.Entities;
@@ -6,6 +7,30 @@ namespace HomeConnect.BusinessLogic.Test.HomeOwners.Entities;
 [TestClass]
 public class MemberTests
 {
+    #region HasPermission
+
+    #region Success
+
+    [TestMethod]
+    public void HasPermission_WhenPermissionExists_ReturnsTrue()
+    {
+        // Arrange
+        var user = new User();
+        var member = new Member(user);
+        var permission = new HomePermission("value");
+        member.AddPermission(permission);
+
+        // Act
+        var result = member.HasPermission(permission);
+
+        // Assert
+        result.Should().BeTrue();
+    }
+
+    #endregion
+
+    #endregion
+
     #region Constructor
 
     #region Success
@@ -14,10 +39,10 @@ public class MemberTests
     public void Constructor_WhenArgumentsAreValid_CreatesInstance()
     {
         // Arrange
-        var user = new global::BusinessLogic.Users.Entities.User();
+        var user = new User();
 
         // Act
-        var act = () => new Member(user);
+        Func<Member> act = () => new Member(user);
 
         // Assert
         act.Should().NotThrow();
@@ -27,11 +52,11 @@ public class MemberTests
     public void Constructor_WhenHomePermissionsAreSet_CreatesInstance()
     {
         // Arrange
-        var user = new global::BusinessLogic.Users.Entities.User();
-        var permissions = new List<HomePermission> { new HomePermission("value") };
+        var user = new User();
+        var permissions = new List<HomePermission> { new("value") };
 
         // Act
-        var act = () => new Member(user, permissions);
+        Func<Member> act = () => new Member(user, permissions);
 
         // Assert
         act.Should().NotThrow();
@@ -49,7 +74,7 @@ public class MemberTests
     public void AddPermission_WhenPermissionIsValid_AddsPermission()
     {
         // Arrange
-        var user = new global::BusinessLogic.Users.Entities.User();
+        var user = new User();
         var member = new Member(user);
         var permission = new HomePermission("value");
 
@@ -68,13 +93,13 @@ public class MemberTests
     public void AddPermission_WhenPermissionIsAlreadyAdded_ThrowsInvalidOperationException()
     {
         // Arrange
-        var user = new global::BusinessLogic.Users.Entities.User();
+        var user = new User();
         var member = new Member(user);
         var permission = new HomePermission("value");
         member.AddPermission(permission);
 
         // Act
-        var act = () => member.AddPermission(permission);
+        Action act = () => member.AddPermission(permission);
 
         // Assert
         act.Should().Throw<InvalidOperationException>();
@@ -92,7 +117,7 @@ public class MemberTests
     public void DeletePermission_WhenPermissionExists_DeletesPermission()
     {
         // Arrange
-        var user = new global::BusinessLogic.Users.Entities.User();
+        var user = new User();
         var member = new Member(user);
         var permission = new HomePermission("value");
         member.AddPermission(permission);
@@ -112,39 +137,15 @@ public class MemberTests
     public void DeletePermission_WhenPermissionDoesNotExist_ThrowsInvalidOperationException()
     {
         // Arrange
-        var user = new global::BusinessLogic.Users.Entities.User();
+        var user = new User();
         var member = new Member(user);
         var permission = new HomePermission("value");
 
         // Act
-        var act = () => member.DeletePermission(permission);
+        Action act = () => member.DeletePermission(permission);
 
         // Assert
-        act.Should().Throw<InvalidOperationException>();
-    }
-
-    #endregion
-
-    #endregion
-
-    #region HasPermission
-
-    #region Success
-
-    [TestMethod]
-    public void HasPermission_WhenPermissionExists_ReturnsTrue()
-    {
-        // Arrange
-        var user = new global::BusinessLogic.Users.Entities.User();
-        var member = new Member(user);
-        var permission = new HomePermission("value");
-        member.AddPermission(permission);
-
-        // Act
-        var result = member.HasPermission(permission);
-
-        // Assert
-        result.Should().BeTrue();
+        act.Should().Throw<ArgumentException>();
     }
 
     #endregion

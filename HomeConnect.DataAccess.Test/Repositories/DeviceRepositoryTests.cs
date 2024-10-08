@@ -1,5 +1,7 @@
+using BusinessLogic;
 using BusinessLogic.BusinessOwners.Entities;
 using BusinessLogic.Devices.Entities;
+using BusinessLogic.Devices.Models;
 using BusinessLogic.Roles.Entities;
 using BusinessLogic.Users.Entities;
 using FluentAssertions;
@@ -12,10 +14,10 @@ public class DeviceRepositoryTests
 {
     private readonly Context _context = DbContextBuilder.BuildTestDbContext();
     private DeviceRepository _deviceRepository = null!;
-    private Device _validDevice = null!;
-    private Device _secondValidDevice = null!;
-    private User _validUser = null!;
     private Role _role = null!;
+    private Device _secondValidDevice = null!;
+    private Device _validDevice = null!;
+    private User _validUser = null!;
 
     [TestInitialize]
     public void Initialize()
@@ -25,9 +27,9 @@ public class DeviceRepositoryTests
         _role = new Role();
         _validUser = new User("John", "Doe", "johhnDoe@example.com", "Password#100", _role);
         _validDevice = new Device("DeviceValid", 123456, "Device description", "https://example.com/image.png",
-            [], "Camera", new Business("123456", "BusinessValid", _validUser));
+            [], "Camera", new Business("123456", "BusinessValid", "https://example.com/image.png", _validUser));
         _secondValidDevice = new Device("DeviceValid2", 1234567, "Device description", "https://example2.com/image.png",
-            [], "Sensor", new Business("1234567", "BusinessValid2", _validUser));
+            [], "Sensor", new Business("1234567", "BusinessValid2", "https://example.com/image.png", _validUser));
         _context.Add(_validDevice);
         _context.Add(_secondValidDevice);
         _context.SaveChanges();
@@ -44,10 +46,10 @@ public class DeviceRepositoryTests
     #region Success
 
     [TestMethod]
-    public void Add_WhenDeviceDoesNotExist_ShouldAddDevice()
+    public void Add_WhenDeviceDoesNotExist_AddsDevice()
     {
         // Arrange
-        var business = new Business("12345", "Business", _validUser);
+        var business = new Business("12345", "Business", "https://example.com/image.png", _validUser);
         var device = new Device("Device", 12345, "Device description", "https://example.com/image.png",
             [], "Sensor", business);
 
@@ -60,22 +62,25 @@ public class DeviceRepositoryTests
 
     #endregion
 
-    #region Error
+    #endregion
+
+    #region ExistsByModelNumber
+
+    #region Success
 
     [TestMethod]
-    public void Add_WhenDeviceExists_ShouldThrowException()
+    public void ExistsByModelNumber_WhenDeviceExists_ReturnsTrue()
     {
         // Arrange
-        var business = new Business("12345", "Business", _validUser);
         var device = new Device("Device", 12345, "Device description", "https://example.com/image.png",
-            [], "Sensor", business);
+            [], "Sensor", new Business("12345", "Business", "https://example.com/image.png", _validUser));
         _deviceRepository.Add(device);
 
         // Act
-        Action act = () => _deviceRepository.Add(device);
+        var result = _deviceRepository.ExistsByModelNumber(device.ModelNumber);
 
         // Assert
-        act.Should().Throw<ArgumentException>();
+        result.Should().BeTrue();
     }
 
     #endregion
@@ -87,17 +92,17 @@ public class DeviceRepositoryTests
     #region Success
 
     [TestMethod]
-    public void Get_WhenDeviceExists_ShouldReturnDevice()
+    public void Get_WhenDeviceExists_ReturnsDevice()
     {
         // Arrange
-        var business = new Business("12345", "Business", _validUser);
+        var business = new Business("12345", "Business", "https://example.com/image.png", _validUser);
         var device = new Device("Device", 12345, "Device description", "https://example.com/image.png",
             [], "Sensor", business);
         _deviceRepository.Add(device);
         _context.SaveChanges();
 
         // Act
-        var result = _deviceRepository.Get(device.Id);
+        Device result = _deviceRepository.Get(device.Id);
 
         // Assert
         result.Should().BeEquivalentTo(device);
@@ -108,7 +113,7 @@ public class DeviceRepositoryTests
     #region Error
 
     [TestMethod]
-    public void Get_WhenDeviceDoesNotExist_ShouldThrowArgumentException()
+    public void Get_WhenDeviceDoesNotExist_ThrowsArgumentException()
     {
         // Arrange
         var nonExistentDeviceId = Guid.NewGuid();
@@ -127,11 +132,15 @@ public class DeviceRepositoryTests
     #region GetDevices
 
     #region Success
+
     [TestMethod]
     public void GetDevices_WhenCalled_ReturnsPaginatedDevices()
     {
+        // Arrange
+        var args = new GetDevicesArgs { Page = 1, PageSize = 2 };
+
         // Act
-        var result = _deviceRepository.GetDevices(1, 2, null, null, null, null);
+        PagedData<Device> result = _deviceRepository.GetPaged(args);
 
         // Assert
         result.Data.Should().HaveCount(2);
@@ -142,23 +151,46 @@ public class DeviceRepositoryTests
     [TestMethod]
     public void GetDevices_WhenFilteredByDeviceName_ReturnsFilteredDevices()
     {
+        // Arrange
+        var deviceNameFilter = "DeviceValid";
+        var args = new GetDevicesArgs { Page = 1, PageSize = 10, DeviceNameFilter = deviceNameFilter };
+
         // Act
-        var result = _deviceRepository.GetDevices(1, 10, "DeviceValid");
+        PagedData<Device> result = _deviceRepository.GetPaged(args);
 
         // Assert
         result.Data.Should().HaveCount(1);
-        result.Data.First().Name.Should().Be("DeviceValid");
+        result.Data.First().Name.Should().Be(deviceNameFilter);
     }
 
     [TestMethod]
     public void GetDevices_WhenFilteredByModelNumber_ReturnsFilteredDevices()
     {
+        // Arrange
+        var modelNumberFilter = 1234567;
+        var args = new GetDevicesArgs { Page = 1, PageSize = 10, ModelNumberFilter = modelNumberFilter };
+
         // Act
-        var result = _deviceRepository.GetDevices(1, 10, null, 1234567);
+        PagedData<Device> result = _deviceRepository.GetPaged(args);
 
         // Assert
         result.Data.Should().HaveCount(1);
-        result.Data.First().ModelNumber.Should().Be(1234567);
+        result.Data.First().ModelNumber.Should().Be(modelNumberFilter);
+    }
+
+    [TestMethod]
+    public void GetDevices_WhenFilteredByBusinessName_ReturnsFilteredDevices()
+    {
+        // Arrange
+        var businessNameFilter = "BusinessValid2";
+        var args = new GetDevicesArgs { Page = 1, PageSize = 10, BusinessNameFilter = businessNameFilter };
+
+        // Act
+        PagedData<Device> result = _deviceRepository.GetPaged(args);
+
+        // Assert
+        result.Data.Should().HaveCount(1);
+        result.Data.First().Business.Name.Should().Contain(businessNameFilter);
     }
 
     [TestMethod]
@@ -168,9 +200,10 @@ public class DeviceRepositoryTests
     {
         // Arrange
         DeviceType deviceType = Enum.Parse<DeviceType>(deviceTypeFilter);
+        var args = new GetDevicesArgs { Page = 1, PageSize = 2, DeviceTypeFilter = deviceType.ToString() };
 
         // Act
-        var result = _deviceRepository.GetDevices(1, 2, null, null, null, deviceType.ToString());
+        PagedData<Device> result = _deviceRepository.GetPaged(args);
 
         // Assert
         result.Data.Should().HaveCount(1);
@@ -182,9 +215,10 @@ public class DeviceRepositoryTests
     {
         // Arrange
         var deviceTypeFilter = "Sensor";
+        var args = new GetDevicesArgs { Page = 1, PageSize = 2, DeviceTypeFilter = deviceTypeFilter };
 
         // Act
-        var result = _deviceRepository.GetDevices(1, 2, null, null, null, deviceTypeFilter);
+        PagedData<Device> result = _deviceRepository.GetPaged(args);
 
         // Assert
         result.Data.Should().HaveCount(1);

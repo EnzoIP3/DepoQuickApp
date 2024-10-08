@@ -26,6 +26,11 @@ public class TokenRepository : ITokenRepository
         _context.SaveChanges();
     }
 
+    public bool Exists(Guid token)
+    {
+        return _context.Tokens.Find(token) != null;
+    }
+
     private void EnsureSessionExists(Guid sessionId)
     {
         if (_context.Tokens.Find(sessionId) == null)

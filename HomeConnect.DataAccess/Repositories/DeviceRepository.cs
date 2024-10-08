@@ -1,6 +1,8 @@
 using BusinessLogic;
 using BusinessLogic.Devices.Entities;
+using BusinessLogic.Devices.Models;
 using BusinessLogic.Devices.Repositories;
+using Microsoft.EntityFrameworkCore;
 
 namespace HomeConnect.DataAccess.Repositories;
 
@@ -27,33 +29,28 @@ public class DeviceRepository : PaginatedRepositoryBase<Device>, IDeviceReposito
 
     public void Add(Device device)
     {
-        EnsureDeviceDoesNotExist(device);
         _context.Devices.Add(device);
         _context.SaveChanges();
     }
 
-    public void EnsureDeviceDoesNotExist(Device device)
+    public bool ExistsByModelNumber(int modelNumber)
     {
-        if (_context.Devices.Any(d => d.ModelNumber == device.ModelNumber))
-        {
-            throw new ArgumentException("Device already exists.");
-        }
+        return _context.Devices.Any(d => d.ModelNumber == modelNumber);
     }
 
-    public PagedData<Device> GetDevices(int currentPage, int? pageSize, string? deviceNameFilter = null,
-        int? modelNumberFilter = null, string? businessNameFilter = null, string? deviceTypeFilter = null)
+    public PagedData<Device> GetPaged(GetDevicesArgs args)
     {
         var filters = new object[4];
-        filters[0] = deviceNameFilter ?? string.Empty;
-        filters[1] = modelNumberFilter;
-        filters[2] = businessNameFilter ?? string.Empty;
-        filters[3] = deviceTypeFilter ?? string.Empty;
-        return GetAllPaged(currentPage, pageSize ?? 10, filters);
+        filters[0] = args.DeviceNameFilter ?? string.Empty;
+        filters[1] = args.ModelNumberFilter!;
+        filters[2] = args.BusinessNameFilter ?? string.Empty;
+        filters[3] = args.DeviceTypeFilter ?? string.Empty;
+        return GetAllPaged(args.Page ?? 1, args.PageSize ?? 10, filters);
     }
 
     protected override IQueryable<Device> GetQueryable()
     {
-        return _context.Devices;
+        return _context.Devices.Include(d => d.Business);
     }
 
     protected override IQueryable<Device> ApplyFilters(IQueryable<Device> query, params object[] filters)
@@ -105,14 +102,8 @@ public class DeviceRepository : PaginatedRepositoryBase<Device>, IDeviceReposito
     {
         if (!string.IsNullOrEmpty(deviceTypeFilter))
         {
-            if (Enum.TryParse(deviceTypeFilter, out DeviceType deviceType))
-            {
-                query = query.Where(d => d.Type == deviceType);
-            }
-            else
-            {
-                throw new ArgumentException("Invalid device type filter");
-            }
+            DeviceType deviceType = Enum.Parse<DeviceType>(deviceTypeFilter);
+            query = query.Where(d => d.Type == deviceType);
         }
 
         return query;

@@ -1,12 +1,13 @@
 using BusinessLogic;
 using BusinessLogic.BusinessOwners.Entities;
 using BusinessLogic.Devices.Entities;
+using BusinessLogic.Devices.Models;
 using BusinessLogic.Devices.Repositories;
 using BusinessLogic.Devices.Services;
+using BusinessLogic.HomeOwners.Entities;
 using BusinessLogic.Roles.Entities;
 using BusinessLogic.Users.Entities;
 using FluentAssertions;
-using HomeConnect.WebApi.Controllers.Devices.Models;
 using Moq;
 
 namespace HomeConnect.BusinessLogic.Test.Devices.Services;
@@ -14,38 +15,34 @@ namespace HomeConnect.BusinessLogic.Test.Devices.Services;
 [TestClass]
 public class DeviceServiceTests
 {
-    private Mock<IOwnedDeviceRepository> _ownedDeviceRepository = null!;
     private Mock<IDeviceRepository> _deviceRepository = null!;
-    private DeviceService _deviceService = null!;
     private List<Device> _devices = null!;
-    private PagedData<Device> _pagedDeviceList;
-    private GetDeviceArgs _parameters = null!;
+    private DeviceService _deviceService = null!;
+    private Mock<IOwnedDeviceRepository> _ownedDeviceRepository = null!;
+    private PagedData<Device> _pagedDeviceList = null!;
+    private GetDevicesArgs _parameters = null!;
+    private Device otherDevice = null!;
     private User user1 = null!;
     private User user2 = null!;
-    private Device otherDevice = null!;
     private Device validDevice = null!;
 
     [TestInitialize]
     public void TestInitialize()
     {
-        _deviceRepository = new Mock<IDeviceRepository>();
-        _ownedDeviceRepository = new Mock<IOwnedDeviceRepository>();
+        _deviceRepository = new Mock<IDeviceRepository>(MockBehavior.Strict);
+        _ownedDeviceRepository = new Mock<IOwnedDeviceRepository>(MockBehavior.Strict);
         _deviceService = new DeviceService(_deviceRepository.Object, _ownedDeviceRepository.Object);
 
         user1 = new User("name", "surname", "email1@email.com", "Password#100", new Role());
         user2 = new User("name", "surname", "email2@email.com", "Password#100", new Role());
         validDevice = new Device("Device1", 12345, "Device description1", "https://example1.com/image.png",
-            [], "Sensor", new Business("Rut1", "Business", user1));
+            [], "Sensor", new Business("Rut1", "Business", "https://example.com/image.png", user1));
         otherDevice = new Device("Device2", 12345, "Device description2", "https://example2.com/image.png",
-            [], "Sensor", new Business("Rut2", "Business", user2));
+            [], "Sensor", new Business("Rut2", "Business", "https://example.com/image.png", user2));
 
         _devices = [validDevice, otherDevice];
 
-        _parameters = new GetDeviceArgs
-        {
-            Page = 1,
-            PageSize = 10
-        };
+        _parameters = new GetDevicesArgs { Page = 1, PageSize = 10 };
 
         _pagedDeviceList = new PagedData<Device>
         {
@@ -59,52 +56,63 @@ public class DeviceServiceTests
     [TestMethod]
     [DataRow("hardwareId")]
     [DataRow("")]
-    public void Toggle_WhenHardwareIdIsInvalid_ShouldThrowArgumentException(string id)
+    public void Toggle_WhenHardwareIdIsInvalid_ThrowsArgumentException(string id)
     {
         // Act
-        var act = () => _deviceService.Toggle(id);
+        Func<bool> act = () => _deviceService.ToggleDevice(id);
 
         // Assert
-        act.Should().Throw<ArgumentException>().WithMessage("Hardware ID is invalid");
+        act.Should().Throw<ArgumentException>().WithMessage("Hardware ID is invalid.");
     }
 
     [TestMethod]
-    public void Toggle_WhenHardwareIdIsValid_ShouldReturnConnectionState()
+    public void Toggle_WhenHardwareIdIsValid_ReturnsConnected()
     {
         // Arrange
+        var ownedDevice =
+            new OwnedDevice(new Home(user1, "Street 3420", 50, 100, 5), validDevice) { Connected = true };
         var hardwareId = Guid.NewGuid().ToString();
-        _ownedDeviceRepository.Setup(x => x.Exists(hardwareId)).Returns(true);
-        _ownedDeviceRepository.Setup(x => x.ToggleConnection(hardwareId)).Returns(true);
+        _ownedDeviceRepository.Setup(x => x.Exists(Guid.Parse(hardwareId))).Returns(true);
+        _ownedDeviceRepository.Setup(x => x.GetByHardwareId(Guid.Parse(hardwareId)))
+            .Returns(ownedDevice);
+        _ownedDeviceRepository.Setup(x => x.Update(ownedDevice)).Verifiable();
 
         // Act
-        var result = _deviceService.Toggle(hardwareId);
+        var result = _deviceService.ToggleDevice(hardwareId);
 
         // Assert
-        result.Should().BeTrue();
+        result.Should().BeFalse();
+        _ownedDeviceRepository.VerifyAll();
     }
 
     [TestMethod]
-    public void Toggle_WhenOwnedDeviceDoesNotExist_ShouldThrowArgumentException()
+    public void Toggle_WhenOwnedDeviceDoesNotExist_ThrowsKeyNotFoundException()
     {
         // Arrange
         var hardwareId = Guid.NewGuid().ToString();
-        _ownedDeviceRepository.Setup(x => x.Exists(hardwareId)).Returns(false);
+        _ownedDeviceRepository.Setup(x => x.Exists(Guid.Parse(hardwareId))).Returns(false);
 
         // Act
-        var act = () => _deviceService.Toggle(hardwareId);
+        Func<bool> act = () => _deviceService.ToggleDevice(hardwareId);
 
         // Assert
-        act.Should().Throw<ArgumentException>().WithMessage("Owned device does not exist");
+        act.Should().Throw<KeyNotFoundException>().WithMessage("The device is not registered in this home.");
     }
 
     [TestMethod]
     public void GetDevices_WhenCalled_ReturnsDeviceList()
     {
         // Arrange
-        _deviceRepository.Setup(x => x.GetDevices(_parameters.Page ?? 1, _parameters.PageSize ?? 10, _parameters.DeviceNameFilter, _parameters.ModelNumberFilter, _parameters.BusinessNameFilter, _parameters.DeviceTypeFilter)).Returns(_pagedDeviceList);
+        _deviceRepository.Setup(x => x.GetPaged(It.Is<GetDevicesArgs>(args =>
+            args.Page == _parameters.Page &&
+            args.PageSize == _parameters.PageSize &&
+            args.DeviceNameFilter == _parameters.DeviceNameFilter &&
+            args.ModelNumberFilter == _parameters.ModelNumberFilter &&
+            args.BusinessNameFilter == _parameters.BusinessNameFilter &&
+            args.DeviceTypeFilter == _parameters.DeviceTypeFilter))).Returns(_pagedDeviceList);
 
         // Act
-        var result = _deviceService.GetDevices(_parameters);
+        PagedData<Device> result = _deviceService.GetDevices(_parameters);
 
         // Assert
         var expectedPagedDeviceList = new PagedData<Device>
@@ -115,39 +123,82 @@ public class DeviceServiceTests
             TotalPages = 1
         };
 
-        result.Should().BeEquivalentTo(expectedPagedDeviceList, options => options.ComparingByMembers<PagedData<Device>>());
-        _deviceRepository.Verify(x => x.GetDevices(
-            It.Is<int>(a => a == _parameters.Page),
-            It.Is<int>(a => a == _parameters.PageSize),
-            It.Is<string>(a => a == _parameters.DeviceNameFilter),
-            It.Is<int?>(a => a == _parameters.ModelNumberFilter),
-            It.Is<string>(a => a == _parameters.BusinessNameFilter),
-            It.Is<string>(a => a == _parameters.DeviceTypeFilter)), Times.Once);
+        result.Should().BeEquivalentTo(expectedPagedDeviceList,
+            options => options.ComparingByMembers<PagedData<Device>>());
+        _deviceRepository.Verify(x => x.GetPaged(
+            It.Is<GetDevicesArgs>(args =>
+                args.Page == _parameters.Page &&
+                args.PageSize == _parameters.PageSize &&
+                args.DeviceNameFilter == _parameters.DeviceNameFilter &&
+                args.ModelNumberFilter == _parameters.ModelNumberFilter &&
+                args.BusinessNameFilter == _parameters.BusinessNameFilter &&
+                args.DeviceTypeFilter == _parameters.DeviceTypeFilter)), Times.Once);
     }
 
     [TestMethod]
     public void GetAllDeviceTypes_WhenCalled_ReturnsDeviceTypes()
     {
         // Arrange
-        var expectedDeviceTypes = new List<string> { "Sensor", "Camera" };
-        _deviceRepository.Setup(x => x.GetDevices(It.IsAny<int>(), It.IsAny<int>(), It.IsAny<string>(), It.IsAny<int?>(), It.IsAny<string>(), It.IsAny<string>())).Returns(new PagedData<Device>
-        {
-            Data =
-            [
-                new Device { Type = DeviceType.Sensor },
-                new Device { Type = DeviceType.Camera },
-                new Device { Type = DeviceType.Sensor }
-            ],
-            Page = 1,
-            PageSize = 3,
-            TotalPages = 1
-        });
+        var expectedDeviceTypes = Enum.GetNames(typeof(DeviceType));
 
         // Act
-        var result = _deviceService.GetAllDeviceTypes();
+        IEnumerable<string> result = _deviceService.GetAllDeviceTypes();
 
         // Assert
-        _deviceRepository.Verify(x => x.GetDevices(It.IsAny<int>(), It.IsAny<int>(), It.IsAny<string>(), It.IsAny<int?>(), It.IsAny<string>(), It.IsAny<string>()), Times.Once);
         result.Should().BeEquivalentTo(expectedDeviceTypes);
     }
+
+    #region IsConnected
+
+    #region Error
+
+    [TestMethod]
+    public void IsConnected_WhenHardwareIdIsInvalid_ThrowsArgumentException()
+    {
+        // Arrange
+        var hardwareId = "hardwareId";
+
+        // Act
+        Func<bool> act = () => _deviceService.IsConnected(hardwareId);
+
+        // Assert
+        act.Should().Throw<ArgumentException>().WithMessage("Hardware ID is invalid.");
+    }
+
+    [TestMethod]
+    public void IsConnected_WhenOwnedDeviceDoesNotExist_ThrowsKeyNotFoundException()
+    {
+        // Arrange
+        var hardwareId = Guid.NewGuid().ToString();
+        _ownedDeviceRepository.Setup(x => x.Exists(Guid.Parse(hardwareId))).Returns(false);
+
+        // Act
+        Func<bool> act = () => _deviceService.IsConnected(hardwareId);
+
+        // Assert
+        act.Should().Throw<KeyNotFoundException>().WithMessage("The device is not registered in this home.");
+    }
+
+    #endregion
+
+    [TestMethod]
+    public void IsConnected_WhenDeviceIsConnected_ReturnsTrue()
+    {
+        // Arrange
+        var ownedDevice =
+            new OwnedDevice(new Home(user1, "Street 3420", 50, 100, 5), validDevice) { Connected = true };
+        var hardwareId = Guid.NewGuid().ToString();
+        _ownedDeviceRepository.Setup(x => x.Exists(Guid.Parse(hardwareId))).Returns(true);
+        _ownedDeviceRepository.Setup(x => x.GetByHardwareId(Guid.Parse(hardwareId)))
+            .Returns(ownedDevice);
+
+        // Act
+        var result = _deviceService.IsConnected(hardwareId);
+
+        // Assert
+        _ownedDeviceRepository.VerifyAll();
+        result.Should().BeTrue();
+    }
+
+    #endregion
 }

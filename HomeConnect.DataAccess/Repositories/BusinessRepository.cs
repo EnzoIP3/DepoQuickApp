@@ -1,6 +1,7 @@
 using BusinessLogic;
 using BusinessLogic.BusinessOwners.Entities;
 using BusinessLogic.BusinessOwners.Repositories;
+using Microsoft.EntityFrameworkCore;
 
 namespace HomeConnect.DataAccess.Repositories;
 
@@ -11,18 +12,13 @@ public class BusinessRepository : PaginatedRepositoryBase<Business>, IBusinessRe
     {
     }
 
-    public PagedData<Business> GetPagedData(int currentPage, int pageSize, string? fullNameFilter = null,
+    public PagedData<Business> GetPaged(int currentPage, int pageSize, string? fullNameFilter = null,
         string? nameFilter = null)
     {
         var filters = new object[2];
         filters[0] = fullNameFilter ?? string.Empty;
         filters[1] = nameFilter ?? string.Empty;
         return GetAllPaged(currentPage, pageSize, filters);
-    }
-
-    public Business? GetBusinessByOwnerId(string ownerEmail)
-    {
-        return Context.Businesses.FirstOrDefault(b => b.Owner.Email == ownerEmail);
     }
 
     public Business Get(string rut)
@@ -52,9 +48,14 @@ public class BusinessRepository : PaginatedRepositoryBase<Business>, IBusinessRe
         Context.SaveChanges();
     }
 
+    public Business? GetBusinessByOwnerId(string ownerEmail)
+    {
+        return Context.Businesses.FirstOrDefault(b => b.Owner.Email == ownerEmail);
+    }
+
     protected override IQueryable<Business> GetQueryable()
     {
-        return Context.Businesses;
+        return Context.Businesses.Include(b => b.Owner);
     }
 
     protected override IQueryable<Business> ApplyFilters(IQueryable<Business> query, params object[] filters)

@@ -6,8 +6,8 @@ using BusinessLogic.HomeOwners.Services;
 using BusinessLogic.Roles.Entities;
 using BusinessLogic.Users.Entities;
 using FluentAssertions;
-using HomeConnect.WebApi.Controllers.Home;
-using HomeConnect.WebApi.Controllers.Home.Models;
+using HomeConnect.WebApi.Controllers.Homes;
+using HomeConnect.WebApi.Controllers.Homes.Models;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Abstractions;
@@ -20,18 +20,18 @@ namespace HomeConnect.WebApi.Test.Controllers;
 [TestClass]
 public class HomeControllerTests
 {
-    private HomeController _controller = null!;
-    private Mock<HttpContext> _httpContextMock = null!;
-    private Mock<IHomeOwnerService> _homeOwnerService = null!;
+    private static readonly User _user = new("John", "Doe", "email@email.com", "Password@100",
+        new Role { Name = "HomeOwner", Permissions = [] });
+
+    private readonly Home _home = new(_user, "Road 123", 50.456, 100.789, 3);
+
+    private readonly User _otherUser = new("Jane", "Doe", "email2@email.com", "Password@100",
+        new Role { Name = "HomeOwner", Permissions = [] });
+
     private AuthorizationFilterContext _context = null!;
-
-    private static readonly User _user = new User("John", "Doe", "email@email.com", "Password@100",
-        new Role { Name = "HomeOwner", Permissions = [] });
-
-    private readonly User _otherUser = new User("Jane", "Doe", "email2@email.com", "Password@100",
-        new Role { Name = "HomeOwner", Permissions = [] });
-
-    private readonly Home _home = new Home(_user, "Road 123", 123.456, 456.789, 3);
+    private HomeController _controller = null!;
+    private Mock<IHomeOwnerService> _homeOwnerService = null!;
+    private Mock<HttpContext> _httpContextMock = null!;
 
     [TestInitialize]
     public void Initialize()
@@ -57,8 +57,8 @@ public class HomeControllerTests
         var request = new CreateHomeRequest
         {
             Address = "Road 123",
-            Latitude = 123.456,
-            Longitude = 456.789,
+            Latitude = 50.456,
+            Longitude = 100.789,
             MaxMembers = 3
         };
         var items = new Dictionary<object, object?> { { Item.UserLogged, _user } };
@@ -75,7 +75,7 @@ public class HomeControllerTests
         _homeOwnerService.Setup(x => x.CreateHome(args)).Returns(home.Id);
 
         // Act
-        var response = _controller.CreateHome(request);
+        CreateHomeResponse response = _controller.CreateHome(request);
 
         // Assert
         _homeOwnerService.VerifyAll();
@@ -93,8 +93,7 @@ public class HomeControllerTests
         // Arrange
         var request = new AddMemberRequest
         {
-            HomeId = _home.Id.ToString(),
-            HomeOwnerId = _user.Id.ToString(),
+            MemberId = _user.Id.ToString(),
             CanAddDevices = true,
             CanListDevices = false
         };
@@ -103,14 +102,14 @@ public class HomeControllerTests
         var args = new AddMemberArgs
         {
             HomeId = _home.Id.ToString(),
-            HomeOwnerId = _user.Id.ToString(),
+            UserId = _user.Id.ToString(),
             CanAddDevices = request.CanAddDevices,
             CanListDevices = request.CanListDevices
         };
         _homeOwnerService.Setup(x => x.AddMemberToHome(args)).Returns(_user.Id);
 
         // Act
-        var response = _controller.AddMember(_home.Id.ToString(), request);
+        AddMemberResponse response = _controller.AddMember(_home.Id.ToString(), request);
 
         // Assert
         _homeOwnerService.VerifyAll();
@@ -129,7 +128,7 @@ public class HomeControllerTests
         // Arrange
         var businessOwner = new User("Business", "Owner", "bo@email.com", "Password@100",
             new Role { Name = "BusinessOwner", Permissions = [] });
-        var business = new Business("123456789123", "business", businessOwner);
+        var business = new Business("123456789123", "business", "https://example.com/image.png", businessOwner);
         var sensor = new Device("sensor", 123, "a camera", "https://www.example.com/photo1.jpg", [],
             "sensor", business);
         var camera = new Camera("camera", 123, "a camera", "https://www.example.com/photo1.jpg", [],
@@ -142,13 +141,81 @@ public class HomeControllerTests
         _homeOwnerService.Setup(x => x.AddDeviceToHome(args));
 
         // Act
-        var response = _controller.AddDevices(_home.Id.ToString(), request);
+        AddDevicesResponse response = _controller.AddDevices(_home.Id.ToString(), request);
 
         // Assert
         _homeOwnerService.VerifyAll();
         response.Should().NotBeNull();
         response.DeviceIds.Should().BeEquivalentTo(request.DeviceIds);
         response.HomeId.Should().Be(_home.Id.ToString());
+    }
+
+    #endregion
+
+    #region GetDevices
+
+    [TestMethod]
+    public void GetDevices_WhenCalledWithValidRequest_ReturnsDevices()
+    {
+        // Arrange
+        var device1 = new OwnedDevice(_home,
+            new Device
+            {
+                Name = "Device1",
+                Type = DeviceType.Sensor,
+                ModelNumber = 1,
+                MainPhoto = "https://www.example.com/photo1.jpg",
+                Business = new Business { Name = "Name1" }
+            });
+        var device2 = new OwnedDevice(_home,
+            new Device
+            {
+                Name = "Device2",
+                Type = DeviceType.Camera,
+                ModelNumber = 2,
+                MainPhoto = "https://www.example.com/photo2.jpg",
+                Business = new Business { Name = "Name2" }
+            });
+        var items = new Dictionary<object, object?> { { Item.UserLogged, _user } };
+        _httpContextMock.Setup(h => h.Items).Returns(items);
+        _homeOwnerService.Setup(x => x.GetHomeDevices(_home.Id.ToString()))
+            .Returns(new List<OwnedDevice> { device1, device2 });
+
+        var expectedResponse = new GetDevicesResponse
+        {
+            Devices =
+            [
+                new ListDeviceInfo
+                {
+                    HardwareId = device1.HardwareId.ToString(),
+                    Name = device1.Device.Name,
+                    BusinessName = device1.Device.Business.Name,
+                    Type = device1.Device.Type.ToString(),
+                    ModelNumber = device1.Device.ModelNumber,
+                    Photo = device1.Device.MainPhoto
+                },
+                new ListDeviceInfo
+                {
+                    HardwareId = device2.HardwareId.ToString(),
+                    Name = device2.Device.Name,
+                    BusinessName = device2.Device.Business.Name,
+                    Type = device2.Device.Type.ToString(),
+                    ModelNumber = device2.Device.ModelNumber,
+                    Photo = device2.Device.MainPhoto
+                }
+
+            ]
+        };
+
+        // Act
+        GetDevicesResponse response = _controller.GetDevices(_home.Id.ToString());
+
+        // Assert
+        _homeOwnerService.VerifyAll();
+        response.Should().NotBeNull();
+        response.Devices.Should().NotBeNullOrEmpty();
+        response.Devices.Should().HaveCount(2);
+        response.Devices.Should().BeEquivalentTo(expectedResponse.Devices);
     }
 
     #endregion
@@ -161,14 +228,14 @@ public class HomeControllerTests
         // Arrange
         var owner = new User("owner", "owner", "email@email.com", "Password@100",
             new Role { Name = "HomeOwner", Permissions = [] });
-        var home = new Home(owner, "Road 123", 123.456, 456.789, 3);
+        var home = new Home(owner, "Road 123", 50.456, 100.789, 3);
         var member = new Member(_user,
         [
-            new HomePermission("canAddDevices"),
-            new HomePermission("canListDevices"),
-            new HomePermission("shouldBeNotified")
+            new HomePermission(HomePermission.AddDevice),
+            new HomePermission(HomePermission.GetDevices)
         ]);
-        var otherMember = new Member(_otherUser, [new HomePermission("canAddDevices")]);
+        var otherMember = new Member(_otherUser,
+            [new HomePermission(HomePermission.AddDevice), new HomePermission(HomePermission.GetDevices)]);
         home.AddMember(member);
         home.AddMember(otherMember);
         var items = new Dictionary<object, object?> { { Item.UserLogged, _user } };
@@ -176,10 +243,10 @@ public class HomeControllerTests
         _homeOwnerService.Setup(x => x.GetHomeMembers(home.Id.ToString()))
             .Returns([member, otherMember]);
 
-        var expectedResponse = CreateGetMembersResponse(member, otherMember);
+        GetMembersResponse expectedResponse = CreateGetMembersResponse(member, otherMember);
 
         // Act
-        var response = _controller.GetMembers(home.Id.ToString(), _context);
+        GetMembersResponse response = _controller.GetMembers(home.Id.ToString());
 
         // Assert
         _homeOwnerService.VerifyAll();
@@ -201,9 +268,9 @@ public class HomeControllerTests
                     Name = member.User.Name,
                     Surname = member.User.Surname,
                     Photo = member.User.ProfilePicture ?? string.Empty,
-                    CanAddDevices = member.HasPermission(new HomePermission("canAddDevices")),
-                    CanListDevices = member.HasPermission(new HomePermission("canListDevices")),
-                    ShouldBeNotified = member.HasPermission(new HomePermission("shouldBeNotified"))
+                    CanAddDevices = member.HasPermission(new HomePermission(HomePermission.AddDevice)),
+                    CanListDevices = member.HasPermission(new HomePermission(HomePermission.GetDevices)),
+                    ShouldBeNotified = member.HasPermission(new HomePermission(HomePermission.GetNotifications))
                 },
 
                 new ListMemberInfo
@@ -212,77 +279,14 @@ public class HomeControllerTests
                     Name = otherMember.User.Name,
                     Surname = otherMember.User.Surname,
                     Photo = otherMember.User.ProfilePicture ?? string.Empty,
-                    CanAddDevices = otherMember.HasPermission(new HomePermission("canAddDevices")),
-                    CanListDevices = otherMember.HasPermission(new HomePermission("canListDevices")),
-                    ShouldBeNotified = otherMember.HasPermission(new HomePermission("shouldBeNotified"))
+                    CanAddDevices = otherMember.HasPermission(new HomePermission(HomePermission.AddDevice)),
+                    CanListDevices = otherMember.HasPermission(new HomePermission(HomePermission.GetDevices)),
+                    ShouldBeNotified =
+                        otherMember.HasPermission(new HomePermission(HomePermission.GetNotifications))
                 }
 
             ]
         };
-    }
-
-    #endregion
-
-    #region GetDevices
-
-    [TestMethod]
-    public void GetDevices_WhenCalledWithValidRequest_ReturnsDevices()
-    {
-        // Arrange
-        var device1 = new OwnedDevice(_home,
-            new Device
-            {
-                Name = "Device1",
-                Type = DeviceType.Sensor,
-                ModelNumber = 1,
-                MainPhoto = "https://www.example.com/photo1.jpg"
-            });
-        var device2 = new OwnedDevice(_home,
-            new Device
-            {
-                Name = "Device2",
-                Type = DeviceType.Camera,
-                ModelNumber = 2,
-                MainPhoto = "https://www.example.com/photo2.jpg"
-            });
-        var items = new Dictionary<object, object?> { { Item.UserLogged, _user } };
-        _httpContextMock.Setup(h => h.Items).Returns(items);
-        _homeOwnerService.Setup(x => x.GetHomeDevices(_home.Id.ToString()))
-            .Returns(new List<OwnedDevice> { device1, device2 });
-
-        var expectedResponse = new GetDevicesResponse
-        {
-            Device =
-            [
-                new ListDeviceInfo
-                {
-                    Name = device1.Device.Name,
-                    Type = device1.Device.Type.ToString(),
-                    ModelNumber = device1.Device.ModelNumber,
-                    Photo = device1.Device.MainPhoto,
-                    IsConnected = device1.Connected
-                },
-                new ListDeviceInfo
-                {
-                    Name = device2.Device.Name,
-                    Type = device2.Device.Type.ToString(),
-                    ModelNumber = device2.Device.ModelNumber,
-                    Photo = device2.Device.MainPhoto,
-                    IsConnected = device2.Connected
-                }
-
-            ]
-        };
-
-        // Act
-        var response = _controller.GetDevices(_home.Id.ToString(), _context);
-
-        // Assert
-        _homeOwnerService.VerifyAll();
-        response.Should().NotBeNull();
-        response.Device.Should().NotBeNullOrEmpty();
-        response.Device.Should().HaveCount(2);
-        response.Device.Should().BeEquivalentTo(expectedResponse.Device);
     }
 
     #endregion

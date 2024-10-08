@@ -39,7 +39,8 @@ public class NotificationService : INotificationService
 
     public void MarkNotificationsAsRead(List<Notification> notifications)
     {
-        throw new NotImplementedException();
+        notifications.ForEach(notification => notification.Read = true);
+        NotificationRepository.UpdateRange(notifications);
     }
 
     public void CreateNotification(OwnedDevice ownedDevice, string @event, User user)

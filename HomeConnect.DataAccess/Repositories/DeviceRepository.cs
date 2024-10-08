@@ -29,27 +29,23 @@ public class DeviceRepository : PaginatedRepositoryBase<Device>, IDeviceReposito
 
     public void Add(Device device)
     {
-        EnsureDeviceDoesNotExist(device);
         _context.Devices.Add(device);
         _context.SaveChanges();
     }
 
-    public void EnsureDeviceDoesNotExist(Device device)
+    public bool ExistsByModelNumber(int modelNumber)
     {
-        if (_context.Devices.Any(d => d.ModelNumber == device.ModelNumber))
-        {
-            throw new InvalidOperationException("Device already exists.");
-        }
+        throw new NotImplementedException();
     }
 
     public PagedData<Device> GetDevices(GetDevicesArgs args)
     {
         var filters = new object[4];
         filters[0] = args.DeviceNameFilter ?? string.Empty;
-        filters[1] = args.ModelNumberFilter;
+        filters[1] = args.ModelNumberFilter!;
         filters[2] = args.BusinessNameFilter ?? string.Empty;
         filters[3] = args.DeviceTypeFilter ?? string.Empty;
-        return GetAllPaged(args.Page ?? 1, args.PageSize ?? 20, filters);
+        return GetAllPaged(args.Page ?? 1, args.PageSize ?? 10, filters);
     }
 
     protected override IQueryable<Device> GetQueryable()

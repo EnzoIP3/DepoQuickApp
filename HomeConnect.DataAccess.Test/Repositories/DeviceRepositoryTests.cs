@@ -62,26 +62,6 @@ public class DeviceRepositoryTests
 
     #endregion
 
-    #region Error
-
-    [TestMethod]
-    public void Add_WhenDeviceExists_ShouldThrowException()
-    {
-        // Arrange
-        var business = new Business("12345", "Business", "https://example.com/image.png", _validUser);
-        var device = new Device("Device", 12345, "Device description", "https://example.com/image.png",
-            [], "Sensor", business);
-        _deviceRepository.Add(device);
-
-        // Act
-        Action act = () => _deviceRepository.Add(device);
-
-        // Assert
-        act.Should().Throw<InvalidOperationException>();
-    }
-
-    #endregion
-
     #endregion
 
     #region Get
@@ -210,6 +190,29 @@ public class DeviceRepositoryTests
     #endregion
 
     #region Error
+
+    #endregion
+
+    #endregion
+
+    #region ExistsByModelNumber
+
+    #region Success
+
+    [TestMethod]
+    public void ExistsByModelNumber_WhenDeviceExists_ShouldReturnTrue()
+    {
+        // Arrange
+        var device = new Device("Device", 12345, "Device description", "https://example.com/image.png",
+            [], "Sensor", new Business("12345", "Business", "https://example.com/image.png", _validUser));
+        _deviceRepository.Add(device);
+
+        // Act
+        var result = _deviceRepository.ExistsByModelNumber(device.ModelNumber);
+
+        // Assert
+        result.Should().BeTrue();
+    }
 
     #endregion
 

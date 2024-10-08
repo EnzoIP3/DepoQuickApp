@@ -8,5 +8,5 @@ public interface IDeviceRepository
     PagedData<Device> GetDevices(GetDevicesArgs args);
     Device Get(Guid deviceId);
     void Add(Device device);
-    void EnsureDeviceDoesNotExist(Device device);
+    bool ExistsByModelNumber(int modelNumber);
 }

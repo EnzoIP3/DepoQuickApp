@@ -38,7 +38,6 @@ public class BusinessOwnerService : IBusinessOwnerService
     {
         var business = GetValidatedBusiness(args.Owner.Id);
         var device = CreateDevice(args, business);
-        DeviceRepository.EnsureDeviceDoesNotExist(device);
         DeviceRepository.Add(device);
         return device;
     }
@@ -47,7 +46,6 @@ public class BusinessOwnerService : IBusinessOwnerService
     {
         var business = GetValidatedBusiness(args.Owner.Id);
         var camera = CreateCamera(args, business);
-        DeviceRepository.EnsureDeviceDoesNotExist(camera);
         DeviceRepository.Add(camera);
         return camera;
     }

@@ -202,7 +202,7 @@ public class BusinessOwnerServiceTests
             Type = DeviceType.Camera.ToString() // Use a valid DeviceType enum value
         };
 
-        _deviceRepository.Setup(x => x.EnsureDeviceDoesNotExist(It.IsAny<Device>()));
+        _deviceRepository.Setup(x => x.ExistsByModelNumber(It.IsAny<Guid>()));
         _deviceRepository.Setup(x => x.Add(It.IsAny<Device>()));
         _businessRepository.Setup(x => x.GetByOwnerId(_owner.Id))
             .Returns(new Business("123456789", "Business Name", "https://example.com/image.png", _owner));
@@ -231,8 +231,8 @@ public class BusinessOwnerServiceTests
         // Arrange
         var business = new Business("12345", "Business Name", "https://example.com/image.png", _owner);
         _deviceRepository
-            .Setup(x => x.EnsureDeviceDoesNotExist(It.IsAny<Device>()))
-            .Throws(new ArgumentException("Device already exists"));
+            .Setup(x => x.ExistsByModelNumber(It.IsAny<Guid>()))
+            .Returns(false);
         _deviceRepository.Setup(x => x.Add(It.IsAny<Device>()));
         _businessRepository.Setup(x => x.GetByOwnerId(_owner.Id)).Returns(business);
         _businessRepository.Setup(x => x.ExistsByOwnerId(_owner.Id)).Returns(true);
@@ -271,7 +271,7 @@ public class BusinessOwnerServiceTests
             Type = Type
         };
         _deviceRepository.Setup(x =>
-            x.EnsureDeviceDoesNotExist(It.IsAny<Device>()));
+            x.ExistsByModelNumber(It.IsAny<Guid>())).Returns(true);
         _deviceRepository.Setup(x => x.Add(It.IsAny<Device>()));
         _businessRepository.Setup(x => x.ExistsByOwnerId(args.Owner.Id)).Returns(false);
 
@@ -297,7 +297,7 @@ public class BusinessOwnerServiceTests
         // Arrange
         var business = new Business("RUTexample", "Business Name", "https://example.com/image.png", _owner);
         _deviceRepository.Setup(x =>
-            x.EnsureDeviceDoesNotExist(It.IsAny<Device>()));
+            x.ExistsByModelNumber(It.IsAny<Guid>())).Returns(false);
         _deviceRepository.Setup(x => x.Add(It.IsAny<Device>()));
         _businessRepository.Setup(x => x.GetByOwnerId(_owner.Id)).Returns(business);
         _businessRepository.Setup(x => x.ExistsByOwnerId(_owner.Id)).Returns(true);
@@ -352,7 +352,7 @@ public class BusinessOwnerServiceTests
         };
         var addedCamera = new Camera();
         _deviceRepository.Setup(x =>
-            x.EnsureDeviceDoesNotExist(It.IsAny<Device>()));
+            x.ExistsByModelNumber(It.IsAny<Guid>())).Returns(false);
         _deviceRepository.Setup(x => x.Add(It.IsAny<Device>()))
             .Callback<Device>(d => addedCamera = (Camera)d);
         _businessRepository.Setup(x => x.GetByOwnerId(_owner.Id)).Returns(business);
@@ -375,8 +375,8 @@ public class BusinessOwnerServiceTests
         // Arrange
         var business = new Business("RUTexample", "Business Name", "https://example.com/image.png", _owner);
         _deviceRepository
-            .Setup(x => x.EnsureDeviceDoesNotExist(It.IsAny<Device>()))
-            .Throws(new ArgumentException("Device already exists"));
+            .Setup(x => x.ExistsByModelNumber(It.IsAny<Guid>()))
+            .Returns(true);
         _deviceRepository.Setup(x => x.Add(It.IsAny<Device>()));
         _businessRepository.Setup(x => x.GetByOwnerId(_owner.Id)).Returns(business);
         _businessRepository.Setup(x => x.ExistsByOwnerId(_owner.Id)).Returns(true);
@@ -421,7 +421,7 @@ public class BusinessOwnerServiceTests
         };
 
         _deviceRepository.Setup(x =>
-            x.EnsureDeviceDoesNotExist(It.IsAny<Device>()));
+            x.ExistsByModelNumber(It.IsAny<Guid>())).Returns(true);
         _deviceRepository.Setup(x => x.Add(It.IsAny<Device>()));
         _businessRepository.Setup(x => x.ExistsByOwnerId(_owner.Id)).Returns(false);
 

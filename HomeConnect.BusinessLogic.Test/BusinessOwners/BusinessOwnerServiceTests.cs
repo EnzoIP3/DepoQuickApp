@@ -202,7 +202,7 @@ public class BusinessOwnerServiceTests
             Type = DeviceType.Camera.ToString() // Use a valid DeviceType enum value
         };
 
-        _deviceRepository.Setup(x => x.ExistsByModelNumber(It.IsAny<Guid>()));
+        _deviceRepository.Setup(x => x.ExistsByModelNumber(args.ModelNumber.Value)).Returns(false);
         _deviceRepository.Setup(x => x.Add(It.IsAny<Device>()));
         _businessRepository.Setup(x => x.GetByOwnerId(_owner.Id))
             .Returns(new Business("123456789", "Business Name", "https://example.com/image.png", _owner));
@@ -230,12 +230,6 @@ public class BusinessOwnerServiceTests
     {
         // Arrange
         var business = new Business("12345", "Business Name", "https://example.com/image.png", _owner);
-        _deviceRepository
-            .Setup(x => x.ExistsByModelNumber(It.IsAny<Guid>()))
-            .Returns(false);
-        _deviceRepository.Setup(x => x.Add(It.IsAny<Device>()));
-        _businessRepository.Setup(x => x.GetByOwnerId(_owner.Id)).Returns(business);
-        _businessRepository.Setup(x => x.ExistsByOwnerId(_owner.Id)).Returns(true);
         var args = new CreateDeviceArgs
         {
             Owner = _owner,
@@ -246,13 +240,19 @@ public class BusinessOwnerServiceTests
             SecondaryPhotos = _secondaryPhotos,
             Type = DeviceType.Camera.ToString()
         };
+        _deviceRepository
+            .Setup(x => x.ExistsByModelNumber(args.ModelNumber.Value))
+            .Returns(true);
+        _deviceRepository.Setup(x => x.Add(It.IsAny<Device>()));
+        _businessRepository.Setup(x => x.GetByOwnerId(_owner.Id)).Returns(business);
+        _businessRepository.Setup(x => x.ExistsByOwnerId(_owner.Id)).Returns(true);
 
         // Act
         Action act = () =>
             _businessOwnerService.CreateDevice(args);
 
         // Assert
-        act.Should().Throw<ArgumentException>().WithMessage("Device already exists");
+        act.Should().Throw<InvalidOperationException>().WithMessage("Device already exists");
         _deviceRepository.Verify(x => x.Add(It.IsAny<Device>()), Times.Never);
     }
 
@@ -271,7 +271,7 @@ public class BusinessOwnerServiceTests
             Type = Type
         };
         _deviceRepository.Setup(x =>
-            x.ExistsByModelNumber(It.IsAny<Guid>())).Returns(true);
+            x.ExistsByModelNumber(args.ModelNumber.Value)).Returns(false);
         _deviceRepository.Setup(x => x.Add(It.IsAny<Device>()));
         _businessRepository.Setup(x => x.ExistsByOwnerId(args.Owner.Id)).Returns(false);
 
@@ -296,11 +296,6 @@ public class BusinessOwnerServiceTests
     {
         // Arrange
         var business = new Business("RUTexample", "Business Name", "https://example.com/image.png", _owner);
-        _deviceRepository.Setup(x =>
-            x.ExistsByModelNumber(It.IsAny<Guid>())).Returns(false);
-        _deviceRepository.Setup(x => x.Add(It.IsAny<Device>()));
-        _businessRepository.Setup(x => x.GetByOwnerId(_owner.Id)).Returns(business);
-        _businessRepository.Setup(x => x.ExistsByOwnerId(_owner.Id)).Returns(true);
         var args = new CreateCameraArgs
         {
             Owner = _owner,
@@ -314,6 +309,11 @@ public class BusinessOwnerServiceTests
             Exterior = false,
             Interior = true
         };
+        _deviceRepository.Setup(x =>
+            x.ExistsByModelNumber(args.ModelNumber.Value)).Returns(false);
+        _deviceRepository.Setup(x => x.Add(It.IsAny<Device>()));
+        _businessRepository.Setup(x => x.GetByOwnerId(_owner.Id)).Returns(business);
+        _businessRepository.Setup(x => x.ExistsByOwnerId(_owner.Id)).Returns(true);
 
         // Act
         _businessOwnerService.CreateCamera(args);
@@ -352,7 +352,7 @@ public class BusinessOwnerServiceTests
         };
         var addedCamera = new Camera();
         _deviceRepository.Setup(x =>
-            x.ExistsByModelNumber(It.IsAny<Guid>())).Returns(false);
+            x.ExistsByModelNumber(args.ModelNumber.Value)).Returns(false);
         _deviceRepository.Setup(x => x.Add(It.IsAny<Device>()))
             .Callback<Device>(d => addedCamera = (Camera)d);
         _businessRepository.Setup(x => x.GetByOwnerId(_owner.Id)).Returns(business);
@@ -374,12 +374,6 @@ public class BusinessOwnerServiceTests
     {
         // Arrange
         var business = new Business("RUTexample", "Business Name", "https://example.com/image.png", _owner);
-        _deviceRepository
-            .Setup(x => x.ExistsByModelNumber(It.IsAny<Guid>()))
-            .Returns(true);
-        _deviceRepository.Setup(x => x.Add(It.IsAny<Device>()));
-        _businessRepository.Setup(x => x.GetByOwnerId(_owner.Id)).Returns(business);
-        _businessRepository.Setup(x => x.ExistsByOwnerId(_owner.Id)).Returns(true);
         var args = new CreateCameraArgs
         {
             Owner = _owner,
@@ -393,12 +387,18 @@ public class BusinessOwnerServiceTests
             Exterior = false,
             Interior = true
         };
+        _deviceRepository
+            .Setup(x => x.ExistsByModelNumber(args.ModelNumber.Value))
+            .Returns(true);
+        _deviceRepository.Setup(x => x.Add(It.IsAny<Device>()));
+        _businessRepository.Setup(x => x.GetByOwnerId(_owner.Id)).Returns(business);
+        _businessRepository.Setup(x => x.ExistsByOwnerId(_owner.Id)).Returns(true);
 
         // Act
         Action act = () => _businessOwnerService.CreateCamera(args);
 
         // Assert
-        act.Should().Throw<ArgumentException>().WithMessage("Device already exists");
+        act.Should().Throw<InvalidOperationException>().WithMessage("Device already exists");
         _deviceRepository.Verify(x => x.Add(It.IsAny<Device>()), Times.Never);
     }
 
@@ -421,7 +421,7 @@ public class BusinessOwnerServiceTests
         };
 
         _deviceRepository.Setup(x =>
-            x.ExistsByModelNumber(It.IsAny<Guid>())).Returns(true);
+            x.ExistsByModelNumber(args.ModelNumber.Value)).Returns(false);
         _deviceRepository.Setup(x => x.Add(It.IsAny<Device>()));
         _businessRepository.Setup(x => x.ExistsByOwnerId(_owner.Id)).Returns(false);
 

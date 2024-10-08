@@ -34,16 +34,26 @@ public class BusinessOwnerService : IBusinessOwnerService
         return business;
     }
 
+    private void EnsureDeviceDoesNotExist(int? modelNumber)
+    {
+        if (DeviceRepository.ExistsByModelNumber(modelNumber!.Value))
+        {
+            throw new InvalidOperationException("Device already exists");
+        }
+    }
+
     public Device CreateDevice(CreateDeviceArgs args)
     {
         var business = GetValidatedBusiness(args.Owner.Id);
         var device = CreateDevice(args, business);
+        EnsureDeviceDoesNotExist(args.ModelNumber);
         DeviceRepository.Add(device);
         return device;
     }
 
     public Camera CreateCamera(CreateCameraArgs args)
     {
+        EnsureDeviceDoesNotExist(args.ModelNumber);
         var business = GetValidatedBusiness(args.Owner.Id);
         var camera = CreateCamera(args, business);
         DeviceRepository.Add(camera);

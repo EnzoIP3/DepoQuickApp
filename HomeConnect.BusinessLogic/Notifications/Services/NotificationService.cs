@@ -33,7 +33,13 @@ public class NotificationService : INotificationService
     public List<Notification> GetNotifications(Guid userId, string? deviceFilter = null, DateTime? dateFilter = null,
         bool? readFilter = null)
     {
-        return NotificationRepository.Get(userId, deviceFilter, dateFilter, readFilter);
+        var notifications = NotificationRepository.Get(userId, deviceFilter, dateFilter, readFilter);
+        return notifications;
+    }
+
+    public void MarkNotificationsAsRead(List<Notification> notifications)
+    {
+        throw new NotImplementedException();
     }
 
     public void CreateNotification(OwnedDevice ownedDevice, string @event, User user)

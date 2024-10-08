@@ -2,39 +2,38 @@
 
 #nullable disable
 
-namespace HomeConnect.DataAccess.Migrations
+namespace HomeConnect.DataAccess.Migrations;
+
+/// <inheritdoc />
+public partial class OwnedDeviceConnected : Migration
 {
     /// <inheritdoc />
-    public partial class OwnedDeviceConnected : Migration
+    protected override void Up(MigrationBuilder migrationBuilder)
     {
-        /// <inheritdoc />
-        protected override void Up(MigrationBuilder migrationBuilder)
-        {
-            migrationBuilder.DropColumn(
-                name: "ConnectionState",
-                table: "Devices");
+        migrationBuilder.DropColumn(
+            name: "ConnectionState",
+            table: "Devices");
 
-            migrationBuilder.AddColumn<bool>(
-                name: "Connected",
-                table: "OwnedDevices",
-                type: "bit",
-                nullable: false,
-                defaultValue: false);
-        }
+        migrationBuilder.AddColumn<bool>(
+            name: "Connected",
+            table: "OwnedDevices",
+            type: "bit",
+            nullable: false,
+            defaultValue: false);
+    }
 
-        /// <inheritdoc />
-        protected override void Down(MigrationBuilder migrationBuilder)
-        {
-            migrationBuilder.DropColumn(
-                name: "Connected",
-                table: "OwnedDevices");
+    /// <inheritdoc />
+    protected override void Down(MigrationBuilder migrationBuilder)
+    {
+        migrationBuilder.DropColumn(
+            name: "Connected",
+            table: "OwnedDevices");
 
-            migrationBuilder.AddColumn<bool>(
-                name: "ConnectionState",
-                table: "Devices",
-                type: "bit",
-                nullable: false,
-                defaultValue: false);
-        }
+        migrationBuilder.AddColumn<bool>(
+            name: "ConnectionState",
+            table: "Devices",
+            type: "bit",
+            nullable: false,
+            defaultValue: false);
     }
 }

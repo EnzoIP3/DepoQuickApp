@@ -51,8 +51,10 @@ public class ExceptionFilter : IExceptionFilter
         {
             context.Result = new ObjectResult(new
             {
-                InnerCode = "InternalServerError", Message = "There was an error when processing your request"
-            }) { StatusCode = (int)HttpStatusCode.InternalServerError };
+                InnerCode = "InternalServerError",
+                Message = "There was an error when processing your request"
+            })
+            { StatusCode = (int)HttpStatusCode.InternalServerError };
         }
         else
         {

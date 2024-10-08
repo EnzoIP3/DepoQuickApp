@@ -65,7 +65,9 @@ public class BusinessControllerTests
             };
         _businessRequest = new CreateBusinessRequest
         {
-            Name = "Business 1", Rut = _businesses[0].Rut, Logo = "https://example.com/image.png"
+            Name = "Business 1",
+            Rut = _businesses[0].Rut,
+            Logo = "https://example.com/image.png"
         };
     }
 
@@ -111,7 +113,8 @@ public class BusinessControllerTests
 
         var expectedResponse = new GetBusinessesResponse
         {
-            Businesses = expectedBusinesses, Pagination = _expectedPagination
+            Businesses = expectedBusinesses,
+            Pagination = _expectedPagination
         };
 
         // Act
@@ -140,7 +143,8 @@ public class BusinessControllerTests
 
         var expectedResponse = new GetBusinessesResponse
         {
-            Businesses = expectedBusinesses, Pagination = _expectedPagination
+            Businesses = expectedBusinesses,
+            Pagination = _expectedPagination
         };
 
         // Act
@@ -170,7 +174,8 @@ public class BusinessControllerTests
 
         var expectedResponse = new GetBusinessesResponse
         {
-            Businesses = expectedBusinesses, Pagination = _expectedPagination
+            Businesses = expectedBusinesses,
+            Pagination = _expectedPagination
         };
 
         // Act

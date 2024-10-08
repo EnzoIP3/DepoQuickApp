@@ -54,7 +54,9 @@ public class DeviceController : ControllerBase
             }).ToList(),
             Pagination = new Pagination
             {
-                Page = devices.Page, PageSize = devices.PageSize, TotalPages = devices.TotalPages
+                Page = devices.Page,
+                PageSize = devices.PageSize,
+                TotalPages = devices.TotalPages
             }
         };
     }

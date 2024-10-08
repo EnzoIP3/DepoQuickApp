@@ -139,7 +139,9 @@ public class CameraControllerTests
         var request = new PersonDetectedRequest { UserId = "userId" };
         var args = new NotificationArgs
         {
-            HardwareId = hardwareId, Date = DateTime.Now, Event = $"person detected with id: {request.UserId}"
+            HardwareId = hardwareId,
+            Date = DateTime.Now,
+            Event = $"person detected with id: {request.UserId}"
         };
         _deviceServiceMock.Setup(x => x.IsConnected(hardwareId)).Returns(true);
         _notificationServiceMock.Setup(x => x.Notify(args));
@@ -161,7 +163,9 @@ public class CameraControllerTests
         var request = new PersonDetectedRequest { UserId = "userId" };
         var args = new NotificationArgs
         {
-            HardwareId = hardwareId, Date = DateTime.Now, Event = $"person detected with id: {request.UserId}"
+            HardwareId = hardwareId,
+            Date = DateTime.Now,
+            Event = $"person detected with id: {request.UserId}"
         };
         _deviceServiceMock.Setup(x => x.IsConnected(hardwareId)).Returns(true);
         _notificationServiceMock.Setup(x => x.Notify(args)).Throws<ArgumentException>();
@@ -182,7 +186,9 @@ public class CameraControllerTests
         var request = new PersonDetectedRequest { UserId = "userId" };
         var args = new NotificationArgs
         {
-            HardwareId = hardwareId, Date = DateTime.Now, Event = $"person detected with id: {request.UserId}"
+            HardwareId = hardwareId,
+            Date = DateTime.Now,
+            Event = $"person detected with id: {request.UserId}"
         };
         _deviceServiceMock.Setup(x => x.IsConnected(hardwareId)).Returns(false);
 

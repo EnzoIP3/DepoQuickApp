@@ -56,7 +56,10 @@ public class HomeControllerTests
         // Arrange
         var request = new CreateHomeRequest
         {
-            Address = "Road 123", Latitude = 50.456, Longitude = 100.789, MaxMembers = 3
+            Address = "Road 123",
+            Latitude = 50.456,
+            Longitude = 100.789,
+            MaxMembers = 3
         };
         var items = new Dictionary<object, object?> { { Item.UserLogged, _user } };
         _httpContextMock.Setup(h => h.Items).Returns(items);
@@ -90,7 +93,9 @@ public class HomeControllerTests
         // Arrange
         var request = new AddMemberRequest
         {
-            MemberId = _user.Id.ToString(), CanAddDevices = true, CanListDevices = false
+            MemberId = _user.Id.ToString(),
+            CanAddDevices = true,
+            CanListDevices = false
         };
         var items = new Dictionary<object, object?> { { Item.UserLogged, _user } };
         _httpContextMock.Setup(h => h.Items).Returns(items);

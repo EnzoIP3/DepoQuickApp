@@ -37,7 +37,9 @@ public class NotificationControllerTests
         // Arrange
         var request = new GetNotificationsRequest
         {
-            Device = Guid.NewGuid().ToString(), DateCreated = DateToString(DateTime.Now), Read = false
+            Device = Guid.NewGuid().ToString(),
+            DateCreated = DateToString(DateTime.Now),
+            Read = false
         };
         var user = new User("John", "Doe", "email@email.com", "Password@100",
             new Role { Name = "HomeOwner", Permissions = [] });
@@ -53,7 +55,7 @@ public class NotificationControllerTests
         _httpContextMock.SetupGet(h => h.Items).Returns(items);
         _notificationService.Setup(n => n.GetNotifications(user.Id, request.Device, dateCreated, request.Read))
             .Returns([notification]);
-        _notificationService.Setup(n => n.MarkNotificationsAsRead(new List<Notification> { notification }))
+        _notificationService.Setup(n => n.MarkNotificationsAsRead([notification]))
             .Verifiable();
 
         // Act
@@ -75,7 +77,9 @@ public class NotificationControllerTests
         // Arrange
         var request = new GetNotificationsRequest
         {
-            Device = Guid.NewGuid().ToString(), DateCreated = "2024/12/2", Read = false
+            Device = Guid.NewGuid().ToString(),
+            DateCreated = "2024/12/2",
+            Read = false
         };
 
         // Act

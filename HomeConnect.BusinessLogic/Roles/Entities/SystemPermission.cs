@@ -30,7 +30,8 @@ public record SystemPermission
         Roles = roles;
     }
 
-    [Key] public string Value { get; init; } = null!;
+    [Key]
+    public string Value { get; init; } = null!;
 
     public List<Role>? Roles { get; set; }
 

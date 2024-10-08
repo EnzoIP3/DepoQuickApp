@@ -57,7 +57,9 @@ public class BusinessController(IAdminService adminService, IBusinessOwnerServic
             }).ToList(),
             Pagination = new Pagination
             {
-                Page = businesses.Page, PageSize = businesses.PageSize, TotalPages = businesses.TotalPages
+                Page = businesses.Page,
+                PageSize = businesses.PageSize,
+                TotalPages = businesses.TotalPages
             }
         };
     }

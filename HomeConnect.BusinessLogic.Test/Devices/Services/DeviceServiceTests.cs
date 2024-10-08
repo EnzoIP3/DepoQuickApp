@@ -46,7 +46,10 @@ public class DeviceServiceTests
 
         _pagedDeviceList = new PagedData<Device>
         {
-            Data = _devices, Page = _parameters.Page ?? 1, PageSize = _parameters.PageSize ?? 10, TotalPages = 1
+            Data = _devices,
+            Page = _parameters.Page ?? 1,
+            PageSize = _parameters.PageSize ?? 10,
+            TotalPages = 1
         };
     }
 
@@ -106,8 +109,7 @@ public class DeviceServiceTests
             args.DeviceNameFilter == _parameters.DeviceNameFilter &&
             args.ModelNumberFilter == _parameters.ModelNumberFilter &&
             args.BusinessNameFilter == _parameters.BusinessNameFilter &&
-            args.DeviceTypeFilter == _parameters.DeviceTypeFilter
-        ))).Returns(_pagedDeviceList);
+            args.DeviceTypeFilter == _parameters.DeviceTypeFilter))).Returns(_pagedDeviceList);
 
         // Act
         PagedData<Device> result = _deviceService.GetDevices(_parameters);
@@ -115,7 +117,10 @@ public class DeviceServiceTests
         // Assert
         var expectedPagedDeviceList = new PagedData<Device>
         {
-            Data = _devices, Page = _parameters.Page ?? 1, PageSize = _parameters.PageSize ?? 10, TotalPages = 1
+            Data = _devices,
+            Page = _parameters.Page ?? 1,
+            PageSize = _parameters.PageSize ?? 10,
+            TotalPages = 1
         };
 
         result.Should().BeEquivalentTo(expectedPagedDeviceList,
@@ -127,8 +132,7 @@ public class DeviceServiceTests
                 args.DeviceNameFilter == _parameters.DeviceNameFilter &&
                 args.ModelNumberFilter == _parameters.ModelNumberFilter &&
                 args.BusinessNameFilter == _parameters.BusinessNameFilter &&
-                args.DeviceTypeFilter == _parameters.DeviceTypeFilter
-            )), Times.Once);
+                args.DeviceTypeFilter == _parameters.DeviceTypeFilter)), Times.Once);
     }
 
     [TestMethod]

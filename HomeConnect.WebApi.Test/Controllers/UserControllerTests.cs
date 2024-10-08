@@ -134,7 +134,8 @@ public class UserControllerTests
         // Arrange
         var parameters = new GetUsersRequest
         {
-            CurrentPage = _expectedPagination.Page, PageSize = _expectedPagination.PageSize
+            CurrentPage = _expectedPagination.Page,
+            PageSize = _expectedPagination.PageSize
         };
         _adminService.Setup(x => x.GetUsers(parameters.CurrentPage, parameters.PageSize, parameters.FullName,
             parameters.Role)).Returns(_pagedList);

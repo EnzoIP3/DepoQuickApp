@@ -25,7 +25,10 @@ public class BusinessOwnerControllerTests
 
         _businessOwnerRequest = new CreateBusinessOwnerRequest
         {
-            Name = "John", Surname = "Doe", Email = "email@email.com", Password = "password"
+            Name = "John",
+            Surname = "Doe",
+            Email = "email@email.com",
+            Password = "password"
         };
         _userModel = new CreateUserArgs
         {

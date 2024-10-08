@@ -63,7 +63,10 @@ public class BusinessOwnerServiceTests
         // Arrange
         var args = new CreateBusinessArgs
         {
-            OwnerId = _owner.Id.ToString(), Rut = _businessRut, Name = _businessName, Logo = _businessLogo
+            OwnerId = _owner.Id.ToString(),
+            Rut = _businessRut,
+            Name = _businessName,
+            Logo = _businessLogo
         };
         _userRepository.Setup(x => x.Exists(_owner.Id)).Returns(true);
         _userRepository.Setup(x => x.Get(_owner.Id)).Returns(_owner);
@@ -89,7 +92,10 @@ public class BusinessOwnerServiceTests
         // Arrange
         var args = new CreateBusinessArgs
         {
-            OwnerId = _owner.Id.ToString(), Rut = _businessRut, Name = _businessName, Logo = _businessLogo
+            OwnerId = _owner.Id.ToString(),
+            Rut = _businessRut,
+            Name = _businessName,
+            Logo = _businessLogo
         };
         _userRepository.Setup(x => x.Get(_owner.Id)).Returns(_owner);
         _userRepository.Setup(x => x.Exists(_owner.Id)).Returns(true);

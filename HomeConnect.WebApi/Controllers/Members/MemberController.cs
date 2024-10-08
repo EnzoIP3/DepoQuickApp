@@ -21,7 +21,8 @@ public class MemberController(IHomeOwnerService homeOwnerService) : ControllerBa
         homeOwnerService.UpdateMemberNotifications(Guid.Parse(membersId), request.ShouldBeNotified);
         var response = new UpdateMemberNotificationsResponse
         {
-            MemberId = membersId, ShouldBeNotified = request.ShouldBeNotified!.Value
+            MemberId = membersId,
+            ShouldBeNotified = request.ShouldBeNotified!.Value
         };
         return response;
     }

@@ -2,28 +2,27 @@
 
 #nullable disable
 
-namespace HomeConnect.DataAccess.Migrations
+namespace HomeConnect.DataAccess.Migrations;
+
+/// <inheritdoc />
+public partial class BusinessLogo : Migration
 {
     /// <inheritdoc />
-    public partial class BusinessLogo : Migration
+    protected override void Up(MigrationBuilder migrationBuilder)
     {
-        /// <inheritdoc />
-        protected override void Up(MigrationBuilder migrationBuilder)
-        {
-            migrationBuilder.AddColumn<string>(
-                name: "Logo",
-                table: "Businesses",
-                type: "nvarchar(max)",
-                nullable: false,
-                defaultValue: string.Empty);
-        }
+        migrationBuilder.AddColumn<string>(
+            name: "Logo",
+            table: "Businesses",
+            type: "nvarchar(max)",
+            nullable: false,
+            defaultValue: string.Empty);
+    }
 
-        /// <inheritdoc />
-        protected override void Down(MigrationBuilder migrationBuilder)
-        {
-            migrationBuilder.DropColumn(
-                name: "Logo",
-                table: "Businesses");
-        }
+    /// <inheritdoc />
+    protected override void Down(MigrationBuilder migrationBuilder)
+    {
+        migrationBuilder.DropColumn(
+            name: "Logo",
+            table: "Businesses");
     }
 }

@@ -58,6 +58,7 @@ public class NotificationRepository : INotificationRepository
 
     public void UpdateRange(List<Notification> notifications)
     {
-        throw new NotImplementedException();
+        _context.Notifications.UpdateRange(notifications);
+        _context.SaveChanges();
     }
 }

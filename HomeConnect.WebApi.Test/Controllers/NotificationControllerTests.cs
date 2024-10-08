@@ -51,11 +51,12 @@ public class NotificationControllerTests
             Date = DateTime.Now
         };
         var items = new Dictionary<object, object?> { { Item.UserLogged, user } };
+        List<Notification> notifications = [notification];
         DateTime dateCreated = DateFromString(request.DateCreated);
         _httpContextMock.SetupGet(h => h.Items).Returns(items);
         _notificationService.Setup(n => n.GetNotifications(user.Id, request.Device, dateCreated, request.Read))
             .Returns([notification]);
-        _notificationService.Setup(n => n.MarkNotificationsAsRead(new List<Notification> { notification }))
+        _notificationService.Setup(n => n.MarkNotificationsAsRead(notifications))
             .Verifiable();
 
         // Act

@@ -35,7 +35,7 @@ public class DeviceRepository : PaginatedRepositoryBase<Device>, IDeviceReposito
 
     public bool ExistsByModelNumber(int modelNumber)
     {
-        throw new NotImplementedException();
+        return _context.Devices.Any(d => d.ModelNumber == modelNumber);
     }
 
     public PagedData<Device> GetDevices(GetDevicesArgs args)

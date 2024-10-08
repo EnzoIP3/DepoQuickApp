@@ -54,72 +54,6 @@ public sealed class AdminServiceTests
             "Password2#100", businessOwnerRole);
     }
 
-    #region Create
-
-    #region Error
-
-    [TestMethod]
-    public void Create_WhenAlreadyExists_ThrowsException()
-    {
-        // Arrange
-        _userRepository.Setup(x => x.ExistsByEmail(It.IsAny<string>())).Returns(true);
-
-        // Act
-        Func<Guid> act = () => _adminService.Create(_validCreateUserArgs);
-
-        // Assert
-        act.Should().Throw<InvalidOperationException>().WithMessage("An user with that email already exists.");
-    }
-
-    [TestMethod]
-    public void Create_WhenArgumentsHaveEmptyFields_ThrowsException()
-    {
-        // Arrange
-        var invalidUserModel = new CreateUserArgs
-        {
-            Name = string.Empty,
-            Surname = string.Empty,
-            Email = string.Empty,
-            Password = string.Empty,
-            Role = string.Empty
-        };
-
-        // Act
-        Func<Guid> act = () => _adminService.Create(invalidUserModel);
-
-        // Assert
-        act.Should().Throw<ArgumentException>().WithMessage("All arguments are required.");
-    }
-
-    #endregion
-
-    #region Success
-
-    [TestMethod]
-    public void Create_WhenArgumentsAreValid_CreatesAdmin()
-    {
-        // Arrange
-        _userRepository.Setup(x => x.ExistsByEmail(It.IsAny<string>())).Returns(false);
-        _userRepository.Setup(x => x.Add(It.IsAny<User>()));
-        _roleRepository.Setup(x => x.Get(It.IsAny<string>()))
-            .Returns(new Role("Admin", []));
-
-        // Act
-        _adminService.Create(_validCreateUserArgs);
-
-        // Assert
-        _userRepository.Verify(x => x.Add(It.Is<User>(a =>
-            a.Name == _validCreateUserArgs.Name &&
-            a.Surname == _validCreateUserArgs.Surname &&
-            a.Email == _validCreateUserArgs.Email &&
-            a.Password == _validCreateUserArgs.Password &&
-            a.Role.Name == _validCreateUserArgs.Role)));
-    }
-
-    #endregion
-
-    #endregion
-
     #region Delete
 
     #region Error
@@ -132,7 +66,7 @@ public sealed class AdminServiceTests
         _userRepository.Setup(x => x.Exists(It.IsAny<Guid>())).Returns(false);
 
         // Act
-        Action act = () => _adminService.Delete(id.ToString());
+        Action act = () => _adminService.DeleteAdmin(id.ToString());
 
         // Assert
         act.Should().Throw<KeyNotFoundException>().WithMessage("Admin does not exist.");
@@ -145,7 +79,7 @@ public sealed class AdminServiceTests
         var id = "not-a-guid";
 
         // Act
-        Action act = () => _adminService.Delete(id);
+        Action act = () => _adminService.DeleteAdmin(id);
 
         // Assert
         act.Should().Throw<ArgumentException>().WithMessage("The id is not a valid GUID.");
@@ -164,72 +98,10 @@ public sealed class AdminServiceTests
         _userRepository.Setup(x => x.Delete(It.IsAny<Guid>()));
 
         // Act
-        _adminService.Delete(id.ToString());
+        _adminService.DeleteAdmin(id.ToString());
 
         // Assert
         _userRepository.Verify(x => x.Delete(It.Is<Guid>(a => a == id)));
-    }
-
-    #endregion
-
-    #endregion
-
-    #region CreateBusinessOwner
-
-    #region Error
-
-    [TestMethod]
-    public void CreateBusinessOwner_WhenAlreadyExists_ThrowsException()
-    {
-        // Arrange
-        var businessOwnerModel = new CreateUserArgs
-        {
-            Name = "name",
-            Surname = "surname",
-            Email = "email",
-            Password = "password",
-            Role = "BusinessOwner"
-        };
-        _userRepository.Setup(x => x.ExistsByEmail(It.IsAny<string>())).Returns(true);
-
-        // Act
-        Func<Guid> act = () => _adminService.CreateBusinessOwner(businessOwnerModel);
-
-        // Assert
-        act.Should().Throw<InvalidOperationException>().WithMessage("An user with that email already exists.");
-    }
-
-    #endregion
-
-    #region Success
-
-    [TestMethod]
-    public void CreateBusinessOwner_WhenArgumentsAreValid_CreatesBusinessOwner()
-    {
-        // Arrange
-        var businessOwnerModel = new CreateUserArgs
-        {
-            Name = "name",
-            Surname = "surname",
-            Email = "email@email.com",
-            Password = "Password#100",
-            Role = "Business Owner"
-        };
-        _userRepository.Setup(x => x.ExistsByEmail(It.IsAny<string>())).Returns(false);
-        _userRepository.Setup(x => x.Add(It.IsAny<User>()));
-        _roleRepository.Setup(x => x.Get(It.IsAny<string>()))
-            .Returns(new Role(businessOwnerModel.Role, []));
-
-        // Act
-        _adminService.CreateBusinessOwner(businessOwnerModel);
-
-        // Assert
-        _userRepository.Verify(x => x.Add(It.Is<User>(a =>
-            a.Name == businessOwnerModel.Name &&
-            a.Surname == businessOwnerModel.Surname &&
-            a.Email == businessOwnerModel.Email &&
-            a.Password == businessOwnerModel.Password &&
-            a.Role.Name == businessOwnerModel.Role)));
     }
 
     #endregion

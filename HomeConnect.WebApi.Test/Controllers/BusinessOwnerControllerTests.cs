@@ -1,6 +1,7 @@
-using BusinessLogic.Admins.Services;
 using BusinessLogic.Roles.Entities;
+using BusinessLogic.Users.Entities;
 using BusinessLogic.Users.Models;
+using BusinessLogic.Users.Services;
 using FluentAssertions;
 using HomeConnect.WebApi.Controllers.BusinessOwners;
 using HomeConnect.WebApi.Controllers.BusinessOwners.Models;
@@ -11,7 +12,7 @@ namespace HomeConnect.WebApi.Test.Controllers;
 [TestClass]
 public class BusinessOwnerControllerTests
 {
-    private Mock<IAdminService> _adminService = null!;
+    private Mock<IUserService> _userService = null!;
     private CreateBusinessOwnerRequest _businessOwnerRequest = null!;
     private BusinessOwnerController _controller = null!;
     private Guid _guid;
@@ -20,8 +21,8 @@ public class BusinessOwnerControllerTests
     [TestInitialize]
     public void Initialize()
     {
-        _adminService = new Mock<IAdminService>();
-        _controller = new BusinessOwnerController(_adminService.Object);
+        _userService = new Mock<IUserService>();
+        _controller = new BusinessOwnerController(_userService.Object);
 
         _businessOwnerRequest = new CreateBusinessOwnerRequest
         {
@@ -47,13 +48,13 @@ public class BusinessOwnerControllerTests
     public void CreateBusinessOwner_WhenCalledWithValidRequest_ReturnsCreatedResponse()
     {
         // Arrange
-        _adminService.Setup(x => x.CreateBusinessOwner(_userModel)).Returns(_guid);
+        _userService.Setup(x => x.CreateUser(_userModel)).Returns(new User() { Id = _guid });
 
         // Act
         CreateBusinessOwnerResponse response = _controller.CreateBusinessOwner(_businessOwnerRequest);
 
         // Assert
-        _adminService.VerifyAll();
+        _userService.VerifyAll();
         response.Should().NotBeNull();
         response.Id.Should().Be(_guid.ToString());
     }

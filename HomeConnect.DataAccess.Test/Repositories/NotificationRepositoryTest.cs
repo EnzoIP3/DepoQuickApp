@@ -112,7 +112,7 @@ public class NotificationRepositoryTest
         var expectedResult = new List<Notification> { _notification, _otherNotification };
 
         // Act
-        List<Notification> result = _notificationRepository.Get(_user.Id);
+        List<Notification> result = _notificationRepository.GetRange(_user.Id);
 
         // Assert
         result.Should().BeEquivalentTo(expectedResult);
@@ -125,7 +125,7 @@ public class NotificationRepositoryTest
         var expectedResult = new List<Notification> { _notification };
 
         // Act
-        List<Notification> result = _notificationRepository.Get(_user.Id, _sensor.Type.ToString());
+        List<Notification> result = _notificationRepository.GetRange(_user.Id, _sensor.Type.ToString());
 
         // Assert
         result.Should().BeEquivalentTo(expectedResult);
@@ -138,7 +138,7 @@ public class NotificationRepositoryTest
         var expectedResult = new List<Notification> { _notification };
 
         // Act
-        List<Notification> result = _notificationRepository.Get(_user.Id, dateFilter: DateTime.Now);
+        List<Notification> result = _notificationRepository.GetRange(_user.Id, dateFilter: DateTime.Now);
 
         // Assert
         result.Should().BeEquivalentTo(expectedResult);
@@ -151,7 +151,7 @@ public class NotificationRepositoryTest
         var expectedResult = new List<Notification> { _notification };
 
         // Act
-        List<Notification> result = _notificationRepository.Get(_user.Id, readFilter: true);
+        List<Notification> result = _notificationRepository.GetRange(_user.Id, readFilter: true);
 
         // Assert
         result.Should().BeEquivalentTo(expectedResult);

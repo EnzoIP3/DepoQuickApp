@@ -33,7 +33,7 @@ public class NotificationService : INotificationService
     public List<Notification> GetNotifications(Guid userId, string? deviceFilter = null, DateTime? dateFilter = null,
         bool? readFilter = null)
     {
-        var notifications = NotificationRepository.Get(userId, deviceFilter, dateFilter, readFilter);
+        var notifications = NotificationRepository.GetRange(userId, deviceFilter, dateFilter, readFilter);
         return notifications;
     }
 

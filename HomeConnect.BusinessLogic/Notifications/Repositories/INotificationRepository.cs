@@ -6,5 +6,5 @@ public interface INotificationRepository
 {
     void Add(Notification notification);
     void UpdateRange(List<Notification> notifications);
-    List<Notification> Get(Guid userId, string? deviceFilter, DateTime? dateFilter, bool? readFilter);
+    List<Notification> GetRange(Guid userId, string? deviceFilter, DateTime? dateFilter, bool? readFilter);
 }

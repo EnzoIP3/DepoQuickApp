@@ -21,7 +21,7 @@ public class NotificationRepository : INotificationRepository
         _context.SaveChanges();
     }
 
-    public List<Notification> Get(Guid userId, string? deviceFilter = null, DateTime? dateFilter = null,
+    public List<Notification> GetRange(Guid userId, string? deviceFilter = null, DateTime? dateFilter = null,
         bool? readFilter = null)
     {
         DeviceType? deviceTypeFilter = null;
@@ -38,10 +38,10 @@ public class NotificationRepository : INotificationRepository
         }
 
         return _context.Notifications
+            .Include(n => n.User)
             .Include(n => n.OwnedDevice).ThenInclude(od => od.Device)
             .Include(od => od.OwnedDevice).ThenInclude(od => od.Home).ThenInclude(h => h.Owner)
-            .Where(n => n.OwnedDevice.Home.Owner.Id == userId ||
-                        n.OwnedDevice.Home.Members.Any(m => m.UserId == userId))
+            .Where(n => n.User!.Id == userId)
             .Where(n => deviceTypeFilter == null || n.OwnedDevice.Device.Type == deviceTypeFilter)
             .Where(n => dateFilter == null || n.Date.Date == dateFilter.Value.Date)
             .Where(n => readFilter == null || n.Read == readFilter)

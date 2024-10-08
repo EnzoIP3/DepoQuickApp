@@ -5,12 +5,10 @@ using BusinessLogic.Notifications.Services;
 using BusinessLogic.Roles.Entities;
 using BusinessLogic.Users.Entities;
 using FluentAssertions;
-using HomeConnect.WebApi.Controllers.Notification;
+using HomeConnect.WebApi.Controllers.Notifications;
+using HomeConnect.WebApi.Controllers.Notifications.Models;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.Abstractions;
-using Microsoft.AspNetCore.Mvc.Filters;
-using Microsoft.AspNetCore.Routing;
 using Moq;
 
 namespace HomeConnect.WebApi.Test.Controllers;
@@ -51,11 +49,12 @@ public class NotificationControllerTests
             Date = DateTime.Now
         };
         var items = new Dictionary<object, object?> { { Item.UserLogged, user } };
-        var dateCreated = DateFromString(request.DateCreated);
+        DateTime dateCreated = DateFromString(request.DateCreated);
         _httpContextMock.SetupGet(h => h.Items).Returns(items);
         _notificationService.Setup(n => n.GetNotifications(user.Id, request.Device, dateCreated, request.Read))
             .Returns([notification]);
-        _notificationService.Setup(n => n.MarkNotificationsAsRead(new List<Notification> { notification })).Verifiable();
+        _notificationService.Setup(n => n.MarkNotificationsAsRead(new List<Notification> { notification }))
+            .Verifiable();
 
         // Act
         GetNotificationsResponse response = _notificationController.GetNotifications(request);
@@ -80,7 +79,7 @@ public class NotificationControllerTests
         };
 
         // Act
-        var action = () => _notificationController.GetNotifications(request);
+        Func<GetNotificationsResponse> action = () => _notificationController.GetNotifications(request);
 
         // Assert
         _notificationService.VerifyAll();

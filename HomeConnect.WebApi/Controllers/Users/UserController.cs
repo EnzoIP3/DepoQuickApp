@@ -1,11 +1,12 @@
 using BusinessLogic;
 using BusinessLogic.Admins.Services;
 using BusinessLogic.Roles.Entities;
-using HomeConnect.WebApi.Controllers.User.Models;
+using BusinessLogic.Users.Entities;
+using HomeConnect.WebApi.Controllers.Users.Models;
 using HomeConnect.WebApi.Filters;
 using Microsoft.AspNetCore.Mvc;
 
-namespace HomeConnect.WebApi.Controllers.User;
+namespace HomeConnect.WebApi.Controllers.Users;
 
 [ApiController]
 [Route("users")]
@@ -16,14 +17,14 @@ public class UserController(IAdminService adminService) : ControllerBase
     [AuthorizationFilter(SystemPermission.GetAllUsers)]
     public GetUsersResponse GetUsers([FromQuery] GetUsersRequest request)
     {
-        PagedData<BusinessLogic.Users.Entities.User> users = adminService.GetUsers(request.CurrentPage,
+        PagedData<User> users = adminService.GetUsers(request.CurrentPage,
             request.PageSize, request.FullName,
             request.Role);
         GetUsersResponse response = ResponseFromUsers(users);
         return response;
     }
 
-    private static GetUsersResponse ResponseFromUsers(PagedData<BusinessLogic.Users.Entities.User> users)
+    private static GetUsersResponse ResponseFromUsers(PagedData<User> users)
     {
         var response = new GetUsersResponse
         {

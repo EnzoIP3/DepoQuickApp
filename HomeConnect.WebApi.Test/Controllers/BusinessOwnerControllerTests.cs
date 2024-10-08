@@ -2,8 +2,8 @@ using BusinessLogic.Admins.Services;
 using BusinessLogic.Roles.Entities;
 using BusinessLogic.Users.Models;
 using FluentAssertions;
-using HomeConnect.WebApi.Controllers.BusinessOwner;
-using HomeConnect.WebApi.Controllers.BusinessOwner.Models;
+using HomeConnect.WebApi.Controllers.BusinessOwners;
+using HomeConnect.WebApi.Controllers.BusinessOwners.Models;
 using Moq;
 
 namespace HomeConnect.WebApi.Test.Controllers;

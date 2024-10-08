@@ -23,9 +23,9 @@ public class HomeOwnerServiceTests
     private Mock<IDeviceRepository> _deviceRepositoryMock = null!;
     private HomeOwnerService _homeOwnerService = null!;
     private Mock<IHomeRepository> _homeRepositoryMock = null!;
+    private Mock<IMemberRepository> _memberRepositoryMock = null!;
     private Mock<IOwnedDeviceRepository> _ownedDeviceRepositoryMock = null!;
     private Mock<IUserRepository> _userRepositoryMock = null!;
-    private Mock<IMemberRepository> _memberRepositoryMock = null!;
 
     [TestInitialize]
     public void Initialize()

@@ -31,7 +31,7 @@ public class RoleRepositoryTests
     #region Success
 
     [TestMethod]
-    public void Exists_WhenRoleExists_ShouldReturnTrue()
+    public void Exists_WhenRoleExists_ReturnsTrue()
     {
         // Act
         var result = _roleRepository.Exists("Role");
@@ -49,7 +49,7 @@ public class RoleRepositoryTests
     #region Success
 
     [TestMethod]
-    public void GetRole_WhenRoleExists_ShouldReturnRole()
+    public void GetRole_WhenRoleExists_ReturnsRole()
     {
         // Act
         Role result = _roleRepository.Get("Role");
@@ -63,7 +63,7 @@ public class RoleRepositoryTests
     #region Error
 
     [TestMethod]
-    public void GetRole_WhenRoleDoesNotExist_ShouldThrowException()
+    public void GetRole_WhenRoleDoesNotExist_ThrowsException()
     {
         // Act
         Action action = () => _roleRepository.Get("Role2");

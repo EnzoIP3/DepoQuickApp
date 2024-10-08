@@ -59,27 +59,6 @@ public class HomeRepositoryTests
 
     #endregion
 
-    #region Update
-
-    #region Success
-
-    [TestMethod]
-    public void Update_WhenHomeExists_UpdatesHome()
-    {
-        // Arrange
-        _home.Address = "Main St 456";
-
-        // Act
-        _homeRepository.Update(_home);
-
-        // Assert
-        _context.Homes.Should().Contain(h => h.Address == "Main St 456");
-    }
-
-    #endregion
-
-    #endregion
-
     #region UpdateMember
 
     #region Success
@@ -188,7 +167,7 @@ public class HomeRepositoryTests
     #region Error
 
     [TestMethod]
-    public void Get_WhenHomeDoesNotExist_ShouldThrowException()
+    public void Get_WhenHomeDoesNotExist_ThrowsException()
     {
         // Act
         Func<Home> action = () => _homeRepository.Get(Guid.NewGuid());

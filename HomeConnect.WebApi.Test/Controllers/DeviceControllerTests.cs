@@ -5,11 +5,11 @@ using BusinessLogic.Devices.Models;
 using BusinessLogic.Devices.Services;
 using BusinessLogic.Users.Entities;
 using FluentAssertions;
-using HomeConnect.WebApi.Controllers.Device;
-using HomeConnect.WebApi.Controllers.Device.Models;
-using HomeConnect.WebApi.Controllers.Home.Models;
+using HomeConnect.WebApi.Controllers.Devices;
+using HomeConnect.WebApi.Controllers.Devices.Models;
+using HomeConnect.WebApi.Controllers.Homes.Models;
 using Moq;
-using GetDevicesResponse = HomeConnect.WebApi.Controllers.Device.Models.GetDevicesResponse;
+using GetDevicesResponse = HomeConnect.WebApi.Controllers.Devices.Models.GetDevicesResponse;
 
 namespace HomeConnect.WebApi.Test.Controllers;
 

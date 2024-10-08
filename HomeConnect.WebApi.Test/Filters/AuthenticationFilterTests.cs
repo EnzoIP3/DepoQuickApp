@@ -41,7 +41,7 @@ public class AuthenticationFilterTests
     #region Success
 
     [TestMethod]
-    public void OnAuthorization_WhenAuthorizationIsValid_ShouldSetUserLoggedInContext()
+    public void OnAuthorization_WhenAuthorizationIsValid_SetsUserLoggedInContext()
     {
         var guid = Guid.NewGuid().ToString();
         _httpContextMock.Setup(h => h.Request.Headers).Returns(new HeaderDictionary(new Dictionary<string, StringValues>
@@ -62,7 +62,7 @@ public class AuthenticationFilterTests
         _authServiceMock.Setup(a => a.IsTokenExpired(guid)).Returns(false);
         _authServiceMock.Setup(a => a.GetUserFromToken(guid)).Returns(user);
         var items = new Dictionary<object, object> { { Item.UserLogged, user } };
-        _httpContextMock.Setup(h => h.Items).Returns(items);
+        _httpContextMock.Setup(h => h.Items).Returns(items!);
         _httpContextMock.Setup(h => h.RequestServices.GetService(typeof(IAuthService)))
             .Returns(_authServiceMock.Object);
         _authServiceMock.Setup(a => a.Exists(guid)).Returns(true);
@@ -83,7 +83,7 @@ public class AuthenticationFilterTests
     #region Error
 
     [TestMethod]
-    public void OnAuthorization_WhenEmptyHeaders_ShouldReturnUnauthenticatedResponse()
+    public void OnAuthorization_WhenEmptyHeaders_ReturnsUnauthenticatedResponse()
     {
         _httpContextMock.Setup(h => h.Request.Headers).Returns(new HeaderDictionary());
 
@@ -95,13 +95,13 @@ public class AuthenticationFilterTests
         response.Should().NotBeNull();
         var concreteResponse = response as ObjectResult;
         concreteResponse.Should().NotBeNull();
-        concreteResponse.StatusCode.Should().Be((int)HttpStatusCode.Unauthorized);
+        concreteResponse!.StatusCode.Should().Be((int)HttpStatusCode.Unauthorized);
         FilterTestsUtils.GetInnerCode(concreteResponse?.Value).Should().Be("Unauthorized");
         FilterTestsUtils.GetMessage(concreteResponse?.Value).Should().Be("You are not authenticated");
     }
 
     [TestMethod]
-    public void OnAuthorization_WhenAuthorizationIsEmpty_ShouldReturnUnauthenticatedResponse()
+    public void OnAuthorization_WhenAuthorizationIsEmpty_ReturnsUnauthenticatedResponse()
     {
         _httpContextMock.Setup(h => h.Request.Headers).Returns(new HeaderDictionary(new Dictionary<string, StringValues>
         {
@@ -122,12 +122,29 @@ public class AuthenticationFilterTests
     }
 
     [TestMethod]
-    public void OnAuthorization_WhenFormatIsInvalid_ShouldReturnInvalidAuthorizationResponse()
+    public void OnAuthorization_WhenUnexpectedError_ReturnsInternalErrorResponse()
     {
-        _httpContextMock.Setup(h => h.Request.Headers).Returns(new HeaderDictionary(new Dictionary<string, StringValues>
-        {
-            { "Authorization", "Bearer 1234" }
-        }));
+        _httpContextMock.Setup(h => h.Request.Headers).Throws(new Exception());
+
+        _attribute.OnAuthorization(_context);
+
+        IActionResult? response = _context.Result;
+
+        _httpContextMock.VerifyAll();
+        response.Should().NotBeNull();
+        var concreteResponse = response as ObjectResult;
+        concreteResponse.Should().NotBeNull();
+        concreteResponse!.StatusCode.Should().Be((int)HttpStatusCode.InternalServerError);
+        FilterTestsUtils.GetInnerCode(concreteResponse.Value).Should().Be("InternalError");
+        FilterTestsUtils.GetMessage(concreteResponse.Value).Should()
+            .Be("An error occurred while processing the request");
+    }
+
+    [TestMethod]
+    public void OnAuthorization_WhenFormatIsInvalid_ReturnsInvalidAuthorizationResponse()
+    {
+        _httpContextMock.Setup(h => h.Request.Headers)
+            .Returns(new HeaderDictionary(new Dictionary<string, StringValues> { { "Authorization", "1234" } }));
 
         _attribute.OnAuthorization(_context);
 
@@ -144,7 +161,7 @@ public class AuthenticationFilterTests
     }
 
     [TestMethod]
-    public void OnAuthorization_WhenAuthorizationExpired_ShouldReturnExpiredAuthorizationResponse()
+    public void OnAuthorization_WhenAuthorizationExpired_ReturnsExpiredAuthorizationResponse()
     {
         var guid = Guid.NewGuid().ToString();
         _httpContextMock.Setup(h => h.Request.Headers).Returns(new HeaderDictionary(new Dictionary<string, StringValues>
@@ -171,7 +188,7 @@ public class AuthenticationFilterTests
     }
 
     [TestMethod]
-    public void OnAuthorization_WhenAuthorizationDoesNotExist_ShouldReturnUnauthorizedResponse()
+    public void OnAuthorization_WhenAuthorizationDoesNotExist_ReturnsUnauthorizedResponse()
     {
         var guid = Guid.NewGuid().ToString();
         _httpContextMock.Setup(h => h.Request.Headers).Returns(new HeaderDictionary(new Dictionary<string, StringValues>

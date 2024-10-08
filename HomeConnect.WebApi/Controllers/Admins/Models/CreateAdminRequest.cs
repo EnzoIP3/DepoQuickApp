@@ -1,4 +1,4 @@
-namespace HomeConnect.WebApi.Controllers.Admin.Models;
+namespace HomeConnect.WebApi.Controllers.Admins.Models;
 
 public record CreateAdminRequest
 {

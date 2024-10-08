@@ -34,7 +34,7 @@ public class ExceptionFilterTests
     }
 
     [TestMethod]
-    public void OnException_WhenExceptionIsNotRegistered_ShouldResponseInternalError()
+    public void OnException_WhenExceptionIsNotRegistered_ReturnsResponseInternalError()
     {
         _context.Exception = new Exception("Not registered");
         _attribute.OnException(_context);
@@ -51,7 +51,7 @@ public class ExceptionFilterTests
     }
 
     [TestMethod]
-    public void OnException_WhenExceptionIsArgumentException_ShouldResponseBadRequest()
+    public void OnException_WhenExceptionIsArgumentException_ReturnsResponseBadRequest()
     {
         var exceptionMessage = "Invalid argument passed";
         _context.Exception = new ArgumentException(exceptionMessage);
@@ -68,7 +68,7 @@ public class ExceptionFilterTests
     }
 
     [TestMethod]
-    public void OnException_WhenExceptionIsInvalidOperationException_ShouldResponseConflict()
+    public void OnException_WhenExceptionIsInvalidOperationException_ReturnsResponseConflict()
     {
         var exceptionMessage = "Invalid operation";
         _context.Exception = new InvalidOperationException(exceptionMessage);
@@ -85,7 +85,7 @@ public class ExceptionFilterTests
     }
 
     [TestMethod]
-    public void OnException_WhenExceptionIsAuthException_ShouldResponseUnauthorized()
+    public void OnException_WhenExceptionIsAuthException_ReturnsResponseUnauthorized()
     {
         var exceptionMessage = "Unauthorized";
         _context.Exception = new AuthException(exceptionMessage);
@@ -102,7 +102,7 @@ public class ExceptionFilterTests
     }
 
     [TestMethod]
-    public void OnException_WhenExceptionIsKeyNotFoundException_ShouldResponseNotFound()
+    public void OnException_WhenExceptionIsKeyNotFoundException_ReturnsResponseNotFound()
     {
         var exceptionMessage = "Key not found";
         _context.Exception = new KeyNotFoundException(exceptionMessage);

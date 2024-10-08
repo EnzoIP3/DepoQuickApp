@@ -1,4 +1,4 @@
-namespace HomeConnect.WebApi.Controllers.Notification;
+namespace HomeConnect.WebApi.Controllers.Notifications.Models;
 
 public record GetNotificationsRequest
 {

@@ -8,7 +8,7 @@ namespace HomeConnect.BusinessLogic.Test.Auth.Entities;
 public class TokenTests
 {
     [TestMethod]
-    public void Constructor_WithValidArguments_ShouldCreateInstance()
+    public void Constructor_WhenCalled_CreatesInstance()
     {
         // Arrange
         var user = new User();
@@ -21,7 +21,7 @@ public class TokenTests
     }
 
     [TestMethod]
-    public void IsExpired_WithExpiredToken_ShouldReturnTrue()
+    public void IsExpired_WhenTokenIsExpired_ReturnsTrue()
     {
         // Arrange
         var user = new User();

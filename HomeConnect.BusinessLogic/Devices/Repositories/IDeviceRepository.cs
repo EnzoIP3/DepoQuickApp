@@ -5,7 +5,7 @@ namespace BusinessLogic.Devices.Repositories;
 
 public interface IDeviceRepository
 {
-    PagedData<Device> GetDevices(GetDevicesArgs args);
+    PagedData<Device> GetPaged(GetDevicesArgs args);
     Device Get(Guid deviceId);
     void Add(Device device);
     bool ExistsByModelNumber(int modelNumber);

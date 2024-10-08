@@ -1,10 +1,13 @@
 using System.Globalization;
+using BusinessLogic.Notifications.Entities;
 using BusinessLogic.Notifications.Services;
+using BusinessLogic.Roles.Entities;
+using BusinessLogic.Users.Entities;
+using HomeConnect.WebApi.Controllers.Notifications.Models;
 using HomeConnect.WebApi.Filters;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.Filters;
 
-namespace HomeConnect.WebApi.Controllers.Notification;
+namespace HomeConnect.WebApi.Controllers.Notifications;
 
 [ApiController]
 [Route("notifications")]
@@ -12,11 +15,12 @@ namespace HomeConnect.WebApi.Controllers.Notification;
 public class NotificationController(INotificationService notificationService) : ControllerBase
 {
     [HttpGet]
+    [AuthorizationFilter(SystemPermission.GetNotifications)]
     public GetNotificationsResponse GetNotifications([FromQuery] GetNotificationsRequest request)
     {
         DateTime? dateCreated = GetDateFromRequest(request);
-        var user = HttpContext.Items[Item.UserLogged] as BusinessLogic.Users.Entities.User;
-        List<BusinessLogic.Notifications.Entities.Notification> notifications =
+        var user = HttpContext.Items[Item.UserLogged] as User;
+        List<Notification> notifications =
             notificationService.GetNotifications(user!.Id, request.Device, dateCreated, request.Read);
         var response = new GetNotificationsResponse
         {

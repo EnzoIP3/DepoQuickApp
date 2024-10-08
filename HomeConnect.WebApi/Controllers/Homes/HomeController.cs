@@ -3,11 +3,12 @@ using BusinessLogic.HomeOwners.Entities;
 using BusinessLogic.HomeOwners.Models;
 using BusinessLogic.HomeOwners.Services;
 using BusinessLogic.Roles.Entities;
-using HomeConnect.WebApi.Controllers.Home.Models;
+using BusinessLogic.Users.Entities;
+using HomeConnect.WebApi.Controllers.Homes.Models;
 using HomeConnect.WebApi.Filters;
 using Microsoft.AspNetCore.Mvc;
 
-namespace HomeConnect.WebApi.Controllers.Home;
+namespace HomeConnect.WebApi.Controllers.Homes;
 
 [ApiController]
 [Route("homes")]
@@ -19,7 +20,7 @@ public class HomeController(IHomeOwnerService homeOwnerService) : ControllerBase
     public CreateHomeResponse CreateHome([FromBody] CreateHomeRequest request)
     {
         var userLoggedIn = HttpContext.Items[Item.UserLogged];
-        CreateHomeArgs createHomeArgs = HomeArgsFromRequest(request, (BusinessLogic.Users.Entities.User)userLoggedIn!);
+        CreateHomeArgs createHomeArgs = HomeArgsFromRequest(request, (User)userLoggedIn!);
         Guid homeId = homeOwnerService.CreateHome(createHomeArgs);
         return new CreateHomeResponse { Id = homeId.ToString() };
     }
@@ -40,7 +41,7 @@ public class HomeController(IHomeOwnerService homeOwnerService) : ControllerBase
         return new AddMemberResponse { HomeId = homesId, MemberId = addedMemberId.ToString() };
     }
 
-    private CreateHomeArgs HomeArgsFromRequest(CreateHomeRequest request, BusinessLogic.Users.Entities.User user)
+    private CreateHomeArgs HomeArgsFromRequest(CreateHomeRequest request, User user)
     {
         var homeArgs = new CreateHomeArgs
         {
@@ -58,7 +59,7 @@ public class HomeController(IHomeOwnerService homeOwnerService) : ControllerBase
     [HomeAuthorizationFilter(HomePermission.GetMembers)]
     public GetMembersResponse GetMembers([FromRoute] string homesId)
     {
-        List<BusinessLogic.HomeOwners.Entities.Member> members = homeOwnerService.GetHomeMembers(homesId);
+        List<Member> members = homeOwnerService.GetHomeMembers(homesId);
         var memberInfos = members.Select(m => new ListMemberInfo
         {
             Id = m.User.Id.ToString(),

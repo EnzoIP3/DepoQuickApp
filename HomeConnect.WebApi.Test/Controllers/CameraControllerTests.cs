@@ -8,9 +8,9 @@ using BusinessLogic.Notifications.Services;
 using BusinessLogic.Users.Entities;
 using BusinessLogic.Users.Services;
 using FluentAssertions;
-using HomeConnect.WebApi.Controllers.Camera;
-using HomeConnect.WebApi.Controllers.Camera.Models;
-using HomeConnect.WebApi.Controllers.Device.Models;
+using HomeConnect.WebApi.Controllers.Cameras;
+using HomeConnect.WebApi.Controllers.Cameras.Models;
+using HomeConnect.WebApi.Controllers.Devices.Models;
 using Microsoft.AspNetCore.Http;
 using Moq;
 

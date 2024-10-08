@@ -15,7 +15,7 @@ public class HomeAuthorizationFilterAttribute(string permission) : Attribute, IA
 
     public void OnAuthorization(AuthorizationFilterContext context)
     {
-        var user = GetAuthenticatedUser(context);
+        User? user = GetAuthenticatedUser(context);
         if (user == null)
         {
             SetUnauthorizedResult(context);
@@ -27,13 +27,13 @@ public class HomeAuthorizationFilterAttribute(string permission) : Attribute, IA
 
         if (homeId != null)
         {
-            if (!IsValidGuid(homeId, out var homeIdParsed))
+            if (!IsValidGuid(homeId, out Guid homeIdParsed))
             {
                 SetBadRequestResult(context, "The home ID is invalid");
                 return;
             }
 
-            var home = GetHomeById(context, homeIdParsed);
+            Home? home = GetHomeById(context, homeIdParsed);
             if (home == null)
             {
                 SetNotFoundResult(context, "The home does not exist");
@@ -50,13 +50,13 @@ public class HomeAuthorizationFilterAttribute(string permission) : Attribute, IA
 
         if (memberId != null)
         {
-            if (!IsValidGuid(memberId, out var memberIdParsed))
+            if (!IsValidGuid(memberId, out Guid memberIdParsed))
             {
                 SetBadRequestResult(context, "The member ID is invalid");
                 return;
             }
 
-            var home = GetHomeFromMember(context, memberIdParsed);
+            Home? home = GetHomeFromMember(context, memberIdParsed);
             if (home == null)
             {
                 SetNotFoundResult(context, "The member does not exist");
@@ -77,7 +77,7 @@ public class HomeAuthorizationFilterAttribute(string permission) : Attribute, IA
 
     private static Home? GetHomeById(AuthorizationFilterContext context, Guid homeIdParsed)
     {
-        var homeOwnerService = GetHomeOwnerService(context);
+        IHomeOwnerService homeOwnerService = GetHomeOwnerService(context);
         try
         {
             return homeOwnerService.GetHome(homeIdParsed);
@@ -90,10 +90,10 @@ public class HomeAuthorizationFilterAttribute(string permission) : Attribute, IA
 
     private static Home? GetHomeFromMember(AuthorizationFilterContext context, Guid memberIdParsed)
     {
-        var homeOwnerService = GetHomeOwnerService(context);
+        IHomeOwnerService homeOwnerService = GetHomeOwnerService(context);
         try
         {
-            var member = homeOwnerService.GetMemberById(memberIdParsed);
+            Member member = homeOwnerService.GetMemberById(memberIdParsed);
             return member.Home;
         }
         catch (ArgumentException)
@@ -115,7 +115,7 @@ public class HomeAuthorizationFilterAttribute(string permission) : Attribute, IA
 
     private static bool UserIsMemberWithPermission(User user, Home home, HomePermission homePermission)
     {
-        var member = home.Members.FirstOrDefault(m => m.User.Id == user.Id);
+        Member? member = home.Members.FirstOrDefault(m => m.User.Id == user.Id);
         return member != null && member.HasPermission(homePermission);
     }
 

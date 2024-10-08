@@ -1,4 +1,4 @@
-namespace HomeConnect.WebApi.Controllers.Camera.Models;
+namespace HomeConnect.WebApi.Controllers.Cameras.Models;
 
 public record CreateCameraResponse
 {

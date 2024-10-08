@@ -26,7 +26,7 @@ public class MemberRepositoryTests
     }
 
     [TestMethod]
-    public void Add_WithValidArguments_ShouldAddMember()
+    public void Add_WhenArgumentsAreValid_AddsMember()
     {
         // Arrange
         var role = new Role("Role", []);

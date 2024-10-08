@@ -1,6 +1,6 @@
-using HomeConnect.WebApi.Controllers.Home.Models;
+using HomeConnect.WebApi.Controllers.Homes.Models;
 
-namespace HomeConnect.WebApi.Controllers.Device.Models;
+namespace HomeConnect.WebApi.Controllers.Devices.Models;
 
 public record GetDevicesResponse
 {

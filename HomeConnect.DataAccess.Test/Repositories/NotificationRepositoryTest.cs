@@ -62,12 +62,30 @@ public class NotificationRepositoryTest
         _context.Database.EnsureDeleted();
     }
 
+    #region UpdateRange
+
+    [TestMethod]
+    public void UpdateRange_WhenCalled_UpdatesNotifications()
+    {
+        // Arrange
+        var notifications = new List<Notification> { _notification, _otherNotification };
+        notifications.ForEach(n => n.Read = true);
+
+        // Act
+        _notificationRepository.UpdateRange(notifications);
+
+        // Assert
+        _context.Notifications.Should().BeEquivalentTo(notifications);
+    }
+
+    #endregion
+
     #region Add
 
     #region Success
 
     [TestMethod]
-    public void Add_WhenNotificationDoesNotExist_ShouldAddNotification()
+    public void Add_WhenNotificationDoesNotExist_AddNotification()
     {
         // Arrange
         var user = new User("name", "surname", "email2@email.com", "Password#100", new Role());
@@ -90,7 +108,7 @@ public class NotificationRepositoryTest
     #region Error
 
     [TestMethod]
-    public void Add_WhenNotificationExists_ShouldThrowInvalidOperationException()
+    public void Add_WhenNotificationExists_ThrowsInvalidOperationException()
     {
         // Act
         Action act = () => _notificationRepository.Add(_notification);
@@ -106,7 +124,7 @@ public class NotificationRepositoryTest
     #region Get
 
     [TestMethod]
-    public void Get_WhenCalledWithNoFilters_ShouldReturnAllNotifications()
+    public void Get_WhenCalledWithNoFilters_ReturnsAllNotifications()
     {
         // Arrange
         var expectedResult = new List<Notification> { _notification, _otherNotification };
@@ -119,7 +137,7 @@ public class NotificationRepositoryTest
     }
 
     [TestMethod]
-    public void Get_WhenCalledWithDeviceFilter_ShouldReturnNotificationsForDevice()
+    public void Get_WhenCalledWithDeviceFilter_ReturnsNotificationsForDevice()
     {
         // Arrange
         var expectedResult = new List<Notification> { _notification };
@@ -132,7 +150,7 @@ public class NotificationRepositoryTest
     }
 
     [TestMethod]
-    public void Get_WhenCalledWithDateFilter_ShouldReturnNotificationsForDate()
+    public void Get_WhenCalledWithDateFilter_ReturnsNotificationsForDate()
     {
         // Arrange
         var expectedResult = new List<Notification> { _notification };
@@ -145,7 +163,7 @@ public class NotificationRepositoryTest
     }
 
     [TestMethod]
-    public void Get_WhenCalledWithReadFilter_ShouldReturnNotificationsAlreadyRead()
+    public void Get_WhenCalledWithReadFilter_ReturnsNotificationsAlreadyRead()
     {
         // Arrange
         var expectedResult = new List<Notification> { _notification };
@@ -155,24 +173,6 @@ public class NotificationRepositoryTest
 
         // Assert
         result.Should().BeEquivalentTo(expectedResult);
-    }
-
-    #endregion
-
-    #region UpdateRange
-
-    [TestMethod]
-    public void UpdateRange_WhenCalled_ShouldUpdateNotifications()
-    {
-        // Arrange
-        var notifications = new List<Notification> { _notification, _otherNotification };
-        notifications.ForEach(n => n.Read = true);
-
-        // Act
-        _notificationRepository.UpdateRange(notifications);
-
-        // Assert
-        _context.Notifications.Should().BeEquivalentTo(notifications);
     }
 
     #endregion

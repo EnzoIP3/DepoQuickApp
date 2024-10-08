@@ -14,7 +14,7 @@ public class UserRepository : PaginatedRepositoryBase<User>, IUserRepository
         _context = context;
     }
 
-    public PagedData<User> GetAllPaged(int currentPage, int pageSize, string? fullNameFilter = null,
+    public PagedData<User> GetPaged(int currentPage, int pageSize, string? fullNameFilter = null,
         string? roleFilter = null)
     {
         var filters = new object[2];

@@ -249,14 +249,14 @@ public sealed class AdminServiceTests
         {
             Data = users, Page = _defaultCurrentPage, PageSize = _defaultPageSize, TotalPages = 1
         };
-        _userRepository.Setup(x => x.GetAllPaged(_defaultCurrentPage, _defaultPageSize, null, null)).Returns(pagedList);
+        _userRepository.Setup(x => x.GetPaged(_defaultCurrentPage, _defaultPageSize, null, null)).Returns(pagedList);
 
         // Act
         PagedData<User> result = _adminService.GetUsers(_defaultCurrentPage, _defaultPageSize);
 
         // Assert
         result.Should().BeEquivalentTo(pagedList, options => options.ComparingByMembers<PagedData<User>>());
-        _userRepository.Verify(x => x.GetAllPaged(
+        _userRepository.Verify(x => x.GetPaged(
             It.Is<int>(a => a == _defaultCurrentPage),
             It.Is<int>(a => a == _defaultPageSize),
             It.Is<string>(a => true),
@@ -272,14 +272,14 @@ public sealed class AdminServiceTests
         {
             Data = users, Page = _defaultCurrentPage, PageSize = _defaultPageSize, TotalPages = 1
         };
-        _userRepository.Setup(x => x.GetAllPaged(_defaultCurrentPage, _defaultPageSize, null, null)).Returns(pagedList);
+        _userRepository.Setup(x => x.GetPaged(_defaultCurrentPage, _defaultPageSize, null, null)).Returns(pagedList);
 
         // Act
         PagedData<User> result = _adminService.GetUsers();
 
         // Assert
         result.Should().BeEquivalentTo(pagedList, options => options.ComparingByMembers<PagedData<User>>());
-        _userRepository.Verify(x => x.GetAllPaged(
+        _userRepository.Verify(x => x.GetPaged(
             It.Is<int>(a => a == _defaultCurrentPage),
             It.Is<int>(a => a == _defaultPageSize),
             It.Is<string>(a => true),
@@ -296,7 +296,7 @@ public sealed class AdminServiceTests
         {
             Data = [users[0]], Page = _defaultCurrentPage, PageSize = _defaultPageSize, TotalPages = 1
         };
-        _userRepository.Setup(x => x.GetAllPaged(_defaultCurrentPage, _defaultPageSize, filter, null))
+        _userRepository.Setup(x => x.GetPaged(_defaultCurrentPage, _defaultPageSize, filter, null))
             .Returns(pagedList);
 
         // Act
@@ -304,7 +304,7 @@ public sealed class AdminServiceTests
 
         // Assert
         result.Should().BeEquivalentTo(pagedList, options => options.ComparingByMembers<PagedData<User>>());
-        _userRepository.Verify(x => x.GetAllPaged(
+        _userRepository.Verify(x => x.GetPaged(
             It.Is<int>(a => a == _defaultCurrentPage),
             It.Is<int>(a => a == _defaultPageSize),
             It.Is<string>(a => a == filter),
@@ -321,7 +321,7 @@ public sealed class AdminServiceTests
         {
             Data = [users[1]], Page = _defaultCurrentPage, PageSize = _defaultPageSize, TotalPages = 1
         };
-        _userRepository.Setup(x => x.GetAllPaged(_defaultCurrentPage, _defaultPageSize, null, filter))
+        _userRepository.Setup(x => x.GetPaged(_defaultCurrentPage, _defaultPageSize, null, filter))
             .Returns(pagedList);
 
         // Act
@@ -329,7 +329,7 @@ public sealed class AdminServiceTests
 
         // Assert
         result.Should().BeEquivalentTo(pagedList, options => options.ComparingByMembers<PagedData<User>>());
-        _userRepository.Verify(x => x.GetAllPaged(
+        _userRepository.Verify(x => x.GetPaged(
             It.Is<int>(a => a == _defaultCurrentPage),
             It.Is<int>(a => a == _defaultPageSize),
             It.Is<string>(a => true),
@@ -355,7 +355,7 @@ public sealed class AdminServiceTests
         {
             Data = businesses, Page = _defaultCurrentPage, PageSize = _defaultPageSize, TotalPages = 1
         };
-        _businessRepository.Setup(x => x.GetPagedData(_defaultCurrentPage, _defaultPageSize, null, null))
+        _businessRepository.Setup(x => x.GetPaged(_defaultCurrentPage, _defaultPageSize, null, null))
             .Returns(pagedList);
 
         // Act
@@ -363,7 +363,7 @@ public sealed class AdminServiceTests
 
         // Assert
         result.Should().BeEquivalentTo(pagedList, options => options.ComparingByMembers<PagedData<Business>>());
-        _businessRepository.Verify(x => x.GetPagedData(
+        _businessRepository.Verify(x => x.GetPaged(
             It.Is<int>(a => a == _defaultCurrentPage),
             It.Is<int>(a => a == _defaultPageSize),
             It.Is<string>(a => true),
@@ -383,7 +383,7 @@ public sealed class AdminServiceTests
         {
             Data = businesses, Page = _defaultCurrentPage, PageSize = _defaultPageSize, TotalPages = 1
         };
-        _businessRepository.Setup(x => x.GetPagedData(_defaultCurrentPage, _defaultPageSize, null, null))
+        _businessRepository.Setup(x => x.GetPaged(_defaultCurrentPage, _defaultPageSize, null, null))
             .Returns(pagedList);
 
         // Act
@@ -391,7 +391,7 @@ public sealed class AdminServiceTests
 
         // Assert
         result.Should().BeEquivalentTo(pagedList, options => options.ComparingByMembers<PagedData<Business>>());
-        _businessRepository.Verify(x => x.GetPagedData(
+        _businessRepository.Verify(x => x.GetPaged(
             It.Is<int>(a => a == _defaultCurrentPage),
             It.Is<int>(a => a == _defaultPageSize),
             It.Is<string>(a => true),
@@ -412,7 +412,7 @@ public sealed class AdminServiceTests
         {
             Data = [businesses[0]], Page = _defaultCurrentPage, PageSize = _defaultPageSize, TotalPages = 1
         };
-        _businessRepository.Setup(x => x.GetPagedData(_defaultCurrentPage, _defaultPageSize, filter, null))
+        _businessRepository.Setup(x => x.GetPaged(_defaultCurrentPage, _defaultPageSize, filter, null))
             .Returns(pagedList);
 
         // Act
@@ -420,7 +420,7 @@ public sealed class AdminServiceTests
 
         // Assert
         result.Should().BeEquivalentTo(pagedList, options => options.ComparingByMembers<PagedData<Business>>());
-        _businessRepository.Verify(x => x.GetPagedData(
+        _businessRepository.Verify(x => x.GetPaged(
             It.Is<int>(a => a == _defaultCurrentPage),
             It.Is<int>(a => a == _defaultPageSize),
             It.Is<string>(a => a == filter),
@@ -441,7 +441,7 @@ public sealed class AdminServiceTests
         {
             Data = [businesses[1]], Page = _defaultCurrentPage, PageSize = _defaultPageSize, TotalPages = 1
         };
-        _businessRepository.Setup(x => x.GetPagedData(_defaultCurrentPage, _defaultPageSize, null, filter))
+        _businessRepository.Setup(x => x.GetPaged(_defaultCurrentPage, _defaultPageSize, null, filter))
             .Returns(pagedList);
 
         // Act
@@ -449,7 +449,7 @@ public sealed class AdminServiceTests
 
         // Assert
         result.Should().BeEquivalentTo(pagedList, options => options.ComparingByMembers<PagedData<Business>>());
-        _businessRepository.Verify(x => x.GetPagedData(
+        _businessRepository.Verify(x => x.GetPaged(
             It.Is<int>(a => a == _defaultCurrentPage),
             It.Is<int>(a => a == _defaultPageSize),
             It.Is<string>(a => true),

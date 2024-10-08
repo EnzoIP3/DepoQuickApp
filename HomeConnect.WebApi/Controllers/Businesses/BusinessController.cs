@@ -4,6 +4,7 @@ using BusinessLogic.BusinessOwners.Entities;
 using BusinessLogic.BusinessOwners.Models;
 using BusinessLogic.BusinessOwners.Services;
 using BusinessLogic.Roles.Entities;
+using BusinessLogic.Users.Entities;
 using HomeConnect.WebApi.Controllers.Businesses.Models;
 using HomeConnect.WebApi.Filters;
 using Microsoft.AspNetCore.Mvc;
@@ -29,7 +30,7 @@ public class BusinessController(IAdminService adminService, IBusinessOwnerServic
     [AuthorizationFilter(SystemPermission.CreateBusiness)]
     public CreateBusinessResponse CreateBusiness([FromBody] CreateBusinessRequest request)
     {
-        var userLoggedIn = HttpContext.Items[Item.UserLogged] as BusinessLogic.Users.Entities.User;
+        var userLoggedIn = HttpContext.Items[Item.UserLogged] as User;
         var args = new CreateBusinessArgs
         {
             Name = request.Name ?? string.Empty,

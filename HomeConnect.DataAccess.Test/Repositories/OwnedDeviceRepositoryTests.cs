@@ -124,7 +124,7 @@ public class OwnedDeviceRepositoryTests
         _ownedDeviceRepository.Update(_ownedDevice);
 
         // Assert
-        var result = _ownedDeviceRepository.GetByHardwareId(_ownedDevice.HardwareId);
+        OwnedDevice result = _ownedDeviceRepository.GetByHardwareId(_ownedDevice.HardwareId);
         result.Connected.Should().BeTrue();
     }
 

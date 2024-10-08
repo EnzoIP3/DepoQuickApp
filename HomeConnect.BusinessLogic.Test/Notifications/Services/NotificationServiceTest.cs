@@ -59,6 +59,37 @@ public class NotificationServiceTest
 
     #endregion
 
+    #region MarkNotificationsAsRead
+
+    [TestMethod]
+    public void MarkNotificationsAsRead_WhenCalledWithNotifications_ShouldMarkNotificationsAsRead()
+    {
+        // Arrange
+        var notifications = new List<Notification>
+        {
+            new(Guid.NewGuid(), DateTime.Now, false, "Test Event", new OwnedDevice(
+                    new Home(_user, "Street 3420", 50, 100, 5),
+                    new Device("Device", 12345, "Device description", "https://example.com/image.png", [], "Sensor",
+                        new Business())),
+                new User("name", "surname", "email@email.com", "Password@100", new Role())),
+            new(Guid.NewGuid(), DateTime.Now, false, "Test Event", new OwnedDevice(
+                    new Home(_user, "Street 3420", 50, 100, 5),
+                    new Device("Device", 12345, "Device description", "https://example.com/image.png", [], "Sensor",
+                        new Business())),
+                new User("name2", "surname2", "email2@email.com", "Password@100", new Role()))
+        };
+        _mockNotificationRepository.Setup(x => x.UpdateRange(notifications)).Verifiable();
+
+        // Act
+        _notificationService.MarkNotificationsAsRead(notifications);
+
+        // Assert
+        _mockNotificationRepository.VerifyAll();
+        notifications.ForEach(n => n.Read.Should().BeTrue());
+    }
+
+    #endregion
+
     #region GetNotifications
 
     [TestMethod]
@@ -66,7 +97,7 @@ public class NotificationServiceTest
     {
         // Arrange
         var userId = Guid.NewGuid();
-        var deviceFilter = "Device";
+        var deviceFilter = "Sensor";
         DateTime dateFilter = DateTime.Now;
         var readFilter = true;
         var notifications = new List<Notification>
@@ -93,12 +124,25 @@ public class NotificationServiceTest
         result.Should().BeEquivalentTo(notifications);
     }
 
+    [TestMethod]
+    public void GetNotifications_WhenDeviceFilterIsInvalid_ThrowsException()
+    {
+        // Arrange
+        var deviceFilter = "Device";
+
+        // Act
+        Func<List<Notification>> act = () => _notificationService.GetNotifications(Guid.NewGuid(), deviceFilter);
+
+        // Assert
+        act.Should().Throw<ArgumentException>();
+    }
+
     #endregion
 
     #region Notify
 
     [TestMethod]
-    public void Notify_WhenCalledWithNonExistentOwnedDevice_ShouldThrowArgumentException()
+    public void Notify_WhenCalledWithNonExistentOwnedDevice_ThrowsException()
     {
         // Arrange
         var args = new NotificationArgs
@@ -152,37 +196,6 @@ public class NotificationServiceTest
                 n.Event == args.Event &&
                 n.OwnedDevice == ownedDevice &&
                 n.User == member.User)), Times.Once);
-    }
-
-    #endregion
-
-    #region MarkNotificationsAsRead
-
-    [TestMethod]
-    public void MarkNotificationsAsRead_WhenCalledWithNotifications_ShouldMarkNotificationsAsRead()
-    {
-        // Arrange
-        var notifications = new List<Notification>
-        {
-            new(Guid.NewGuid(), DateTime.Now, false, "Test Event", new OwnedDevice(
-                    new Home(_user, "Street 3420", 50, 100, 5),
-                    new Device("Device", 12345, "Device description", "https://example.com/image.png", [], "Sensor",
-                        new Business())),
-                new User("name", "surname", "email@email.com", "Password@100", new Role())),
-            new(Guid.NewGuid(), DateTime.Now, false, "Test Event", new OwnedDevice(
-                    new Home(_user, "Street 3420", 50, 100, 5),
-                    new Device("Device", 12345, "Device description", "https://example.com/image.png", [], "Sensor",
-                        new Business())),
-                new User("name2", "surname2", "email2@email.com", "Password@100", new Role()))
-        };
-        _mockNotificationRepository.Setup(x => x.UpdateRange(notifications)).Verifiable();
-
-        // Act
-        _notificationService.MarkNotificationsAsRead(notifications);
-
-        // Assert
-        _mockNotificationRepository.VerifyAll();
-        notifications.ForEach(n => n.Read.Should().BeTrue());
     }
 
     #endregion

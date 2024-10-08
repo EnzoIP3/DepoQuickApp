@@ -1,17 +1,19 @@
 using BusinessLogic.BusinessOwners.Models;
 using BusinessLogic.BusinessOwners.Services;
+using BusinessLogic.Devices.Entities;
 using BusinessLogic.Devices.Services;
 using BusinessLogic.Notifications.Models;
 using BusinessLogic.Notifications.Services;
 using BusinessLogic.Roles.Entities;
+using BusinessLogic.Users.Entities;
 using BusinessLogic.Users.Services;
-using HomeConnect.WebApi.Controllers.Camera.Models;
-using HomeConnect.WebApi.Controllers.Device;
-using HomeConnect.WebApi.Controllers.Device.Models;
+using HomeConnect.WebApi.Controllers.Cameras.Models;
+using HomeConnect.WebApi.Controllers.Devices;
+using HomeConnect.WebApi.Controllers.Devices.Models;
 using HomeConnect.WebApi.Filters;
 using Microsoft.AspNetCore.Mvc;
 
-namespace HomeConnect.WebApi.Controllers.Camera;
+namespace HomeConnect.WebApi.Controllers.Cameras;
 
 [ApiController]
 [Route("cameras")]
@@ -27,7 +29,7 @@ public class CameraController(
     [AuthorizationFilter(SystemPermission.CreateCamera)]
     public CreateCameraResponse CreateCamera([FromBody] CreateCameraRequest request)
     {
-        var userLoggedIn = HttpContext.Items[Item.UserLogged] as BusinessLogic.Users.Entities.User;
+        var userLoggedIn = HttpContext.Items[Item.UserLogged] as User;
 
         var args = new CreateCameraArgs
         {
@@ -43,7 +45,7 @@ public class CameraController(
             SecondaryPhotos = request.SecondaryPhotos
         };
 
-        BusinessLogic.Devices.Entities.Camera createdCamera = businessOwnerService.CreateCamera(args);
+        Camera createdCamera = businessOwnerService.CreateCamera(args);
 
         return new CreateCameraResponse { Id = createdCamera.Id };
     }

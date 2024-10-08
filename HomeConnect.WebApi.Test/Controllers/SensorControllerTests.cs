@@ -7,9 +7,9 @@ using BusinessLogic.Notifications.Models;
 using BusinessLogic.Notifications.Services;
 using BusinessLogic.Users.Entities;
 using FluentAssertions;
-using HomeConnect.WebApi.Controllers.Device.Models;
-using HomeConnect.WebApi.Controllers.Sensor;
-using HomeConnect.WebApi.Controllers.Sensor.Models;
+using HomeConnect.WebApi.Controllers.Devices.Models;
+using HomeConnect.WebApi.Controllers.Sensors;
+using HomeConnect.WebApi.Controllers.Sensors.Models;
 using Microsoft.AspNetCore.Http;
 using Moq;
 
@@ -81,7 +81,7 @@ public class SensorControllerTests
     #region Notify
 
     [TestMethod]
-    public void NotifyOpen_WithHardwareId_ReturnsNotifyResponse()
+    public void NotifyOpen_WhenHardwareIdIsValid_ReturnsNotifyResponse()
     {
         // Arrange
         var hardwareId = "hardwareId";
@@ -98,7 +98,7 @@ public class SensorControllerTests
     }
 
     [TestMethod]
-    public void NotifyClose_WithHardwareId_ReturnsNotifyResponse()
+    public void NotifyClose_WhenHardwareIdIsValid_ReturnsNotifyResponse()
     {
         // Arrange
         var hardwareId = "hardwareId";
@@ -107,7 +107,7 @@ public class SensorControllerTests
         _notificationServiceMock.Setup(x => x.Notify(args));
 
         // Act
-        NotifyResponse result = _sensorController.NotifyOpen(hardwareId);
+        NotifyResponse result = _sensorController.NotifyClose(hardwareId);
 
         // Assert
         result.Should().NotBeNull();

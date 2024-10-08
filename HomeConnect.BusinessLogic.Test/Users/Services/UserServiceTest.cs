@@ -34,7 +34,7 @@ public class UserServiceTest
     }
 
     [TestMethod]
-    public void CreateUser_WithValidArguments_ShouldCreateUser()
+    public void CreateUser_WhenArgumentsAreValid_CreatesUser()
     {
         // Arrange
         _userRepository.Setup(x => x.Add(It.IsAny<User>()));
@@ -50,7 +50,7 @@ public class UserServiceTest
     }
 
     [TestMethod]
-    public void CreateUser_WithInvalidRole_ShouldThrowException()
+    public void CreateUser_WhenRoleIsInvalid_ThrowsException()
     {
         // Arrange
         _roleRepository.Setup(x => x.Exists(_args.Role)).Returns(false);
@@ -63,7 +63,7 @@ public class UserServiceTest
     }
 
     [TestMethod]
-    public void CreateUser_WithAlreadyExistingUser_ShouldThrowException()
+    public void CreateUser_WhenUserAlreadyExists_ThrowsException()
     {
         // Arrange
         _roleRepository.Setup(x => x.Exists(_args.Role)).Returns(true);
@@ -77,7 +77,7 @@ public class UserServiceTest
     }
 
     [TestMethod]
-    public void CreateUser_WithHomeOwnerRoleAndWithoutProfilePicture_ShouldThrowException()
+    public void CreateUser_WhenHomeOwnerRoleAndNoProfilePicture_ThrowsException()
     {
         // Arrange
         _args.Role = "HomeOwner";

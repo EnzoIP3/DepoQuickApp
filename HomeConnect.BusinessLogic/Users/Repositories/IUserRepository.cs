@@ -11,6 +11,6 @@ public interface IUserRepository
     bool ExistsByEmail(string email);
     void Delete(Guid id);
 
-    PagedData<User> GetAllPaged(int currentPage, int pageSize, string? fullNameFilter = null,
+    PagedData<User> GetPaged(int currentPage, int pageSize, string? fullNameFilter = null,
         string? roleFilter = null);
 }

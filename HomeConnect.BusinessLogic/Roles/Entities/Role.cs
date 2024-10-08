@@ -18,8 +18,7 @@ public class Role
         Permissions = permissions;
     }
 
-    [Key]
-    public string Name { get; init; } = string.Empty;
+    [Key] public string Name { get; init; } = string.Empty;
 
     public List<SystemPermission> Permissions { get; set; } = [];
 

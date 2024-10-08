@@ -27,7 +27,7 @@ public class AuthServiceTests
     }
 
     [TestMethod]
-    public void GetUserFromToken_WithValidToken_ShouldReturnUser()
+    public void GetUserFromToken_WhenTokenIsValid_ReturnsUser()
     {
         // Arrange
         var token = Guid.NewGuid();
@@ -42,7 +42,7 @@ public class AuthServiceTests
     }
 
     [TestMethod]
-    public void GetUserFromToken_WithInvalidToken_ShouldThrowException()
+    public void GetUserFromToken_WhenTokenIsInvalid_ThrowsException()
     {
         // Arrange
         const string token = "not-a-guid";
@@ -55,7 +55,7 @@ public class AuthServiceTests
     }
 
     [TestMethod]
-    public void CreateToken_WithValidArguments_ShouldCreateToken()
+    public void CreateToken_WhenArgumentsAreValid_CreatesToken()
     {
         // Arrange
         var args = new CreateTokenArgs { Email = "test@example.com", Password = "password1M@" };
@@ -73,7 +73,7 @@ public class AuthServiceTests
     }
 
     [TestMethod]
-    public void CreateToken_WithNonExistingEmail_ShouldThrowException()
+    public void CreateToken_WhenEmailDoesNotExist_ThrowsException()
     {
         // Arrange
         var args = new CreateTokenArgs { Email = "test@example.com", Password = "password1M@" };
@@ -87,7 +87,7 @@ public class AuthServiceTests
     }
 
     [TestMethod]
-    public void CreateToken_WithInvalidPassword_ShouldThrowException()
+    public void CreateToken_WhenPasswordInvalid_ThrowsException()
     {
         // Arrange
         var args = new CreateTokenArgs { Email = "test@example.com", Password = "password" };
@@ -103,7 +103,7 @@ public class AuthServiceTests
     }
 
     [TestMethod]
-    public void CreateToken_WithMissingEmail_ShouldThrowException()
+    public void CreateToken_WhenEmailIsMissing_ThrowsException()
     {
         // Arrange
         var args = new CreateTokenArgs { Password = "password1M@" };
@@ -116,7 +116,7 @@ public class AuthServiceTests
     }
 
     [TestMethod]
-    public void CreateToken_WithMissingPassword_ShouldThrowException()
+    public void CreateToken_WhenPasswordIsMissing_ThrowsException()
     {
         // Arrange
         var args = new CreateTokenArgs { Email = "test@example.com" };
@@ -131,7 +131,7 @@ public class AuthServiceTests
     }
 
     [TestMethod]
-    public void IsTokenExpired_WithValidToken_ShouldReturnFalse()
+    public void IsTokenExpired_WhenTokenIsValid_ReturnsFalse()
     {
         // Arrange
         var token = Guid.NewGuid();
@@ -145,7 +145,7 @@ public class AuthServiceTests
     }
 
     [TestMethod]
-    public void Exists_WithInvalidToken_ShouldThrowException()
+    public void Exists_WhenTokenIsInvalid_ThrowsException()
     {
         // Arrange
         const string token = "guid";
@@ -158,7 +158,7 @@ public class AuthServiceTests
     }
 
     [TestMethod]
-    public void Exists_WithValidToken_ShouldReturnTrue()
+    public void Exists_WhenTokenIsValid_ReturnsTrue()
     {
         // Arrange
         var token = Guid.NewGuid();

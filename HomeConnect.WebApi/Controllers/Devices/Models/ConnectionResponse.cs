@@ -1,4 +1,4 @@
-namespace HomeConnect.WebApi.Controllers.Device.Models;
+namespace HomeConnect.WebApi.Controllers.Devices.Models;
 
 public record ConnectionResponse
 {

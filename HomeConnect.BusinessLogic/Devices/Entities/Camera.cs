@@ -33,8 +33,8 @@ public class Camera : Device
 
     public bool MotionDetection { get; private set; }
     public bool PersonDetection { get; private set; }
-    public bool IsExterior { get; private set; }
-    public bool IsInterior { get; private set; }
+    public bool IsExterior { get; }
+    public bool IsInterior { get; }
 
     private void ValidateCameraProperties(
         bool? motionDetection,

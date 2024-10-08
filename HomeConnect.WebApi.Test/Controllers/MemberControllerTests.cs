@@ -1,6 +1,7 @@
 using BusinessLogic.HomeOwners.Services;
 using FluentAssertions;
-using HomeConnect.WebApi.Controllers.Member;
+using HomeConnect.WebApi.Controllers.Members;
+using HomeConnect.WebApi.Controllers.Members.Models;
 using Moq;
 
 namespace HomeConnect.WebApi.Test.Controllers;
@@ -21,7 +22,7 @@ public class MemberControllerTests
     #region UpdateMemberNotifications
 
     [TestMethod]
-    public void UpdateMemberNotifications_WhenCalled_ShouldUpdateMemberNotifications()
+    public void UpdateMemberNotifications_WhenCalled_UpdatesMemberNotifications()
     {
         // Arrange
         var memberId = Guid.NewGuid().ToString();

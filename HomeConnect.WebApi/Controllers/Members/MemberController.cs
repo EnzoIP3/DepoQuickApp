@@ -1,10 +1,11 @@
 using BusinessLogic.HomeOwners.Entities;
 using BusinessLogic.HomeOwners.Services;
 using BusinessLogic.Roles.Entities;
+using HomeConnect.WebApi.Controllers.Members.Models;
 using HomeConnect.WebApi.Filters;
 using Microsoft.AspNetCore.Mvc;
 
-namespace HomeConnect.WebApi.Controllers.Member;
+namespace HomeConnect.WebApi.Controllers.Members;
 
 [ApiController]
 [Route("members")]

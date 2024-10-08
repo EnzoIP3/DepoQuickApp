@@ -1,4 +1,4 @@
-namespace HomeConnect.WebApi.Controllers.User.Models;
+namespace HomeConnect.WebApi.Controllers.Users.Models;
 
 public record GetUsersResponse
 {

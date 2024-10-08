@@ -21,22 +21,22 @@ public class AuthService : IAuthService
     public string CreateToken(CreateTokenArgs args)
     {
         ValidateCreateTokenArgs(args);
-        var user = GetUserByEmail(args.Email);
+        User user = GetUserByEmail(args.Email);
         EnsurePasswordIsValid(args.Password, user);
-        var session = CreateSessionToken(user);
+        Token session = CreateSessionToken(user);
         TokenRepository.Add(session);
         return session.Id.ToString();
     }
 
     public User GetUserFromToken(string token)
     {
-        var session = GetValidatedSession(token);
+        Token session = GetValidatedSession(token);
         return session.User;
     }
 
     public bool IsTokenExpired(string token)
     {
-        var session = GetValidatedSession(token);
+        Token session = GetValidatedSession(token);
         return session.IsExpired();
     }
 
@@ -82,7 +82,7 @@ public class AuthService : IAuthService
         }
     }
 
-    private Token CreateSessionToken(User user)
+    private static Token CreateSessionToken(User user)
     {
         return new Token(user);
     }

@@ -24,8 +24,7 @@ public class NotificationService : INotificationService
     {
         EnsureOwnedDeviceExists(args.HardwareId);
         OwnedDevice ownedDevice = OwnedDeviceRepository.GetByHardwareId(Guid.Parse(args.HardwareId));
-        EnsureOwnedDeviceIsNotNull(ownedDevice);
-        var home = ownedDevice.Home;
+        Home home = ownedDevice.Home;
         var shouldReceiveNotification = new HomePermission(HomePermission.GetNotifications);
         NotifyUsersWithPermission(args, home, shouldReceiveNotification, ownedDevice);
     }
@@ -33,7 +32,9 @@ public class NotificationService : INotificationService
     public List<Notification> GetNotifications(Guid userId, string? deviceFilter = null, DateTime? dateFilter = null,
         bool? readFilter = null)
     {
-        var notifications = NotificationRepository.GetRange(userId, deviceFilter, dateFilter, readFilter);
+        EnsureDeviceFilterIsValid(deviceFilter);
+        List<Notification> notifications =
+            NotificationRepository.GetRange(userId, deviceFilter, dateFilter, readFilter);
         return notifications;
     }
 
@@ -41,6 +42,14 @@ public class NotificationService : INotificationService
     {
         notifications.ForEach(notification => notification.Read = true);
         NotificationRepository.UpdateRange(notifications);
+    }
+
+    private void EnsureDeviceFilterIsValid(string? deviceFilter)
+    {
+        if (deviceFilter != null && !Enum.TryParse<DeviceType>(deviceFilter, out _))
+        {
+            throw new ArgumentException("The device filter is not valid.");
+        }
     }
 
     public void CreateNotification(OwnedDevice ownedDevice, string @event, User user)
@@ -65,13 +74,5 @@ public class NotificationService : INotificationService
             .Where(member => member.HasPermission(shouldReceiveNotification))
             .Select(member => member.User));
         usersToNotify.ForEach(user => CreateNotification(ownedDevice, args.Event, user));
-    }
-
-    private static void EnsureOwnedDeviceIsNotNull(OwnedDevice ownedDevice)
-    {
-        if (ownedDevice == null)
-        {
-            throw new KeyNotFoundException("Device was not found.");
-        }
     }
 }

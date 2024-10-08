@@ -45,7 +45,7 @@ public class HomeOwnerService : IHomeOwnerService
         ValidateAddMemberArgs(args);
         User user = GetUserById(args.UserId);
         Home home = GetHome(Guid.Parse(args.HomeId));
-        var member = CreateMember(user, args);
+        Member member = CreateMember(user, args);
         home.AddMember(member);
         MemberRepository.Add(member);
         return member.Id;
@@ -60,14 +60,6 @@ public class HomeOwnerService : IHomeOwnerService
         AddDevicesToHome(home, devices);
     }
 
-    private static void EnsureDevicesAreNotEmpty(AddDevicesArgs addDevicesArgs)
-    {
-        if (!addDevicesArgs.DeviceIds.Any())
-        {
-            throw new ArgumentException("At least one device must be added to the home.");
-        }
-    }
-
     public Home GetHome(Guid homeId)
     {
         EnsureHomeExists(homeId);
@@ -76,13 +68,13 @@ public class HomeOwnerService : IHomeOwnerService
 
     public List<Member> GetHomeMembers(string homeId)
     {
-        var home = GetHome(ValidateAndParseGuid(homeId));
+        Home home = GetHome(ValidateAndParseGuid(homeId));
         return home.Members;
     }
 
     public IEnumerable<OwnedDevice> GetHomeDevices(string homeId)
     {
-        var home = GetHome(ValidateAndParseGuid(homeId));
+        Home home = GetHome(ValidateAndParseGuid(homeId));
         return OwnedDeviceRepository.GetOwnedDevicesByHome(home);
     }
 
@@ -91,6 +83,24 @@ public class HomeOwnerService : IHomeOwnerService
         EnsureShouldBeNotifiedIsNotNull(requestShouldBeNotified);
         Member member = GetMemberById(memberId);
         ChangeMemberPermissions(requestShouldBeNotified!.Value, member);
+    }
+
+    public Member GetMemberById(Guid memberId)
+    {
+        if (!HomeRepository.ExistsMember(memberId))
+        {
+            throw new ArgumentException("Member does not exist.");
+        }
+
+        return HomeRepository.GetMemberById(memberId);
+    }
+
+    private static void EnsureDevicesAreNotEmpty(AddDevicesArgs addDevicesArgs)
+    {
+        if (!addDevicesArgs.DeviceIds.Any())
+        {
+            throw new ArgumentException("At least one device must be added to the home.");
+        }
     }
 
     private static void EnsureShouldBeNotifiedIsNotNull(bool? requestShouldBeNotified)
@@ -134,12 +144,8 @@ public class HomeOwnerService : IHomeOwnerService
 
     private User GetUserById(string userId)
     {
-        var guid = ValidateAndParseGuid(userId);
-        if (!UserRepository.Exists(guid))
-        {
-            throw new ArgumentException("User does not exist.");
-        }
-
+        Guid guid = ValidateAndParseGuid(userId);
+        EnsureUserExists(userId);
         return UserRepository.Get(guid);
     }
 
@@ -201,16 +207,6 @@ public class HomeOwnerService : IHomeOwnerService
         {
             throw new InvalidOperationException("The member is already added to the home.");
         }
-    }
-
-    public Member GetMemberById(Guid memberId)
-    {
-        if (!HomeRepository.ExistsMember(memberId))
-        {
-            throw new ArgumentException("Member does not exist.");
-        }
-
-        return HomeRepository.GetMemberById(memberId);
     }
 
     private void ChangeMemberPermissions(bool requestShouldBeNotified, Member member)

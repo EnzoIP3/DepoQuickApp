@@ -24,19 +24,7 @@ public class NotificationRepository : INotificationRepository
     public List<Notification> GetRange(Guid userId, string? deviceFilter = null, DateTime? dateFilter = null,
         bool? readFilter = null)
     {
-        DeviceType? deviceTypeFilter = null;
-        if (!string.IsNullOrEmpty(deviceFilter))
-        {
-            if (Enum.TryParse(deviceFilter, out DeviceType deviceType))
-            {
-                deviceTypeFilter = deviceType;
-            }
-            else
-            {
-                throw new ArgumentException("Invalid device type filter");
-            }
-        }
-
+        DeviceType? deviceTypeFilter = deviceFilter != null ? Enum.Parse<DeviceType>(deviceFilter) : null;
         return _context.Notifications
             .Include(n => n.User)
             .Include(n => n.OwnedDevice).ThenInclude(od => od.Device)
@@ -48,17 +36,17 @@ public class NotificationRepository : INotificationRepository
             .ToList();
     }
 
+    public void UpdateRange(List<Notification> notifications)
+    {
+        _context.Notifications.UpdateRange(notifications);
+        _context.SaveChanges();
+    }
+
     private void EnsureNotificationDoesNotExist(Notification notification)
     {
         if (_context.Notifications.Any(n => n.Id == notification.Id))
         {
             throw new InvalidOperationException("Notification already exists.");
         }
-    }
-
-    public void UpdateRange(List<Notification> notifications)
-    {
-        _context.Notifications.UpdateRange(notifications);
-        _context.SaveChanges();
     }
 }

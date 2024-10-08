@@ -28,7 +28,7 @@ public class AdminService : IAdminService
         EnsureUserEmailIsUnique(args.Email);
 
         Role role = GetRoleByName(args.Role);
-        var admin = CreateNewUser(args, role);
+        User admin = CreateNewUser(args, role);
 
         UserRepository.Add(admin);
         return admin.Id;
@@ -40,7 +40,7 @@ public class AdminService : IAdminService
         EnsureUserEmailIsUnique(args.Email);
 
         Role role = GetRoleByName(args.Role);
-        var businessOwner = CreateNewUser(args, role);
+        User businessOwner = CreateNewUser(args, role);
 
         UserRepository.Add(businessOwner);
         return businessOwner.Id;
@@ -58,7 +58,7 @@ public class AdminService : IAdminService
         string? roleFilter = null)
     {
         PagedData<User> users =
-            UserRepository.GetAllPaged(currentPage ?? 1, pageSize ?? 10, fullNameFilter, roleFilter);
+            UserRepository.GetPaged(currentPage ?? 1, pageSize ?? 10, fullNameFilter, roleFilter);
         return users;
     }
 
@@ -66,7 +66,7 @@ public class AdminService : IAdminService
         string? fullNameFilter = null)
     {
         PagedData<Business> businesses =
-            BusinessRepository.GetPagedData(currentPage ?? 1, pageSize ?? 10, fullNameFilter, nameFilter);
+            BusinessRepository.GetPaged(currentPage ?? 1, pageSize ?? 10, fullNameFilter, nameFilter);
         return businesses;
     }
 

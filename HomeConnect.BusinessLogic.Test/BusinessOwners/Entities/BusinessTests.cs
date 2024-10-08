@@ -8,7 +8,7 @@ namespace HomeConnect.BusinessLogic.Test.BusinessOwners.Entities;
 public class BusinessTests
 {
     [TestMethod]
-    public void Constructor_WithValidArguments_ShouldCreateInstance()
+    public void Constructor_WhenArgumentsAreValid_CreatesInstance()
     {
         // Arrange
         var user = new User();
@@ -21,7 +21,7 @@ public class BusinessTests
     }
 
     [TestMethod]
-    public void Constructor_WithInvalidLogoUrl_ShouldThrowException()
+    public void Constructor_WhenInvalidLogoUrl_ThrowsException()
     {
         // Arrange
         var user = new User();
@@ -37,7 +37,7 @@ public class BusinessTests
     [DataRow("", "Business", "https://example.com/image.png")]
     [DataRow("RUT", "", "https://example.com/image.png")]
     [DataRow("RUT", "Business", "")]
-    public void Constructor_WithBlankArguments_ShouldThrowException(string rut, string name, string logo)
+    public void Constructor_WhenArgumentsAreBlank_ThrowsException(string rut, string name, string logo)
     {
         // Arrange
         var user = new User();

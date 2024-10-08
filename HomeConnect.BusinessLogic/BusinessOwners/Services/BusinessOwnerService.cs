@@ -26,12 +26,30 @@ public class BusinessOwnerService : IBusinessOwnerService
 
     public Business CreateBusiness(CreateBusinessArgs args)
     {
-        var ownerId = ParseAndValidateOwnerId(args.OwnerId);
+        Guid ownerId = ParseAndValidateOwnerId(args.OwnerId);
         EnsureBusinessPrerequisites(ownerId, args.Rut);
         User owner = GetUserById(ownerId);
         var business = new Business(args.Rut, args.Name, args.Logo, owner);
         BusinessRepository.Add(business);
         return business;
+    }
+
+    public Device CreateDevice(CreateDeviceArgs args)
+    {
+        Business business = GetValidatedBusiness(args.Owner.Id);
+        Device device = CreateDevice(args, business);
+        EnsureDeviceDoesNotExist(args.ModelNumber);
+        DeviceRepository.Add(device);
+        return device;
+    }
+
+    public Camera CreateCamera(CreateCameraArgs args)
+    {
+        Business business = GetValidatedBusiness(args.Owner.Id);
+        Camera camera = CreateCamera(args, business);
+        EnsureDeviceDoesNotExist(args.ModelNumber);
+        DeviceRepository.Add(camera);
+        return camera;
     }
 
     private void EnsureDeviceDoesNotExist(int? modelNumber)
@@ -42,27 +60,9 @@ public class BusinessOwnerService : IBusinessOwnerService
         }
     }
 
-    public Device CreateDevice(CreateDeviceArgs args)
-    {
-        var business = GetValidatedBusiness(args.Owner.Id);
-        var device = CreateDevice(args, business);
-        EnsureDeviceDoesNotExist(args.ModelNumber);
-        DeviceRepository.Add(device);
-        return device;
-    }
-
-    public Camera CreateCamera(CreateCameraArgs args)
-    {
-        EnsureDeviceDoesNotExist(args.ModelNumber);
-        var business = GetValidatedBusiness(args.Owner.Id);
-        var camera = CreateCamera(args, business);
-        DeviceRepository.Add(camera);
-        return camera;
-    }
-
     private static Guid ParseAndValidateOwnerId(string ownerId)
     {
-        if (!Guid.TryParse(ownerId, out var parsedOwnerId))
+        if (!Guid.TryParse(ownerId, out Guid parsedOwnerId))
         {
             throw new ArgumentException("The business owner ID is not a valid GUID.");
         }

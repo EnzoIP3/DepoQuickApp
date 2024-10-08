@@ -1,13 +1,14 @@
 using BusinessLogic;
+using BusinessLogic.Devices.Entities;
 using BusinessLogic.Devices.Models;
 using BusinessLogic.Devices.Services;
-using HomeConnect.WebApi.Controllers.Device.Models;
-using HomeConnect.WebApi.Controllers.Home.Models;
+using HomeConnect.WebApi.Controllers.Devices.Models;
+using HomeConnect.WebApi.Controllers.Homes.Models;
 using HomeConnect.WebApi.Filters;
 using Microsoft.AspNetCore.Mvc;
-using GetDevicesResponse = HomeConnect.WebApi.Controllers.Device.Models.GetDevicesResponse;
+using GetDevicesResponse = HomeConnect.WebApi.Controllers.Devices.Models.GetDevicesResponse;
 
-namespace HomeConnect.WebApi.Controllers.Device;
+namespace HomeConnect.WebApi.Controllers.Devices;
 
 [Route("devices")]
 [ApiController]
@@ -33,12 +34,12 @@ public class DeviceController : ControllerBase
             DeviceNameFilter = parameters.Name,
             ModelNumberFilter = parameters.Model
         };
-        PagedData<BusinessLogic.Devices.Entities.Device> devices = _deviceService.GetDevices(args);
+        PagedData<Device> devices = _deviceService.GetDevices(args);
         GetDevicesResponse response = ResponseFromDevices(devices);
         return response;
     }
 
-    private static GetDevicesResponse ResponseFromDevices(PagedData<BusinessLogic.Devices.Entities.Device> devices)
+    private static GetDevicesResponse ResponseFromDevices(PagedData<Device> devices)
     {
         return new GetDevicesResponse
         {

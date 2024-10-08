@@ -38,7 +38,7 @@ public class DeviceRepository : PaginatedRepositoryBase<Device>, IDeviceReposito
         return _context.Devices.Any(d => d.ModelNumber == modelNumber);
     }
 
-    public PagedData<Device> GetDevices(GetDevicesArgs args)
+    public PagedData<Device> GetPaged(GetDevicesArgs args)
     {
         var filters = new object[4];
         filters[0] = args.DeviceNameFilter ?? string.Empty;
@@ -102,14 +102,8 @@ public class DeviceRepository : PaginatedRepositoryBase<Device>, IDeviceReposito
     {
         if (!string.IsNullOrEmpty(deviceTypeFilter))
         {
-            if (Enum.TryParse(deviceTypeFilter, out DeviceType deviceType))
-            {
-                query = query.Where(d => d.Type == deviceType);
-            }
-            else
-            {
-                throw new ArgumentException("Invalid device type filter");
-            }
+            DeviceType deviceType = Enum.Parse<DeviceType>(deviceTypeFilter);
+            query = query.Where(d => d.Type == deviceType);
         }
 
         return query;

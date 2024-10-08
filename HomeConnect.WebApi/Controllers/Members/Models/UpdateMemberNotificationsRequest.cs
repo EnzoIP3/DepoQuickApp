@@ -1,4 +1,4 @@
-namespace HomeConnect.WebApi.Controllers.Member;
+namespace HomeConnect.WebApi.Controllers.Members.Models;
 
 public record UpdateMemberNotificationsRequest
 {

@@ -1,11 +1,11 @@
 using BusinessLogic.Admins.Services;
 using BusinessLogic.Roles.Entities;
 using BusinessLogic.Users.Models;
-using HomeConnect.WebApi.Controllers.Admin.Models;
+using HomeConnect.WebApi.Controllers.Admins.Models;
 using HomeConnect.WebApi.Filters;
 using Microsoft.AspNetCore.Mvc;
 
-namespace HomeConnect.WebApi.Controllers.Admin;
+namespace HomeConnect.WebApi.Controllers.Admins;
 
 [ApiController]
 [Route("admins")]

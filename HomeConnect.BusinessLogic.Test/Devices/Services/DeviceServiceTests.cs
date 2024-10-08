@@ -53,17 +53,17 @@ public class DeviceServiceTests
     [TestMethod]
     [DataRow("hardwareId")]
     [DataRow("")]
-    public void Toggle_WhenHardwareIdIsInvalid_ShouldThrowArgumentException(string id)
+    public void Toggle_WhenHardwareIdIsInvalid_ThrowsArgumentException(string id)
     {
         // Act
-        Func<bool> act = () => _deviceService.Toggle(id);
+        Func<bool> act = () => _deviceService.ToggleDevice(id);
 
         // Assert
         act.Should().Throw<ArgumentException>().WithMessage("Hardware ID is invalid.");
     }
 
     [TestMethod]
-    public void Toggle_WhenHardwareIdIsValid_ShouldReturnConnectionState()
+    public void Toggle_WhenHardwareIdIsValid_ReturnsConnected()
     {
         // Arrange
         var ownedDevice =
@@ -75,7 +75,7 @@ public class DeviceServiceTests
         _ownedDeviceRepository.Setup(x => x.Update(ownedDevice)).Verifiable();
 
         // Act
-        var result = _deviceService.Toggle(hardwareId);
+        var result = _deviceService.ToggleDevice(hardwareId);
 
         // Assert
         result.Should().BeFalse();
@@ -83,14 +83,14 @@ public class DeviceServiceTests
     }
 
     [TestMethod]
-    public void Toggle_WhenOwnedDeviceDoesNotExist_ShouldThrowArgumentException()
+    public void Toggle_WhenOwnedDeviceDoesNotExist_ThrowsKeyNotFoundException()
     {
         // Arrange
         var hardwareId = Guid.NewGuid().ToString();
         _ownedDeviceRepository.Setup(x => x.Exists(Guid.Parse(hardwareId))).Returns(false);
 
         // Act
-        Func<bool> act = () => _deviceService.Toggle(hardwareId);
+        Func<bool> act = () => _deviceService.ToggleDevice(hardwareId);
 
         // Assert
         act.Should().Throw<KeyNotFoundException>().WithMessage("The device is not registered in this home.");
@@ -100,7 +100,7 @@ public class DeviceServiceTests
     public void GetDevices_WhenCalled_ReturnsDeviceList()
     {
         // Arrange
-        _deviceRepository.Setup(x => x.GetDevices(It.Is<GetDevicesArgs>(args =>
+        _deviceRepository.Setup(x => x.GetPaged(It.Is<GetDevicesArgs>(args =>
             args.Page == _parameters.Page &&
             args.PageSize == _parameters.PageSize &&
             args.DeviceNameFilter == _parameters.DeviceNameFilter &&
@@ -120,7 +120,7 @@ public class DeviceServiceTests
 
         result.Should().BeEquivalentTo(expectedPagedDeviceList,
             options => options.ComparingByMembers<PagedData<Device>>());
-        _deviceRepository.Verify(x => x.GetDevices(
+        _deviceRepository.Verify(x => x.GetPaged(
             It.Is<GetDevicesArgs>(args =>
                 args.Page == _parameters.Page &&
                 args.PageSize == _parameters.PageSize &&
@@ -149,7 +149,7 @@ public class DeviceServiceTests
     #region Error
 
     [TestMethod]
-    public void IsConnected_WhenHardwareIdIsInvalid_ShouldThrowArgumentException()
+    public void IsConnected_WhenHardwareIdIsInvalid_ThrowsArgumentException()
     {
         // Arrange
         var hardwareId = "hardwareId";
@@ -162,7 +162,7 @@ public class DeviceServiceTests
     }
 
     [TestMethod]
-    public void IsConnected_WhenOwnedDeviceDoesNotExist_ShouldThrowArgumentException()
+    public void IsConnected_WhenOwnedDeviceDoesNotExist_ThrowsKeyNotFoundException()
     {
         // Arrange
         var hardwareId = Guid.NewGuid().ToString();

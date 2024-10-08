@@ -20,8 +20,7 @@ public class Member
         HomePermissions = homePermissions;
     }
 
-    [Key]
-    public Guid Id { get; set; } = Guid.NewGuid();
+    [Key] public Guid Id { get; set; } = Guid.NewGuid();
 
     public User User { get; init; } = null!;
     public Guid UserId { get; set; }

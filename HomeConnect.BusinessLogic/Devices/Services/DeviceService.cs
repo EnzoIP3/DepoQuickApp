@@ -19,15 +19,15 @@ public class DeviceService : IDeviceService
     {
         parameters.Page ??= 1;
         parameters.PageSize ??= 10;
-        PagedData<Device> devices = DeviceRepository.GetDevices(parameters);
+        PagedData<Device> devices = DeviceRepository.GetPaged(parameters);
         return devices;
     }
 
-    public bool Toggle(string hardwareId)
+    public bool ToggleDevice(string hardwareId)
     {
         EnsureHardwareIdIsValid(hardwareId);
         EnsureOwnedDeviceExists(hardwareId);
-        var ownedDevice = OwnedDeviceRepository.GetByHardwareId(Guid.Parse(hardwareId));
+        OwnedDevice ownedDevice = OwnedDeviceRepository.GetByHardwareId(Guid.Parse(hardwareId));
         ownedDevice.Connected = !ownedDevice.Connected;
         OwnedDeviceRepository.Update(ownedDevice);
         return ownedDevice.Connected;
@@ -42,7 +42,7 @@ public class DeviceService : IDeviceService
     {
         EnsureHardwareIdIsValid(hardwareId);
         EnsureOwnedDeviceExists(hardwareId);
-        var ownedDevice = OwnedDeviceRepository.GetByHardwareId(Guid.Parse(hardwareId));
+        OwnedDevice ownedDevice = OwnedDeviceRepository.GetByHardwareId(Guid.Parse(hardwareId));
         return ownedDevice.Connected;
     }
 

@@ -56,12 +56,6 @@ public class HomeRepository : IHomeRepository
         return _context.Homes.FirstOrDefault(h => h.Address == argsAddress);
     }
 
-    public void Update(Home home)
-    {
-        _context.Homes.Update(home);
-        _context.SaveChanges();
-    }
-
     public bool Exists(Guid homeId)
     {
         return _context.Homes.Any(h => h.Id == homeId);

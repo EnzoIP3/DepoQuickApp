@@ -76,24 +76,6 @@ public class UserRepositoryTest
 
     #endregion
 
-    #region Delete
-
-    #region Success
-
-    [TestMethod]
-    public void Delete_WhenUserExists_ShouldDeleteUser()
-    {
-        // Act
-        _userRepository.Delete(_validUser.Id);
-
-        // Assert
-        _userRepository.Exists(_validUser.Id).Should().BeFalse();
-    }
-
-    #endregion
-
-    #endregion
-
     #region Exists
 
     #region Success
@@ -130,7 +112,7 @@ public class UserRepositoryTest
     public void GetUsers_WhenCalled_ReturnsPaginatedUsers()
     {
         // Act
-        PagedData<User> result = _userRepository.GetAllPaged(1, 2);
+        PagedData<User> result = _userRepository.GetPaged(1, 2);
 
         // Assert
         result.Data.Should().HaveCount(2);
@@ -141,7 +123,7 @@ public class UserRepositoryTest
     public void GetUsers_WhenFilteredByFullName_ReturnsFilteredUsers()
     {
         // Act
-        PagedData<User> result = _userRepository.GetAllPaged(1, 10, "Jane");
+        PagedData<User> result = _userRepository.GetPaged(1, 10, "Jane");
 
         // Assert
         result.Data.Should().HaveCount(1);
@@ -152,7 +134,7 @@ public class UserRepositoryTest
     public void GetUsers_WhenFilteredByFullNameAndRole_ReturnsFilteredUsers()
     {
         // Act
-        PagedData<User> result = _userRepository.GetAllPaged(1, 10, "J", "Role 1");
+        PagedData<User> result = _userRepository.GetPaged(1, 10, "J", "Role 1");
 
         // Assert
         result.Data.Should().HaveCount(1);
@@ -198,7 +180,7 @@ public class UserRepositoryTest
     #region Success
 
     [TestMethod]
-    public void Exists_WhenUserExists_ShouldReturnTrue()
+    public void Exists_WhenUserExists_ReturnsTrue()
     {
         // Act
         var exists = _userRepository.Exists(_validUser.Id);
@@ -208,7 +190,7 @@ public class UserRepositoryTest
     }
 
     [TestMethod]
-    public void Exists_WhenUserDoesNotExist_ShouldReturnFalse()
+    public void Exists_WhenUserDoesNotExist_ReturnsFalse()
     {
         // Arrange
         var nonExistentUserId = Guid.NewGuid();

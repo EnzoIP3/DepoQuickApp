@@ -122,7 +122,7 @@ public class BusinessRepositoryTests
         };
 
         // Act
-        PagedData<Business> result = _businessRepository.GetPagedData(1, 2);
+        PagedData<Business> result = _businessRepository.GetPaged(1, 2);
 
         // Assert
         result.Data.Should().BeEquivalentTo(expected.Data);
@@ -135,7 +135,7 @@ public class BusinessRepositoryTests
         var expected = new List<Business> { _validBusiness };
 
         // Act
-        PagedData<Business> result = _businessRepository.GetPagedData(1, 1);
+        PagedData<Business> result = _businessRepository.GetPaged(1, 1);
 
         // Assert
         result.Data.Should().BeEquivalentTo(expected);
@@ -148,7 +148,7 @@ public class BusinessRepositoryTests
         var expected = new PagedData<Business> { Data = [_validBusiness], Page = 1, PageSize = 2, TotalPages = 1 };
 
         // Act
-        PagedData<Business> result = _businessRepository.GetPagedData(1, 2, "John Doe");
+        PagedData<Business> result = _businessRepository.GetPaged(1, 2, "John Doe");
 
         // Assert
         result.Data.Should().BeEquivalentTo(expected.Data);
@@ -161,7 +161,7 @@ public class BusinessRepositoryTests
         var expected = new PagedData<Business> { Data = [_otherBusiness], Page = 1, PageSize = 2, TotalPages = 1 };
 
         // Act
-        PagedData<Business> result = _businessRepository.GetPagedData(1, 2, null, "Other");
+        PagedData<Business> result = _businessRepository.GetPaged(1, 2, null, "Other");
 
         // Assert
         result.Data.Should().BeEquivalentTo(expected.Data);
@@ -174,7 +174,7 @@ public class BusinessRepositoryTests
         var expected = new PagedData<Business> { Data = [_otherBusiness], Page = 1, PageSize = 2, TotalPages = 1 };
 
         // Act
-        PagedData<Business> result = _businessRepository.GetPagedData(1, 2, "J", "Other");
+        PagedData<Business> result = _businessRepository.GetPaged(1, 2, "J", "Other");
 
         // Assert
         result.Data.Should().BeEquivalentTo(expected.Data);

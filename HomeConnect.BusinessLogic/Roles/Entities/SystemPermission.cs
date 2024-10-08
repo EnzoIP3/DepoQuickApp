@@ -18,6 +18,7 @@ public record SystemPermission
     public const string CreateBusiness = "create-business";
     public const string CreateCamera = "create-camera";
     public const string CreateSensor = "create-sensor";
+    public const string GetNotifications = "get-notifications";
 
     public SystemPermission()
     {
@@ -29,8 +30,7 @@ public record SystemPermission
         Roles = roles;
     }
 
-    [Key]
-    public string Value { get; init; } = null!;
+    [Key] public string Value { get; init; } = null!;
 
     public List<Role>? Roles { get; set; }
 

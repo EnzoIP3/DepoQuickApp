@@ -333,7 +333,7 @@ public class BusinessOwnerServiceTests
     }
 
     [TestMethod]
-    public void CreateCamera_ReturnsCorrectId()
+    public void CreateCamera_WhenCalled_ReturnsCorrectId()
     {
         // Arrange
         var business = new Business("RUTexample", "Business Name", "https://example.com/image.png", _owner);

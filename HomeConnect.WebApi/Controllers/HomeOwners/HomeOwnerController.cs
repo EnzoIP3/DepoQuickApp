@@ -1,10 +1,11 @@
 using BusinessLogic.Roles.Entities;
+using BusinessLogic.Users.Entities;
 using BusinessLogic.Users.Models;
 using BusinessLogic.Users.Services;
-using HomeConnect.WebApi.Controllers.HomeOwner.Models;
+using HomeConnect.WebApi.Controllers.HomeOwners.Models;
 using Microsoft.AspNetCore.Mvc;
 
-namespace HomeConnect.WebApi.Controllers.HomeOwner;
+namespace HomeConnect.WebApi.Controllers.HomeOwners;
 
 [ApiController]
 [Route("home_owners")]
@@ -13,7 +14,7 @@ public class HomeOwnerController(IUserService userService) : ControllerBase
     [HttpPost]
     public CreateHomeOwnerResponse CreateHomeOwner([FromBody] CreateHomeOwnerRequest args)
     {
-        BusinessLogic.Users.Entities.User user = userService.CreateUser(new CreateUserArgs
+        User user = userService.CreateUser(new CreateUserArgs
         {
             Name = args.Name,
             Surname = args.Surname,

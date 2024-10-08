@@ -1,4 +1,4 @@
-namespace HomeConnect.WebApi.Controllers.BusinessOwner.Models;
+namespace HomeConnect.WebApi.Controllers.BusinessOwners.Models;
 
 public record CreateBusinessOwnerRequest
 {

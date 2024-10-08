@@ -1,4 +1,4 @@
-namespace HomeConnect.WebApi.Controllers.HomeOwner.Models;
+namespace HomeConnect.WebApi.Controllers.HomeOwners.Models;
 
 public record CreateHomeOwnerRequest
 {

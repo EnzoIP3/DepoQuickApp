@@ -25,7 +25,7 @@ public class TokenRepositoryTests
     }
 
     [TestMethod]
-    public void Add_WithValidToken_ShouldAddToken()
+    public void Add_WithValidToken_AddsToken()
     {
         // Arrange
         var user = new User();
@@ -39,7 +39,7 @@ public class TokenRepositoryTests
     }
 
     [TestMethod]
-    public void Get_WithValidToken_ShouldReturnToken()
+    public void Get_WithValidToken_ReturnsToken()
     {
         // Arrange
         var user = new User();
@@ -54,7 +54,7 @@ public class TokenRepositoryTests
     }
 
     [TestMethod]
-    public void Get_WithInvalidToken_ShouldThrowException()
+    public void Get_WithInvalidToken_ThrowsException()
     {
         // Arrange
         var user = new User();
@@ -69,7 +69,7 @@ public class TokenRepositoryTests
     }
 
     [TestMethod]
-    public void Exists_WhenTokenExists_ShouldReturnTrue()
+    public void Exists_WhenTokenExists_ReturnsTrue()
     {
         // Arrange
         var user = new User();

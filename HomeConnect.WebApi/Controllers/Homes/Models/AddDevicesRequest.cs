@@ -1,4 +1,4 @@
-namespace HomeConnect.WebApi.Controllers.Home.Models;
+namespace HomeConnect.WebApi.Controllers.Homes.Models;
 
 public record AddDevicesRequest
 {

@@ -46,7 +46,7 @@ public class HomeAuthorizationFilterAttributeTests
     }
 
     [TestMethod]
-    public void OnAuthorization_UserNotAuthenticated_ShouldReturnUnauthorizedResult()
+    public void OnAuthorization_WhenUserNotAuthenticated_ReturnsUnauthorizedResult()
     {
         var items = new Dictionary<object, object?> { { Item.UserLogged, null } };
         _httpContextMock.Setup(h => h.Items).Returns(items);
@@ -64,7 +64,7 @@ public class HomeAuthorizationFilterAttributeTests
     }
 
     [TestMethod]
-    public void OnAuthorization_WhenHomeIdIsInvalid_ShouldReturnUnauthorizedResult()
+    public void OnAuthorization_WhenHomeIdIsInvalid_ReturnsUnauthorizedResult()
     {
         var items = new Dictionary<object, object?> { { Item.UserLogged, _user } };
         _httpContextMock.Setup(h => h.Items).Returns(items);
@@ -83,7 +83,7 @@ public class HomeAuthorizationFilterAttributeTests
     }
 
     [TestMethod]
-    public void OnAuthorization_IfUserDoesNotHavePermission_ShouldReturnsForbiddenResult()
+    public void OnAuthorization_WhenUserDoesNotHavePermission_ReturnsForbiddenResult()
     {
         var otherUser = new User("Name2", "Surname2", "email2@email.com", "Password@100",
             new Role { Name = "HomeOwner", Permissions = [] });
@@ -114,7 +114,7 @@ public class HomeAuthorizationFilterAttributeTests
     }
 
     [TestMethod]
-    public void OnAuthorization_IfHomeDoesNotExist_ShouldReturnBadRequestResult()
+    public void OnAuthorization_WhenHomeDoesNotExist_ReturnsBadRequestResult()
     {
         var homeId = Guid.NewGuid();
         var items = new Dictionary<object, object?> { { Item.UserLogged, _user } };
@@ -139,7 +139,7 @@ public class HomeAuthorizationFilterAttributeTests
     }
 
     [TestMethod]
-    public void OnAuthorization_WhenMemberIdIsInvalid_ShouldReturnBadRequestResult()
+    public void OnAuthorization_WhenMemberIdIsInvalid_ReturnsBadRequestResult()
     {
         // Arrange
         var items = new Dictionary<object, object?> { { Item.UserLogged, _user } };
@@ -161,7 +161,7 @@ public class HomeAuthorizationFilterAttributeTests
     }
 
     [TestMethod]
-    public void OnAuthorization_IfMemberDoesNotExist_ShouldReturnNotFoundResult()
+    public void OnAuthorization_WhenMemberDoesNotExist_ReturnsNotFoundResult()
     {
         // Arrange
         var items = new Dictionary<object, object?> { { Item.UserLogged, _user } };
@@ -189,7 +189,7 @@ public class HomeAuthorizationFilterAttributeTests
     }
 
     [TestMethod]
-    public void OnAuthorization_WhenUserIsMemberButLacksPermission_ShouldReturnForbiddenResult()
+    public void OnAuthorization_WhenUserIsMemberButLacksPermission_ReturnsForbiddenResult()
     {
         // Arrange
         var owner = new User();

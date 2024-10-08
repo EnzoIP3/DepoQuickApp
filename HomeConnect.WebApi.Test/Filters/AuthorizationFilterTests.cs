@@ -37,7 +37,7 @@ public class AuthorizationFilterTests
     }
 
     [TestMethod]
-    public void OnAuthorization_UserNotAuthenticated_ShouldReturnsUnauthorizedResult()
+    public void OnAuthorization_WhenUserNotAuthenticated_ReturnsUnauthorizedResult()
     {
         var items = new Dictionary<object, object?> { { Item.UserLogged, null } };
         _httpContextMock.Setup(h => h.Items).Returns(items);
@@ -55,7 +55,7 @@ public class AuthorizationFilterTests
     }
 
     [TestMethod]
-    public void OnAuthorization_IfUserDoesNotHavePermission_ShouldReturnsForbiddenResult()
+    public void OnAuthorization_WhenUserDoesNotHavePermission_ReturnsForbiddenResult()
     {
         var items = new Dictionary<object, object?>
         {

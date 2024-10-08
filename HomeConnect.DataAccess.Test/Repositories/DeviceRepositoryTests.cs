@@ -46,7 +46,7 @@ public class DeviceRepositoryTests
     #region Success
 
     [TestMethod]
-    public void Add_WhenDeviceDoesNotExist_ShouldAddDevice()
+    public void Add_WhenDeviceDoesNotExist_AddsDevice()
     {
         // Arrange
         var business = new Business("12345", "Business", "https://example.com/image.png", _validUser);
@@ -64,12 +64,35 @@ public class DeviceRepositoryTests
 
     #endregion
 
+    #region ExistsByModelNumber
+
+    #region Success
+
+    [TestMethod]
+    public void ExistsByModelNumber_WhenDeviceExists_ReturnsTrue()
+    {
+        // Arrange
+        var device = new Device("Device", 12345, "Device description", "https://example.com/image.png",
+            [], "Sensor", new Business("12345", "Business", "https://example.com/image.png", _validUser));
+        _deviceRepository.Add(device);
+
+        // Act
+        var result = _deviceRepository.ExistsByModelNumber(device.ModelNumber);
+
+        // Assert
+        result.Should().BeTrue();
+    }
+
+    #endregion
+
+    #endregion
+
     #region Get
 
     #region Success
 
     [TestMethod]
-    public void Get_WhenDeviceExists_ShouldReturnDevice()
+    public void Get_WhenDeviceExists_ReturnsDevice()
     {
         // Arrange
         var business = new Business("12345", "Business", "https://example.com/image.png", _validUser);
@@ -90,7 +113,7 @@ public class DeviceRepositoryTests
     #region Error
 
     [TestMethod]
-    public void Get_WhenDeviceDoesNotExist_ShouldThrowArgumentException()
+    public void Get_WhenDeviceDoesNotExist_ThrowsArgumentException()
     {
         // Arrange
         var nonExistentDeviceId = Guid.NewGuid();
@@ -117,7 +140,7 @@ public class DeviceRepositoryTests
         var args = new GetDevicesArgs { Page = 1, PageSize = 2 };
 
         // Act
-        PagedData<Device> result = _deviceRepository.GetDevices(args);
+        PagedData<Device> result = _deviceRepository.GetPaged(args);
 
         // Assert
         result.Data.Should().HaveCount(2);
@@ -133,7 +156,7 @@ public class DeviceRepositoryTests
         var args = new GetDevicesArgs { Page = 1, PageSize = 10, DeviceNameFilter = deviceNameFilter };
 
         // Act
-        PagedData<Device> result = _deviceRepository.GetDevices(args);
+        PagedData<Device> result = _deviceRepository.GetPaged(args);
 
         // Assert
         result.Data.Should().HaveCount(1);
@@ -148,11 +171,26 @@ public class DeviceRepositoryTests
         var args = new GetDevicesArgs { Page = 1, PageSize = 10, ModelNumberFilter = modelNumberFilter };
 
         // Act
-        PagedData<Device> result = _deviceRepository.GetDevices(args);
+        PagedData<Device> result = _deviceRepository.GetPaged(args);
 
         // Assert
         result.Data.Should().HaveCount(1);
         result.Data.First().ModelNumber.Should().Be(modelNumberFilter);
+    }
+
+    [TestMethod]
+    public void GetDevices_WhenFilteredByBusinessName_ReturnsFilteredDevices()
+    {
+        // Arrange
+        var businessNameFilter = "BusinessValid2";
+        var args = new GetDevicesArgs { Page = 1, PageSize = 10, BusinessNameFilter = businessNameFilter };
+
+        // Act
+        PagedData<Device> result = _deviceRepository.GetPaged(args);
+
+        // Assert
+        result.Data.Should().HaveCount(1);
+        result.Data.First().Business.Name.Should().Contain(businessNameFilter);
     }
 
     [TestMethod]
@@ -165,7 +203,7 @@ public class DeviceRepositoryTests
         var args = new GetDevicesArgs { Page = 1, PageSize = 2, DeviceTypeFilter = deviceType.ToString() };
 
         // Act
-        PagedData<Device> result = _deviceRepository.GetDevices(args);
+        PagedData<Device> result = _deviceRepository.GetPaged(args);
 
         // Assert
         result.Data.Should().HaveCount(1);
@@ -180,7 +218,7 @@ public class DeviceRepositoryTests
         var args = new GetDevicesArgs { Page = 1, PageSize = 2, DeviceTypeFilter = deviceTypeFilter };
 
         // Act
-        PagedData<Device> result = _deviceRepository.GetDevices(args);
+        PagedData<Device> result = _deviceRepository.GetPaged(args);
 
         // Assert
         result.Data.Should().HaveCount(1);
@@ -190,29 +228,6 @@ public class DeviceRepositoryTests
     #endregion
 
     #region Error
-
-    #endregion
-
-    #endregion
-
-    #region ExistsByModelNumber
-
-    #region Success
-
-    [TestMethod]
-    public void ExistsByModelNumber_WhenDeviceExists_ShouldReturnTrue()
-    {
-        // Arrange
-        var device = new Device("Device", 12345, "Device description", "https://example.com/image.png",
-            [], "Sensor", new Business("12345", "Business", "https://example.com/image.png", _validUser));
-        _deviceRepository.Add(device);
-
-        // Act
-        var result = _deviceRepository.ExistsByModelNumber(device.ModelNumber);
-
-        // Assert
-        result.Should().BeTrue();
-    }
 
     #endregion
 

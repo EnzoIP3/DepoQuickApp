@@ -1,16 +1,18 @@
 using BusinessLogic.BusinessOwners.Models;
 using BusinessLogic.BusinessOwners.Services;
+using BusinessLogic.Devices.Entities;
 using BusinessLogic.Devices.Services;
 using BusinessLogic.Notifications.Models;
 using BusinessLogic.Notifications.Services;
 using BusinessLogic.Roles.Entities;
-using HomeConnect.WebApi.Controllers.Device;
-using HomeConnect.WebApi.Controllers.Device.Models;
-using HomeConnect.WebApi.Controllers.Sensor.Models;
+using BusinessLogic.Users.Entities;
+using HomeConnect.WebApi.Controllers.Devices;
+using HomeConnect.WebApi.Controllers.Devices.Models;
+using HomeConnect.WebApi.Controllers.Sensors.Models;
 using HomeConnect.WebApi.Filters;
 using Microsoft.AspNetCore.Mvc;
 
-namespace HomeConnect.WebApi.Controllers.Sensor;
+namespace HomeConnect.WebApi.Controllers.Sensors;
 
 [ApiController]
 [Route("sensors")]
@@ -25,7 +27,7 @@ public class SensorController(
     [AuthorizationFilter(SystemPermission.CreateSensor)]
     public CreateSensorResponse CreateSensor([FromBody] CreateSensorRequest request)
     {
-        var userLoggedIn = HttpContext.Items[Item.UserLogged] as BusinessLogic.Users.Entities.User;
+        var userLoggedIn = HttpContext.Items[Item.UserLogged] as User;
         var args = new CreateDeviceArgs
         {
             Owner = userLoggedIn!,
@@ -37,7 +39,7 @@ public class SensorController(
             Type = "Sensor"
         };
 
-        BusinessLogic.Devices.Entities.Device createdSensor = businessOwnerService.CreateDevice(args);
+        Device createdSensor = businessOwnerService.CreateDevice(args);
 
         return new CreateSensorResponse { Id = createdSensor.Id };
     }

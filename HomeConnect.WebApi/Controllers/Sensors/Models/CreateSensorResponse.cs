@@ -1,4 +1,4 @@
-namespace HomeConnect.WebApi.Controllers.Sensor.Models;
+namespace HomeConnect.WebApi.Controllers.Sensors.Models;
 
 public record CreateSensorResponse
 {

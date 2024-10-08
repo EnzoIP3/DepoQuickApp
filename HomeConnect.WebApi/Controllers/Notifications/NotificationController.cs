@@ -28,6 +28,7 @@ public class NotificationController(INotificationService notificationService) : 
                 DateCreated = n.Date
             }).ToList()
         };
+        notificationService.MarkNotificationsAsRead(notifications);
         return response;
     }
 

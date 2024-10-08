@@ -55,6 +55,7 @@ public class NotificationControllerTests
         _httpContextMock.SetupGet(h => h.Items).Returns(items);
         _notificationService.Setup(n => n.GetNotifications(user.Id, request.Device, dateCreated, request.Read))
             .Returns([notification]);
+        _notificationService.Setup(n => n.MarkNotificationsAsRead(new List<Notification> { notification })).Verifiable();
 
         // Act
         GetNotificationsResponse response = _notificationController.GetNotifications(request);

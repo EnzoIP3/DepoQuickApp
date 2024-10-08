@@ -50,7 +50,7 @@ public class NotificationController(INotificationService notificationService) : 
     {
         if (request.DateCreated != null)
         {
-            dateCreated = DateTime.ParseExact(request.DateCreated, "yyyy-MM-ddTHH:mm:ss",
+            dateCreated = DateTime.ParseExact(request.DateCreated, "dd-MM-yyyy",
                 CultureInfo.InvariantCulture);
         }
 

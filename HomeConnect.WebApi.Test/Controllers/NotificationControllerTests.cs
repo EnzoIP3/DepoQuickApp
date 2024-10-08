@@ -51,7 +51,7 @@ public class NotificationControllerTests
             Date = DateTime.Now
         };
         var items = new Dictionary<object, object?> { { Item.UserLogged, user } };
-        var dateCreated = DateTime.ParseExact(request.DateCreated, "yyyy-MM-ddTHH:mm:ss", CultureInfo.InvariantCulture);
+        var dateCreated = DateFromString(request.DateCreated);
         _httpContextMock.SetupGet(h => h.Items).Returns(items);
         _notificationService.Setup(n => n.GetNotifications(user.Id, request.Device, dateCreated, request.Read))
             .Returns([notification]);
@@ -88,6 +88,11 @@ public class NotificationControllerTests
 
     private static string DateToString(DateTime date)
     {
-        return date.ToString("yyyy-MM-ddTHH:mm:ss");
+        return date.ToString("dd-MM-yyyy");
+    }
+
+    private static DateTime DateFromString(string date)
+    {
+        return DateTime.ParseExact(date, "dd-MM-yyyy", CultureInfo.InvariantCulture);
     }
 }

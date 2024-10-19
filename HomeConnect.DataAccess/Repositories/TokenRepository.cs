@@ -16,7 +16,7 @@ public class TokenRepository : ITokenRepository
     public Token Get(Guid token)
     {
         EnsureSessionExists(token);
-        return _context.Tokens.Include(t => t.User).ThenInclude(u => u.Role).ThenInclude(r => r.Permissions)
+        return _context.Tokens.Include(t => t.User).ThenInclude(u => u.Roles).ThenInclude(r => r.Permissions)
             .First(t => t.Id == token);
     }
 

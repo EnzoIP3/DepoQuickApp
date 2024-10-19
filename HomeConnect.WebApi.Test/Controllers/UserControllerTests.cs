@@ -26,14 +26,8 @@ public class UserControllerTests
         _adminService = new Mock<IAdminService>();
         _controller = new UserController(_adminService.Object);
 
-        _user = new User("Name", "Surname", "email@email.com", "Password@100", new Role("Admin", []))
-        {
-            RoleName = "Admin"
-        };
-        _otherUser = new User("Name1", "Surname1", "email1@email.com", "Password@100", new Role("BusinessOwner", []))
-        {
-            RoleName = "BusinessOwner"
-        };
+        _user = new User("Name", "Surname", "email@email.com", "Password@100", new Role("Admin", []));
+        _otherUser = new User("Name1", "Surname1", "email1@email.com", "Password@100", new Role("BusinessOwner", []));
         _expectedUsers = [_user, _otherUser];
         _expectedPagination = new Pagination { Page = 1, PageSize = 10, TotalPages = 1 };
         _pagedList = new PagedData<User>
@@ -67,7 +61,7 @@ public class UserControllerTests
                 Id = user.Id.ToString(),
                 Name = user.Name,
                 Surname = user.Surname,
-                Role = user.Role.Name,
+                Roles = [user.Roles.First().Name],
                 CreatedAt = user.CreatedAt.ToString()
             }).ToList(),
             Pagination = _expectedPagination
@@ -94,7 +88,7 @@ public class UserControllerTests
                 Id = user.Id.ToString(),
                 Name = user.Name,
                 Surname = user.Surname,
-                Role = user.Role.Name,
+                Roles = [user.Roles.First().Name],
                 CreatedAt = user.CreatedAt.ToString()
             }).ToList(),
             Pagination = _expectedPagination
@@ -105,7 +99,7 @@ public class UserControllerTests
     public void GetUsers_WhenCalledWithValidRequestAndRoleFilter_ReturnsFilteredExpectedResponse()
     {
         // Arrange
-        var parameters = new GetUsersRequest { Role = _expectedUsers.First().Role.Name };
+        var parameters = new GetUsersRequest { Role = _expectedUsers.First().Roles.First().Name };
         _adminService.Setup(x => x.GetUsers(parameters.CurrentPage, parameters.PageSize, parameters.FullName,
             parameters.Role)).Returns(_pagedList);
 
@@ -121,7 +115,7 @@ public class UserControllerTests
                 Id = user.Id.ToString(),
                 Name = user.Name,
                 Surname = user.Surname,
-                Role = user.Role.Name,
+                Roles = [user.Roles.First().Name],
                 CreatedAt = user.CreatedAt.ToString()
             }).ToList(),
             Pagination = _expectedPagination
@@ -134,8 +128,7 @@ public class UserControllerTests
         // Arrange
         var parameters = new GetUsersRequest
         {
-            CurrentPage = _expectedPagination.Page,
-            PageSize = _expectedPagination.PageSize
+            CurrentPage = _expectedPagination.Page, PageSize = _expectedPagination.PageSize
         };
         _adminService.Setup(x => x.GetUsers(parameters.CurrentPage, parameters.PageSize, parameters.FullName,
             parameters.Role)).Returns(_pagedList);
@@ -152,7 +145,7 @@ public class UserControllerTests
                 Id = user.Id.ToString(),
                 Name = user.Name,
                 Surname = user.Surname,
-                Role = user.Role.Name,
+                Roles = [user.Roles.First().Name],
                 CreatedAt = user.CreatedAt.ToString()
             }).ToList(),
             Pagination = _expectedPagination

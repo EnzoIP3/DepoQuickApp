@@ -23,7 +23,7 @@ public class User
         Email = email;
         Password = password;
         CreatedAt = DateOnly.FromDateTime(DateTime.Now);
-        Role = role;
+        Roles = [role];
         ProfilePicture = profilePicture;
     }
 
@@ -71,8 +71,7 @@ public class User
         }
     }
 
-    public string RoleName { get; set; } = string.Empty;
-    public Role Role { get; set; } = new();
+    public List<Role> Roles { get; set; } = new();
     public DateOnly CreatedAt { get; set; }
 
     public string? ProfilePicture
@@ -154,6 +153,6 @@ public class User
 
     public bool HasPermission(string permission)
     {
-        return Role.HasPermission(permission);
+        return Roles.Any(role => role.HasPermission(permission));
     }
 }

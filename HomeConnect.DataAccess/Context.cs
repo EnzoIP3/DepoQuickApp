@@ -90,9 +90,9 @@ public class Context(DbContextOptions<Context> options) : DbContext(options)
     private void ConfigureUserRole(ModelBuilder modelBuilder)
     {
         modelBuilder.Entity<User>()
-            .HasOne(u => u.Role)
-            .WithMany()
-            .HasForeignKey("RoleName");
+            .HasMany(u => u.Roles)
+            .WithMany("Users")
+            .UsingEntity(j => j.ToTable("UserRole"));
     }
 
     private void ConfigureMemberRelations(ModelBuilder modelBuilder)

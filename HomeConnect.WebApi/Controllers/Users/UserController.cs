@@ -33,14 +33,12 @@ public class UserController(IAdminService adminService) : ControllerBase
                 Id = user.Id.ToString(),
                 Name = user.Name,
                 Surname = user.Surname,
-                Role = user.RoleName,
+                Roles = user.Roles.Select(r => r.Name).ToList(),
                 CreatedAt = user.CreatedAt.ToString()
             }).ToList(),
             Pagination = new Pagination
             {
-                Page = users.Page,
-                PageSize = users.PageSize,
-                TotalPages = users.TotalPages
+                Page = users.Page, PageSize = users.PageSize, TotalPages = users.TotalPages
             }
         };
         return response;

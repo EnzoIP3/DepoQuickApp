@@ -5,6 +5,7 @@ using BusinessLogic.Devices.Services;
 using BusinessLogic.Notifications.Services;
 using BusinessLogic.Roles.Entities;
 using BusinessLogic.Users.Entities;
+using HomeConnect.WebApi.Controllers.Devices.Models;
 using HomeConnect.WebApi.Controllers.MotionSensors.Models;
 using HomeConnect.WebApi.Controllers.Sensors.Models;
 using HomeConnect.WebApi.Filters;
@@ -13,6 +14,7 @@ using Microsoft.AspNetCore.Mvc;
 namespace HomeConnect.WebApi.Controllers.MotionSensors;
 
 public class MotionSensorController(
+    IDeviceService deviceService,
     IBusinessOwnerService businessOwnerService)
     : ControllerBase
 {
@@ -36,5 +38,20 @@ public class MotionSensorController(
         Device createdSensor = businessOwnerService.CreateDevice(args);
 
         return new CreateMotionSensorResponse { Id = createdSensor.Id };
+    }
+
+    [HttpPost("{hardwareId}/movement-detected")]
+    public NotifyResponse MovementDetected([FromRoute] string hardwareId)
+    {
+        EnsureDeviceIsConnected(hardwareId);
+        return new NotifyResponse();
+    }
+
+    private void EnsureDeviceIsConnected(string hardwareId)
+    {
+        if (!deviceService.IsConnected(hardwareId))
+        {
+            throw new ArgumentException("Device is not connected");
+        }
     }
 }

@@ -33,7 +33,7 @@ public class MotionSensorControllerTests
         _notificationServiceMock = new Mock<INotificationService>();
         _deviceServiceMock = new Mock<IDeviceService>();
         _businessOwnerServiceMock = new Mock<IBusinessOwnerService>();
-        _motionSensorController = new MotionSensorController(_businessOwnerServiceMock.Object)
+        _motionSensorController = new MotionSensorController(_deviceServiceMock.Object,_businessOwnerServiceMock.Object)
         { ControllerContext = { HttpContext = _httpContextMock.Object } };
     }
 
@@ -76,6 +76,23 @@ public class MotionSensorControllerTests
         _businessOwnerServiceMock.VerifyAll();
         response.Should().NotBeNull();
         response.Id.Should().Be(motionSensor.Id);
+    }
+    #endregion
+
+    #region MovementDetected
+    [TestMethod]
+    public void MovementDetected_WhenMotionSensorIsDisconnected_ThrowsArgumentException()
+    {
+        // Arrange
+        var hardwareId = "hardwareId";
+        _deviceServiceMock.Setup(x => x.IsConnected(hardwareId)).Returns(false);
+
+        // Act
+        Func<NotifyResponse> act = () => _motionSensorController.MovementDetected(hardwareId);
+
+        // Assert
+        act.Should().Throw<ArgumentException>().WithMessage("Device is not connected");
+        _deviceServiceMock.VerifyAll();
     }
     #endregion
 }

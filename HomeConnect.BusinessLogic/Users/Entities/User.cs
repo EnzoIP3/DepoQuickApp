@@ -71,7 +71,7 @@ public class User
         }
     }
 
-    public List<Role> Roles { get; set; } = new();
+    public List<Role> Roles { get; set; } = [];
     public DateOnly CreatedAt { get; set; }
 
     public string? ProfilePicture

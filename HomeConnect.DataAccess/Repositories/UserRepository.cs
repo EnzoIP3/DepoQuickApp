@@ -91,4 +91,10 @@ public class UserRepository : PaginatedRepositoryBase<User>, IUserRepository
 
         return query;
     }
+
+    public void Update(User user)
+    {
+        _context.Users.Update(user);
+        _context.SaveChanges();
+    }
 }

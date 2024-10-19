@@ -67,5 +67,6 @@ public class UserService : IUserService
         var user = UserRepository.Get(Guid.Parse(args.UserId));
         var role = RoleRepository.Get(args.Role);
         user.AddRole(role);
+        UserRepository.Update(user);
     }
 }

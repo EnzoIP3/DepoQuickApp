@@ -128,11 +128,13 @@ public class UserServiceTest
         var args = new AddRoleToUserArgs { UserId = user.Id.ToString(), Role = "Administrator" };
         _userRepository.Setup(x => x.Get(user.Id)).Returns(user);
         _roleRepository.Setup(x => x.Get(args.Role)).Returns(new Role(args.Role, []));
+        _userRepository.Setup(x => x.Update(user)).Verifiable();
 
         // Act
         _userService.AddRoleToUser(args);
 
         // Assert
+        _userRepository.Verify(x => x.Update(user), Times.Once);
         user.Roles.First().Name.Should().Be(args.Role);
     }
 }

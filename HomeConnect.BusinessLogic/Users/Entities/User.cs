@@ -158,6 +158,11 @@ public class User
 
     public void AddRole(Role role)
     {
+        if (Roles.Any(r => r.Name == role.Name))
+        {
+            throw new InvalidOperationException("User already has this role.");
+        }
+
         Roles.Add(role);
     }
 }

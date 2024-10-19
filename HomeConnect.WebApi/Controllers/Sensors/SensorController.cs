@@ -20,7 +20,7 @@ public class SensorController(
     INotificationService notificationService,
     IDeviceService deviceService,
     IBusinessOwnerService businessOwnerService)
-    : BaseDeviceController(deviceService)
+    : ControllerBase
 {
     [HttpPost]
     [AuthenticationFilter]

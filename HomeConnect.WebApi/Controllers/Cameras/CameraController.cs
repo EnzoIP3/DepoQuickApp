@@ -21,8 +21,7 @@ public class CameraController(
     INotificationService notificationService,
     IDeviceService deviceService,
     IBusinessOwnerService businessOwnerService,
-    IUserService userService)
-    : BaseDeviceController(deviceService)
+    IUserService userService) : ControllerBase
 {
     [HttpPost]
     [AuthenticationFilter]

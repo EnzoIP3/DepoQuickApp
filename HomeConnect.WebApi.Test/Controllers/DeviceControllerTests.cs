@@ -72,4 +72,20 @@ public class DeviceControllerTests
         _deviceService.Verify(x => x.GetDevices(It.IsAny<GetDevicesArgs>()), Times.Once);
         response.Should().BeEquivalentTo(expectedResponse);
     }
+
+    [TestMethod]
+    public void Toggle_WithHardwareId_ReturnsConnectionResponse()
+    {
+        // Arrange
+        var hardwareId = "hardwareId";
+        _deviceService.Setup(x => x.ToggleDevice(hardwareId)).Returns(true);
+
+        // Act
+        ConnectionResponse result = _controller.Toggle(hardwareId);
+
+        // Assert
+        result.Should().NotBeNull();
+        result.HardwareId.Should().Be(hardwareId);
+        result.Connected.Should().BeTrue();
+    }
 }

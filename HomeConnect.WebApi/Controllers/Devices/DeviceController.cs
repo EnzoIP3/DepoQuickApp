@@ -60,4 +60,11 @@ public class DeviceController : ControllerBase
             }
         };
     }
+
+    [HttpPost("{hardwareId}/toggle")]
+    public virtual ConnectionResponse Toggle([FromRoute] string hardwareId)
+    {
+        var connectionState = _deviceService.ToggleDevice(hardwareId);
+        return new ConnectionResponse { Connected = connectionState, HardwareId = hardwareId };
+    }
 }

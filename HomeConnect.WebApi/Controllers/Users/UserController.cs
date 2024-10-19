@@ -2,6 +2,8 @@ using BusinessLogic;
 using BusinessLogic.Admins.Services;
 using BusinessLogic.Roles.Entities;
 using BusinessLogic.Users.Entities;
+using BusinessLogic.Users.Models;
+using BusinessLogic.Users.Services;
 using HomeConnect.WebApi.Controllers.Users.Models;
 using HomeConnect.WebApi.Filters;
 using Microsoft.AspNetCore.Mvc;
@@ -11,8 +13,10 @@ namespace HomeConnect.WebApi.Controllers.Users;
 [ApiController]
 [Route("users")]
 [AuthenticationFilter]
-public class UserController(IAdminService adminService) : ControllerBase
+public class UserController(IAdminService adminService, IUserService userService) : ControllerBase
 {
+    public IUserService UserService { get; } = userService;
+
     [HttpGet]
     [AuthorizationFilter(SystemPermission.GetAllUsers)]
     public GetUsersResponse GetUsers([FromQuery] GetUsersRequest request)
@@ -42,5 +46,11 @@ public class UserController(IAdminService adminService) : ControllerBase
             }
         };
         return response;
+    }
+
+    [HttpPatch("/home_owner_role")]
+    public AddHomeOwnerRoleResponse AddHomeOwnerRole()
+    {
+        throw new NotImplementedException();
     }
 }

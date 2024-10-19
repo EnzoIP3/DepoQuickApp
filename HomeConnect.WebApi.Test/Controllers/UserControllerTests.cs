@@ -2,9 +2,13 @@ using BusinessLogic;
 using BusinessLogic.Admins.Services;
 using BusinessLogic.Roles.Entities;
 using BusinessLogic.Users.Entities;
+using BusinessLogic.Users.Models;
+using BusinessLogic.Users.Services;
 using FluentAssertions;
 using HomeConnect.WebApi.Controllers.Users;
 using HomeConnect.WebApi.Controllers.Users.Models;
+using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Mvc;
 using Moq;
 
 namespace HomeConnect.WebApi.Test.Controllers;
@@ -12,7 +16,9 @@ namespace HomeConnect.WebApi.Test.Controllers;
 [TestClass]
 public class UserControllerTests
 {
+    private Mock<HttpContext> _httpContext = null!;
     private Mock<IAdminService> _adminService = null!;
+    private Mock<IUserService> _userService = null!;
     private UserController _controller = null!;
     private Pagination _expectedPagination = null!;
     private List<User> _expectedUsers = null!;
@@ -23,8 +29,13 @@ public class UserControllerTests
     [TestInitialize]
     public void Initialize()
     {
-        _adminService = new Mock<IAdminService>();
-        _controller = new UserController(_adminService.Object);
+        _httpContext = new Mock<HttpContext>(MockBehavior.Strict);
+        _adminService = new Mock<IAdminService>(MockBehavior.Strict);
+        _userService = new Mock<IUserService>(MockBehavior.Strict);
+        _controller = new UserController(_adminService.Object, _userService.Object)
+        {
+            ControllerContext = new ControllerContext { HttpContext = _httpContext.Object }
+        };
 
         _user = new User("Name", "Surname", "email@email.com", "Password@100", new Role("Admin", []));
         _otherUser = new User("Name1", "Surname1", "email1@email.com", "Password@100", new Role("BusinessOwner", []));
@@ -150,6 +161,27 @@ public class UserControllerTests
             }).ToList(),
             Pagination = _expectedPagination
         });
+    }
+
+    #endregion
+
+    #region AddHomeOwnerRole
+
+    [TestMethod]
+    public void AddHomeOwnerRole_WhenCalledWithValidRequest_ReturnsExpectedResponse()
+    {
+        // Arrange
+        var args = new AddRoleToUserArgs { UserId = _user.Id.ToString(), Role = "HomeOwner" };
+        var items = new Dictionary<object, object?> { { Item.UserLogged, _user } };
+        _httpContext.Setup(h => h.Items).Returns(items);
+        _userService.Setup(x => x.AddRoleToUser(args)).Verifiable();
+
+        // Act
+        var response = _controller.AddHomeOwnerRole();
+
+        // Assert
+        _userService.VerifyAll();
+        response.Should().BeEquivalentTo(new AddHomeOwnerRoleResponse { Id = args.UserId });
     }
 
     #endregion

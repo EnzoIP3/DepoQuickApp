@@ -24,7 +24,8 @@ public class LampControllerTests
         _httpContextMock = new Mock<HttpContext>();
         _businessOwnerServiceMock = new Mock<IBusinessOwnerService>();
         _lampController =
-            new LampController() { ControllerContext = { HttpContext = _httpContextMock.Object } };
+            new LampController(_businessOwnerServiceMock.Object)
+                { ControllerContext = { HttpContext = _httpContextMock.Object } };
     }
 
     #region CreateDevices

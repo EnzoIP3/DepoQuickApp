@@ -64,6 +64,8 @@ public class UserService : IUserService
 
     public void AddRoleToUser(AddRoleToUserArgs args)
     {
-        throw new NotImplementedException();
+        var user = UserRepository.Get(Guid.Parse(args.UserId));
+        var role = RoleRepository.Get(args.Role);
+        user.AddRole(role);
     }
 }

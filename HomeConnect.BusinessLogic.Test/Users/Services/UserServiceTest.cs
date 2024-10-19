@@ -119,4 +119,20 @@ public class UserServiceTest
         // Assert
         result.Should().BeTrue();
     }
+
+    [TestMethod]
+    public void AddRoleToUser_WhenArgumentsAreValid_AddsRoleToUser()
+    {
+        // Arrange
+        var user = new User();
+        var args = new AddRoleToUserArgs { UserId = user.Id.ToString(), Role = "Administrator" };
+        _userRepository.Setup(x => x.Get(user.Id)).Returns(user);
+        _roleRepository.Setup(x => x.Get(args.Role)).Returns(new Role(args.Role, []));
+
+        // Act
+        _userService.AddRoleToUser(args);
+
+        // Assert
+        user.Roles.First().Name.Should().Be(args.Role);
+    }
 }

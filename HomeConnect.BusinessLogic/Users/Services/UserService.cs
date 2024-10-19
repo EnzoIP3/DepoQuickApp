@@ -61,4 +61,9 @@ public class UserService : IUserService
             throw new ArgumentException("Invalid role.");
         }
     }
+
+    public void AddRoleToUser(AddRoleToUserArgs args)
+    {
+        throw new NotImplementedException();
+    }
 }

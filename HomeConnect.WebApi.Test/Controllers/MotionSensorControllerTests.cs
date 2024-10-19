@@ -10,8 +10,6 @@ using FluentAssertions;
 using HomeConnect.WebApi.Controllers.Devices.Models;
 using HomeConnect.WebApi.Controllers.MotionSensors;
 using HomeConnect.WebApi.Controllers.MotionSensors.Models;
-using HomeConnect.WebApi.Controllers.Sensors;
-using HomeConnect.WebApi.Controllers.Sensors.Models;
 using Microsoft.AspNetCore.Http;
 using Moq;
 
@@ -33,7 +31,7 @@ public class MotionSensorControllerTests
         _notificationServiceMock = new Mock<INotificationService>();
         _deviceServiceMock = new Mock<IDeviceService>();
         _businessOwnerServiceMock = new Mock<IBusinessOwnerService>();
-        _motionSensorController = new MotionSensorController(_deviceServiceMock.Object,_businessOwnerServiceMock.Object)
+        _motionSensorController = new MotionSensorController(_notificationServiceMock.Object,_deviceServiceMock.Object,_businessOwnerServiceMock.Object)
         { ControllerContext = { HttpContext = _httpContextMock.Object } };
     }
 
@@ -93,6 +91,23 @@ public class MotionSensorControllerTests
         // Assert
         act.Should().Throw<ArgumentException>().WithMessage("Device is not connected");
         _deviceServiceMock.VerifyAll();
+    }
+
+    [TestMethod]
+    public void MovementDetected_WithHardwareId_ReturnsNotifyResponse()
+    {
+        // Arrange
+        var hardwareId = "hardwareId";
+        var args = new NotificationArgs { HardwareId = hardwareId, Date = DateTime.Now, Event = "movement-detected" };
+        _deviceServiceMock.Setup(x => x.IsConnected(hardwareId)).Returns(true);
+        _notificationServiceMock.Setup(x => x.Notify(args));
+
+        // Act
+        NotifyResponse result = _motionSensorController.MovementDetected(hardwareId);
+
+        // Assert
+        result.Should().NotBeNull();
+        result.HardwareId.Should().Be(hardwareId);
     }
     #endregion
 }

@@ -2,6 +2,7 @@ using BusinessLogic.BusinessOwners.Models;
 using BusinessLogic.BusinessOwners.Services;
 using BusinessLogic.Devices.Entities;
 using BusinessLogic.Devices.Services;
+using BusinessLogic.Notifications.Models;
 using BusinessLogic.Notifications.Services;
 using BusinessLogic.Roles.Entities;
 using BusinessLogic.Users.Entities;
@@ -14,6 +15,7 @@ using Microsoft.AspNetCore.Mvc;
 namespace HomeConnect.WebApi.Controllers.MotionSensors;
 
 public class MotionSensorController(
+    INotificationService notificationService,
     IDeviceService deviceService,
     IBusinessOwnerService businessOwnerService)
     : ControllerBase
@@ -44,7 +46,15 @@ public class MotionSensorController(
     public NotifyResponse MovementDetected([FromRoute] string hardwareId)
     {
         EnsureDeviceIsConnected(hardwareId);
-        return new NotifyResponse();
+        NotificationArgs args = CreateMovementDetectedNotificationArgs(hardwareId);
+        notificationService.Notify(args);
+        return new NotifyResponse { HardwareId = hardwareId };
+    }
+
+    private static NotificationArgs CreateMovementDetectedNotificationArgs(string hardwareId)
+    {
+        var args = new NotificationArgs { HardwareId = hardwareId, Date = DateTime.Now, Event = "movement-detected" };
+        return args;
     }
 
     private void EnsureDeviceIsConnected(string hardwareId)

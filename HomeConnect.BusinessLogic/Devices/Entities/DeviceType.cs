@@ -15,5 +15,10 @@ public enum DeviceType
     /// <summary>
     ///     Represents a motion sensor device type.
     /// </summary>
-    MotionSensor
+    MotionSensor,
+
+    /// <summary>
+    ///     Represents a smart lamp device type.
+    /// </summary>
+    Lamp
 }

@@ -158,6 +158,6 @@ public class User
 
     public void AddRole(Role role)
     {
-        throw new NotImplementedException();
+        Roles.Add(role);
     }
 }

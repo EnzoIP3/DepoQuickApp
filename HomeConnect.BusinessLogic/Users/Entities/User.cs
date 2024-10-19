@@ -23,7 +23,7 @@ public class User
         Email = email;
         Password = password;
         CreatedAt = DateOnly.FromDateTime(DateTime.Now);
-        Role = role;
+        Roles = [role];
         ProfilePicture = profilePicture;
     }
 
@@ -71,8 +71,7 @@ public class User
         }
     }
 
-    public string RoleName { get; set; } = string.Empty;
-    public Role Role { get; set; } = new();
+    public List<Role> Roles { get; set; } = [];
     public DateOnly CreatedAt { get; set; }
 
     public string? ProfilePicture
@@ -154,6 +153,20 @@ public class User
 
     public bool HasPermission(string permission)
     {
-        return Role.HasPermission(permission);
+        return Roles.Any(role => role.HasPermission(permission));
+    }
+
+    public void AddRole(Role role)
+    {
+        EnsureRoleIsNotAdded(role);
+        Roles.Add(role);
+    }
+
+    private void EnsureRoleIsNotAdded(Role role)
+    {
+        if (Roles.Any(r => r.Name == role.Name))
+        {
+            throw new InvalidOperationException("User already has this role.");
+        }
     }
 }

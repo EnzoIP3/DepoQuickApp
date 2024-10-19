@@ -129,4 +129,42 @@ public class UserTests
     #endregion
 
     #endregion
+
+    #region AddRole
+
+    #region Success
+
+    [TestMethod]
+    public void AddRole_WhenRoleIsNotAlreadyAdded_AddsRole()
+    {
+        // Arrange
+        var user = new User(Name, Surname, Email, Password, _role);
+
+        // Act
+        user.AddRole(new Role("User", []));
+
+        // Assert
+        user.Roles.Should().HaveCount(2);
+    }
+
+    #endregion
+
+    #region Error
+
+    [TestMethod]
+    public void AddRole_WhenRoleIsAlreadyAdded_ThrowsException()
+    {
+        // Arrange
+        var user = new User(Name, Surname, Email, Password, _role);
+
+        // Act
+        var act = () => user.AddRole(_role);
+
+        // Assert
+        act.Should().Throw<InvalidOperationException>();
+    }
+
+    #endregion
+
+    #endregion
 }

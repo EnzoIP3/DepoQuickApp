@@ -76,7 +76,7 @@ public class UserRepository : PaginatedRepositoryBase<User>, IUserRepository
     {
         if (!string.IsNullOrEmpty(roleFilter))
         {
-            query = query.Where(u => u.Role.Name == roleFilter);
+            query = query.Where(u => u.Roles.Any(r => r.Name.Contains(roleFilter)));
         }
 
         return query;
@@ -90,5 +90,11 @@ public class UserRepository : PaginatedRepositoryBase<User>, IUserRepository
         }
 
         return query;
+    }
+
+    public void Update(User user)
+    {
+        _context.Users.Update(user);
+        _context.SaveChanges();
     }
 }

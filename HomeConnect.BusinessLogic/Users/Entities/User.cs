@@ -155,4 +155,9 @@ public class User
     {
         return Roles.Any(role => role.HasPermission(permission));
     }
+
+    public void AddRole(Role role)
+    {
+        throw new NotImplementedException();
+    }
 }

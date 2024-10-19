@@ -129,4 +129,25 @@ public class UserTests
     #endregion
 
     #endregion
+
+    #region AddRole
+
+    #region Success
+
+    [TestMethod]
+    public void AddRole_WhenRoleIsNotAlreadyAdded_AddsRole()
+    {
+        // Arrange
+        var user = new User(Name, Surname, Email, Password, _role);
+
+        // Act
+        user.AddRole(new Role("User", []));
+
+        // Assert
+        user.Roles.Should().HaveCount(2);
+    }
+
+    #endregion
+
+    #endregion
 }

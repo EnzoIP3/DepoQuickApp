@@ -1,6 +1,7 @@
 using BusinessLogic.Auth.Entities;
 using BusinessLogic.Auth.Models;
 using BusinessLogic.Auth.Services;
+using BusinessLogic.Roles.Entities;
 using BusinessLogic.Users.Entities;
 using FluentAssertions;
 using HomeConnect.WebApi.Controllers.Auth;
@@ -18,7 +19,7 @@ public class AuthControllerTests
     [TestInitialize]
     public void Initialize()
     {
-        _tokenService = new Mock<IAuthService>();
+        _tokenService = new Mock<IAuthService>(MockBehavior.Strict);
         _controller = new AuthController(_tokenService.Object);
     }
 
@@ -28,8 +29,10 @@ public class AuthControllerTests
         // Arrange
         var request = new CreateTokenRequest { Email = "email", Password = "password" };
         var args = new CreateTokenArgs { Email = request.Email, Password = request.Password };
-        var token = new Token(new User());
+        var user = new User() { Roles = [new Role() { Name = "Admin" }] };
+        var token = new Token();
         _tokenService.Setup(x => x.CreateToken(args)).Returns(token.Id.ToString());
+        _tokenService.Setup(x => x.GetUserFromToken(token.Id.ToString())).Returns(user);
 
         // Act
         CreateTokenResponse response = _controller.CreateToken(request);
@@ -37,5 +40,6 @@ public class AuthControllerTests
         // Assert
         _tokenService.Verify(x => x.CreateToken(args), Times.Once);
         response.Token.Should().Be(token.Id.ToString());
+        response.Roles.Should().BeEquivalentTo(["Admin"]);
     }
 }

@@ -10,5 +10,10 @@ public enum DeviceType
     /// <summary>
     ///     Represents a camera device type.
     /// </summary>
-    Camera
+    Camera,
+
+    /// <summary>
+    ///     Represents a motion sensor device type.
+    /// </summary>
+    MotionSensor
 }

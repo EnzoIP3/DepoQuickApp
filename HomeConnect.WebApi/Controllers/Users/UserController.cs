@@ -48,9 +48,12 @@ public class UserController(IAdminService adminService, IUserService userService
         return response;
     }
 
-    [HttpPatch("/home_owner_role")]
+    [HttpPatch("home_owner_role")]
     public AddHomeOwnerRoleResponse AddHomeOwnerRole()
     {
-        throw new NotImplementedException();
+        var userLoggedIn = HttpContext.Items[Item.UserLogged] as User;
+        var args = new AddRoleToUserArgs { UserId = userLoggedIn!.Id.ToString(), Role = "HomeOwner" };
+        userService.AddRoleToUser(args);
+        return new AddHomeOwnerRoleResponse { Id = args.UserId };
     }
 }

@@ -20,6 +20,6 @@ public class MemberRepository : IMemberRepository
 
     public List<Member> GetMembersByUserId(Guid userId)
     {
-        throw new NotImplementedException();
+        return _context.Members.Where(m => m.User.Id == userId).ToList();
     }
 }

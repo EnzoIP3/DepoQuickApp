@@ -29,7 +29,7 @@ public class HomeOwnerController(IUserService userService, IHomeOwnerService hom
         return new CreateHomeOwnerResponse { Id = user.Id.ToString() };
     }
 
-    [HttpGet]
+    [HttpGet("homes")]
     [AuthorizationFilter(SystemPermission.GetHomes)]
     public GetHomesResponse GetHomes([FromQuery] GetHomesRequest request)
     {

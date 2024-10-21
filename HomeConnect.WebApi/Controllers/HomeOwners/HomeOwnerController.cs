@@ -45,4 +45,10 @@ public class HomeOwnerController(IUserService userService, IHomeOwnerService hom
         }).ToList();
         return new GetHomesResponse { Homes = homeInfos };
     }
+
+    [HttpPost("name_home")]
+    public NameHomeResponse NameHome([FromBody] NameHomeRequest request)
+    {
+        throw new NotImplementedException();
+    }
 }

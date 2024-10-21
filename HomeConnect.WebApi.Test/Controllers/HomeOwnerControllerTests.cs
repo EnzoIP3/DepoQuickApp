@@ -134,4 +134,28 @@ public class HomeOwnerControllerTests
         response.Homes.Should().BeEquivalentTo(expectedResponse.Homes);
     }
     #endregion
+
+    #region NameHome
+    [TestMethod]
+    public void NameHome_WithValidRequest_ReturnsHomeId()
+    {
+        // Arrange
+        var request = new NameHomeRequest
+        {
+            HomeId = Guid.NewGuid().ToString(),
+            NewName = "New Home Name"
+        };
+        var items = new Dictionary<object, object?> { { Item.UserLogged, _user } };
+        _httpContextMock.Setup(h => h.Items).Returns(items);
+        _homeOwnerService.Setup(x => x.NameHome(_user.Id, Guid.Parse(request.HomeId), request.NewName));
+
+        // Act
+        NameHomeResponse response = _controller.NameHome(request);
+
+        // Assert
+        _homeOwnerService.Verify(x => x.NameHome(_user.Id, Guid.Parse(request.HomeId), request.NewName), Times.Once);
+        response.Should().NotBeNull();
+        response.HomeId.Should().Be(request.HomeId);
+    }
+    #endregion
 }

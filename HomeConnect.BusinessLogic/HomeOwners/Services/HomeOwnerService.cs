@@ -74,6 +74,11 @@ public class HomeOwnerService : IHomeOwnerService
         return homes;
     }
 
+    public void NameHome(Guid ownerId, Guid homeId, string newName)
+    {
+        throw new NotImplementedException();
+    }
+
     public List<Member> GetHomeMembers(string homeId)
     {
         Home home = GetHome(ValidateAndParseGuid(homeId));

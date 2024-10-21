@@ -179,6 +179,23 @@ public class HomeOwnerControllerTests
         Assert.AreEqual("NewName cannot be null or empty", ex.Message);
     }
 
+    [TestMethod]
+    public void NameHome_WithInvalidHomeId_ThrowsArgumentException()
+    {
+        // Arrange
+        var request = new NameHomeRequest
+        {
+            HomeId = String.Empty,
+            NewName = "New Home Name"
+        };
+        var items = new Dictionary<object, object?> { { Item.UserLogged, _user } };
+        _httpContextMock.Setup(h => h.Items).Returns(items);
+
+        // Act & Assert
+        var ex = Assert.ThrowsException<ArgumentException>(() => _controller.NameHome(request));
+        Assert.AreEqual("HomeId cannot be null or empty", ex.Message);
+    }
+
     #endregion
     #endregion
 }

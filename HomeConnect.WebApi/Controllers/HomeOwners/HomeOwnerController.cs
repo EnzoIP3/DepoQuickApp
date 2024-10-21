@@ -25,4 +25,10 @@ public class HomeOwnerController(IUserService userService) : ControllerBase
         });
         return new CreateHomeOwnerResponse { Id = user.Id.ToString() };
     }
+
+    [HttpGet]
+    public GetHomesResponse GetHomes([FromQuery] GetHomesRequest request)
+    {
+        throw new NotImplementedException();
+    }
 }

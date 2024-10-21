@@ -66,6 +66,11 @@ public class HomeOwnerService : IHomeOwnerService
         return HomeRepository.Get(homeId);
     }
 
+    public List<Home> GetHomesByOwnerId(Guid ownerId)
+    {
+        throw new NotImplementedException();
+    }
+
     public List<Member> GetHomeMembers(string homeId)
     {
         Home home = GetHome(ValidateAndParseGuid(homeId));

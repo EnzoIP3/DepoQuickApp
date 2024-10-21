@@ -60,12 +60,12 @@ public class HomeOwnerController(IUserService userService, IHomeOwnerService hom
     {
         if (string.IsNullOrEmpty(request.HomeId))
         {
-            throw new ArgumentException("HomeId cannot be null or empty", nameof(request.HomeId));
+            throw new ArgumentException("HomeId cannot be null or empty");
         }
 
         if (string.IsNullOrEmpty(request.NewName))
         {
-            throw new ArgumentException("NewName cannot be null or empty", nameof(request.NewName));
+            throw new ArgumentException("NewName cannot be null or empty");
         }
 
         return (Guid.Parse(request.HomeId), request.NewName);

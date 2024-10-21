@@ -49,19 +49,24 @@ public class HomeOwnerController(IUserService userService, IHomeOwnerService hom
     [HttpPost("name_home")]
     public NameHomeResponse NameHome([FromBody] NameHomeRequest request)
     {
+        var userLoggedIn = HttpContext.Items[Item.UserLogged] as User;
+        var nameHomeArgs = NameHomeArgsFromRequest(request);
+        homeOwnerService.NameHome(userLoggedIn.Id, nameHomeArgs.HomeId, nameHomeArgs.NewName);
+        return new NameHomeResponse { HomeId = request.HomeId };
+    }
+
+    private static (Guid HomeId, string NewName) NameHomeArgsFromRequest(NameHomeRequest request)
+    {
         if (string.IsNullOrEmpty(request.HomeId))
         {
             throw new ArgumentException("HomeId cannot be null or empty", nameof(request.HomeId));
         }
 
-        if(string.IsNullOrEmpty(request.NewName))
+        if (string.IsNullOrEmpty(request.NewName))
         {
             throw new ArgumentException("NewName cannot be null or empty", nameof(request.NewName));
         }
 
-        var userLoggedIn = HttpContext.Items[Item.UserLogged] as User;
-        var homeId = Guid.Parse(request.HomeId);
-        homeOwnerService.NameHome(userLoggedIn.Id, homeId, request.NewName);
-        return new NameHomeResponse { HomeId = request.HomeId };
+        return (Guid.Parse(request.HomeId), request.NewName);
     }
 }

@@ -47,6 +47,7 @@ public class HomeOwnerController(IUserService userService, IHomeOwnerService hom
     }
 
     [HttpPost("name_home")]
+    [AuthorizationFilter(SystemPermission.NameHome)]
     public NameHomeResponse NameHome([FromBody] NameHomeRequest request)
     {
         var userLoggedIn = HttpContext.Items[Item.UserLogged] as User;

@@ -28,7 +28,7 @@ public class HomeOwnerControllerTests
         _httpContextMock = new Mock<HttpContext>(MockBehavior.Strict);
         _userService = new Mock<IUserService>(MockBehavior.Strict);
         _homeOwnerService = new Mock<IHomeOwnerService>(MockBehavior.Strict);
-        _controller = new HomeOwnerController(_userService.Object);
+        _controller = new HomeOwnerController(_userService.Object, _homeOwnerService.Object);
 
         _user = new("John", "Doe", "email@email.com", "Password@100",
             new Role { Name = "HomeOwner", Permissions = [] });

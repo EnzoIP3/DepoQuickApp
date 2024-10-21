@@ -17,4 +17,9 @@ public class MemberRepository : IMemberRepository
         _context.Members.Add(member);
         _context.SaveChanges();
     }
+
+    public List<Member> GetMembersByUserId(Guid userId)
+    {
+        throw new NotImplementedException();
+    }
 }

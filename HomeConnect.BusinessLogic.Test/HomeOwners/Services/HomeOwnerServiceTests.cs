@@ -26,6 +26,7 @@ public class HomeOwnerServiceTests
     private Mock<IMemberRepository> _memberRepositoryMock = null!;
     private Mock<IOwnedDeviceRepository> _ownedDeviceRepositoryMock = null!;
     private Mock<IUserRepository> _userRepositoryMock = null!;
+    private List<Member> _testMembers = null!;
 
     [TestInitialize]
     public void Initialize()
@@ -37,6 +38,13 @@ public class HomeOwnerServiceTests
         _memberRepositoryMock = new Mock<IMemberRepository>(MockBehavior.Strict);
         _homeOwnerService = new HomeOwnerService(_homeRepositoryMock.Object, _userRepositoryMock.Object,
             _deviceRepositoryMock.Object, _ownedDeviceRepositoryMock.Object, _memberRepositoryMock.Object);
+        var home1 = new Home(_user, "Amarales 3420", 40.7128, -74.0060, 4);
+        var home2 = new Home(_user, "Arteaga 1470", 34.0522, -118.2437, 6);
+        _testMembers = new List<Member>
+        {
+            new Member(_user, new List<HomePermission>()) { Home = home1 },
+            new Member(_user, new List<HomePermission>()) { Home = home2 }
+        };
     }
 
     #region CreateHome
@@ -601,5 +609,26 @@ public class HomeOwnerServiceTests
 
     #endregion
 
+    #endregion
+
+    #region GetHomesByOwnerId
+    [TestMethod]
+    public void GetHomesByOwnerId_WhenCalled_ReturnsCorrectHomes()
+    {
+        // Arrange
+        _userRepositoryMock.Setup(repo => repo.Get(_user.Id)).Returns(_user);
+        _memberRepositoryMock.Setup(repo => repo.GetMembersByUserId(_user.Id)).Returns(_testMembers);
+
+        // Act
+        List<Home> homes = _homeOwnerService.GetHomesByOwnerId(_user.Id);
+
+        // Assert
+        _userRepositoryMock.Verify(repo => repo.Get(_user.Id), Times.Once);
+        _memberRepositoryMock.Verify(repo => repo.GetMembersByUserId(_user.Id), Times.Once);
+        Assert.IsNotNull(homes);
+        Assert.AreEqual(2, homes.Count);
+        Assert.IsTrue(homes.Any(h => h.Address == "Amarales 3420"));
+        Assert.IsTrue(homes.Any(h => h.Address == "Arteaga 1470"));
+    }
     #endregion
 }

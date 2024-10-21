@@ -30,6 +30,7 @@ public class HomeOwnerController(IUserService userService, IHomeOwnerService hom
     }
 
     [HttpGet]
+    [AuthorizationFilter(SystemPermission.GetHomes)]
     public GetHomesResponse GetHomes([FromQuery] GetHomesRequest request)
     {
         var userLoggedIn = HttpContext.Items[Item.UserLogged] as User;

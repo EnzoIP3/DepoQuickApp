@@ -136,6 +136,7 @@ public class HomeOwnerControllerTests
     #endregion
 
     #region NameHome
+    #region Success
     [TestMethod]
     public void NameHome_WithValidRequest_ReturnsHomeId()
     {
@@ -157,5 +158,27 @@ public class HomeOwnerControllerTests
         response.Should().NotBeNull();
         response.HomeId.Should().Be(request.HomeId);
     }
+    #endregion
+
+    #region Error
+
+    [TestMethod]
+    public void NameHome_WithInvalidNewName_ThrowsArgumentException()
+    {
+        // Arrange
+        var request = new NameHomeRequest
+        {
+            HomeId = Guid.NewGuid().ToString(),
+            NewName = string.Empty
+        };
+        var items = new Dictionary<object, object?> { { Item.UserLogged, _user } };
+        _httpContextMock.Setup(h => h.Items).Returns(items);
+
+        // Act & Assert
+        var ex = Assert.ThrowsException<ArgumentException>(() => _controller.NameHome(request));
+        Assert.AreEqual("NewName cannot be null or empty", ex.Message);
+    }
+
+    #endregion
     #endregion
 }

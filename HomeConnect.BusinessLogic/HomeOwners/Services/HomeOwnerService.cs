@@ -68,7 +68,10 @@ public class HomeOwnerService : IHomeOwnerService
 
     public List<Home> GetHomesByOwnerId(Guid ownerId)
     {
-        throw new NotImplementedException();
+        User user = UserRepository.Get(ownerId);
+        List<Member> members = MemberRepository.GetMembersByUserId(ownerId);
+        List<Home> homes = members.Select(m => m.Home).ToList();
+        return homes;
     }
 
     public List<Member> GetHomeMembers(string homeId)

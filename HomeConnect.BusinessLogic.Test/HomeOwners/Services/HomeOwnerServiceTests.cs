@@ -681,6 +681,19 @@ public class HomeOwnerServiceTests
         var exception = Assert.ThrowsException<ArgumentException>(() => _homeOwnerService.NameHome(ownerId, homeId, newName));
         Assert.AreEqual("Home ID cannot be empty", exception.Message);
     }
+
+    [TestMethod]
+    public void NameHome_WhenNewNameIsEmpty_ThrowsException()
+    {
+        // Arrange
+        var ownerId = Guid.NewGuid();
+        var homeId = Guid.NewGuid();
+        var newName = string.Empty;
+
+        // Act & Assert
+        var exception = Assert.ThrowsException<ArgumentException>(() => _homeOwnerService.NameHome(ownerId, homeId, newName));
+        Assert.AreEqual("New name cannot be null or empty", exception.Message);
+    }
     #endregion
     #endregion
 }

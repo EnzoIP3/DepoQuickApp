@@ -76,7 +76,9 @@ public class HomeOwnerService : IHomeOwnerService
 
     public void NameHome(Guid ownerId, Guid homeId, string newName)
     {
-        throw new NotImplementedException();
+        Home home = GetHome(homeId);
+        home.NickName = newName;
+        HomeRepository.Rename(home);
     }
 
     public List<Member> GetHomeMembers(string homeId)

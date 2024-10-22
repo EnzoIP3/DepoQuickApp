@@ -125,7 +125,7 @@ public class HomeOwnerControllerTests
         };
 
         // Act
-        GetHomesResponse response = _controller.GetHomes(new GetHomesRequest());
+        GetHomesResponse response = _controller.GetHomes();
 
         // Assert
         _homeOwnerService.VerifyAll();

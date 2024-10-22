@@ -655,5 +655,19 @@ public class HomeOwnerServiceTests
         _homeRepositoryMock.Verify(repo => repo.Rename(home), Times.Once);
     }
     #endregion
+    #region Error
+    [TestMethod]
+    public void NameHome_WhenOwnerIdIsEmpty_ThrowsException()
+    {
+        // Arrange
+        var ownerId = Guid.Empty;
+        var homeId = Guid.NewGuid();
+        var newName = "New Home Name";
+
+        // Act & Assert
+        var exception = Assert.ThrowsException<ArgumentException>(() => _homeOwnerService.NameHome(ownerId, homeId, newName));
+        Assert.AreEqual("Owner ID cannot be empty", exception.Message);
+    }
+    #endregion
     #endregion
 }

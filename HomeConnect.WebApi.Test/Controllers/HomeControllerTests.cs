@@ -61,18 +61,20 @@ public class HomeControllerTests
             Address = "Road 123",
             Latitude = 50.456,
             Longitude = 100.789,
-            MaxMembers = 3
+            MaxMembers = 3,
+            Name = "Lo de Maxi"
         };
         var items = new Dictionary<object, object?> { { Item.UserLogged, _user } };
         _httpContextMock.Setup(h => h.Items).Returns(items);
-        var home = new Home(_user, request.Address, request.Latitude, request.Longitude, request.MaxMembers);
+        var home = new Home(_user, request.Address, request.Latitude, request.Longitude, request.MaxMembers, request.Name);
         var args = new CreateHomeArgs
         {
             HomeOwnerId = _user.Id.ToString(),
             Address = request.Address,
             Latitude = request.Latitude,
             Longitude = request.Longitude,
-            MaxMembers = request.MaxMembers
+            MaxMembers = request.MaxMembers,
+            Name = request.Name
         };
         _homeOwnerService.Setup(x => x.CreateHome(args)).Returns(home.Id);
 

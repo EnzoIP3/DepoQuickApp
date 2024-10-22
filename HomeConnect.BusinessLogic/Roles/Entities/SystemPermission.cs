@@ -19,6 +19,8 @@ public record SystemPermission
     public const string CreateCamera = "create-camera";
     public const string CreateSensor = "create-sensor";
     public const string GetNotifications = "get-notifications";
+    public const string GetHomes = "get-homes";
+    public const string NameHome = "name-home";
 
     public SystemPermission()
     {

@@ -49,7 +49,8 @@ public class HomeController(IHomeOwnerService homeOwnerService) : ControllerBase
             Address = request.Address ?? string.Empty,
             Latitude = request.Latitude,
             Longitude = request.Longitude,
-            MaxMembers = request.MaxMembers
+            MaxMembers = request.MaxMembers,
+            Name = request.Name
         };
         return homeArgs;
     }

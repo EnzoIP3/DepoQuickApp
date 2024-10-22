@@ -17,4 +17,9 @@ public class MemberRepository : IMemberRepository
         _context.Members.Add(member);
         _context.SaveChanges();
     }
+
+    public List<Member> GetMembersByUserId(Guid userId)
+    {
+        return _context.Members.Where(m => m.User.Id == userId).ToList();
+    }
 }

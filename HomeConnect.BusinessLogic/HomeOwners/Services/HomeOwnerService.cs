@@ -66,6 +66,40 @@ public class HomeOwnerService : IHomeOwnerService
         return HomeRepository.Get(homeId);
     }
 
+    public List<Home> GetHomesByOwnerId(Guid ownerId)
+    {
+        User user = UserRepository.Get(ownerId);
+        List<Member> members = MemberRepository.GetMembersByUserId(ownerId);
+        var homes = members.Select(m => m.Home).ToList();
+        return homes;
+    }
+
+    public void NameHome(Guid ownerId, Guid homeId, string newName)
+    {
+        ValidateNameHomeParameters(ownerId, homeId, newName);
+
+        Home home = GetHome(homeId);
+        HomeRepository.Rename(home, newName);
+    }
+
+    private void ValidateNameHomeParameters(Guid ownerId, Guid homeId, string newName)
+    {
+        if (ownerId == Guid.Empty)
+        {
+            throw new ArgumentException("Owner ID cannot be empty");
+        }
+
+        if (homeId == Guid.Empty)
+        {
+            throw new ArgumentException("Home ID cannot be empty");
+        }
+
+        if (string.IsNullOrEmpty(newName))
+        {
+            throw new ArgumentException("New name cannot be null or empty");
+        }
+    }
+
     public List<Member> GetHomeMembers(string homeId)
     {
         Home home = GetHome(ValidateAndParseGuid(homeId));

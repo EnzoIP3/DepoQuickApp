@@ -66,6 +66,13 @@ public class HomeRepository : IHomeRepository
         return _context.Homes.Include(h => h.Members).Any(h => h.Members.Any(m => m.Id == memberId));
     }
 
+    public void Rename(Home home, string newName)
+    {
+        home.NickName = newName;
+        _context.Homes.Update(home);
+        _context.SaveChanges();
+    }
+
     private void EnsureHomeDoesNotExist(Home home)
     {
         if (_context.Homes.Any(h => h.Address == home.Address))

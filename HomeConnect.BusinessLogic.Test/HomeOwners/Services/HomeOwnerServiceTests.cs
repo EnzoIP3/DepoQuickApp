@@ -26,6 +26,7 @@ public class HomeOwnerServiceTests
     private Mock<IMemberRepository> _memberRepositoryMock = null!;
     private Mock<IOwnedDeviceRepository> _ownedDeviceRepositoryMock = null!;
     private Mock<IUserRepository> _userRepositoryMock = null!;
+    private List<Member> _testMembers = null!;
 
     [TestInitialize]
     public void Initialize()
@@ -37,6 +38,13 @@ public class HomeOwnerServiceTests
         _memberRepositoryMock = new Mock<IMemberRepository>(MockBehavior.Strict);
         _homeOwnerService = new HomeOwnerService(_homeRepositoryMock.Object, _userRepositoryMock.Object,
             _deviceRepositoryMock.Object, _ownedDeviceRepositoryMock.Object, _memberRepositoryMock.Object);
+        var home1 = new Home(_user, "Amarales 3420", 40.7128, -74.0060, 4);
+        var home2 = new Home(_user, "Arteaga 1470", 34.0522, -118.2437, 6);
+        _testMembers =
+        [
+            new Member(_user, []) { Home = home1 },
+            new Member(_user, []) { Home = home2 }
+        ];
     }
 
     #region CreateHome
@@ -601,5 +609,93 @@ public class HomeOwnerServiceTests
 
     #endregion
 
+    #endregion
+
+    #region GetHomesByOwnerId
+    [TestMethod]
+    public void GetHomesByOwnerId_WhenCalled_ReturnsCorrectHomes()
+    {
+        // Arrange
+        _userRepositoryMock.Setup(repo => repo.Get(_user.Id)).Returns(_user);
+        _memberRepositoryMock.Setup(repo => repo.GetMembersByUserId(_user.Id)).Returns(_testMembers);
+
+        // Act
+        List<Home> homes = _homeOwnerService.GetHomesByOwnerId(_user.Id);
+
+        // Assert
+        _userRepositoryMock.Verify(repo => repo.Get(_user.Id), Times.Once);
+        _memberRepositoryMock.Verify(repo => repo.GetMembersByUserId(_user.Id), Times.Once);
+        Assert.IsNotNull(homes);
+        Assert.AreEqual(2, homes.Count);
+        Assert.IsTrue(homes.Any(h => h.Address == "Amarales 3420"));
+        Assert.IsTrue(homes.Any(h => h.Address == "Arteaga 1470"));
+    }
+    #endregion
+
+    #region NameHome
+    #region Success
+    [TestMethod]
+    public void NameHome_ShouldAssignNickName()
+    {
+        // Arrange
+        var ownerId = Guid.NewGuid();
+        var homeId = Guid.NewGuid();
+        var newName = "New Home Name";
+        var home = new Home { Id = homeId, NickName = "Old Name" };
+
+        _homeRepositoryMock.Setup(repo => repo.Exists(homeId)).Returns(true);
+        _homeRepositoryMock.Setup(repo => repo.Get(homeId)).Returns(home);
+        _homeRepositoryMock.Setup(repo => repo.Rename(It.IsAny<Home>(), It.IsAny<string>()))
+            .Callback<Home, string>((h, n) => h.NickName = n)
+            .Verifiable();
+
+        // Act
+        _homeOwnerService.NameHome(ownerId, homeId, newName);
+
+        // Assert
+        Assert.AreEqual(newName, home.NickName);
+        _homeRepositoryMock.Verify(repo => repo.Rename(home, newName), Times.Once);
+    }
+    #endregion
+    #region Error
+    [TestMethod]
+    public void NameHome_WhenOwnerIdIsEmpty_ThrowsException()
+    {
+        // Arrange
+        var ownerId = Guid.Empty;
+        var homeId = Guid.NewGuid();
+        var newName = "New Home Name";
+
+        // Act & Assert
+        var exception = Assert.ThrowsException<ArgumentException>(() => _homeOwnerService.NameHome(ownerId, homeId, newName));
+        Assert.AreEqual("Owner ID cannot be empty", exception.Message);
+    }
+
+    [TestMethod]
+    public void NameHome_WhenHomeIdIsEmpty_ThrowsException()
+    {
+        // Arrange
+        var ownerId = Guid.NewGuid();
+        var homeId = Guid.Empty;
+        var newName = "New Home Name";
+
+        // Act & Assert
+        var exception = Assert.ThrowsException<ArgumentException>(() => _homeOwnerService.NameHome(ownerId, homeId, newName));
+        Assert.AreEqual("Home ID cannot be empty", exception.Message);
+    }
+
+    [TestMethod]
+    public void NameHome_WhenNewNameIsEmpty_ThrowsException()
+    {
+        // Arrange
+        var ownerId = Guid.NewGuid();
+        var homeId = Guid.NewGuid();
+        var newName = string.Empty;
+
+        // Act & Assert
+        var exception = Assert.ThrowsException<ArgumentException>(() => _homeOwnerService.NameHome(ownerId, homeId, newName));
+        Assert.AreEqual("New name cannot be null or empty", exception.Message);
+    }
+    #endregion
     #endregion
 }

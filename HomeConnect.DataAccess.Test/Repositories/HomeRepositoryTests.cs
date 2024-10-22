@@ -207,4 +207,22 @@ public class HomeRepositoryTests
     #endregion
 
     #endregion
+
+    #region Rename
+    [TestMethod]
+    public void Rename_RenamesHome()
+    {
+        // Arrange
+        var homeId = _home.Id;
+        var newName = "New Home Name";
+
+        // Act
+        _homeRepository.Rename(_home, newName);
+
+        // Assert
+        var updatedHome = _context.Homes.Find(homeId);
+        Assert.IsNotNull(updatedHome);
+        Assert.AreEqual(newName, updatedHome.NickName);
+    }
+    #endregion
 }

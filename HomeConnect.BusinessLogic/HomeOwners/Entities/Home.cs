@@ -26,6 +26,19 @@ public class Home
         MaxMembers = maxMembers!.Value;
     }
 
+    public Home(User owner, string address, double? latitude, double? longitude, int? maxMembers, string? name)
+    {
+        EnsureLatitudeIsNotNull(latitude);
+        EnsureLongitudeIsNotNull(longitude);
+        EnsureMaxMembersIsNotNull(maxMembers);
+        Owner = owner;
+        Address = address;
+        Latitude = latitude!.Value;
+        Longitude = longitude!.Value;
+        MaxMembers = maxMembers!.Value;
+        NickName = name!;
+    }
+
     public Guid Id { get; set; } = Guid.NewGuid();
     public User Owner { get; set; } = null!;
 

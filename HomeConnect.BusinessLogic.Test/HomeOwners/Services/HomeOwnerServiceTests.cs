@@ -631,4 +631,29 @@ public class HomeOwnerServiceTests
         Assert.IsTrue(homes.Any(h => h.Address == "Arteaga 1470"));
     }
     #endregion
+
+    #region NameHome
+    #region Success
+    [TestMethod]
+    public void NameHome_ShouldAssignNickName()
+    {
+        // Arrange
+        var ownerId = Guid.NewGuid();
+        var homeId = Guid.NewGuid();
+        var newName = "New Home Name";
+        var home = new Home { Id = homeId, NickName = "Old Name" };
+
+        _homeRepositoryMock.Setup(repo => repo.Exists(homeId)).Returns(true);
+        _homeRepositoryMock.Setup(repo => repo.Get(homeId)).Returns(home);
+        _homeRepositoryMock.Setup(repo => repo.Rename(It.IsAny<Home>())).Verifiable();
+
+        // Act
+        _homeOwnerService.NameHome(ownerId, homeId, newName);
+
+        // Assert
+        Assert.AreEqual(newName, home.NickName);
+        _homeRepositoryMock.Verify(repo => repo.Rename(home), Times.Once);
+    }
+    #endregion
+    #endregion
 }

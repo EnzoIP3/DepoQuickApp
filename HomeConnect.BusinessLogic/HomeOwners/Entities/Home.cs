@@ -29,6 +29,8 @@ public class Home
     public Guid Id { get; set; } = Guid.NewGuid();
     public User Owner { get; set; } = null!;
 
+    public string? NickName { get; set; }
+
     public List<Member> Members { get; set; } = [];
 
     public string Address

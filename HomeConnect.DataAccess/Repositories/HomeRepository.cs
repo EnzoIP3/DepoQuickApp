@@ -66,7 +66,7 @@ public class HomeRepository : IHomeRepository
         return _context.Homes.Include(h => h.Members).Any(h => h.Members.Any(m => m.Id == memberId));
     }
 
-    public void Rename(Home home)
+    public void Rename(Home home, string newName)
     {
         throw new NotImplementedException();
     }

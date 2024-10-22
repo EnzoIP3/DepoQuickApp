@@ -11,5 +11,5 @@ public interface IHomeRepository
     Home? GetByAddress(string argsAddress);
     bool Exists(Guid homeId);
     bool ExistsMember(Guid memberId);
-    void Rename(Home home);
+    void Rename(Home home, string newName);
 }

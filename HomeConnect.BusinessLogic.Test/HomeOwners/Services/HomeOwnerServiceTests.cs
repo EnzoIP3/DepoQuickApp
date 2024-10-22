@@ -645,14 +645,16 @@ public class HomeOwnerServiceTests
 
         _homeRepositoryMock.Setup(repo => repo.Exists(homeId)).Returns(true);
         _homeRepositoryMock.Setup(repo => repo.Get(homeId)).Returns(home);
-        _homeRepositoryMock.Setup(repo => repo.Rename(It.IsAny<Home>())).Verifiable();
+        _homeRepositoryMock.Setup(repo => repo.Rename(It.IsAny<Home>(), It.IsAny<string>()))
+            .Callback<Home, string>((h, n) => h.NickName = n)
+            .Verifiable();
 
         // Act
         _homeOwnerService.NameHome(ownerId, homeId, newName);
 
         // Assert
         Assert.AreEqual(newName, home.NickName);
-        _homeRepositoryMock.Verify(repo => repo.Rename(home), Times.Once);
+        _homeRepositoryMock.Verify(repo => repo.Rename(home, newName), Times.Once);
     }
     #endregion
     #region Error

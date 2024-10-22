@@ -79,8 +79,7 @@ public class HomeOwnerService : IHomeOwnerService
         ValidateNameHomeParameters(ownerId, homeId, newName);
 
         Home home = GetHome(homeId);
-        home.NickName = newName;
-        HomeRepository.Rename(home);
+        HomeRepository.Rename(home, newName);
     }
 
     private void ValidateNameHomeParameters(Guid ownerId, Guid homeId, string newName)

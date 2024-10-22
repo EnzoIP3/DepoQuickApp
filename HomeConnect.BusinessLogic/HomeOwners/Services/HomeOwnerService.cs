@@ -81,6 +81,11 @@ public class HomeOwnerService : IHomeOwnerService
             throw new ArgumentException("Owner ID cannot be empty");
         }
 
+        if (homeId == Guid.Empty)
+        {
+            throw new ArgumentException("Home ID cannot be empty");
+        }
+
         Home home = GetHome(homeId);
         home.NickName = newName;
         HomeRepository.Rename(home);

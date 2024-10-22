@@ -1,5 +1,6 @@
 using BusinessLogic.BusinessOwners.Entities;
 using BusinessLogic.BusinessOwners.Repositories;
+using BusinessLogic.Roles.Entities;
 using BusinessLogic.Roles.Repositories;
 using BusinessLogic.Users.Entities;
 using BusinessLogic.Users.Repositories;
@@ -24,8 +25,16 @@ public class AdminService : IAdminService
     {
         EnsureValidGuid(adminIdStr, out Guid adminId);
         EnsureEntityExists(adminId);
-
+        EnsureOtherAdminExists();
         UserRepository.Delete(adminId);
+    }
+
+    private void EnsureOtherAdminExists()
+    {
+        if (UserRepository.GetPaged(1, 1, null, Role.Admin).TotalPages == 1)
+        {
+            throw new InvalidOperationException("The last admin cannot be deleted");
+        }
     }
 
     public PagedData<User> GetUsers(int? currentPage = null, int? pageSize = null, string? fullNameFilter = null,

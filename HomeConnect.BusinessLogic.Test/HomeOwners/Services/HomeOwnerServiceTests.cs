@@ -40,11 +40,11 @@ public class HomeOwnerServiceTests
             _deviceRepositoryMock.Object, _ownedDeviceRepositoryMock.Object, _memberRepositoryMock.Object);
         var home1 = new Home(_user, "Amarales 3420", 40.7128, -74.0060, 4);
         var home2 = new Home(_user, "Arteaga 1470", 34.0522, -118.2437, 6);
-        _testMembers = new List<Member>
-        {
-            new Member(_user, new List<HomePermission>()) { Home = home1 },
-            new Member(_user, new List<HomePermission>()) { Home = home2 }
-        };
+        _testMembers =
+        [
+            new Member(_user, []) { Home = home1 },
+            new Member(_user, []) { Home = home2 }
+        ];
     }
 
     #region CreateHome

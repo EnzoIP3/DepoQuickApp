@@ -70,7 +70,7 @@ public class HomeOwnerService : IHomeOwnerService
     {
         User user = UserRepository.Get(ownerId);
         List<Member> members = MemberRepository.GetMembersByUserId(ownerId);
-        List<Home> homes = members.Select(m => m.Home).ToList();
+        var homes = members.Select(m => m.Home).ToList();
         return homes;
     }
 

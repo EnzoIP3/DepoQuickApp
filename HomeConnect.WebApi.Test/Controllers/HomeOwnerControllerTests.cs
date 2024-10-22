@@ -98,12 +98,12 @@ public class HomeOwnerControllerTests
         var items = new Dictionary<object, object?> { { Item.UserLogged, _user } };
         _httpContextMock.Setup(h => h.Items).Returns(items);
         _homeOwnerService.Setup(x => x.GetHomesByOwnerId(_user.Id))
-            .Returns(new List<Home> { home1, home2 });
+            .Returns([home1, home2]);
 
         var expectedResponse = new GetHomesResponse
         {
-            Homes = new List<ListHomeInfo>
-            {
+            Homes =
+            [
                 new ListHomeInfo
                 {
                     Id = home1.Id.ToString(),
@@ -120,7 +120,8 @@ public class HomeOwnerControllerTests
                     Longitude = home2.Longitude,
                     MaxMembers = home2.MaxMembers
                 }
-            }
+
+            ]
         };
 
         // Act
@@ -185,7 +186,7 @@ public class HomeOwnerControllerTests
         // Arrange
         var request = new NameHomeRequest
         {
-            HomeId = String.Empty,
+            HomeId = string.Empty,
             NewName = "New Home Name"
         };
         var items = new Dictionary<object, object?> { { Item.UserLogged, _user } };

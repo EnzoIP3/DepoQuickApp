@@ -94,7 +94,10 @@ public sealed class AdminServiceTests
         _userRepository.Setup(x => x.GetPaged(It.IsAny<int>(), It.IsAny<int>(), null, Role.Admin)).Returns(
             new PagedData<User>
             {
-                Data = [_validUser], Page = _defaultCurrentPage, PageSize = _defaultPageSize, TotalPages = 1
+                Data = [_validUser],
+                Page = _defaultCurrentPage,
+                PageSize = _defaultPageSize,
+                TotalPages = 1
             });
 
         // Act
@@ -115,6 +118,14 @@ public sealed class AdminServiceTests
         var id = Guid.NewGuid();
         _userRepository.Setup(x => x.Exists(It.IsAny<Guid>())).Returns(true);
         _userRepository.Setup(x => x.Delete(It.IsAny<Guid>()));
+        _userRepository.Setup(x => x.GetPaged(1, 1, null, Role.Admin)).Returns(
+            new PagedData<User>
+            {
+                Data = [_validUser, _otherOwner],
+                Page = _defaultCurrentPage,
+                PageSize = _defaultPageSize,
+                TotalPages = 2
+            });
 
         // Act
         _adminService.DeleteAdmin(id.ToString());
@@ -138,7 +149,10 @@ public sealed class AdminServiceTests
         var users = new List<User> { _validUser, _otherOwner };
         var pagedList = new PagedData<User>
         {
-            Data = users, Page = _defaultCurrentPage, PageSize = _defaultPageSize, TotalPages = 1
+            Data = users,
+            Page = _defaultCurrentPage,
+            PageSize = _defaultPageSize,
+            TotalPages = 1
         };
         _userRepository.Setup(x => x.GetPaged(_defaultCurrentPage, _defaultPageSize, null, null)).Returns(pagedList);
 
@@ -161,7 +175,10 @@ public sealed class AdminServiceTests
         var users = new List<User> { _validUser, _otherOwner };
         var pagedList = new PagedData<User>
         {
-            Data = users, Page = _defaultCurrentPage, PageSize = _defaultPageSize, TotalPages = 1
+            Data = users,
+            Page = _defaultCurrentPage,
+            PageSize = _defaultPageSize,
+            TotalPages = 1
         };
         _userRepository.Setup(x => x.GetPaged(_defaultCurrentPage, _defaultPageSize, null, null)).Returns(pagedList);
 
@@ -185,7 +202,10 @@ public sealed class AdminServiceTests
         var filter = "name surname";
         var pagedList = new PagedData<User>
         {
-            Data = [users[0]], Page = _defaultCurrentPage, PageSize = _defaultPageSize, TotalPages = 1
+            Data = [users[0]],
+            Page = _defaultCurrentPage,
+            PageSize = _defaultPageSize,
+            TotalPages = 1
         };
         _userRepository.Setup(x => x.GetPaged(_defaultCurrentPage, _defaultPageSize, filter, null))
             .Returns(pagedList);
@@ -210,7 +230,10 @@ public sealed class AdminServiceTests
         var filter = "BusinessOwner";
         var pagedList = new PagedData<User>
         {
-            Data = [users[1]], Page = _defaultCurrentPage, PageSize = _defaultPageSize, TotalPages = 1
+            Data = [users[1]],
+            Page = _defaultCurrentPage,
+            PageSize = _defaultPageSize,
+            TotalPages = 1
         };
         _userRepository.Setup(x => x.GetPaged(_defaultCurrentPage, _defaultPageSize, null, filter))
             .Returns(pagedList);
@@ -244,7 +267,10 @@ public sealed class AdminServiceTests
         };
         var pagedList = new PagedData<Business>
         {
-            Data = businesses, Page = _defaultCurrentPage, PageSize = _defaultPageSize, TotalPages = 1
+            Data = businesses,
+            Page = _defaultCurrentPage,
+            PageSize = _defaultPageSize,
+            TotalPages = 1
         };
         _businessRepository.Setup(x => x.GetPaged(_defaultCurrentPage, _defaultPageSize, null, null))
             .Returns(pagedList);
@@ -272,7 +298,10 @@ public sealed class AdminServiceTests
         };
         var pagedList = new PagedData<Business>
         {
-            Data = businesses, Page = _defaultCurrentPage, PageSize = _defaultPageSize, TotalPages = 1
+            Data = businesses,
+            Page = _defaultCurrentPage,
+            PageSize = _defaultPageSize,
+            TotalPages = 1
         };
         _businessRepository.Setup(x => x.GetPaged(_defaultCurrentPage, _defaultPageSize, null, null))
             .Returns(pagedList);
@@ -301,7 +330,10 @@ public sealed class AdminServiceTests
         var filter = $"{_owner.Name} {_owner.Surname}";
         var pagedList = new PagedData<Business>
         {
-            Data = [businesses[0]], Page = _defaultCurrentPage, PageSize = _defaultPageSize, TotalPages = 1
+            Data = [businesses[0]],
+            Page = _defaultCurrentPage,
+            PageSize = _defaultPageSize,
+            TotalPages = 1
         };
         _businessRepository.Setup(x => x.GetPaged(_defaultCurrentPage, _defaultPageSize, filter, null))
             .Returns(pagedList);
@@ -330,7 +362,10 @@ public sealed class AdminServiceTests
         var filter = "name2";
         var pagedList = new PagedData<Business>
         {
-            Data = [businesses[1]], Page = _defaultCurrentPage, PageSize = _defaultPageSize, TotalPages = 1
+            Data = [businesses[1]],
+            Page = _defaultCurrentPage,
+            PageSize = _defaultPageSize,
+            TotalPages = 1
         };
         _businessRepository.Setup(x => x.GetPaged(_defaultCurrentPage, _defaultPageSize, null, filter))
             .Returns(pagedList);

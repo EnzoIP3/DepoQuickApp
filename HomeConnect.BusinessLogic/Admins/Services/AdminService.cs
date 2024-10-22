@@ -31,7 +31,7 @@ public class AdminService : IAdminService
 
     private void EnsureOtherAdminExists()
     {
-        if (UserRepository.GetPaged(1, 1, null, Role.Admin).TotalPages == 1)
+        if (UserRepository.GetPaged(1, 1, roleFilter: Role.Admin).TotalPages == 1)
         {
             throw new InvalidOperationException("The last admin cannot be deleted");
         }

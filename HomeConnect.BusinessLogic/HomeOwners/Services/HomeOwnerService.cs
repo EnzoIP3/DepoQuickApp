@@ -76,6 +76,15 @@ public class HomeOwnerService : IHomeOwnerService
 
     public void NameHome(Guid ownerId, Guid homeId, string newName)
     {
+        ValidateNameHomeParameters(ownerId, homeId, newName);
+
+        Home home = GetHome(homeId);
+        home.NickName = newName;
+        HomeRepository.Rename(home);
+    }
+
+    private void ValidateNameHomeParameters(Guid ownerId, Guid homeId, string newName)
+    {
         if (ownerId == Guid.Empty)
         {
             throw new ArgumentException("Owner ID cannot be empty");
@@ -90,10 +99,6 @@ public class HomeOwnerService : IHomeOwnerService
         {
             throw new ArgumentException("New name cannot be null or empty");
         }
-
-        Home home = GetHome(homeId);
-        home.NickName = newName;
-        HomeRepository.Rename(home);
     }
 
     public List<Member> GetHomeMembers(string homeId)

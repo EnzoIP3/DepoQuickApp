@@ -44,9 +44,8 @@ public class MotionSensorController(
     [HttpPost("{hardwareId}/movement-detected")]
     public NotifyResponse MovementDetected([FromRoute] string hardwareId)
     {
-        EnsureDeviceIsConnected(hardwareId);
         NotificationArgs args = CreateMovementDetectedNotificationArgs(hardwareId);
-        notificationService.Notify(args);
+        notificationService.Notify(args, deviceService);
         return new NotifyResponse { HardwareId = hardwareId };
     }
 

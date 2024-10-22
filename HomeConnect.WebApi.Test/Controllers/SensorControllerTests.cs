@@ -88,7 +88,7 @@ public class SensorControllerTests
         var hardwareId = "hardwareId";
         var args = new NotificationArgs { HardwareId = hardwareId, Date = DateTime.Now, Event = "open" };
         _deviceServiceMock.Setup(x => x.IsConnected(hardwareId)).Returns(true);
-        _notificationServiceMock.Setup(x => x.Notify(args));
+        _notificationServiceMock.Setup(x => x.Notify(args, _deviceServiceMock.Object));
 
         // Act
         NotifyResponse result = _sensorController.NotifyOpen(hardwareId);
@@ -105,7 +105,7 @@ public class SensorControllerTests
         var hardwareId = "hardwareId";
         var args = new NotificationArgs { HardwareId = hardwareId, Date = DateTime.Now, Event = "close" };
         _deviceServiceMock.Setup(x => x.IsConnected(hardwareId)).Returns(true);
-        _notificationServiceMock.Setup(x => x.Notify(args));
+        _notificationServiceMock.Setup(x => x.Notify(args, _deviceServiceMock.Object));
 
         // Act
         NotifyResponse result = _sensorController.NotifyClose(hardwareId);
@@ -113,37 +113,6 @@ public class SensorControllerTests
         // Assert
         result.Should().NotBeNull();
         result.HardwareId.Should().Be(hardwareId);
-    }
-
-    [TestMethod]
-    public void NotifyOpen_WhenDeviceIsDisconnected_ThrowsException()
-    {
-        // Arrange
-        var hardwareId = "hardwareId";
-
-        _deviceServiceMock.Setup(x => x.IsConnected(hardwareId)).Returns(false);
-
-        // Act
-        Func<NotifyResponse> act = () => _sensorController.NotifyOpen(hardwareId);
-
-        // Assert
-        act.Should().Throw<ArgumentException>().WithMessage("Device is not connected");
-        _deviceServiceMock.VerifyAll();
-    }
-
-    [TestMethod]
-    public void NotifyClose_WhenDeviceIsDisconnected_ThrowsException()
-    {
-        // Arrange
-        var hardwareId = "hardwareId";
-        _deviceServiceMock.Setup(x => x.IsConnected(hardwareId)).Returns(false);
-
-        // Act
-        Func<NotifyResponse> act = () => _sensorController.NotifyClose(hardwareId);
-
-        // Assert
-        act.Should().Throw<ArgumentException>().WithMessage("Device is not connected");
-        _deviceServiceMock.VerifyAll();
     }
 
     #endregion

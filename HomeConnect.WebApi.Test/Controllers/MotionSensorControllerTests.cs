@@ -78,20 +78,6 @@ public class MotionSensorControllerTests
     #endregion
 
     #region MovementDetected
-    [TestMethod]
-    public void MovementDetected_WhenMotionSensorIsDisconnected_ThrowsArgumentException()
-    {
-        // Arrange
-        var hardwareId = "hardwareId";
-        _deviceServiceMock.Setup(x => x.IsConnected(hardwareId)).Returns(false);
-
-        // Act
-        Func<NotifyResponse> act = () => _motionSensorController.MovementDetected(hardwareId);
-
-        // Assert
-        act.Should().Throw<ArgumentException>().WithMessage("Device is not connected");
-        _deviceServiceMock.VerifyAll();
-    }
 
     [TestMethod]
     public void MovementDetected_WithHardwareId_ReturnsNotifyResponse()
@@ -100,7 +86,7 @@ public class MotionSensorControllerTests
         var hardwareId = "hardwareId";
         var args = new NotificationArgs { HardwareId = hardwareId, Date = DateTime.Now, Event = "movement-detected" };
         _deviceServiceMock.Setup(x => x.IsConnected(hardwareId)).Returns(true);
-        _notificationServiceMock.Setup(x => x.Notify(args));
+        _notificationServiceMock.Setup(x => x.Notify(args, _deviceServiceMock.Object));
 
         // Act
         NotifyResponse result = _motionSensorController.MovementDetected(hardwareId);

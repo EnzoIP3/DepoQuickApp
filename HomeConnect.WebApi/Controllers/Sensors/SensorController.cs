@@ -47,9 +47,8 @@ public class SensorController(
     [HttpPost("{hardwareId}/open")]
     public NotifyResponse NotifyOpen([FromRoute] string hardwareId)
     {
-        EnsureDeviceIsConnected(hardwareId);
         NotificationArgs notificationArgs = CreateOpenNotificationArgs(hardwareId);
-        notificationService.Notify(notificationArgs);
+        notificationService.Notify(notificationArgs, deviceService);
         return new NotifyResponse { HardwareId = hardwareId };
     }
 
@@ -70,9 +69,8 @@ public class SensorController(
     [HttpPost("{hardwareId}/close")]
     public NotifyResponse NotifyClose([FromRoute] string hardwareId)
     {
-        EnsureDeviceIsConnected(hardwareId);
         NotificationArgs notificationArgs = CreateCloseNotificationArgs(hardwareId);
-        notificationService.Notify(notificationArgs);
+        notificationService.Notify(notificationArgs, deviceService);
         return new NotifyResponse { HardwareId = hardwareId };
     }
 

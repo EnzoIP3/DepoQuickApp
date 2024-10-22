@@ -68,7 +68,9 @@ public class HomeRepository : IHomeRepository
 
     public void Rename(Home home, string newName)
     {
-        throw new NotImplementedException();
+        home.NickName = newName;
+        _context.Homes.Update(home);
+        _context.SaveChanges();
     }
 
     private void EnsureHomeDoesNotExist(Home home)

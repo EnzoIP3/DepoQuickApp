@@ -38,8 +38,10 @@ public class HomeControllerTests
     {
         _httpContextMock = new Mock<HttpContext>(MockBehavior.Strict);
         _homeOwnerService = new Mock<IHomeOwnerService>(MockBehavior.Strict);
-        _controller = new HomeController(_homeOwnerService.Object);
-        _controller.ControllerContext = new ControllerContext { HttpContext = _httpContextMock.Object };
+        _controller = new HomeController(_homeOwnerService.Object)
+        {
+            ControllerContext = new ControllerContext { HttpContext = _httpContextMock.Object }
+        };
         _context = new AuthorizationFilterContext(
             new ActionContext(
                 _httpContextMock.Object,

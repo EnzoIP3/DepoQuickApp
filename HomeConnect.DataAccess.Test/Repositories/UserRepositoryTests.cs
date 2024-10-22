@@ -205,4 +205,26 @@ public class UserRepositoryTest
     #endregion
 
     #endregion
+
+    #region Update
+
+    #region Success
+
+    [TestMethod]
+    public void Update_WhenUserExists_UpdatesUser()
+    {
+        // Arrange
+        _validUser.AddRole(new Role("Added role", []));
+
+        // Act
+        _userRepository.Update(_validUser);
+
+        // Assert
+        var user = _userRepository.Get(_validUser.Id);
+        user.Roles.Should().HaveCount(2);
+    }
+
+    #endregion
+
+    #endregion
 }

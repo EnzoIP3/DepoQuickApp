@@ -122,3 +122,8 @@ Backup*/
 UpgradeLog*.XML
 .vs
 *.idea
+
+# Frontend
+Frontend/node_modules
+Frontend/.angular
+Frontend/.vscode

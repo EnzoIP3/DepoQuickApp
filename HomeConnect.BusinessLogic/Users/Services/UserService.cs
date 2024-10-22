@@ -61,4 +61,12 @@ public class UserService : IUserService
             throw new ArgumentException("Invalid role.");
         }
     }
+
+    public void AddRoleToUser(AddRoleToUserArgs args)
+    {
+        var user = UserRepository.Get(Guid.Parse(args.UserId));
+        var role = RoleRepository.Get(args.Role);
+        user.AddRole(role);
+        UserRepository.Update(user);
+    }
 }

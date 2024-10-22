@@ -92,7 +92,8 @@ public class Context(DbContextOptions<Context> options) : DbContext(options)
         modelBuilder.Entity<User>()
             .HasMany(u => u.Roles)
             .WithMany("Users")
-            .UsingEntity(j => j.ToTable("UserRole"));
+            .UsingEntity(j => j.ToTable("UserRole").HasData(
+                new { UsersId = Guid.Parse("f1b3b3b3-3b3b-3b3b-3b3b-3b3b3b3b3b3b"), RolesName = Role.Admin }));
     }
 
     private void ConfigureMemberRelations(ModelBuilder modelBuilder)
@@ -122,7 +123,6 @@ public class Context(DbContextOptions<Context> options) : DbContext(options)
             Surname = "Account",
             Email = "admin@admin.com",
             Password = "Admin123@",
-            RoleName = "Admin",
             CreatedAt = new DateOnly(2024, 1, 1)
         });
     }

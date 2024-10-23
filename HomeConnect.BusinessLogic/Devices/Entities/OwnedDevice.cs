@@ -23,7 +23,7 @@ public class OwnedDevice
     public Device Device { get; init; } = null!;
     public bool Connected { get; set; } = true;
 
-    public OwnedDeviceDto ToOwnedDeviceDto()
+    public virtual OwnedDeviceDto ToOwnedDeviceDto()
     {
         return new OwnedDeviceDto
         {

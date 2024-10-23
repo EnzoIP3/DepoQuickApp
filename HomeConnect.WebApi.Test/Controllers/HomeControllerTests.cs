@@ -233,7 +233,7 @@ public class HomeControllerTests
                 MainPhoto = "https://www.example.com/photo1.jpg",
                 Business = new Business { Name = "Name1" }
             });
-        var lamp2 = new OwnedDevice(_home,
+        var lamp2 = new LampOwnedDevice(_home,
             new Device
             {
                 Name = "Device2",

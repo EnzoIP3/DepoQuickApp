@@ -22,7 +22,8 @@ public record ListDeviceInfo
             BusinessName = dto.BusinessName,
             Type = dto.Type,
             ModelNumber = dto.ModelNumber,
-            Photo = dto.Photo
+            Photo = dto.Photo,
+            State = dto.State
         };
     }
 }

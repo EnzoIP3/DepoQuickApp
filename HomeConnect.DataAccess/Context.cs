@@ -31,9 +31,18 @@ public class Context(DbContextOptions<Context> options) : DbContext(options)
         ConfigureRolePermissions(modelBuilder);
         ConfigureUserRole(modelBuilder);
         ConfigureMemberRelations(modelBuilder);
+        ConfigureOwnedDevices(modelBuilder);
         SeedAdminUser(modelBuilder);
 
         base.OnModelCreating(modelBuilder);
+    }
+
+    private static void ConfigureOwnedDevices(ModelBuilder modelBuilder)
+    {
+        modelBuilder.Entity<OwnedDevice>()
+            .HasDiscriminator<string>("DeviceType")
+            .HasValue<OwnedDevice>("OwnedDevice")
+            .HasValue<LampOwnedDevice>("LampOwnedDevice");
     }
 
     private void SeedRoles(ModelBuilder modelBuilder)

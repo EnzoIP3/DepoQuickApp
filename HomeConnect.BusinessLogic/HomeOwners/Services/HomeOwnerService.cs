@@ -181,7 +181,19 @@ public class HomeOwnerService : IHomeOwnerService
 
     private void AddDevicesToHome(Home home, List<Device> devices)
     {
-        devices.ForEach(device => OwnedDeviceRepository.Add(new OwnedDevice(home, device)));
+        devices.ForEach(device =>
+        {
+            if (device.Type == DeviceType.Lamp)
+            {
+                var lampOwnedDevice = new LampOwnedDevice(home, device);
+                OwnedDeviceRepository.Add(lampOwnedDevice);
+            }
+            else
+            {
+                var ownedDevice = new OwnedDevice(home, device);
+                OwnedDeviceRepository.Add(ownedDevice);
+            }
+        });
     }
 
     private void EnsureHomeExists(Guid homeId)

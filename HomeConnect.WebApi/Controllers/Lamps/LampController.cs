@@ -31,8 +31,8 @@ public class LampController(
             Type = "Lamp"
         };
 
-        Device createdSensor = businessOwnerService.CreateDevice(args);
+        Device createdLamp = businessOwnerService.CreateDevice(args);
 
-        return new CreateLampResponse { Id = createdSensor.Id };
+        return new CreateLampResponse { Id = createdLamp.Id };
     }
 }

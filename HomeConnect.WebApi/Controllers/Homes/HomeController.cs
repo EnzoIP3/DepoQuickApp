@@ -81,15 +81,7 @@ public class HomeController(IHomeOwnerService homeOwnerService) : ControllerBase
     public GetDevicesResponse GetDevices([FromRoute] string homesId)
     {
         IEnumerable<OwnedDevice> devices = homeOwnerService.GetHomeDevices(homesId);
-        var deviceInfos = devices.Select(d => new ListDeviceInfo
-        {
-            HardwareId = d.HardwareId.ToString(),
-            Name = d.Device.Name,
-            BusinessName = d.Device.Business.Name,
-            Type = d.Device.Type.ToString(),
-            ModelNumber = d.Device.ModelNumber,
-            Photo = d.Device.MainPhoto
-        }).ToList();
+        var deviceInfos = devices.Select(ListDeviceInfo.FromOwnedDevice).ToList();
         return new GetDevicesResponse { Devices = deviceInfos };
     }
 

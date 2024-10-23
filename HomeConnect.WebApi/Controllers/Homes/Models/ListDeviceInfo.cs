@@ -10,6 +10,7 @@ public record ListDeviceInfo
     public string Type { get; set; } = null!;
     public int ModelNumber { get; set; }
     public string Photo { get; set; } = null!;
+    public bool? State { get; set; }
 
     public static ListDeviceInfo FromOwnedDevice(OwnedDevice ownedDevice)
     {

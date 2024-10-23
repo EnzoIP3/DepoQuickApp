@@ -13,14 +13,15 @@ public record ListDeviceInfo
 
     public static ListDeviceInfo FromOwnedDevice(OwnedDevice ownedDevice)
     {
+        var dto = ownedDevice.ToOwnedDeviceDto();
         return new ListDeviceInfo
         {
-            HardwareId = ownedDevice.HardwareId.ToString(),
-            Name = ownedDevice.Device.Name,
-            BusinessName = ownedDevice.Device.Business.Name,
-            Type = ownedDevice.Device.Type.ToString(),
-            ModelNumber = ownedDevice.Device.ModelNumber,
-            Photo = ownedDevice.Device.MainPhoto
+            HardwareId = dto.HardwareId,
+            Name = dto.Name,
+            BusinessName = dto.BusinessName,
+            Type = dto.Type,
+            ModelNumber = dto.ModelNumber,
+            Photo = dto.Photo
         };
     }
 }

@@ -52,14 +52,6 @@ public class SensorController(
         return new NotifyResponse { HardwareId = hardwareId };
     }
 
-    private void EnsureDeviceIsConnected(string hardwareId)
-    {
-        if (!deviceService.IsConnected(hardwareId))
-        {
-            throw new ArgumentException("Device is not connected");
-        }
-    }
-
     private static NotificationArgs CreateOpenNotificationArgs(string hardwareId)
     {
         var notificationArgs = new NotificationArgs { HardwareId = hardwareId, Date = DateTime.Now, Event = "open" };

@@ -48,6 +48,7 @@ public class DeviceService : IDeviceService
 
     public void TurnLamp(string hardwareId, bool state)
     {
+        EnsureHardwareIdIsValid(hardwareId);
         EnsureOwnedDeviceExists(hardwareId);
     }
 

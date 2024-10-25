@@ -218,6 +218,19 @@ public class DeviceServiceTests
         // Assert
         act.Should().Throw<KeyNotFoundException>().WithMessage("The device is not registered in this home.");
     }
+
+    [TestMethod]
+    public void TurnLamp_WhenHardwareIdIsInvalid_ThrowsArgumentException()
+    {
+        // Arrange
+        var hardwareId = "hardwareId";
+
+        // Act
+        Action act = () => _deviceService.TurnLamp(hardwareId, true);
+
+        // Assert
+        act.Should().Throw<ArgumentException>().WithMessage("Hardware ID is invalid.");
+    }
     #endregion
     #endregion
 }

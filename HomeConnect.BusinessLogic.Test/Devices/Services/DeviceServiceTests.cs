@@ -201,4 +201,23 @@ public class DeviceServiceTests
     }
 
     #endregion
+
+    #region TurnLamp
+
+    #region Error
+    [TestMethod]
+    public void TurnLamp_WhenLampDoesNotExist_ThrowsKeyNotFoundException()
+    {
+        // Arrange
+        var hardwareId = Guid.NewGuid().ToString();
+        _ownedDeviceRepository.Setup(x => x.Exists(Guid.Parse(hardwareId))).Returns(false);
+
+        // Act
+        Action act = () => _deviceService.TurnLamp(hardwareId, true);
+
+        // Assert
+        act.Should().Throw<KeyNotFoundException>().WithMessage("The device is not registered in this home.");
+    }
+    #endregion
+    #endregion
 }

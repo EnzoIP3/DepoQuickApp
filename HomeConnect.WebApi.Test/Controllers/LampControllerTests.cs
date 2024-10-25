@@ -2,8 +2,10 @@ using BusinessLogic.BusinessOwners.Entities;
 using BusinessLogic.BusinessOwners.Models;
 using BusinessLogic.BusinessOwners.Services;
 using BusinessLogic.Devices.Entities;
+using BusinessLogic.Devices.Services;
 using BusinessLogic.Users.Entities;
 using FluentAssertions;
+using HomeConnect.WebApi.Controllers.Devices.Models;
 using HomeConnect.WebApi.Controllers.Lamps;
 using HomeConnect.WebApi.Controllers.Lamps.Models;
 using Microsoft.AspNetCore.Http;
@@ -15,6 +17,7 @@ namespace HomeConnect.WebApi.Test.Controllers;
 public class LampControllerTests
 {
     private Mock<IBusinessOwnerService> _businessOwnerServiceMock = null!;
+    private Mock<IDeviceService> _deviceServiceMock = null!;
     private Mock<HttpContext> _httpContextMock = null!;
     private LampController _lampController = null!;
 
@@ -23,8 +26,9 @@ public class LampControllerTests
     {
         _httpContextMock = new Mock<HttpContext>();
         _businessOwnerServiceMock = new Mock<IBusinessOwnerService>();
+        _deviceServiceMock = new Mock<IDeviceService>();
         _lampController =
-            new LampController(_businessOwnerServiceMock.Object)
+            new LampController(_businessOwnerServiceMock.Object, _deviceServiceMock.Object)
                 { ControllerContext = { HttpContext = _httpContextMock.Object } };
     }
 
@@ -67,6 +71,40 @@ public class LampControllerTests
         _businessOwnerServiceMock.VerifyAll();
         response.Should().NotBeNull();
         response.Id.Should().Be(lamp.Id);
+    }
+    #endregion
+
+    #region TurningLamps
+    [TestMethod]
+    public void TurnOn_WhenCalledWithValidHardwareId_ReturnsOkResponse()
+    {
+        // Arrange
+        var hardwareId = "123";
+        _deviceServiceMock.Setup(x => x.TurnLamp(hardwareId, true));
+
+        // Act
+        NotifyResponse result = _lampController.TurnOn(hardwareId);
+
+        // Assert
+        _deviceServiceMock.VerifyAll();
+        result.Should().NotBeNull();
+        result.HardwareId.Should().Be(hardwareId);
+    }
+
+    [TestMethod]
+    public void TurnOff_WhenCalledWithValidHardwareId_ReturnsOkResponse()
+    {
+        // Arrange
+        var hardwareId = "123";
+        _deviceServiceMock.Setup(x => x.TurnLamp(hardwareId, false));
+
+        // Act
+        NotifyResponse result = _lampController.TurnOff(hardwareId);
+
+        // Assert
+        _deviceServiceMock.VerifyAll();
+        result.Should().NotBeNull();
+        result.HardwareId.Should().Be(hardwareId);
     }
     #endregion
 }

@@ -9,4 +9,5 @@ public interface IDeviceService
     bool ToggleDevice(string hardwareId);
     IEnumerable<string> GetAllDeviceTypes();
     bool IsConnected(string hardwareId);
+    void TurnLamp(string hardwareId, bool state);
 }

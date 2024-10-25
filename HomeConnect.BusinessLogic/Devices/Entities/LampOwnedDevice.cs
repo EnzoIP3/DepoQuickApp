@@ -1,4 +1,3 @@
-using System.ComponentModel.DataAnnotations;
 using BusinessLogic.Devices.Models;
 using BusinessLogic.HomeOwners.Entities;
 

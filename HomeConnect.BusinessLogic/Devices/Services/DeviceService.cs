@@ -46,6 +46,11 @@ public class DeviceService : IDeviceService
         return ownedDevice.Connected;
     }
 
+    public void TurnLamp(string hardwareId, bool state)
+    {
+        throw new NotImplementedException();
+    }
+
     private void EnsureOwnedDeviceExists(string hardwareId)
     {
         if (!OwnedDeviceRepository.Exists(Guid.Parse(hardwareId)))

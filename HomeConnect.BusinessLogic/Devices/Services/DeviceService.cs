@@ -48,7 +48,7 @@ public class DeviceService : IDeviceService
 
     public void TurnLamp(string hardwareId, bool state)
     {
-        throw new NotImplementedException();
+        EnsureOwnedDeviceExists(hardwareId);
     }
 
     private void EnsureOwnedDeviceExists(string hardwareId)

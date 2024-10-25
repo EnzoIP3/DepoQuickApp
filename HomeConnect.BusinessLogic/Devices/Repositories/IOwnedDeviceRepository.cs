@@ -10,4 +10,5 @@ public interface IOwnedDeviceRepository
     OwnedDevice GetByHardwareId(Guid hardwareId);
     bool Exists(Guid hardwareId);
     void Update(OwnedDevice ownedDevice);
+    void UpdateLampState(Guid hardwareId, bool state);
 }

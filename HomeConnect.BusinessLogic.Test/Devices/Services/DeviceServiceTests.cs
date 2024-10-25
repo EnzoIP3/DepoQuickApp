@@ -232,5 +232,23 @@ public class DeviceServiceTests
         act.Should().Throw<ArgumentException>().WithMessage("Hardware ID is invalid.");
     }
     #endregion
+
+    #region Success
+
+    [TestMethod]
+    public void TurnLamp_WhenCalledWithValidHardwareId_SetsState()
+    {
+        // Arrange
+        var hardwareId = Guid.NewGuid().ToString();
+        _ownedDeviceRepository.Setup(x => x.Exists(Guid.Parse(hardwareId))).Returns(true);
+        _ownedDeviceRepository.Setup(x => x.UpdateLampState(Guid.Parse(hardwareId), true)).Verifiable();
+
+        // Act
+        _deviceService.TurnLamp(hardwareId, true);
+
+        // Assert
+        _ownedDeviceRepository.VerifyAll();
+    }
+    #endregion
     #endregion
 }

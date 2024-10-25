@@ -50,6 +50,7 @@ public class DeviceService : IDeviceService
     {
         EnsureHardwareIdIsValid(hardwareId);
         EnsureOwnedDeviceExists(hardwareId);
+        OwnedDeviceRepository.UpdateLampState(Guid.Parse(hardwareId), state);
     }
 
     private void EnsureOwnedDeviceExists(string hardwareId)

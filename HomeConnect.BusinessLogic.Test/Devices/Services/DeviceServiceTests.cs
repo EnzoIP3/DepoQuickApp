@@ -253,7 +253,6 @@ public class DeviceServiceTests
     #endregion
 
     #region UpdateSensorState
-
     #region Error
 
     [TestMethod]
@@ -283,6 +282,25 @@ public class DeviceServiceTests
         act.Should().Throw<ArgumentException>().WithMessage("Hardware ID is invalid.");
     }
 
+    #endregion
+
+    #region Success
+
+    [TestMethod]
+    public void UpdateSensorState_WhenCalledWithValidHardwareId_SetsState()
+    {
+        // Arrange
+        var hardwareId = Guid.NewGuid().ToString();
+        const bool state = true;
+        _ownedDeviceRepository.Setup(x => x.Exists(Guid.Parse(hardwareId))).Returns(state);
+        _ownedDeviceRepository.Setup(x => x.UpdateSensorState(Guid.Parse(hardwareId), state)).Verifiable();
+
+        // Act
+        _deviceService.UpdateSensorState(hardwareId, state);
+
+        // Assert
+        _ownedDeviceRepository.VerifyAll();
+    }
     #endregion
     #endregion
 }

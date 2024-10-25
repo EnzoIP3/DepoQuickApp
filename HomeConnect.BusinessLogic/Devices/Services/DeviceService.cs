@@ -57,6 +57,7 @@ public class DeviceService : IDeviceService
     {
         EnsureHardwareIdIsValid(hardwareId);
         EnsureOwnedDeviceExists(hardwareId);
+        OwnedDeviceRepository.UpdateSensorState(Guid.Parse(hardwareId), state);
     }
 
     private void EnsureOwnedDeviceExists(string hardwareId)

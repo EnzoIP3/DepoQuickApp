@@ -46,6 +46,15 @@ public class OwnedDeviceRepository : IOwnedDeviceRepository
 
     public void UpdateLampState(Guid hardwareId, bool state)
     {
-        throw new NotImplementedException();
+        EnsureDeviceIsLamp(hardwareId);
+    }
+
+    private void EnsureDeviceIsLamp(Guid hardwareId)
+    {
+        OwnedDevice ownedDevice = GetByHardwareId(hardwareId);
+        if (ownedDevice.Device.Type != DeviceType.Lamp)
+        {
+            throw new InvalidOperationException("The device is not a lamp.");
+        }
     }
 }

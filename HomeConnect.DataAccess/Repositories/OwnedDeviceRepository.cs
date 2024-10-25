@@ -54,7 +54,16 @@ public class OwnedDeviceRepository : IOwnedDeviceRepository
 
     public void UpdateSensorState(Guid hardwareId, bool state)
     {
-        throw new NotImplementedException();
+        EnsureDeviceIsSensor(hardwareId);
+    }
+
+    private void EnsureDeviceIsSensor(Guid hardwareId)
+    {
+        OwnedDevice ownedDevice = GetByHardwareId(hardwareId);
+        if (ownedDevice.Device.Type != DeviceType.Sensor)
+        {
+            throw new InvalidOperationException("The device is not a sensor.");
+        }
     }
 
     private void EnsureDeviceIsLamp(Guid hardwareId)

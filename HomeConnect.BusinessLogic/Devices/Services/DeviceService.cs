@@ -53,6 +53,11 @@ public class DeviceService : IDeviceService
         OwnedDeviceRepository.UpdateLampState(Guid.Parse(hardwareId), state);
     }
 
+    public void UpdateSensorState(string hardwareId, bool state)
+    {
+        throw new NotImplementedException();
+    }
+
     private void EnsureOwnedDeviceExists(string hardwareId)
     {
         if (!OwnedDeviceRepository.Exists(Guid.Parse(hardwareId)))

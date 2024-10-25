@@ -251,4 +251,38 @@ public class DeviceServiceTests
     }
     #endregion
     #endregion
+
+    #region UpdateSensorState
+
+    #region Error
+
+    [TestMethod]
+    public void UpdateSensorState_WhenLampDoesNotExist_ThrowsKeyNotFoundException()
+    {
+        // Arrange
+        var hardwareId = Guid.NewGuid().ToString();
+        _ownedDeviceRepository.Setup(x => x.Exists(Guid.Parse(hardwareId))).Returns(false);
+
+        // Act
+        Action act = () => _deviceService.UpdateSensorState(hardwareId, true);
+
+        // Assert
+        act.Should().Throw<KeyNotFoundException>().WithMessage("The device is not registered in this home.");
+    }
+
+    [TestMethod]
+    public void UpdateSensorState_WhenHardwareIdIsInvalid_ThrowsArgumentException()
+    {
+        // Arrange
+        var hardwareId = "hardwareId";
+
+        // Act
+        Action act = () => _deviceService.UpdateSensorState(hardwareId, true);
+
+        // Assert
+        act.Should().Throw<ArgumentException>().WithMessage("Hardware ID is invalid.");
+    }
+
+    #endregion
+    #endregion
 }

@@ -55,7 +55,8 @@ public class DeviceService : IDeviceService
 
     public void UpdateSensorState(string hardwareId, bool state)
     {
-        throw new NotImplementedException();
+        EnsureHardwareIdIsValid(hardwareId);
+        EnsureOwnedDeviceExists(hardwareId);
     }
 
     private void EnsureOwnedDeviceExists(string hardwareId)

@@ -60,7 +60,7 @@ public class OwnedDeviceRepository : IOwnedDeviceRepository
     public bool GetLampState(Guid hardwareId)
     {
         EnsureDeviceIsLamp(hardwareId);
-        return true;
+        return ((LampOwnedDevice)GetByHardwareId(hardwareId)).State;
     }
 
     private void EnsureDeviceIsSensor(Guid hardwareId)

@@ -215,5 +215,23 @@ public class OwnedDeviceRepositoryTests
         // Assert
         act.Should().Throw<InvalidOperationException>().WithMessage("The device is not a lamp.");
     }
+
+    [TestMethod]
+    public void GetLampState_IfDeviceIsALamp_ReturnsLampState()
+    {
+        // Arrange
+        Device device = new Device("Lamp", 12345, "A lamp",
+            "https://lamp.com/image.png", [], "Lamp", _business);
+        LampOwnedDevice ownedDevice = new LampOwnedDevice(_home, device);
+        _context.Devices.Add(device);
+        _context.OwnedDevices.Add(ownedDevice);
+        _context.SaveChanges();
+
+        // Act
+        var result = _ownedDeviceRepository.GetLampState(ownedDevice.HardwareId);
+
+        // Assert
+        result.Should().BeFalse();
+    }
     #endregion
 }

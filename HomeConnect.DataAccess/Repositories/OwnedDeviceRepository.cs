@@ -66,7 +66,7 @@ public class OwnedDeviceRepository : IOwnedDeviceRepository
     public bool GetSensorState(Guid hardwareId)
     {
         EnsureDeviceIsSensor(hardwareId);
-        return true;
+        return ((SensorOwnedDevice)GetByHardwareId(hardwareId)).IsOpen;
     }
 
     private void EnsureDeviceIsSensor(Guid hardwareId)

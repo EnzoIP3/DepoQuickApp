@@ -241,7 +241,7 @@ public class OwnedDeviceRepositoryTests
         // Arrange
         Device device = new Device("Camera", 12345, "A camera",
             "https://camera.com/image.png", [], "Camera", _business);
-        OwnedDevice ownedDevice = new OwnedDevice(_home, device);
+        SensorOwnedDevice ownedDevice = new SensorOwnedDevice(_home, device);
         _context.Devices.Add(device);
         _context.OwnedDevices.Add(ownedDevice);
         _context.SaveChanges();
@@ -251,6 +251,24 @@ public class OwnedDeviceRepositoryTests
 
         // Assert
         act.Should().Throw<InvalidOperationException>().WithMessage("The device is not a sensor.");
+    }
+
+    [TestMethod]
+    public void GetSensorState_IfDeviceIsASensor_ReturnsSensorState()
+    {
+        // Arrange
+        Device device = new Device("Sensor", 12345, "A sensor",
+            "https://sensor.com/image.png", [], "Sensor", _business);
+        SensorOwnedDevice ownedDevice = new SensorOwnedDevice(_home, device);
+        _context.Devices.Add(device);
+        _context.OwnedDevices.Add(ownedDevice);
+        _context.SaveChanges();
+
+        // Act
+        var result = _ownedDeviceRepository.GetSensorState(ownedDevice.HardwareId);
+
+        // Assert
+        result.Should().BeFalse();
     }
     #endregion
 }

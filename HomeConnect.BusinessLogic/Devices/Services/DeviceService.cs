@@ -1,6 +1,7 @@
 using BusinessLogic.Devices.Entities;
 using BusinessLogic.Devices.Models;
 using BusinessLogic.Devices.Repositories;
+using BusinessLogic.Notifications.Models;
 
 namespace BusinessLogic.Devices.Services;
 
@@ -46,7 +47,7 @@ public class DeviceService : IDeviceService
         return ownedDevice.Connected;
     }
 
-    public void TurnLamp(string hardwareId, bool state)
+    public void TurnLamp(string hardwareId, bool state, NotificationArgs args)
     {
         EnsureHardwareIdIsValid(hardwareId);
         EnsureOwnedDeviceExists(hardwareId);

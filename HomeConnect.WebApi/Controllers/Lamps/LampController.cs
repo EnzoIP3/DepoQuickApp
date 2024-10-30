@@ -2,6 +2,7 @@ using BusinessLogic.BusinessOwners.Models;
 using BusinessLogic.BusinessOwners.Services;
 using BusinessLogic.Devices.Entities;
 using BusinessLogic.Devices.Services;
+using BusinessLogic.Notifications.Models;
 using BusinessLogic.Roles.Entities;
 using BusinessLogic.Users.Entities;
 using HomeConnect.WebApi.Controllers.Devices.Models;
@@ -41,14 +42,26 @@ public class LampController(
     [HttpPost("{hardwareId}/turnOn")]
     public NotifyResponse TurnOn([FromRoute] string hardwareId)
     {
-        deviceService.TurnLamp(hardwareId, true);
+        NotificationArgs args = CreateTurnNotificationArgs(hardwareId, true);
+        deviceService.TurnLamp(hardwareId, true, args);
         return new NotifyResponse { HardwareId = hardwareId };
     }
 
     [HttpPost("{hardwareId}/turnOff")]
     public NotifyResponse TurnOff([FromRoute] string hardwareId)
     {
-        deviceService.TurnLamp(hardwareId, false);
+        NotificationArgs args = CreateTurnNotificationArgs(hardwareId, false);
+        deviceService.TurnLamp(hardwareId, false, args);
         return new NotifyResponse { HardwareId = hardwareId };
+    }
+
+    private NotificationArgs CreateTurnNotificationArgs(string hardwareId, bool state)
+    {
+        return new NotificationArgs
+        {
+            HardwareId = hardwareId,
+            Date = DateTime.Now,
+            Event = state ? "lamp-turned-on" : "lamp-turned-off"
+        };
     }
 }

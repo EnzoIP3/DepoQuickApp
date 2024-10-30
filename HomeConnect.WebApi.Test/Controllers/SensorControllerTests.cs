@@ -82,7 +82,7 @@ public class SensorControllerTests
     #region Notify
 
     [TestMethod]
-    public void NotifyOpen_WhenHardwareIdIsValid_ReturnsNotifyResponse()
+    public void Open_WhenHardwareIdIsValid_ReturnsNotifyResponse()
     {
         // Arrange
         var hardwareId = "hardwareId";
@@ -91,7 +91,7 @@ public class SensorControllerTests
         _notificationServiceMock.Setup(x => x.Notify(args, _deviceServiceMock.Object));
 
         // Act
-        NotifyResponse result = _sensorController.NotifyOpen(hardwareId);
+        NotifyResponse result = _sensorController.Open(hardwareId);
 
         // Assert
         result.Should().NotBeNull();
@@ -102,7 +102,7 @@ public class SensorControllerTests
     }
 
     [TestMethod]
-    public void NotifyClose_WhenHardwareIdIsValid_ReturnsNotifyResponse()
+    public void Close_WhenHardwareIdIsValid_ReturnsNotifyResponse()
     {
         // Arrange
         var hardwareId = "hardwareId";
@@ -111,7 +111,7 @@ public class SensorControllerTests
         _deviceServiceMock.Setup(x => x.UpdateSensorState(hardwareId, false));
 
         // Act
-        NotifyResponse result = _sensorController.NotifyClose(hardwareId);
+        NotifyResponse result = _sensorController.Close(hardwareId);
 
         // Assert
         result.Should().NotBeNull();

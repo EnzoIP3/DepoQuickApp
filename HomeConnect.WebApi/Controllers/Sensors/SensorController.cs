@@ -45,7 +45,7 @@ public class SensorController(
     }
 
     [HttpPost("{hardwareId}/open")]
-    public NotifyResponse NotifyOpen([FromRoute] string hardwareId)
+    public NotifyResponse Open([FromRoute] string hardwareId)
     {
         NotificationArgs notificationArgs = CreateOpenNotificationArgs(hardwareId);
         deviceService.UpdateSensorState(hardwareId, true);
@@ -60,7 +60,7 @@ public class SensorController(
     }
 
     [HttpPost("{hardwareId}/close")]
-    public NotifyResponse NotifyClose([FromRoute] string hardwareId)
+    public NotifyResponse Close([FromRoute] string hardwareId)
     {
         NotificationArgs notificationArgs = CreateCloseNotificationArgs(hardwareId);
         deviceService.UpdateSensorState(hardwareId, false);

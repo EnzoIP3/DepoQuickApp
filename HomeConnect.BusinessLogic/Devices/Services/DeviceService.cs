@@ -75,11 +75,11 @@ public class DeviceService : IDeviceService
         OwnedDeviceRepository.UpdateSensorState(Guid.Parse(hardwareId), state);
     }
 
-    private void SendSensorNotification(string hardwareId, bool state, object args)
+    private void SendSensorNotification(string hardwareId, bool state, NotificationArgs args)
     {
         if (OwnedDeviceRepository.GetSensorState(Guid.Parse(hardwareId)) != state)
         {
-            throw new NotImplementedException();
+            NotificationService.Notify(args, this);
         }
     }
 

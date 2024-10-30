@@ -373,6 +373,34 @@ public class DeviceServiceTests
         // Assert
         _ownedDeviceRepository.VerifyAll();
     }
+
+    [TestMethod]
+    public void UpdateSensorState_WhenCalledWithValidHardwareIdAndCurrentStateIsDifferentThanTheNewState_CreatesANotification()
+    {
+        // Arrange
+        var hardwareId = Guid.NewGuid().ToString();
+        const bool state = false;
+        var date = DateTime.Now;
+        var args = new NotificationArgs { HardwareId = hardwareId, Date = DateTime.Now, Event = "example" };
+        _ownedDeviceRepository.Setup(x => x.Exists(Guid.Parse(hardwareId))).Returns(true);
+        _ownedDeviceRepository.Setup(x => x.UpdateSensorState(Guid.Parse(hardwareId), state)).Verifiable();
+        _ownedDeviceRepository.Setup(x => x.GetSensorState(Guid.Parse(hardwareId))).Returns(!state);
+        _notificationService.Setup(x => x.Notify(args, _deviceService));
+
+        // Act
+        _deviceService.UpdateSensorState(hardwareId, state, args);
+
+        // Assert
+        _notificationService.Verify(x => x.Notify(It.Is<NotificationArgs>(y =>
+            y.HardwareId == hardwareId &&
+            y.Date.Year == date.Year &&
+            y.Date.Month == date.Month &&
+            y.Date.Day == date.Day &&
+            y.Date.Hour == date.Hour &&
+            y.Date.Minute == date.Minute &&
+            y.Event == args.Event), _deviceService), Times.Once);
+        _ownedDeviceRepository.VerifyAll();
+    }
     #endregion
     #endregion
 }

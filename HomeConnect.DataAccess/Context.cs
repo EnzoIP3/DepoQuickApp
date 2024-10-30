@@ -42,7 +42,8 @@ public class Context(DbContextOptions<Context> options) : DbContext(options)
         modelBuilder.Entity<OwnedDevice>()
             .HasDiscriminator<string>("DeviceType")
             .HasValue<OwnedDevice>("OwnedDevice")
-            .HasValue<LampOwnedDevice>("LampOwnedDevice");
+            .HasValue<LampOwnedDevice>("LampOwnedDevice")
+            .HasValue<SensorOwnedDevice>("SensorOwnedDevice");
     }
 
     private void SeedRoles(ModelBuilder modelBuilder)

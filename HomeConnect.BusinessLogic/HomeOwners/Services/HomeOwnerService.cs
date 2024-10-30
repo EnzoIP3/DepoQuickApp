@@ -183,21 +183,7 @@ public class HomeOwnerService : IHomeOwnerService
     {
         devices.ForEach(device =>
         {
-            if (device.Type == DeviceType.Lamp)
-            {
-                var lampOwnedDevice = new LampOwnedDevice(home, device);
-                OwnedDeviceRepository.Add(lampOwnedDevice);
-            }
-            else if (device.Type == DeviceType.Sensor)
-            {
-                var sensorOwnedDevice = new SensorOwnedDevice(home, device);
-                OwnedDeviceRepository.Add(sensorOwnedDevice);
-            }
-            else
-            {
-                var ownedDevice = new OwnedDevice(home, device);
-                OwnedDeviceRepository.Add(ownedDevice);
-            }
+            OwnedDeviceRepository.Add(OwnedDeviceFactory.CreateOwnedDevice(home, device));
         });
     }
 

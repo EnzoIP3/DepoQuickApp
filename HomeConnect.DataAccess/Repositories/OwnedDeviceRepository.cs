@@ -63,9 +63,10 @@ public class OwnedDeviceRepository : IOwnedDeviceRepository
         return ((LampOwnedDevice)GetByHardwareId(hardwareId)).State;
     }
 
-    public bool GetSensorState(Guid parse)
+    public bool GetSensorState(Guid hardwareId)
     {
-        throw new NotImplementedException();
+        EnsureDeviceIsSensor(hardwareId);
+        return true;
     }
 
     private void EnsureDeviceIsSensor(Guid hardwareId)

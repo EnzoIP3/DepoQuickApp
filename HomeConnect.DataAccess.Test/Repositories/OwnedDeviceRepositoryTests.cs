@@ -234,4 +234,23 @@ public class OwnedDeviceRepositoryTests
         result.Should().BeFalse();
     }
     #endregion
+    #region GetSensorState
+    [TestMethod]
+    public void GetSensorState_IfDeviceIsNotASensor_ThrowsInvalidOperationException()
+    {
+        // Arrange
+        Device device = new Device("Camera", 12345, "A camera",
+            "https://camera.com/image.png", [], "Camera", _business);
+        OwnedDevice ownedDevice = new OwnedDevice(_home, device);
+        _context.Devices.Add(device);
+        _context.OwnedDevices.Add(ownedDevice);
+        _context.SaveChanges();
+
+        // Act
+        Action act = () => _ownedDeviceRepository.GetSensorState(ownedDevice.HardwareId);
+
+        // Assert
+        act.Should().Throw<InvalidOperationException>().WithMessage("The device is not a sensor.");
+    }
+    #endregion
 }

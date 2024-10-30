@@ -13,5 +13,5 @@ public interface IOwnedDeviceRepository
     void UpdateLampState(Guid hardwareId, bool state);
     void UpdateSensorState(Guid hardwareId, bool state);
     bool GetLampState(Guid hardwareId);
-    bool GetSensorState(Guid parse);
+    bool GetSensorState(Guid hardwareId);
 }

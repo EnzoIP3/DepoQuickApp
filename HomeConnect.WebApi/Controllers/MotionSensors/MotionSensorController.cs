@@ -54,12 +54,4 @@ public class MotionSensorController(
         var args = new NotificationArgs { HardwareId = hardwareId, Date = DateTime.Now, Event = "movement-detected" };
         return args;
     }
-
-    private void EnsureDeviceIsConnected(string hardwareId)
-    {
-        if (!deviceService.IsConnected(hardwareId))
-        {
-            throw new ArgumentException("Device is not connected");
-        }
-    }
 }

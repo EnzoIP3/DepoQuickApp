@@ -31,7 +31,7 @@ public class MotionSensorControllerTests
         _notificationServiceMock = new Mock<INotificationService>();
         _deviceServiceMock = new Mock<IDeviceService>();
         _businessOwnerServiceMock = new Mock<IBusinessOwnerService>();
-        _motionSensorController = new MotionSensorController(_notificationServiceMock.Object,_deviceServiceMock.Object,_businessOwnerServiceMock.Object)
+        _motionSensorController = new MotionSensorController(_notificationServiceMock.Object, _deviceServiceMock.Object, _businessOwnerServiceMock.Object)
         { ControllerContext = { HttpContext = _httpContextMock.Object } };
     }
 

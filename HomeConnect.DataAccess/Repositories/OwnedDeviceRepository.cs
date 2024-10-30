@@ -47,7 +47,7 @@ public class OwnedDeviceRepository : IOwnedDeviceRepository
     public void UpdateLampState(Guid hardwareId, bool state)
     {
         EnsureDeviceIsLamp(hardwareId);
-        LampOwnedDevice lamp = (LampOwnedDevice)GetByHardwareId(hardwareId);
+        var lamp = (LampOwnedDevice)GetByHardwareId(hardwareId);
         lamp.State = state;
         Update(lamp);
     }

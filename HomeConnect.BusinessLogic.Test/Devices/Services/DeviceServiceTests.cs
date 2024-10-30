@@ -51,7 +51,10 @@ public class DeviceServiceTests
 
         _pagedDeviceList = new PagedData<Device>
         {
-            Data = _devices, Page = _parameters.Page ?? 1, PageSize = _parameters.PageSize ?? 10, TotalPages = 1
+            Data = _devices,
+            Page = _parameters.Page ?? 1,
+            PageSize = _parameters.PageSize ?? 10,
+            TotalPages = 1
         };
     }
 
@@ -119,7 +122,10 @@ public class DeviceServiceTests
         // Assert
         var expectedPagedDeviceList = new PagedData<Device>
         {
-            Data = _devices, Page = _parameters.Page ?? 1, PageSize = _parameters.PageSize ?? 10, TotalPages = 1
+            Data = _devices,
+            Page = _parameters.Page ?? 1,
+            PageSize = _parameters.PageSize ?? 10,
+            TotalPages = 1
         };
 
         result.Should().BeEquivalentTo(expectedPagedDeviceList,
@@ -288,7 +294,7 @@ public class DeviceServiceTests
         _deviceService.TurnLamp(hardwareId, true, args);
 
         // Assert
-        _notificationService.Verify(x=> x.Notify(It.Is<NotificationArgs>(y =>
+        _notificationService.Verify(x => x.Notify(It.Is<NotificationArgs>(y =>
             y.HardwareId == hardwareId &&
             y.Date.Year == date.Year &&
             y.Date.Month == date.Month &&

@@ -136,9 +136,9 @@ public class OwnedDeviceRepositoryTests
     public void UpdateLampState_WhenOwnedDeviceIsNotALamp_ThrowsInvalidOperationException()
     {
         // Arrange
-        Device device = new Device("Sensor", 12345, "A sensor",
+        var device = new Device("Sensor", 12345, "A sensor",
             "https://sensor.com/image.png", [], "Sensor", _business);
-        OwnedDevice ownedDevice = new OwnedDevice(_home, device);
+        var ownedDevice = new OwnedDevice(_home, device);
         _context.Devices.Add(device);
         _context.OwnedDevices.Add(ownedDevice);
         _context.SaveChanges();
@@ -156,9 +156,9 @@ public class OwnedDeviceRepositoryTests
     public void UpdateLampState_WhenOwnedDeviceIsALamp_UpdatesLampState()
     {
         // Arrange
-        Device device = new Device("Lamp", 12345, "A lamp",
+        var device = new Device("Lamp", 12345, "A lamp",
             "https://lamp.com/image.png", [], "Lamp", _business);
-        LampOwnedDevice ownedDevice = new LampOwnedDevice(_home, device);
+        var ownedDevice = new LampOwnedDevice(_home, device);
         _context.Devices.Add(device);
         _context.OwnedDevices.Add(ownedDevice);
         _context.SaveChanges();
@@ -168,7 +168,7 @@ public class OwnedDeviceRepositoryTests
 
         // Assert
         OwnedDevice result = _ownedDeviceRepository.GetByHardwareId(ownedDevice.HardwareId);
-        LampOwnedDevice lamp = (LampOwnedDevice)result;
+        var lamp = (LampOwnedDevice)result;
         lamp.State.Should().BeTrue();
     }
     #endregion
@@ -181,9 +181,9 @@ public class OwnedDeviceRepositoryTests
     public void UpdateSensorState_WhenDeviceIsNotASensor_ThrowsInvalidOperationException()
     {
         // Arrange
-        Device device = new Device("Camera", 12345, "A camera",
+        var device = new Device("Camera", 12345, "A camera",
             "https://camera.com/image.png", [], "Camera", _business);
-        OwnedDevice ownedDevice = new OwnedDevice(_home, device);
+        var ownedDevice = new OwnedDevice(_home, device);
         _context.Devices.Add(device);
         _context.OwnedDevices.Add(ownedDevice);
         _context.SaveChanges();
@@ -202,9 +202,9 @@ public class OwnedDeviceRepositoryTests
     public void GetLampState_IfDeviceIsNotALamp_ThrowsInvalidOperationException()
     {
         // Arrange
-        Device device = new Device("Sensor", 12345, "A sensor",
+        var device = new Device("Sensor", 12345, "A sensor",
             "https://sensor.com/image.png", [], "Sensor", _business);
-        OwnedDevice ownedDevice = new OwnedDevice(_home, device);
+        var ownedDevice = new OwnedDevice(_home, device);
         _context.Devices.Add(device);
         _context.OwnedDevices.Add(ownedDevice);
         _context.SaveChanges();
@@ -220,9 +220,9 @@ public class OwnedDeviceRepositoryTests
     public void GetLampState_IfDeviceIsALamp_ReturnsLampState()
     {
         // Arrange
-        Device device = new Device("Lamp", 12345, "A lamp",
+        var device = new Device("Lamp", 12345, "A lamp",
             "https://lamp.com/image.png", [], "Lamp", _business);
-        LampOwnedDevice ownedDevice = new LampOwnedDevice(_home, device);
+        var ownedDevice = new LampOwnedDevice(_home, device);
         _context.Devices.Add(device);
         _context.OwnedDevices.Add(ownedDevice);
         _context.SaveChanges();
@@ -239,9 +239,9 @@ public class OwnedDeviceRepositoryTests
     public void GetSensorState_IfDeviceIsNotASensor_ThrowsInvalidOperationException()
     {
         // Arrange
-        Device device = new Device("Camera", 12345, "A camera",
+        var device = new Device("Camera", 12345, "A camera",
             "https://camera.com/image.png", [], "Camera", _business);
-        SensorOwnedDevice ownedDevice = new SensorOwnedDevice(_home, device);
+        var ownedDevice = new SensorOwnedDevice(_home, device);
         _context.Devices.Add(device);
         _context.OwnedDevices.Add(ownedDevice);
         _context.SaveChanges();
@@ -257,9 +257,9 @@ public class OwnedDeviceRepositoryTests
     public void GetSensorState_IfDeviceIsASensor_ReturnsSensorState()
     {
         // Arrange
-        Device device = new Device("Sensor", 12345, "A sensor",
+        var device = new Device("Sensor", 12345, "A sensor",
             "https://sensor.com/image.png", [], "Sensor", _business);
-        SensorOwnedDevice ownedDevice = new SensorOwnedDevice(_home, device);
+        var ownedDevice = new SensorOwnedDevice(_home, device);
         _context.Devices.Add(device);
         _context.OwnedDevices.Add(ownedDevice);
         _context.SaveChanges();

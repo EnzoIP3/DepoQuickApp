@@ -55,11 +55,11 @@ public class DeviceService : IDeviceService
     {
         EnsureHardwareIdIsValid(hardwareId);
         EnsureOwnedDeviceExists(hardwareId);
-        SendNotification(hardwareId, state, args);
+        SendLampNotification(hardwareId, state, args);
         OwnedDeviceRepository.UpdateLampState(Guid.Parse(hardwareId), state);
     }
 
-    private void SendNotification(string hardwareId, bool state, NotificationArgs args)
+    private void SendLampNotification(string hardwareId, bool state, NotificationArgs args)
     {
         if (OwnedDeviceRepository.GetLampState(Guid.Parse(hardwareId)) != state)
         {
@@ -67,11 +67,20 @@ public class DeviceService : IDeviceService
         }
     }
 
-    public void UpdateSensorState(string hardwareId, bool state, NotificationArgs notificationArgs)
+    public void UpdateSensorState(string hardwareId, bool state, NotificationArgs args)
     {
         EnsureHardwareIdIsValid(hardwareId);
         EnsureOwnedDeviceExists(hardwareId);
+        SendSensorNotification(hardwareId, state, args);
         OwnedDeviceRepository.UpdateSensorState(Guid.Parse(hardwareId), state);
+    }
+
+    private void SendSensorNotification(string hardwareId, bool state, object args)
+    {
+        if (OwnedDeviceRepository.GetSensorState(Guid.Parse(hardwareId)) != state)
+        {
+            throw new NotImplementedException();
+        }
     }
 
     private void EnsureOwnedDeviceExists(string hardwareId)

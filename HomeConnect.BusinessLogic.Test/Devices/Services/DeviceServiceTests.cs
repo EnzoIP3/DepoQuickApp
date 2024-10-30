@@ -347,6 +347,25 @@ public class DeviceServiceTests
         var args = new NotificationArgs { HardwareId = hardwareId, Date = DateTime.Now, Event = "example" };
         _ownedDeviceRepository.Setup(x => x.Exists(Guid.Parse(hardwareId))).Returns(true);
         _ownedDeviceRepository.Setup(x => x.UpdateSensorState(Guid.Parse(hardwareId), state)).Verifiable();
+        _ownedDeviceRepository.Setup(x => x.GetSensorState(Guid.Parse(hardwareId))).Returns(state);
+
+        // Act
+        _deviceService.UpdateSensorState(hardwareId, state, args);
+
+        // Assert
+        _ownedDeviceRepository.VerifyAll();
+    }
+
+    [TestMethod]
+    public void UpdateSensorState_WhenCalledWithValidHardwareIdAndCurrentStateIsEqualToTheNewState_DoesNotCreateANotification()
+    {
+        // Arrange
+        var hardwareId = Guid.NewGuid().ToString();
+        const bool state = false;
+        var args = new NotificationArgs { HardwareId = hardwareId, Date = DateTime.Now, Event = "example" };
+        _ownedDeviceRepository.Setup(x => x.Exists(Guid.Parse(hardwareId))).Returns(true);
+        _ownedDeviceRepository.Setup(x => x.UpdateSensorState(Guid.Parse(hardwareId), state)).Verifiable();
+        _ownedDeviceRepository.Setup(x => x.GetSensorState(Guid.Parse(hardwareId))).Returns(state);
 
         // Act
         _deviceService.UpdateSensorState(hardwareId, state, args);

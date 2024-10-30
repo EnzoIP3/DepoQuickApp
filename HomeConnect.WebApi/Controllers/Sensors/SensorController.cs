@@ -48,7 +48,6 @@ public class SensorController(
     {
         NotificationArgs notificationArgs = CreateOpenNotificationArgs(hardwareId);
         deviceService.UpdateSensorState(hardwareId, true, notificationArgs);
-
         return new NotifyResponse { HardwareId = hardwareId };
     }
 
@@ -63,7 +62,6 @@ public class SensorController(
     {
         NotificationArgs notificationArgs = CreateCloseNotificationArgs(hardwareId);
         deviceService.UpdateSensorState(hardwareId, false, notificationArgs);
-
         return new NotifyResponse { HardwareId = hardwareId };
     }
 

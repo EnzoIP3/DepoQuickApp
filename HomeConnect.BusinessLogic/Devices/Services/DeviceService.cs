@@ -2,19 +2,23 @@ using BusinessLogic.Devices.Entities;
 using BusinessLogic.Devices.Models;
 using BusinessLogic.Devices.Repositories;
 using BusinessLogic.Notifications.Models;
+using BusinessLogic.Notifications.Services;
 
 namespace BusinessLogic.Devices.Services;
 
 public class DeviceService : IDeviceService
 {
-    public DeviceService(IDeviceRepository deviceRepository, IOwnedDeviceRepository ownedDeviceRepository)
+    public DeviceService(IDeviceRepository deviceRepository, IOwnedDeviceRepository ownedDeviceRepository,
+        INotificationService notificationService)
     {
         DeviceRepository = deviceRepository;
         OwnedDeviceRepository = ownedDeviceRepository;
+        NotificationService = notificationService;
     }
 
     private IDeviceRepository DeviceRepository { get; }
     private IOwnedDeviceRepository OwnedDeviceRepository { get; }
+    private INotificationService NotificationService { get; }
 
     public PagedData<Device> GetDevices(GetDevicesArgs parameters)
     {
@@ -51,7 +55,16 @@ public class DeviceService : IDeviceService
     {
         EnsureHardwareIdIsValid(hardwareId);
         EnsureOwnedDeviceExists(hardwareId);
+        SendNotification(hardwareId, state, args);
         OwnedDeviceRepository.UpdateLampState(Guid.Parse(hardwareId), state);
+    }
+
+    private void SendNotification(string hardwareId, bool state, NotificationArgs args)
+    {
+        if (OwnedDeviceRepository.GetLampState(Guid.Parse(hardwareId)) == state)
+        {
+            return;
+        }
     }
 
     public void UpdateSensorState(string hardwareId, bool state)

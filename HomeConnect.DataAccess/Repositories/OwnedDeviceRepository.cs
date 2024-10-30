@@ -57,6 +57,11 @@ public class OwnedDeviceRepository : IOwnedDeviceRepository
         EnsureDeviceIsSensor(hardwareId);
     }
 
+    public bool GetLampState(Guid parse)
+    {
+        throw new NotImplementedException();
+    }
+
     private void EnsureDeviceIsSensor(Guid hardwareId)
     {
         OwnedDevice ownedDevice = GetByHardwareId(hardwareId);

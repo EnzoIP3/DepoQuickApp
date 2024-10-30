@@ -6,6 +6,7 @@ using BusinessLogic.Devices.Repositories;
 using BusinessLogic.Devices.Services;
 using BusinessLogic.HomeOwners.Entities;
 using BusinessLogic.Notifications.Models;
+using BusinessLogic.Notifications.Services;
 using BusinessLogic.Roles.Entities;
 using BusinessLogic.Users.Entities;
 using FluentAssertions;
@@ -20,6 +21,7 @@ public class DeviceServiceTests
     private List<Device> _devices = null!;
     private DeviceService _deviceService = null!;
     private Mock<IOwnedDeviceRepository> _ownedDeviceRepository = null!;
+    private Mock<INotificationService> _notificationService = null!;
     private PagedData<Device> _pagedDeviceList = null!;
     private GetDevicesArgs _parameters = null!;
     private Device otherDevice = null!;
@@ -32,7 +34,8 @@ public class DeviceServiceTests
     {
         _deviceRepository = new Mock<IDeviceRepository>(MockBehavior.Strict);
         _ownedDeviceRepository = new Mock<IOwnedDeviceRepository>(MockBehavior.Strict);
-        _deviceService = new DeviceService(_deviceRepository.Object, _ownedDeviceRepository.Object);
+        _notificationService = new Mock<INotificationService>(MockBehavior.Strict);
+        _deviceService = new DeviceService(_deviceRepository.Object, _ownedDeviceRepository.Object, _notificationService.Object);
 
         user1 = new User("name", "surname", "email1@email.com", "Password#100", new Role());
         user2 = new User("name", "surname", "email2@email.com", "Password#100", new Role());
@@ -245,6 +248,24 @@ public class DeviceServiceTests
         var hardwareId = Guid.NewGuid().ToString();
         _ownedDeviceRepository.Setup(x => x.Exists(Guid.Parse(hardwareId))).Returns(true);
         _ownedDeviceRepository.Setup(x => x.UpdateLampState(Guid.Parse(hardwareId), true)).Verifiable();
+        _ownedDeviceRepository.Setup(x => x.GetLampState(Guid.Parse(hardwareId))).Returns(true);
+        var args = new NotificationArgs { HardwareId = hardwareId, Date = DateTime.Now, Event = "example" };
+
+        // Act
+        _deviceService.TurnLamp(hardwareId, true, args);
+
+        // Assert
+        _ownedDeviceRepository.VerifyAll();
+    }
+
+    [TestMethod]
+    public void TurnLamp_WhenCalledWithValidHardwareIdAndCurrentStateIsEqualToTheNewState_DoesNotCreateANotification()
+    {
+        // Arrange
+        var hardwareId = Guid.NewGuid().ToString();
+        _ownedDeviceRepository.Setup(x => x.Exists(Guid.Parse(hardwareId))).Returns(true);
+        _ownedDeviceRepository.Setup(x => x.UpdateLampState(Guid.Parse(hardwareId), true)).Verifiable();
+        _ownedDeviceRepository.Setup(x => x.GetLampState(Guid.Parse(hardwareId))).Returns(true);
         var args = new NotificationArgs { HardwareId = hardwareId, Date = DateTime.Now, Event = "example" };
 
         // Act

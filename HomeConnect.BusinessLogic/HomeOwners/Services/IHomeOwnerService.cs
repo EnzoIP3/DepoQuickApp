@@ -14,4 +14,6 @@ public interface IHomeOwnerService
     void UpdateMemberNotifications(Guid membersId, bool? requestShouldBeNotified);
     public void AddDeviceToHome(AddDevicesArgs addDevicesArgs);
     Home GetHome(Guid homeId);
+    public List<Home> GetHomesByOwnerId(Guid ownerId);
+    public void NameHome(Guid ownerId, Guid homeId, string newName);
 }

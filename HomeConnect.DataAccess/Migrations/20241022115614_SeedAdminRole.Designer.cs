@@ -4,6 +4,7 @@ using HomeConnect.DataAccess;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace HomeConnect.DataAccess.Migrations
 {
     [DbContext(typeof(Context))]
-    partial class ContextModelSnapshot : ModelSnapshot
+    [Migration("20241022115614_SeedAdminRole")]
+    partial class SeedAdminRole
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -123,11 +126,6 @@ namespace HomeConnect.DataAccess.Migrations
                     b.Property<Guid>("DeviceId")
                         .HasColumnType("uniqueidentifier");
 
-                    b.Property<string>("DeviceType")
-                        .IsRequired()
-                        .HasMaxLength(21)
-                        .HasColumnType("nvarchar(21)");
-
                     b.Property<Guid>("HomeId")
                         .HasColumnType("uniqueidentifier");
 
@@ -138,10 +136,6 @@ namespace HomeConnect.DataAccess.Migrations
                     b.HasIndex("HomeId");
 
                     b.ToTable("OwnedDevices");
-
-                    b.HasDiscriminator<string>("DeviceType").HasValue("OwnedDevice");
-
-                    b.UseTphMappingStrategy();
                 });
 
             modelBuilder.Entity("BusinessLogic.HomeOwners.Entities.Home", b =>
@@ -484,16 +478,6 @@ namespace HomeConnect.DataAccess.Migrations
                         {
                             PermissionsValue = "create-sensor",
                             RolesName = "BusinessOwner"
-                        },
-                        new
-                        {
-                            PermissionsValue = "create-motion-sensor",
-                            RolesName = "BusinessOwner"
-                        },
-                        new
-                        {
-                            PermissionsValue = "create-lamp",
-                            RolesName = "BusinessOwner"
                         });
                 });
 
@@ -530,26 +514,6 @@ namespace HomeConnect.DataAccess.Migrations
                         .HasColumnType("bit");
 
                     b.HasDiscriminator().HasValue("Camera");
-                });
-
-            modelBuilder.Entity("BusinessLogic.Devices.Entities.LampOwnedDevice", b =>
-                {
-                    b.HasBaseType("BusinessLogic.Devices.Entities.OwnedDevice");
-
-                    b.Property<bool>("State")
-                        .HasColumnType("bit");
-
-                    b.HasDiscriminator().HasValue("LampOwnedDevice");
-                });
-
-            modelBuilder.Entity("BusinessLogic.Devices.Entities.SensorOwnedDevice", b =>
-                {
-                    b.HasBaseType("BusinessLogic.Devices.Entities.OwnedDevice");
-
-                    b.Property<bool>("IsOpen")
-                        .HasColumnType("bit");
-
-                    b.HasDiscriminator().HasValue("SensorOwnedDevice");
                 });
 
             modelBuilder.Entity("BusinessLogic.Auth.Entities.Token", b =>

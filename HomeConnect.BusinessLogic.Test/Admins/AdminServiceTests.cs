@@ -85,6 +85,28 @@ public sealed class AdminServiceTests
         act.Should().Throw<ArgumentException>().WithMessage("The id is not a valid GUID.");
     }
 
+    [TestMethod]
+    public void Delete_WhenOnlyOneAdminExists_ThrowsException()
+    {
+        // Arrange
+        var id = Guid.NewGuid();
+        _userRepository.Setup(x => x.Exists(It.IsAny<Guid>())).Returns(true);
+        _userRepository.Setup(x => x.GetPaged(It.IsAny<int>(), It.IsAny<int>(), null, Role.Admin)).Returns(
+            new PagedData<User>
+            {
+                Data = [_validUser],
+                Page = _defaultCurrentPage,
+                PageSize = _defaultPageSize,
+                TotalPages = 1
+            });
+
+        // Act
+        var act = () => _adminService.DeleteAdmin(id.ToString());
+
+        // Assert
+        act.Should().Throw<InvalidOperationException>().WithMessage("The last admin cannot be deleted");
+    }
+
     #endregion
 
     #region Success
@@ -96,6 +118,14 @@ public sealed class AdminServiceTests
         var id = Guid.NewGuid();
         _userRepository.Setup(x => x.Exists(It.IsAny<Guid>())).Returns(true);
         _userRepository.Setup(x => x.Delete(It.IsAny<Guid>()));
+        _userRepository.Setup(x => x.GetPaged(1, 1, null, Role.Admin)).Returns(
+            new PagedData<User>
+            {
+                Data = [_validUser, _otherOwner],
+                Page = _defaultCurrentPage,
+                PageSize = _defaultPageSize,
+                TotalPages = 2
+            });
 
         // Act
         _adminService.DeleteAdmin(id.ToString());

@@ -94,7 +94,9 @@ public class Context(DbContextOptions<Context> options) : DbContext(options)
                 new { RolesName = Role.HomeOwner, PermissionsValue = SystemPermission.GetNotifications },
                 new { RolesName = Role.BusinessOwner, PermissionsValue = SystemPermission.CreateBusiness },
                 new { RolesName = Role.BusinessOwner, PermissionsValue = SystemPermission.CreateCamera },
-                new { RolesName = Role.BusinessOwner, PermissionsValue = SystemPermission.CreateSensor }));
+                new { RolesName = Role.BusinessOwner, PermissionsValue = SystemPermission.CreateSensor },
+                new { RolesName = Role.BusinessOwner, PermissionsValue = SystemPermission.CreateMotionSensor },
+                new { RolesName = Role.BusinessOwner, PermissionsValue = SystemPermission.CreateLamp }));
     }
 
     private void ConfigureUserRole(ModelBuilder modelBuilder)

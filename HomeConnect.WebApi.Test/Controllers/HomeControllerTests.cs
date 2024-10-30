@@ -286,6 +286,72 @@ public class HomeControllerTests
         response.Devices.Should().BeEquivalentTo(expectedResponse.Devices);
     }
 
+    [TestMethod]
+    public void GetDevices_WhenCalledWithAHomeWithASensor_ShouldHaveTheStateOfTheSensor()
+    {
+        // Arrange
+        var sensor1 = new SensorOwnedDevice(_home,
+            new Device
+            {
+                Name = "Device1",
+                Type = DeviceType.Sensor,
+                ModelNumber = 1,
+                MainPhoto = "https://www.example.com/photo1.jpg",
+                Business = new Business { Name = "Name1" }
+            });
+        var sensor2 = new SensorOwnedDevice(_home,
+            new Device
+            {
+                Name = "Device2",
+                Type = DeviceType.Sensor,
+                ModelNumber = 2,
+                MainPhoto = "https://www.example.com/photo2.jpg",
+                Business = new Business { Name = "Name2" }
+            });
+        var items = new Dictionary<object, object?> { { Item.UserLogged, _user } };
+        _httpContextMock.Setup(h => h.Items).Returns(items);
+        _homeOwnerService.Setup(x => x.GetHomeDevices(_home.Id.ToString()))
+            .Returns(new List<OwnedDevice> { sensor1, sensor2 });
+
+        var expectedResponse = new GetDevicesResponse
+        {
+            Devices =
+            [
+                new ListDeviceInfo
+                {
+                    HardwareId = sensor1.HardwareId.ToString(),
+                    Name = sensor1.Device.Name,
+                    BusinessName = sensor1.Device.Business.Name,
+                    Type = sensor1.Device.Type.ToString(),
+                    ModelNumber = sensor1.Device.ModelNumber,
+                    Photo = sensor1.Device.MainPhoto,
+                    IsOpen = false
+                },
+                new ListDeviceInfo
+                {
+                    HardwareId = sensor2.HardwareId.ToString(),
+                    Name = sensor2.Device.Name,
+                    BusinessName = sensor2.Device.Business.Name,
+                    Type = sensor2.Device.Type.ToString(),
+                    ModelNumber = sensor2.Device.ModelNumber,
+                    Photo = sensor2.Device.MainPhoto,
+                    IsOpen = false
+                }
+
+            ]
+        };
+
+        // Act
+        GetDevicesResponse response = _controller.GetDevices(_home.Id.ToString());
+
+        // Assert
+        _homeOwnerService.VerifyAll();
+        response.Should().NotBeNull();
+        response.Devices.Should().NotBeNullOrEmpty();
+        response.Devices.Should().HaveCount(2);
+        response.Devices.Should().BeEquivalentTo(expectedResponse.Devices);
+    }
+
     #endregion
 
     #region GetMembers

@@ -16,4 +16,11 @@ public class SensorOwnedDevice : OwnedDevice
     }
 
     public bool IsOpen { get; set; }
+
+    public override OwnedDeviceDto ToOwnedDeviceDto()
+    {
+        var dto = base.ToOwnedDeviceDto();
+        dto.IsOpen = IsOpen;
+        return dto;
+    }
 }

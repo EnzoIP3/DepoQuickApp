@@ -11,6 +11,7 @@ public record ListDeviceInfo
     public int ModelNumber { get; set; }
     public string Photo { get; set; } = null!;
     public bool? State { get; set; }
+    public bool? IsOpen { get; set; }
 
     public static ListDeviceInfo FromOwnedDevice(OwnedDevice ownedDevice)
     {
@@ -23,7 +24,8 @@ public record ListDeviceInfo
             Type = dto.Type,
             ModelNumber = dto.ModelNumber,
             Photo = dto.Photo,
-            State = dto.State
+            State = dto.State,
+            IsOpen = dto.IsOpen
         };
     }
 }

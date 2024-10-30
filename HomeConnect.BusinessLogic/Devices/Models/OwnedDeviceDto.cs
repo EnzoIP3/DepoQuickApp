@@ -9,4 +9,5 @@ public record OwnedDeviceDto
     public int ModelNumber { get; set; }
     public string Photo { get; set; } = null!;
     public bool? State { get; set; }
+    public bool? IsOpen { get; set; }
 }

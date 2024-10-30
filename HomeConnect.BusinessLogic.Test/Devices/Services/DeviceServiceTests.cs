@@ -5,6 +5,7 @@ using BusinessLogic.Devices.Models;
 using BusinessLogic.Devices.Repositories;
 using BusinessLogic.Devices.Services;
 using BusinessLogic.HomeOwners.Entities;
+using BusinessLogic.Notifications.Models;
 using BusinessLogic.Roles.Entities;
 using BusinessLogic.Users.Entities;
 using FluentAssertions;
@@ -211,9 +212,10 @@ public class DeviceServiceTests
         // Arrange
         var hardwareId = Guid.NewGuid().ToString();
         _ownedDeviceRepository.Setup(x => x.Exists(Guid.Parse(hardwareId))).Returns(false);
+        var args = new NotificationArgs { HardwareId = hardwareId, Date = DateTime.Now, Event = "example" };
 
         // Act
-        Action act = () => _deviceService.TurnLamp(hardwareId, true);
+        Action act = () => _deviceService.TurnLamp(hardwareId, true, args);
 
         // Assert
         act.Should().Throw<KeyNotFoundException>().WithMessage("The device is not registered in this home.");
@@ -224,9 +226,10 @@ public class DeviceServiceTests
     {
         // Arrange
         var hardwareId = "hardwareId";
+        var args = new NotificationArgs { HardwareId = hardwareId, Date = DateTime.Now, Event = "example" };
 
         // Act
-        Action act = () => _deviceService.TurnLamp(hardwareId, true);
+        Action act = () => _deviceService.TurnLamp(hardwareId, true, args);
 
         // Assert
         act.Should().Throw<ArgumentException>().WithMessage("Hardware ID is invalid.");
@@ -242,9 +245,10 @@ public class DeviceServiceTests
         var hardwareId = Guid.NewGuid().ToString();
         _ownedDeviceRepository.Setup(x => x.Exists(Guid.Parse(hardwareId))).Returns(true);
         _ownedDeviceRepository.Setup(x => x.UpdateLampState(Guid.Parse(hardwareId), true)).Verifiable();
+        var args = new NotificationArgs { HardwareId = hardwareId, Date = DateTime.Now, Event = "example" };
 
         // Act
-        _deviceService.TurnLamp(hardwareId, true);
+        _deviceService.TurnLamp(hardwareId, true, args);
 
         // Assert
         _ownedDeviceRepository.VerifyAll();

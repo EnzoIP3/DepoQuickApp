@@ -311,9 +311,10 @@ public class DeviceServiceTests
         // Arrange
         var hardwareId = Guid.NewGuid().ToString();
         _ownedDeviceRepository.Setup(x => x.Exists(Guid.Parse(hardwareId))).Returns(false);
+        var args = new NotificationArgs { HardwareId = hardwareId, Date = DateTime.Now, Event = "example" };
 
         // Act
-        Action act = () => _deviceService.UpdateSensorState(hardwareId, true);
+        Action act = () => _deviceService.UpdateSensorState(hardwareId, true, args);
 
         // Assert
         act.Should().Throw<KeyNotFoundException>().WithMessage("The device is not registered in this home.");
@@ -324,9 +325,10 @@ public class DeviceServiceTests
     {
         // Arrange
         var hardwareId = "hardwareId";
+        var args = new NotificationArgs { HardwareId = hardwareId, Date = DateTime.Now, Event = "example" };
 
         // Act
-        Action act = () => _deviceService.UpdateSensorState(hardwareId, true);
+        Action act = () => _deviceService.UpdateSensorState(hardwareId, true, args);
 
         // Assert
         act.Should().Throw<ArgumentException>().WithMessage("Hardware ID is invalid.");
@@ -341,12 +343,13 @@ public class DeviceServiceTests
     {
         // Arrange
         var hardwareId = Guid.NewGuid().ToString();
-        const bool state = true;
-        _ownedDeviceRepository.Setup(x => x.Exists(Guid.Parse(hardwareId))).Returns(state);
+        const bool state = false;
+        var args = new NotificationArgs { HardwareId = hardwareId, Date = DateTime.Now, Event = "example" };
+        _ownedDeviceRepository.Setup(x => x.Exists(Guid.Parse(hardwareId))).Returns(true);
         _ownedDeviceRepository.Setup(x => x.UpdateSensorState(Guid.Parse(hardwareId), state)).Verifiable();
 
         // Act
-        _deviceService.UpdateSensorState(hardwareId, state);
+        _deviceService.UpdateSensorState(hardwareId, state, args);
 
         // Assert
         _ownedDeviceRepository.VerifyAll();

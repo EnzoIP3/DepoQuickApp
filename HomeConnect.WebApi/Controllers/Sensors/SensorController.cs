@@ -17,7 +17,6 @@ namespace HomeConnect.WebApi.Controllers.Sensors;
 [ApiController]
 [Route("sensors")]
 public class SensorController(
-    INotificationService notificationService,
     IDeviceService deviceService,
     IBusinessOwnerService businessOwnerService)
     : ControllerBase
@@ -48,8 +47,8 @@ public class SensorController(
     public NotifyResponse Open([FromRoute] string hardwareId)
     {
         NotificationArgs notificationArgs = CreateOpenNotificationArgs(hardwareId);
-        deviceService.UpdateSensorState(hardwareId, true);
-        notificationService.Notify(notificationArgs, deviceService);
+        deviceService.UpdateSensorState(hardwareId, true, notificationArgs);
+
         return new NotifyResponse { HardwareId = hardwareId };
     }
 
@@ -63,8 +62,8 @@ public class SensorController(
     public NotifyResponse Close([FromRoute] string hardwareId)
     {
         NotificationArgs notificationArgs = CreateCloseNotificationArgs(hardwareId);
-        deviceService.UpdateSensorState(hardwareId, false);
-        notificationService.Notify(notificationArgs, deviceService);
+        deviceService.UpdateSensorState(hardwareId, false, notificationArgs);
+
         return new NotifyResponse { HardwareId = hardwareId };
     }
 

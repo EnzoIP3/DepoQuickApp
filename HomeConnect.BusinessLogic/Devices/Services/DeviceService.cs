@@ -67,7 +67,7 @@ public class DeviceService : IDeviceService
         }
     }
 
-    public void UpdateSensorState(string hardwareId, bool state)
+    public void UpdateSensorState(string hardwareId, bool state, NotificationArgs notificationArgs)
     {
         EnsureHardwareIdIsValid(hardwareId);
         EnsureOwnedDeviceExists(hardwareId);

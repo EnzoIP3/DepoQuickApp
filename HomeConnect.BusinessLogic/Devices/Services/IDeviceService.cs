@@ -11,5 +11,5 @@ public interface IDeviceService
     IEnumerable<string> GetAllDeviceTypes();
     bool IsConnected(string hardwareId);
     void TurnLamp(string hardwareId, bool state, NotificationArgs args);
-    void UpdateSensorState(string hardwareId, bool state);
+    void UpdateSensorState(string hardwareId, bool state, NotificationArgs args);
 }

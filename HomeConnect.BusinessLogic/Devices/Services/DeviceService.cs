@@ -61,9 +61,9 @@ public class DeviceService : IDeviceService
 
     private void SendNotification(string hardwareId, bool state, NotificationArgs args)
     {
-        if (OwnedDeviceRepository.GetLampState(Guid.Parse(hardwareId)) == state)
+        if (OwnedDeviceRepository.GetLampState(Guid.Parse(hardwareId)) != state)
         {
-            return;
+            NotificationService.Notify(args, this);
         }
     }
 

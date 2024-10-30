@@ -35,7 +35,8 @@ public class DeviceServiceTests
         _deviceRepository = new Mock<IDeviceRepository>(MockBehavior.Strict);
         _ownedDeviceRepository = new Mock<IOwnedDeviceRepository>(MockBehavior.Strict);
         _notificationService = new Mock<INotificationService>(MockBehavior.Strict);
-        _deviceService = new DeviceService(_deviceRepository.Object, _ownedDeviceRepository.Object, _notificationService.Object);
+        _deviceService = new DeviceService(_deviceRepository.Object, _ownedDeviceRepository.Object,
+            _notificationService.Object);
 
         user1 = new User("name", "surname", "email1@email.com", "Password#100", new Role());
         user2 = new User("name", "surname", "email2@email.com", "Password#100", new Role());
@@ -50,10 +51,7 @@ public class DeviceServiceTests
 
         _pagedDeviceList = new PagedData<Device>
         {
-            Data = _devices,
-            Page = _parameters.Page ?? 1,
-            PageSize = _parameters.PageSize ?? 10,
-            TotalPages = 1
+            Data = _devices, Page = _parameters.Page ?? 1, PageSize = _parameters.PageSize ?? 10, TotalPages = 1
         };
     }
 
@@ -121,10 +119,7 @@ public class DeviceServiceTests
         // Assert
         var expectedPagedDeviceList = new PagedData<Device>
         {
-            Data = _devices,
-            Page = _parameters.Page ?? 1,
-            PageSize = _parameters.PageSize ?? 10,
-            TotalPages = 1
+            Data = _devices, Page = _parameters.Page ?? 1, PageSize = _parameters.PageSize ?? 10, TotalPages = 1
         };
 
         result.Should().BeEquivalentTo(expectedPagedDeviceList,
@@ -209,6 +204,7 @@ public class DeviceServiceTests
     #region TurnLamp
 
     #region Error
+
     [TestMethod]
     public void TurnLamp_WhenLampDoesNotExist_ThrowsKeyNotFoundException()
     {
@@ -237,6 +233,7 @@ public class DeviceServiceTests
         // Assert
         act.Should().Throw<ArgumentException>().WithMessage("Hardware ID is invalid.");
     }
+
     #endregion
 
     #region Success
@@ -274,6 +271,34 @@ public class DeviceServiceTests
         // Assert
         _ownedDeviceRepository.VerifyAll();
     }
+
+    [TestMethod]
+    public void TurnLamp_WhenCalledWithValidHardwareIdAndCurrentStateIsDifferentThanTheNewState_CreatesANotification()
+    {
+        // Arrange
+        var hardwareId = Guid.NewGuid().ToString();
+        var date = DateTime.Now;
+        _ownedDeviceRepository.Setup(x => x.Exists(Guid.Parse(hardwareId))).Returns(true);
+        _ownedDeviceRepository.Setup(x => x.UpdateLampState(Guid.Parse(hardwareId), true)).Verifiable();
+        _ownedDeviceRepository.Setup(x => x.GetLampState(Guid.Parse(hardwareId))).Returns(false);
+        var args = new NotificationArgs { HardwareId = hardwareId, Date = DateTime.Now, Event = "example" };
+        _notificationService.Setup(x => x.Notify(args, _deviceService));
+
+        // Act
+        _deviceService.TurnLamp(hardwareId, true, args);
+
+        // Assert
+        _notificationService.Verify(x=> x.Notify(It.Is<NotificationArgs>(y =>
+            y.HardwareId == hardwareId &&
+            y.Date.Year == date.Year &&
+            y.Date.Month == date.Month &&
+            y.Date.Day == date.Day &&
+            y.Date.Hour == date.Hour &&
+            y.Date.Minute == date.Minute &&
+            y.Event == args.Event), _deviceService), Times.Once);
+        _ownedDeviceRepository.VerifyAll();
+    }
+
     #endregion
     #endregion
 

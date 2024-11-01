@@ -133,9 +133,9 @@ public class HomeControllerTests
         var businessOwner = new User("Business", "Owner", "bo@email.com", "Password@100",
             new Role { Name = "BusinessOwner", Permissions = [] });
         var business = new Business("123456789123", "business", "https://example.com/image.png", businessOwner);
-        var sensor = new Device("sensor", 123, "a camera", "https://www.example.com/photo1.jpg", [],
+        var sensor = new Device("sensor", "123", "a camera", "https://www.example.com/photo1.jpg", [],
             "sensor", business);
-        var camera = new Camera("camera", 123, "a camera", "https://www.example.com/photo1.jpg", [],
+        var camera = new Camera("camera", "123", "a camera", "https://www.example.com/photo1.jpg", [],
             business, true, true, false, true);
 
         var request = new AddDevicesRequest { DeviceIds = [sensor.Id.ToString(), camera.Id.ToString()] };
@@ -167,7 +167,7 @@ public class HomeControllerTests
             {
                 Name = "Device1",
                 Type = DeviceType.Sensor,
-                ModelNumber = 1,
+                ModelNumber = "1",
                 MainPhoto = "https://www.example.com/photo1.jpg",
                 Business = new Business { Name = "Name1" }
             });
@@ -176,7 +176,7 @@ public class HomeControllerTests
             {
                 Name = "Device2",
                 Type = DeviceType.Camera,
-                ModelNumber = 2,
+                ModelNumber = "2",
                 MainPhoto = "https://www.example.com/photo2.jpg",
                 Business = new Business { Name = "Name2" }
             });

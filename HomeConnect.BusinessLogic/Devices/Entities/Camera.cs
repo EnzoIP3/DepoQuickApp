@@ -12,7 +12,7 @@ public class Camera : Device
 
     public Camera(
         string name,
-        int? modelNumber,
+        string? modelNumber,
         string description,
         string mainPhoto,
         List<string>? secondaryPhotos,

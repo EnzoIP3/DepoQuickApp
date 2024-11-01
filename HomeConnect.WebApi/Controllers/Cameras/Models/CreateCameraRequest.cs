@@ -4,7 +4,7 @@ public record CreateCameraRequest
 {
     public string? Description { get; set; } = null!;
     public string? MainPhoto { get; set; } = null!;
-    public int? ModelNumber { get; set; }
+    public string? ModelNumber { get; set; }
     public string? Name { get; set; } = null!;
     public List<string>? SecondaryPhotos { get; set; }
     public bool? MotionDetection { get; set; }

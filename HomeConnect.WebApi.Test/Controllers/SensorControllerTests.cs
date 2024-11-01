@@ -43,7 +43,7 @@ public class SensorControllerTests
     {
         // Arrange
         var user = new User();
-        var sensor = new Device("name", 123, "description", "http://example.com/photo.png", [],
+        var sensor = new Device("name", "123", "description", "http://example.com/photo.png", [],
             DeviceType.Sensor.ToString(),
             new Business());
         var sensorArgs = new CreateDeviceArgs

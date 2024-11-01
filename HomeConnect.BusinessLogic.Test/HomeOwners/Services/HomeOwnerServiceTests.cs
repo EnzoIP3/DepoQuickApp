@@ -318,9 +318,9 @@ public class HomeOwnerServiceTests
     {
         // Arrange
         var home = new Home(_user, "Main St 123", 1.0, 2.0, 5);
-        var device = new Device("Sensor", 1, "A sensor",
+        var device = new Device("Sensor", "1", "A sensor",
             "https://example.com/image.png", [], "Sensor", new Business());
-        var camera = new Camera("Camera", 2, "A camera", "https://example.com/image.png", [], new Business(), true,
+        var camera = new Camera("Camera", "2", "A camera", "https://example.com/image.png", [], new Business(), true,
             true, true, true);
         var addDeviceModel = new AddDevicesArgs
         {
@@ -445,9 +445,9 @@ public class HomeOwnerServiceTests
     {
         // Arrange
         var home = new Home(_user, "Main St 123", 1.0, 2.0, 5);
-        var sensor = new Device("Sensor", 1, "A sensor",
+        var sensor = new Device("Sensor", "1", "A sensor",
             "https://example.com/image.png", [], "Sensor", new Business());
-        var camera = new Camera("Camera", 2, "A camera", "https://example.com/image.png", [], new Business(), true,
+        var camera = new Camera("Camera", "2", "A camera", "https://example.com/image.png", [], new Business(), true,
             true, true, true);
         var ownedDevices =
             new List<OwnedDevice> { new(home, sensor), new(home, camera) };

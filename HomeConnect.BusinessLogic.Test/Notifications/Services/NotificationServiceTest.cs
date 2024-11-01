@@ -17,6 +17,7 @@ namespace HomeConnect.BusinessLogic.Test.Notifications.Services;
 public class NotificationServiceTest
 {
     private static readonly Role _role = new() { Name = "HomeOwner", Permissions = [] };
+    private readonly string _modelNumber = "12345";
     private readonly User _user = new("owner", "owner", "owner@email.com", "Password@100", _role);
     private Mock<INotificationRepository> _mockNotificationRepository = null!;
     private Mock<IOwnedDeviceRepository> _mockOwnedDeviceRepository = null!;
@@ -39,7 +40,7 @@ public class NotificationServiceTest
         // Arrange
         var user = new User("name", "surname", "email@email.com", "Password#100",
             new Role());
-        var device = new Device("Device", 12345, "Device description",
+        var device = new Device("Device", _modelNumber, "Device description",
             "https://example.com/image.png",
             [], "Sensor", new Business("Rut", "Business", "https://example.com/image.png", user));
         var home = new Home(user, "Adress 3420", 50, 100, 5);
@@ -69,12 +70,12 @@ public class NotificationServiceTest
         {
             new(Guid.NewGuid(), DateTime.Now, false, "Test Event", new OwnedDevice(
                     new Home(_user, "Street 3420", 50, 100, 5),
-                    new Device("Device", 12345, "Device description", "https://example.com/image.png", [], "Sensor",
+                    new Device("Device", _modelNumber, "Device description", "https://example.com/image.png", [], "Sensor",
                         new Business())),
                 new User("name", "surname", "email@email.com", "Password@100", new Role())),
             new(Guid.NewGuid(), DateTime.Now, false, "Test Event", new OwnedDevice(
                     new Home(_user, "Street 3420", 50, 100, 5),
-                    new Device("Device", 12345, "Device description", "https://example.com/image.png", [], "Sensor",
+                    new Device("Device", _modelNumber, "Device description", "https://example.com/image.png", [], "Sensor",
                         new Business())),
                 new User("name2", "surname2", "email2@email.com", "Password@100", new Role()))
         };
@@ -104,12 +105,12 @@ public class NotificationServiceTest
         {
             new(Guid.NewGuid(), DateTime.Now, false, "Test Event", new OwnedDevice(
                     new Home(_user, "Street 3420", 50, 100, 5),
-                    new Device("Device", 12345, "Device description", "https://example.com/image.png", [], "Sensor",
+                    new Device("Device", _modelNumber, "Device description", "https://example.com/image.png", [], "Sensor",
                         new Business())),
                 new User("name", "surname", "email@email.com", "Password@100", new Role())),
             new(Guid.NewGuid(), DateTime.Now, false, "Test Event", new OwnedDevice(
                     new Home(_user, "Street 3420", 50, 100, 5),
-                    new Device("Device", 12345, "Device description", "https://example.com/image.png", [], "Sensor",
+                    new Device("Device", _modelNumber, "Device description", "https://example.com/image.png", [], "Sensor",
                         new Business())),
                 new User("name2", "surname2", "email2@email.com", "Password@100", new Role()))
         };
@@ -174,7 +175,7 @@ public class NotificationServiceTest
         var home = new Home(owner, "Street 3420", 50, 100, 5);
         home.AddMember(member);
         home.AddMember(otherMember);
-        var device = new Device("Device", 12345, "Device description", "https://example.com/image.png",
+        var device = new Device("Device", _modelNumber, "Device description", "https://example.com/image.png",
             [], "Sensor", new Business("Rut", "Business", "https://example.com/image.png", owner));
         var ownedDevice = new OwnedDevice(home, device);
         var args = new NotificationArgs

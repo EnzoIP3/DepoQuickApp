@@ -52,9 +52,9 @@ public class BusinessOwnerService : IBusinessOwnerService
         return camera;
     }
 
-    private void EnsureDeviceDoesNotExist(int? modelNumber)
+    private void EnsureDeviceDoesNotExist(string? modelNumber)
     {
-        if (DeviceRepository.ExistsByModelNumber(modelNumber!.Value))
+        if (DeviceRepository.ExistsByModelNumber(modelNumber!))
         {
             throw new InvalidOperationException("Device already exists");
         }

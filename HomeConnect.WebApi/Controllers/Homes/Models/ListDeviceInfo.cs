@@ -6,6 +6,6 @@ public record ListDeviceInfo
     public string Name { get; set; } = null!;
     public string BusinessName { get; set; } = null!;
     public string Type { get; set; } = null!;
-    public int ModelNumber { get; set; }
+    public string ModelNumber { get; set; } = null!;
     public string Photo { get; set; } = null!;
 }

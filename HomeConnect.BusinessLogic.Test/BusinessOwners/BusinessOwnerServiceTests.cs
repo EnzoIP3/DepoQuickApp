@@ -16,7 +16,7 @@ namespace HomeConnect.BusinessLogic.Test.BusinessOwners;
 public class BusinessOwnerServiceTests
 {
     private const string DeviceName = "Device Name";
-    private const int ModelNumber = 123;
+    private const string ModelNumber = "123";
     private const string Description = "Device Description";
     private const string MainPhoto = "https://www.example.com/photo1.jpg";
 
@@ -208,7 +208,7 @@ public class BusinessOwnerServiceTests
             Type = DeviceType.Camera.ToString() // Use a valid DeviceType enum value
         };
 
-        _deviceRepository.Setup(x => x.ExistsByModelNumber(args.ModelNumber.Value)).Returns(false);
+        _deviceRepository.Setup(x => x.ExistsByModelNumber(args.ModelNumber)).Returns(false);
         _deviceRepository.Setup(x => x.Add(It.IsAny<Device>()));
         _businessRepository.Setup(x => x.GetByOwnerId(_owner.Id))
             .Returns(new Business("123456789", "Business Name", "https://example.com/image.png", _owner));
@@ -247,7 +247,7 @@ public class BusinessOwnerServiceTests
             Type = DeviceType.Camera.ToString()
         };
         _deviceRepository
-            .Setup(x => x.ExistsByModelNumber(args.ModelNumber.Value))
+            .Setup(x => x.ExistsByModelNumber(args.ModelNumber))
             .Returns(true);
         _deviceRepository.Setup(x => x.Add(It.IsAny<Device>()));
         _businessRepository.Setup(x => x.GetByOwnerId(_owner.Id)).Returns(business);
@@ -277,7 +277,7 @@ public class BusinessOwnerServiceTests
             Type = Type
         };
         _deviceRepository.Setup(x =>
-            x.ExistsByModelNumber(args.ModelNumber.Value)).Returns(false);
+            x.ExistsByModelNumber(args.ModelNumber)).Returns(false);
         _deviceRepository.Setup(x => x.Add(It.IsAny<Device>()));
         _businessRepository.Setup(x => x.ExistsByOwnerId(args.Owner.Id)).Returns(false);
 
@@ -316,7 +316,7 @@ public class BusinessOwnerServiceTests
             Interior = true
         };
         _deviceRepository.Setup(x =>
-            x.ExistsByModelNumber(args.ModelNumber.Value)).Returns(false);
+            x.ExistsByModelNumber(args.ModelNumber)).Returns(false);
         _deviceRepository.Setup(x => x.Add(It.IsAny<Device>()));
         _businessRepository.Setup(x => x.GetByOwnerId(_owner.Id)).Returns(business);
         _businessRepository.Setup(x => x.ExistsByOwnerId(_owner.Id)).Returns(true);
@@ -358,7 +358,7 @@ public class BusinessOwnerServiceTests
         };
         var addedCamera = new Camera();
         _deviceRepository.Setup(x =>
-            x.ExistsByModelNumber(args.ModelNumber.Value)).Returns(false);
+            x.ExistsByModelNumber(args.ModelNumber)).Returns(false);
         _deviceRepository.Setup(x => x.Add(It.IsAny<Device>()))
             .Callback<Device>(d => addedCamera = (Camera)d);
         _businessRepository.Setup(x => x.GetByOwnerId(_owner.Id)).Returns(business);
@@ -394,7 +394,7 @@ public class BusinessOwnerServiceTests
             Interior = true
         };
         _deviceRepository
-            .Setup(x => x.ExistsByModelNumber(args.ModelNumber.Value))
+            .Setup(x => x.ExistsByModelNumber(args.ModelNumber))
             .Returns(true);
         _deviceRepository.Setup(x => x.Add(It.IsAny<Device>()));
         _businessRepository.Setup(x => x.GetByOwnerId(_owner.Id)).Returns(business);
@@ -427,7 +427,7 @@ public class BusinessOwnerServiceTests
         };
 
         _deviceRepository.Setup(x =>
-            x.ExistsByModelNumber(args.ModelNumber.Value)).Returns(false);
+            x.ExistsByModelNumber(args.ModelNumber)).Returns(false);
         _deviceRepository.Setup(x => x.Add(It.IsAny<Device>()));
         _businessRepository.Setup(x => x.ExistsByOwnerId(_owner.Id)).Returns(false);
 

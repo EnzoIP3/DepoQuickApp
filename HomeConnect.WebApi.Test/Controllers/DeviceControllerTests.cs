@@ -31,9 +31,9 @@ public class DeviceControllerTests
         _controller = new DeviceController(_deviceService.Object);
 
         var business = new Business("Business", "123456789", "https://www.example.com/logo.jpg", new User());
-        _device = new Device("example1", 123, "example description 1", "https://www.example.com/photo1.jpg", [],
+        _device = new Device("example1", "123", "example description 1", "https://www.example.com/photo1.jpg", [],
             "Sensor", business);
-        _otherDevice = new Device("example1", 1234, "example description 2", "https://www.example.com/photo2.jpg", [],
+        _otherDevice = new Device("example1", "1234", "example description 2", "https://www.example.com/photo2.jpg", [],
             "Camera", business);
         _expectedDevices = [_device, _otherDevice];
         _expectedPagination = new Pagination { Page = 1, PageSize = 10, TotalPages = 1 };

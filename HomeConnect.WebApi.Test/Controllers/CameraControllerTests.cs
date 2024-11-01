@@ -48,7 +48,7 @@ public class CameraControllerTests
     {
         // Arrange
         var user = new User();
-        var camera = new Camera("Name", 123, "Description", "https://example.com/photo.png", [],
+        var camera = new Camera("Name", "123", "Description", "https://example.com/photo.png", [],
             new Business(), true, true,
             true,
             true);
@@ -60,7 +60,7 @@ public class CameraControllerTests
             Exterior = true,
             Interior = true,
             MainPhoto = "MainPhoto",
-            ModelNumber = 123,
+            ModelNumber = "123",
             MotionDetection = true,
             PersonDetection = true,
             SecondaryPhotos = []

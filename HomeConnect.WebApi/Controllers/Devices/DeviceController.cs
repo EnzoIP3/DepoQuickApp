@@ -1,4 +1,6 @@
 using BusinessLogic;
+using BusinessLogic.BusinessOwners.Models;
+using BusinessLogic.BusinessOwners.Services;
 using BusinessLogic.Devices.Entities;
 using BusinessLogic.Devices.Models;
 using BusinessLogic.Devices.Services;
@@ -16,10 +18,12 @@ namespace HomeConnect.WebApi.Controllers.Devices;
 public class DeviceController : ControllerBase
 {
     private readonly IDeviceService _deviceService;
+    private readonly IValidatorService _validatorService;
 
-    public DeviceController(IDeviceService deviceService)
+    public DeviceController(IDeviceService deviceService, IValidatorService validatorService)
     {
         _deviceService = deviceService;
+        _validatorService = validatorService;
     }
 
     [HttpGet]
@@ -58,6 +62,22 @@ public class DeviceController : ControllerBase
                 PageSize = devices.PageSize,
                 TotalPages = devices.TotalPages
             }
+        };
+    }
+
+    [HttpGet]
+    [Route("validators")]
+    public GetValidatorsResponse GetValidators()
+    {
+        var validators = _validatorService.GetValidators();
+        return CreateGetValidatorsResponse(validators);
+    }
+
+    private static GetValidatorsResponse CreateGetValidatorsResponse(List<ValidatorInfo> validators)
+    {
+        return new GetValidatorsResponse
+        {
+            Validators = validators.Select(v => v.Name).ToList()
         };
     }
 }

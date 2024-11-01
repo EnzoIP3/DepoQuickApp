@@ -1,5 +1,7 @@
 using BusinessLogic;
 using BusinessLogic.BusinessOwners.Entities;
+using BusinessLogic.BusinessOwners.Models;
+using BusinessLogic.BusinessOwners.Services;
 using BusinessLogic.Devices.Entities;
 using BusinessLogic.Devices.Models;
 using BusinessLogic.Devices.Services;
@@ -19,6 +21,7 @@ public class DeviceControllerTests
     private DeviceController _controller = null!;
     private Device _device = null!;
     private Mock<IDeviceService> _deviceService = null!;
+    private Mock<IValidatorService> _validatorService = null!;
     private List<Device> _expectedDevices = null!;
     private Pagination _expectedPagination = null!;
     private Device _otherDevice = null!;
@@ -28,7 +31,8 @@ public class DeviceControllerTests
     public void Initialize()
     {
         _deviceService = new Mock<IDeviceService>();
-        _controller = new DeviceController(_deviceService.Object);
+        _validatorService = new Mock<IValidatorService>();
+        _controller = new DeviceController(_deviceService.Object, _validatorService.Object);
 
         var business = new Business("Business", "123456789", "https://www.example.com/logo.jpg", new User());
         _device = new Device("example1", "123", "example description 1", "https://www.example.com/photo1.jpg", [],
@@ -72,4 +76,30 @@ public class DeviceControllerTests
         _deviceService.Verify(x => x.GetDevices(It.IsAny<GetDevicesArgs>()), Times.Once);
         response.Should().BeEquivalentTo(expectedResponse);
     }
+
+    #region GetValidators
+    [TestMethod]
+    public void GetValidators_WhenCalled_ReturnsGetValidatorsResponse()
+    {
+        // Arrange
+        var validators = new List<ValidatorInfo>
+        {
+            new ValidatorInfo { Name = "Validator1" },
+            new ValidatorInfo { Name = "Validator2" }
+        };
+        var expectedResponse = new GetValidatorsResponse
+        {
+            Validators = validators.Select(v => v.Name).ToList()
+        };
+        _validatorService.Setup(x => x.GetValidators()).Returns(validators);
+
+        // Act
+        GetValidatorsResponse response = _controller.GetValidators();
+
+        // Assert
+        _validatorService.Verify(x => x.GetValidators(), Times.Once);
+        response.Should().BeEquivalentTo(expectedResponse, options => options
+            .ComparingByMembers<GetValidatorsResponse>());
+    }
+    #endregion
 }

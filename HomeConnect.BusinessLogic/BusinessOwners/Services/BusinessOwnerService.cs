@@ -1,6 +1,7 @@
 ﻿using BusinessLogic.BusinessOwners.Entities;
 using BusinessLogic.BusinessOwners.Models;
 using BusinessLogic.BusinessOwners.Repositories;
+using BusinessLogic.BusinessOwners.Validator;
 using BusinessLogic.Devices.Entities;
 using BusinessLogic.Devices.Repositories;
 using BusinessLogic.Users.Entities;
@@ -13,16 +14,19 @@ public class BusinessOwnerService : IBusinessOwnerService
     public BusinessOwnerService(
         IUserRepository userRepository,
         IBusinessRepository businessRepository,
-        IDeviceRepository deviceRepository)
+        IDeviceRepository deviceRepository,
+        IValidatorService validatorService)
     {
         UserRepository = userRepository;
         BusinessRepository = businessRepository;
         DeviceRepository = deviceRepository;
+        ValidatorService = validatorService;
     }
 
     private IUserRepository UserRepository { get; }
     private IBusinessRepository BusinessRepository { get; }
     private IDeviceRepository DeviceRepository { get; }
+    private IValidatorService ValidatorService { get; }
 
     public Business CreateBusiness(CreateBusinessArgs args)
     {
@@ -88,8 +92,9 @@ public class BusinessOwnerService : IBusinessOwnerService
         return BusinessRepository.GetByOwnerId(ownerId);
     }
 
-    private static Device CreateDevice(CreateDeviceArgs args, Business business)
+    private Device CreateDevice(CreateDeviceArgs args, Business business)
     {
+        EnsureModelNumberIsValid(args.ModelNumber, args.Validator);
         return new Device(
             args.Name,
             args.ModelNumber,
@@ -98,6 +103,18 @@ public class BusinessOwnerService : IBusinessOwnerService
             args.SecondaryPhotos,
             args.Type,
             business);
+    }
+
+    private void EnsureModelNumberIsValid(string? modelNumber, string? validatorName)
+    {
+        if (validatorName != null && modelNumber != null)
+        {
+            IModeloValidador validator = ValidatorService.GetValidatorByName(validatorName);
+            if (!validator.EsValido(new Modelo(modelNumber)))
+            {
+                throw new ArgumentException("The model number is not valid according to the specified validator.");
+            }
+        }
     }
 
     private static Camera CreateCamera(CreateCameraArgs args, Business business)

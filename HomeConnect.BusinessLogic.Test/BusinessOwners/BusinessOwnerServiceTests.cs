@@ -1,7 +1,9 @@
-﻿using BusinessLogic.BusinessOwners.Entities;
+﻿using BusinessLogic.BusinessOwners;
+using BusinessLogic.BusinessOwners.Entities;
 using BusinessLogic.BusinessOwners.Models;
 using BusinessLogic.BusinessOwners.Repositories;
 using BusinessLogic.BusinessOwners.Services;
+using BusinessLogic.BusinessOwners.Validator;
 using BusinessLogic.Devices.Entities;
 using BusinessLogic.Devices.Repositories;
 using BusinessLogic.Roles.Entities;
@@ -31,10 +33,12 @@ public class BusinessOwnerServiceTests
     private Mock<IBusinessRepository> _businessRepository = null!;
     private string _businessRut = null!;
     private Mock<IDeviceRepository> _deviceRepository = null!;
+    private Mock<IValidatorService> _validatorService = null!;
     private Business _existingBusiness = null!;
     private User _owner = null!;
     private string _ownerEmail = null!;
     private Mock<IUserRepository> _userRepository = null!;
+    private Mock<IModeloValidador> _modeloValidador = null!;
 
     [TestInitialize]
     public void TestInitialize()
@@ -42,8 +46,11 @@ public class BusinessOwnerServiceTests
         _deviceRepository = new Mock<IDeviceRepository>(MockBehavior.Strict);
         _userRepository = new Mock<IUserRepository>(MockBehavior.Strict);
         _businessRepository = new Mock<IBusinessRepository>(MockBehavior.Strict);
+        _validatorService = new Mock<IValidatorService>(MockBehavior.Strict);
+        _modeloValidador = new Mock<IModeloValidador>(MockBehavior.Strict);
         _businessOwnerService =
-            new BusinessOwnerService(_userRepository.Object, _businessRepository.Object, _deviceRepository.Object);
+            new BusinessOwnerService(_userRepository.Object, _businessRepository.Object, _deviceRepository.Object,
+                _validatorService.Object);
 
         _ownerEmail = "owner@example.com";
         _businessRut = "123456789";
@@ -287,6 +294,40 @@ public class BusinessOwnerServiceTests
         // Assert
         act.Should().Throw<ArgumentException>().WithMessage("That business does not exist.");
         _deviceRepository.Verify(x => x.Add(It.IsAny<Device>()), Times.Never);
+    }
+
+    [TestMethod]
+    public void CreateDevice_WhenHasAValidatorAndModelNumberIsInvalid_ThrowsArgumentException()
+    {
+        // Arrange
+        var business = new Business("12345", "Business Name", "https://example.com/image.png", _owner);
+        var args = new CreateDeviceArgs
+        {
+            Owner = _owner,
+            Name = DeviceName,
+            ModelNumber = ModelNumber,
+            Description = Description,
+            MainPhoto = MainPhoto,
+            SecondaryPhotos = _secondaryPhotos,
+            Type = Type,
+            Validator = "Validator"
+        };
+        _deviceRepository.Setup(x =>
+            x.ExistsByModelNumber(args.ModelNumber)).Returns(false);
+        _deviceRepository.Setup(x => x.Add(It.IsAny<Device>()));
+        _businessRepository.Setup(x => x.GetByOwnerId(_owner.Id)).Returns(business);
+        _businessRepository.Setup(x => x.ExistsByOwnerId(_owner.Id)).Returns(true);
+        _validatorService.Setup(x =>
+            x.GetValidatorByName(args.Validator)).Returns(_modeloValidador.Object);
+        _modeloValidador.Setup(x =>
+            x.EsValido(It.Is<Modelo>(m => m.Value == args.ModelNumber))).Returns(false);
+
+        // Act
+        Action act = () => _businessOwnerService.CreateDevice(args);
+
+        // Assert
+        act.Should().Throw<ArgumentException>()
+            .WithMessage("The model number is not valid according to the specified validator.");
     }
 
     #endregion

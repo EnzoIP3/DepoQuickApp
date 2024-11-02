@@ -36,7 +36,8 @@ public class SensorController(
             ModelNumber = request.ModelNumber,
             Name = request.Name ?? string.Empty,
             SecondaryPhotos = request.SecondaryPhotos,
-            Type = "Sensor"
+            Type = "Sensor",
+            Validator = request.Validator
         };
 
         Device createdSensor = businessOwnerService.CreateDevice(args);

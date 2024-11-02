@@ -63,7 +63,8 @@ public class CameraControllerTests
             ModelNumber = "123",
             MotionDetection = true,
             PersonDetection = true,
-            SecondaryPhotos = []
+            SecondaryPhotos = [],
+            Validator = "Validator 1"
         };
         var cameraRequest = new CreateCameraRequest
         {
@@ -75,7 +76,8 @@ public class CameraControllerTests
             ModelNumber = cameraArgs.ModelNumber,
             MotionDetection = cameraArgs.MotionDetection,
             PersonDetection = cameraArgs.PersonDetection,
-            SecondaryPhotos = cameraArgs.SecondaryPhotos
+            SecondaryPhotos = cameraArgs.SecondaryPhotos,
+            Validator = "Validator 1"
         };
         _businessOwnerService.Setup(x => x.CreateCamera(cameraArgs)).Returns(camera);
         var items = new Dictionary<object, object?> { { Item.UserLogged, user } };

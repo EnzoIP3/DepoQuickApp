@@ -42,7 +42,8 @@ public class CameraController(
             ModelNumber = request.ModelNumber,
             MotionDetection = request.MotionDetection,
             PersonDetection = request.PersonDetection,
-            SecondaryPhotos = request.SecondaryPhotos
+            SecondaryPhotos = request.SecondaryPhotos,
+            Validator = request.Validator
         };
 
         Camera createdCamera = businessOwnerService.CreateCamera(args);

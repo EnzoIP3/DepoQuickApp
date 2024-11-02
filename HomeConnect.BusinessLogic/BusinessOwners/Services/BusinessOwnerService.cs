@@ -117,8 +117,9 @@ public class BusinessOwnerService : IBusinessOwnerService
         }
     }
 
-    private static Camera CreateCamera(CreateCameraArgs args, Business business)
+    private Camera CreateCamera(CreateCameraArgs args, Business business)
     {
+        EnsureModelNumberIsValid(args.ModelNumber, args.Validator);
         return new Camera(
             args.Name,
             args.ModelNumber,

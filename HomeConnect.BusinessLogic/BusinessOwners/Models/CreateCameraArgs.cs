@@ -14,4 +14,5 @@ public record CreateCameraArgs
     public bool? PersonDetection { get; set; }
     public bool? Exterior { get; set; }
     public bool? Interior { get; set; }
+    public string? Validator { get; set; } = null;
 }

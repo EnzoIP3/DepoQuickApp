@@ -480,6 +480,42 @@ public class BusinessOwnerServiceTests
         _deviceRepository.Verify(x => x.Add(It.IsAny<Device>()), Times.Never);
     }
 
+    [TestMethod]
+    public void CreateCamera_WhenHasAValidatorAndModelNumberIsInvalid_ThrowsArgumentException()
+    {
+        // Arrange
+        var business = new Business("RUTexample", "Business Name", "https://example.com/image.png", _owner);
+        var args = new CreateCameraArgs
+        {
+            Owner = _owner,
+            Name = DeviceName,
+            ModelNumber = ModelNumber,
+            Description = Description,
+            MainPhoto = MainPhoto,
+            SecondaryPhotos = _secondaryPhotos,
+            MotionDetection = false,
+            PersonDetection = false,
+            Exterior = false,
+            Interior = true,
+            Validator = "Validator"
+        };
+        _deviceRepository.Setup(x =>
+            x.ExistsByModelNumber(args.ModelNumber)).Returns(false);
+        _deviceRepository.Setup(x => x.Add(It.IsAny<Device>()));
+        _businessRepository.Setup(x => x.GetByOwnerId(_owner.Id)).Returns(business);
+        _businessRepository.Setup(x => x.ExistsByOwnerId(_owner.Id)).Returns(true);
+        _validatorService.Setup(x =>
+            x.GetValidatorByName(args.Validator)).Returns(_modeloValidador.Object);
+        _modeloValidador.Setup(x =>
+            x.EsValido(It.Is<Modelo>(m => m.Value == args.ModelNumber))).Returns(false);
+
+        // Act
+        Action act = () => _businessOwnerService.CreateCamera(args);
+
+        // Assert
+        act.Should().Throw<ArgumentException>()
+            .WithMessage("The model number is not valid according to the specified validator.");
+    }
     #endregion
 
     #endregion

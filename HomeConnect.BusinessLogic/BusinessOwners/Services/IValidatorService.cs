@@ -1,5 +1,5 @@
 using BusinessLogic.BusinessOwners.Models;
-using BusinessLogic.BusinessOwners.Validator;
+using ModeloValidador.Abstracciones;
 
 namespace BusinessLogic.BusinessOwners.Services;
 

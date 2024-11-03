@@ -1,11 +1,11 @@
 ﻿using BusinessLogic.BusinessOwners.Entities;
 using BusinessLogic.BusinessOwners.Models;
 using BusinessLogic.BusinessOwners.Repositories;
-using BusinessLogic.BusinessOwners.Validator;
 using BusinessLogic.Devices.Entities;
 using BusinessLogic.Devices.Repositories;
 using BusinessLogic.Users.Entities;
 using BusinessLogic.Users.Repositories;
+using ModeloValidador.Abstracciones;
 
 namespace BusinessLogic.BusinessOwners.Services;
 

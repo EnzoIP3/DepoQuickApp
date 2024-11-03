@@ -1,15 +1,14 @@
-﻿using BusinessLogic.BusinessOwners;
-using BusinessLogic.BusinessOwners.Entities;
+﻿using BusinessLogic.BusinessOwners.Entities;
 using BusinessLogic.BusinessOwners.Models;
 using BusinessLogic.BusinessOwners.Repositories;
 using BusinessLogic.BusinessOwners.Services;
-using BusinessLogic.BusinessOwners.Validator;
 using BusinessLogic.Devices.Entities;
 using BusinessLogic.Devices.Repositories;
 using BusinessLogic.Roles.Entities;
 using BusinessLogic.Users.Entities;
 using BusinessLogic.Users.Repositories;
 using FluentAssertions;
+using ModeloValidador.Abstracciones;
 using Moq;
 
 namespace HomeConnect.BusinessLogic.Test.BusinessOwners;

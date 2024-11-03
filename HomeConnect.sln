@@ -17,7 +17,9 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "HomeConnect.WebApi.Test", "
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ModelValidator", "ModelValidator\ModelValidator.csproj", "{152C3A29-20AD-4537-8DF7-34EA7FE95690}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SixLettersModelValidator", "SixLettersModelValidator\SixLettersModelValidator.csproj", "{B1F7BD5E-EA46-43B2-B9CC-5B15D8B228C4}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SixLettersValidator", "SixLettersValidator\SixLettersValidator.csproj", "{B1F7BD5E-EA46-43B2-B9CC-5B15D8B228C4}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SixCharacters3Letters3NumbersValidator", "SixCharacters3Letters3NumbersValidator\SixCharacters3Letters3NumbersValidator.csproj", "{31C565FF-8761-4297-8C9D-EB74D64D3842}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -60,5 +62,9 @@ Global
 		{B1F7BD5E-EA46-43B2-B9CC-5B15D8B228C4}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{B1F7BD5E-EA46-43B2-B9CC-5B15D8B228C4}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{B1F7BD5E-EA46-43B2-B9CC-5B15D8B228C4}.Release|Any CPU.Build.0 = Release|Any CPU
+		{31C565FF-8761-4297-8C9D-EB74D64D3842}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{31C565FF-8761-4297-8C9D-EB74D64D3842}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{31C565FF-8761-4297-8C9D-EB74D64D3842}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{31C565FF-8761-4297-8C9D-EB74D64D3842}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 EndGlobal

@@ -22,6 +22,7 @@ public class DeviceControllerTests
     private Device _device = null!;
     private Mock<IDeviceService> _deviceService = null!;
     private Mock<IValidatorService> _validatorService = null!;
+    private Mock<IImporterService> _importerService = null!;
     private List<Device> _expectedDevices = null!;
     private Pagination _expectedPagination = null!;
     private Device _otherDevice = null!;
@@ -32,7 +33,8 @@ public class DeviceControllerTests
     {
         _deviceService = new Mock<IDeviceService>();
         _validatorService = new Mock<IValidatorService>();
-        _controller = new DeviceController(_deviceService.Object, _validatorService.Object);
+        _importerService = new Mock<IImporterService>();
+        _controller = new DeviceController(_deviceService.Object, _validatorService.Object, _importerService.Object);
 
         var business = new Business("Business", "123456789", "https://www.example.com/logo.jpg", new User());
         _device = new Device("example1", "123", "example description 1", "https://www.example.com/photo1.jpg", [],
@@ -100,6 +102,32 @@ public class DeviceControllerTests
         _validatorService.Verify(x => x.GetValidators(), Times.Once);
         response.Should().BeEquivalentTo(expectedResponse, options => options
             .ComparingByMembers<GetValidatorsResponse>());
+    }
+    #endregion
+
+    #region GetImporters
+    [TestMethod]
+    public void GetImporters_WhenCalled_ReturnsGetImportersResponse()
+    {
+        // Arrange
+        var importers = new List<string>
+        {
+            "Importer1",
+            "Importer2"
+        };
+        var expectedResponse = new GetImportersResponse
+        {
+            Importers = importers
+        };
+        _importerService.Setup(x => x.GetImporters()).Returns(importers);
+
+        // Act
+        GetImportersResponse response = _controller.GetImporters();
+
+        // Assert
+        _importerService.Verify(x => x.GetImporters(), Times.Once);
+        response.Should().BeEquivalentTo(expectedResponse, options => options
+            .ComparingByMembers<GetImportersResponse>());
     }
     #endregion
 }

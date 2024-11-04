@@ -19,11 +19,13 @@ public class DeviceController : ControllerBase
 {
     private readonly IDeviceService _deviceService;
     private readonly IValidatorService _validatorService;
+    private readonly IImporterService _importerService;
 
-    public DeviceController(IDeviceService deviceService, IValidatorService validatorService)
+    public DeviceController(IDeviceService deviceService, IValidatorService validatorService, IImporterService importerService)
     {
         _deviceService = deviceService;
         _validatorService = validatorService;
+        _importerService = importerService;
     }
 
     [HttpGet]
@@ -79,5 +81,14 @@ public class DeviceController : ControllerBase
         {
             Validators = validators.Select(v => v.Name).ToList()
         };
+    }
+
+    [HttpGet]
+    [Route("importers")]
+    public GetImportersResponse GetImporters()
+    {
+        var importers = _importerService.GetImporters();
+        return new GetImportersResponse
+            { Importers = importers };
     }
 }

@@ -130,4 +130,28 @@ public class DeviceControllerTests
             .ComparingByMembers<GetImportersResponse>());
     }
     #endregion
+
+    #region ImportDevices
+    [TestMethod]
+    public void ImportDevices_WhenCalledWithValidImporterNameAndRoute_ReturnsImportDevicesResponse()
+    {
+        // Arrange
+        var importerName = "Importer1";
+        var route = "C:/Users/username/Documents/file.csv";
+        var expectedDevices = new List<string>{ Guid.NewGuid().ToString(), Guid.NewGuid().ToString() };
+        var expectedResponse = new ImportDevicesResponse
+        {
+            ImportedDevices = expectedDevices
+        };
+        _importerService.Setup(x => x.ImportDevices(importerName, route)).Returns(expectedDevices);
+
+        // Act
+        var response = _controller.ImportDevices(importerName, route);
+
+        // Assert
+        _importerService.Verify(x => x.ImportDevices(importerName, route), Times.Once);
+        response.Should().BeEquivalentTo(expectedResponse, options => options
+            .ComparingByMembers<ImportDevicesResponse>());
+    }
+    #endregion
 }

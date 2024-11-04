@@ -21,7 +21,8 @@ public class DeviceController : ControllerBase
     private readonly IValidatorService _validatorService;
     private readonly IImporterService _importerService;
 
-    public DeviceController(IDeviceService deviceService, IValidatorService validatorService, IImporterService importerService)
+    public DeviceController(IDeviceService deviceService, IValidatorService validatorService,
+        IImporterService importerService)
     {
         _deviceService = deviceService;
         _validatorService = validatorService;
@@ -60,9 +61,7 @@ public class DeviceController : ControllerBase
             }).ToList(),
             Pagination = new Pagination
             {
-                Page = devices.Page,
-                PageSize = devices.PageSize,
-                TotalPages = devices.TotalPages
+                Page = devices.Page, PageSize = devices.PageSize, TotalPages = devices.TotalPages
             }
         };
     }
@@ -77,10 +76,7 @@ public class DeviceController : ControllerBase
 
     private static GetValidatorsResponse CreateGetValidatorsResponse(List<ValidatorInfo> validators)
     {
-        return new GetValidatorsResponse
-        {
-            Validators = validators.Select(v => v.Name).ToList()
-        };
+        return new GetValidatorsResponse { Validators = validators.Select(v => v.Name).ToList() };
     }
 
     [HttpGet]
@@ -88,7 +84,14 @@ public class DeviceController : ControllerBase
     public GetImportersResponse GetImporters()
     {
         var importers = _importerService.GetImporters();
-        return new GetImportersResponse
-            { Importers = importers };
+        return new GetImportersResponse { Importers = importers };
+    }
+
+    [HttpPost]
+    [Route("importers/{importerName}")]
+    public ImportDevicesResponse ImportDevices([FromRoute] string importerName, [FromBody] string route)
+    {
+        var addedDevices = _importerService.ImportDevices(importerName, route);
+        return new ImportDevicesResponse { ImportedDevices = addedDevices };
     }
 }

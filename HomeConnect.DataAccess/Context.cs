@@ -71,7 +71,9 @@ public class Context(DbContextOptions<Context> options) : DbContext(options)
             new SystemPermission { Value = SystemPermission.CreateBusiness },
             new SystemPermission { Value = SystemPermission.CreateCamera },
             new SystemPermission { Value = SystemPermission.CreateSensor },
-            new SystemPermission { Value = SystemPermission.UpdateMember });
+            new SystemPermission { Value = SystemPermission.UpdateMember },
+            new SystemPermission { Value = SystemPermission.CreateMotionSensor },
+            new SystemPermission { Value = SystemPermission.CreateLamp });
     }
 
     private void ConfigureRolePermissions(ModelBuilder modelBuilder)

@@ -163,6 +163,9 @@ namespace HomeConnect.DataAccess.Migrations
                     b.Property<int>("MaxMembers")
                         .HasColumnType("int");
 
+                    b.Property<string>("NickName")
+                        .HasColumnType("nvarchar(max)");
+
                     b.Property<Guid>("OwnerId")
                         .HasColumnType("uniqueidentifier");
 
@@ -333,6 +336,14 @@ namespace HomeConnect.DataAccess.Migrations
                         new
                         {
                             Value = "update-member"
+                        },
+                        new
+                        {
+                            Value = "create-motion-sensor"
+                        },
+                        new
+                        {
+                            Value = "create-lamp"
                         });
                 });
 

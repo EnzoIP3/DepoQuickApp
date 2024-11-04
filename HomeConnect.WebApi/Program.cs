@@ -60,6 +60,7 @@ services.AddScoped<IDeviceService, DeviceService>();
 services.AddScoped<IAdminService, AdminService>();
 services.AddScoped<IBusinessOwnerService, BusinessOwnerService>();
 services.AddScoped<INotificationService, NotificationService>();
+services.AddScoped<IValidatorService, ValidatorService>();
 
 WebApplication app = builder.Build();
 

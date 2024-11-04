@@ -4,6 +4,7 @@ using BusinessLogic.BusinessOwners.Services;
 using BusinessLogic.Devices.Entities;
 using BusinessLogic.Devices.Models;
 using BusinessLogic.Devices.Services;
+using BusinessLogic.Users.Entities;
 using HomeConnect.WebApi.Controllers.Devices.Models;
 using HomeConnect.WebApi.Controllers.Homes.Models;
 using HomeConnect.WebApi.Filters;
@@ -91,7 +92,9 @@ public class DeviceController : ControllerBase
     [Route("importers/{importerName}")]
     public ImportDevicesResponse ImportDevices([FromRoute] string importerName, [FromBody] string route)
     {
-        var addedDevices = _importerService.ImportDevices(importerName, route);
+        var userLoggedIn = HttpContext.Items[Item.UserLogged] as User;
+        var args = new ImportDevicesArgs { ImporterName = importerName, Route = route, User = userLoggedIn! };
+        var addedDevices = _importerService.ImportDevices(args);
         return new ImportDevicesResponse { ImportedDevices = addedDevices };
     }
 

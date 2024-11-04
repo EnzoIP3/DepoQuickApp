@@ -1,8 +1,10 @@
+using BusinessLogic.BusinessOwners.Models;
+
 namespace BusinessLogic.BusinessOwners.Services;
 
 public interface IImporterService
 {
     public List<string> GetImporters();
-    List<string> ImportDevices(string importerName, string route);
+    List<string> ImportDevices(ImportDevicesArgs args);
     List<string> GetImportFiles();
 }

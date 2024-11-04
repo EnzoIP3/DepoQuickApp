@@ -5,11 +5,14 @@ using BusinessLogic.BusinessOwners.Services;
 using BusinessLogic.Devices.Entities;
 using BusinessLogic.Devices.Models;
 using BusinessLogic.Devices.Services;
+using BusinessLogic.Roles.Entities;
 using BusinessLogic.Users.Entities;
 using FluentAssertions;
 using HomeConnect.WebApi.Controllers.Devices;
 using HomeConnect.WebApi.Controllers.Devices.Models;
 using HomeConnect.WebApi.Controllers.Homes.Models;
+using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Mvc;
 using Moq;
 using GetDevicesResponse = HomeConnect.WebApi.Controllers.Devices.Models.GetDevicesResponse;
 
@@ -23,6 +26,7 @@ public class DeviceControllerTests
     private Mock<IDeviceService> _deviceService = null!;
     private Mock<IValidatorService> _validatorService = null!;
     private Mock<IImporterService> _importerService = null!;
+    private Mock<HttpContext> _httpContextMock = null!;
     private List<Device> _expectedDevices = null!;
     private Pagination _expectedPagination = null!;
     private Device _otherDevice = null!;
@@ -34,7 +38,11 @@ public class DeviceControllerTests
         _deviceService = new Mock<IDeviceService>();
         _validatorService = new Mock<IValidatorService>();
         _importerService = new Mock<IImporterService>();
-        _controller = new DeviceController(_deviceService.Object, _validatorService.Object, _importerService.Object);
+        _httpContextMock = new Mock<HttpContext>(MockBehavior.Strict);
+        _controller = new DeviceController(_deviceService.Object, _validatorService.Object, _importerService.Object)
+        {
+            ControllerContext = new ControllerContext { HttpContext = _httpContextMock.Object }
+        };
 
         var business = new Business("Business", "123456789", "https://www.example.com/logo.jpg", new User());
         _device = new Device("example1", "123", "example description 1", "https://www.example.com/photo1.jpg", [],
@@ -143,13 +151,18 @@ public class DeviceControllerTests
         {
             ImportedDevices = expectedDevices
         };
-        _importerService.Setup(x => x.ImportDevices(importerName, route)).Returns(expectedDevices);
+        var userLoggedIn = new User("John", "Doe", "email@email.com", "Password@100",
+            new Role { Name = "BusinessOwner", Permissions = [] });
+        var items = new Dictionary<object, object?> { { Item.UserLogged, userLoggedIn } };
+        _httpContextMock.Setup(h => h.Items).Returns(items);
+        var args = new ImportDevicesArgs { ImporterName = importerName, Route = route, User = userLoggedIn };
+        _importerService.Setup(x => x.ImportDevices(args)).Returns(expectedDevices);
 
         // Act
         var response = _controller.ImportDevices(importerName, route);
 
         // Assert
-        _importerService.Verify(x => x.ImportDevices(importerName, route), Times.Once);
+        _importerService.Verify(x => x.ImportDevices(args), Times.Once);
         response.Should().BeEquivalentTo(expectedResponse, options => options
             .ComparingByMembers<ImportDevicesResponse>());
     }

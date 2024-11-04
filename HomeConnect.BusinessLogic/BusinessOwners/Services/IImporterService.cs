@@ -4,4 +4,5 @@ public interface IImporterService
 {
     public List<string> GetImporters();
     List<string> ImportDevices(string importerName, string route);
+    List<string> GetImportFiles();
 }

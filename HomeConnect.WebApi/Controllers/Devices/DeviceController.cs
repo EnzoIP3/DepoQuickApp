@@ -94,4 +94,12 @@ public class DeviceController : ControllerBase
         var addedDevices = _importerService.ImportDevices(importerName, route);
         return new ImportDevicesResponse { ImportedDevices = addedDevices };
     }
+
+    [HttpGet]
+    [Route("import-files")]
+    public GetImportFilesResponse GetImportFiles()
+    {
+        var files = _importerService.GetImportFiles();
+        return new GetImportFilesResponse { ImportFiles = files };
+    }
 }

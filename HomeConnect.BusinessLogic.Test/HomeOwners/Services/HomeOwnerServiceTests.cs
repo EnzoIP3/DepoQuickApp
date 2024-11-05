@@ -738,7 +738,7 @@ public class HomeOwnerServiceTests
     [ExpectedException(typeof(ArgumentException))]
     public void NameDevice_ShouldThrowArgumentException_WhenNewNameIsEmpty()
     {
-        _homeOwnerService.NameDevice(Guid.NewGuid(), Guid.NewGuid(), String.Empty);
+        _homeOwnerService.NameDevice(Guid.NewGuid(), Guid.NewGuid(), string.Empty);
     }
 
     [TestMethod]

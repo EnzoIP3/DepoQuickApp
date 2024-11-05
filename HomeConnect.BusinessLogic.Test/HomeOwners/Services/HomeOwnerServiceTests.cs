@@ -704,14 +704,24 @@ public class HomeOwnerServiceTests
     public void NameDevice_ShouldRenameDevice_WhenParametersAreValid()
     {
         // Arrange
-        var ownedDevice = new OwnedDevice { HardwareId = Guid.NewGuid(), Name = "OldName" };
+        var home = new Home(_user, "Main St 123", 12.5, 12.5, 5);
+        var member = new Member(_user, new List<HomePermission> { new HomePermission(HomePermission.RenameDevice) });
+        home.Members.Add(member);
+
+        var ownedDevice = new OwnedDevice
+        {
+            HardwareId = Guid.NewGuid(),
+            Name = "OldName",
+            Home = home
+        };
+
         _ownedDeviceRepositoryMock.Setup(repo => repo.GetByHardwareId(ownedDevice.HardwareId)).Returns(ownedDevice);
         _ownedDeviceRepositoryMock.Setup(repo => repo.Rename(It.IsAny<OwnedDevice>(), It.IsAny<string>()))
             .Callback<OwnedDevice, string>((device, newName) => device.Name = newName)
             .Verifiable();
 
         // Act
-        _homeOwnerService.NameDevice(Guid.NewGuid(), ownedDevice.HardwareId, "NewName");
+        _homeOwnerService.NameDevice(_user.Id, ownedDevice.HardwareId, "NewName");
 
         // Assert
         Assert.AreEqual("NewName", ownedDevice.Name);

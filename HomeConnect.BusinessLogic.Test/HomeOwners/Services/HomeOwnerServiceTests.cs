@@ -738,6 +738,14 @@ public class HomeOwnerServiceTests
     {
         _homeOwnerService.NameDevice(Guid.NewGuid(), Guid.NewGuid(), String.Empty);
     }
+
+    [TestMethod]
+    [ExpectedException(typeof(ArgumentException))]
+    public void NameDevice_ShouldThrowArgumentException_WhenDeviceDoesNotExist()
+    {
+        _ownedDeviceRepositoryMock.Setup(repo => repo.GetByHardwareId(It.IsAny<Guid>())).Returns((OwnedDevice)null);
+        _homeOwnerService.NameDevice(Guid.NewGuid(), Guid.NewGuid(), "NewName");
+    }
     #endregion
     #endregion
 }

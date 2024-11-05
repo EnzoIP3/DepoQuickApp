@@ -187,6 +187,22 @@ public class UserTests
         permissions.Should().BeEmpty();
     }
 
+    [TestMethod]
+    public void GetPermissions_WhenUserHasRoles_ReturnsPermissions()
+    {
+        // Arrange
+        var permission = new SystemPermission("Permission");
+        var otherPermission = new SystemPermission("Other Permission");
+        var role = new Role("Role", [permission, otherPermission]);
+        var user = new User(Name, Surname, Email, Password, role);
+
+        // Act
+        var permissions = user.GetPermissions();
+
+        // Assert
+        permissions.Should().BeEquivalentTo([permission, otherPermission]);
+    }
+
     #endregion
 
     #endregion

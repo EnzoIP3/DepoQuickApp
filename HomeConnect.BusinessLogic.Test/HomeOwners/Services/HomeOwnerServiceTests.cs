@@ -705,7 +705,7 @@ public class HomeOwnerServiceTests
     {
         // Arrange
         var home = new Home(_user, "Main St 123", 12.5, 12.5, 5);
-        var member = new Member(_user, new List<HomePermission> { new HomePermission(HomePermission.RenameDevice) });
+        var member = new Member(_user, [new HomePermission(HomePermission.RenameDevice)]);
         home.Members.Add(member);
 
         var ownedDevice = new OwnedDevice
@@ -764,7 +764,7 @@ public class HomeOwnerServiceTests
     {
         // Arrange
         var home = new Home(_user, "Main St 123", 12.5, 12.5, 5);
-        var member = new Member(_user, new List<HomePermission>());
+        var member = new Member(_user, []);
         home.Members.Add(member);
 
         var ownedDevice = new OwnedDevice

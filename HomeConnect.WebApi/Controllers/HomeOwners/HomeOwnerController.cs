@@ -68,12 +68,12 @@ public class HomeOwnerController(IUserService userService, IHomeOwnerService hom
 
     private static (Guid DeviceId, string NewName) NameDeviceArgsFromRequest(NameDeviceRequest request)
     {
-        if (request.DeviceId != null)
+        if (string.IsNullOrEmpty(request.DeviceId))
         {
-            return (Guid.Parse(request.DeviceId), request.NewName);
+            throw new ArgumentException("DeviceId cannot be null or empty");
         }
 
-        throw new InvalidOperationException();
+        return (Guid.Parse(request.DeviceId), request.NewName);
     }
 
     private static (Guid HomeId, string NewName) NameHomeArgsFromRequest(NameHomeRequest request)

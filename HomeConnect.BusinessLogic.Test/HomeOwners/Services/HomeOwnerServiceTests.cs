@@ -724,6 +724,13 @@ public class HomeOwnerServiceTests
     {
         _homeOwnerService.NameDevice(Guid.Empty, Guid.NewGuid(), "NewName");
     }
+
+    [TestMethod]
+    [ExpectedException(typeof(ArgumentException))]
+    public void NameDevice_ShouldThrowArgumentException_WhenDeviceIdIsEmpty()
+    {
+        _homeOwnerService.NameDevice(Guid.NewGuid(), Guid.Empty, "NewName");
+    }
     #endregion
     #endregion
 }

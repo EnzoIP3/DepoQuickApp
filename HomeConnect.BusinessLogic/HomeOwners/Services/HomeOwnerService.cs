@@ -82,7 +82,7 @@ public class HomeOwnerService : IHomeOwnerService
         HomeRepository.Rename(home, newName);
     }
 
-    public void NameDevice(Guid ownerId, Guid deviceId, string newName)
+    private void ValidateNameDeviceParameters(Guid ownerId, Guid deviceId, string newName)
     {
         if (ownerId == Guid.Empty)
         {
@@ -98,8 +98,17 @@ public class HomeOwnerService : IHomeOwnerService
         {
             throw new ArgumentException("New name cannot be null or empty");
         }
+    }
+
+    public void NameDevice(Guid ownerId, Guid deviceId, string newName)
+    {
+        ValidateNameDeviceParameters(ownerId, deviceId, newName);
 
         var device = OwnedDeviceRepository.GetByHardwareId(deviceId);
+        if (device == null)
+        {
+            throw new ArgumentException("Device does not exist");
+        }
 
         device.Name = newName;
         OwnedDeviceRepository.Update(device);

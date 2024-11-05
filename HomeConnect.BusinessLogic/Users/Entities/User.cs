@@ -172,6 +172,6 @@ public class User
 
     public List<SystemPermission> GetPermissions()
     {
-        return [];
+        return Roles.SelectMany(role => role.Permissions).Distinct().ToList();
     }
 }

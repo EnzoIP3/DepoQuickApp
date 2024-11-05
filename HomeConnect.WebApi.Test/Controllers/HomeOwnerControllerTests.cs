@@ -201,6 +201,7 @@ public class HomeOwnerControllerTests
     #endregion
 
     #region NameDevice
+    #region Success
     [TestMethod]
     public void NameDevice_WithValidRequest_ReturnsDeviceId()
     {
@@ -222,5 +223,25 @@ public class HomeOwnerControllerTests
         response.Should().NotBeNull();
         response.DeviceId.Should().Be(request.DeviceId);
     }
+    #endregion
+    #region Error
+
+    [TestMethod]
+    public void NameDevice_WithInvalidDeviceId_ThrowsArgumentException()
+    {
+        // Arrange
+        var request = new NameDeviceRequest
+        {
+            DeviceId = string.Empty,
+            NewName = "New Device Name"
+        };
+        var items = new Dictionary<object, object?> { { Item.UserLogged, _user } };
+        _httpContextMock.Setup(h => h.Items).Returns(items);
+
+        // Act & Assert
+        var ex = Assert.ThrowsException<ArgumentException>(() => _controller.NameDevice(request));
+        Assert.AreEqual("DeviceId cannot be null or empty", ex.Message);
+    }
+    #endregion
     #endregion
 }

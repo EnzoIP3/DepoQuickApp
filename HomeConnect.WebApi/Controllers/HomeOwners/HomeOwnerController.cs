@@ -60,7 +60,20 @@ public class HomeOwnerController(IUserService userService, IHomeOwnerService hom
     [AuthorizationFilter(SystemPermission.NameDevice)]
     public NameDeviceResponse NameDevice([FromBody] NameDeviceRequest request)
     {
-        throw new NotImplementedException();
+        var userLoggedIn = HttpContext.Items[Item.UserLogged] as User;
+        var nameDeviceArgs = NameDeviceArgsFromRequest(request);
+        homeOwnerService.NameDevice(userLoggedIn.Id, nameDeviceArgs.DeviceId, nameDeviceArgs.NewName);
+        return new NameDeviceResponse { DeviceId = request.DeviceId };
+    }
+
+    private static (Guid DeviceId, string NewName) NameDeviceArgsFromRequest(NameDeviceRequest request)
+    {
+        if (request.DeviceId != null)
+        {
+            return (Guid.Parse(request.DeviceId), request.NewName);
+        }
+
+        throw new InvalidOperationException();
     }
 
     private static (Guid HomeId, string NewName) NameHomeArgsFromRequest(NameHomeRequest request)

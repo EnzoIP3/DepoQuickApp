@@ -15,6 +15,9 @@ public class AuthController(IAuthService authService)
         var args = new CreateTokenArgs { Email = request.Email!, Password = request.Password! };
         var token = authService.CreateToken(args);
         var user = authService.GetUserFromToken(token);
-        return new CreateTokenResponse { Token = token, Roles = user.Roles.Select(r => r.Name).ToList() };
+        return new CreateTokenResponse
+        {
+            Token = token, Permissions = user.GetPermissions().Select(p => p.Value).ToList()
+        };
     }
 }

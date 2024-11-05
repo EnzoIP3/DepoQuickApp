@@ -1,5 +1,6 @@
 <div class="centered-content">
-    <app-icon-title title="Login to your account" icon="pi-sign-in" class="mb-3" />
+    <app-icon-title title="Login to your account" icon="pi-sign-in"
+        class="mb-4 text-primary-600 text-center" />
     <app-form [form]="loginForm" (onSubmit)="onSubmit()">
         <app-form-input type="text" label="Email" placeholder="email@example.com" name="email" [form]="loginForm"
             iconClass="pi pi-envelope" [formField]="formFields.email">

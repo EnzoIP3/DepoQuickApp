@@ -19,7 +19,7 @@ export class AuthService {
 
         if (token) {
             const roles = JSON.parse(localStorage.getItem("roles") || "[]");
-            return { token, roles };
+            return { token, permissions: roles };
         }
 
         return null;
@@ -39,7 +39,7 @@ export class AuthService {
         return this._repository.login(authRequest).pipe(
             tap((userLogged) => {
                 localStorage.setItem("token", userLogged.token);
-                localStorage.setItem("roles", JSON.stringify(userLogged.roles));
+                localStorage.setItem("permissions", JSON.stringify(userLogged.permissions));
                 this._userLogged$.next(userLogged);
             })
         );

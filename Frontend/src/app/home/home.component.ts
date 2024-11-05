@@ -7,6 +7,8 @@ import { Router } from "@angular/router";
     templateUrl: "./home.component.html"
 })
 export class HomeComponent {
+    permissions: string[] = [];
+
     constructor(
         private _authService: AuthService,
         private _router: Router
@@ -15,5 +17,13 @@ export class HomeComponent {
     logout() {
         this._authService.logout();
         this._router.navigate(["/login"]);
+    }
+
+    ngOnInit() {
+        this._authService.userLogged.subscribe((userLogged) => {
+            if (userLogged) {
+                this.permissions = userLogged.permissions;
+            }
+        });
     }
 }

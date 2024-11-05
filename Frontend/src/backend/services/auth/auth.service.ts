@@ -39,15 +39,17 @@ export class AuthService {
         return this._repository.login(authRequest).pipe(
             tap((userLogged) => {
                 localStorage.setItem("token", userLogged.token);
-                localStorage.setItem("permissions", JSON.stringify(userLogged.permissions));
+                localStorage.setItem(
+                    "permissions",
+                    JSON.stringify(userLogged.permissions)
+                );
                 this._userLogged$.next(userLogged);
             })
         );
     }
 
     public logout(): void {
-        localStorage.removeItem("token");
-        localStorage.removeItem("roles");
+        localStorage.clear();
         this._userLogged$.next(null);
     }
 }

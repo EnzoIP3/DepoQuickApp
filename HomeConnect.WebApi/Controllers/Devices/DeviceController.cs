@@ -61,10 +61,17 @@ public class DeviceController : ControllerBase
         };
     }
 
-    [HttpPost("{hardwareId}/toggle")]
-    public virtual ConnectionResponse Toggle([FromRoute] string hardwareId)
+    [HttpPost("{hardwareId}/turn_on")]
+    public virtual ConnectionResponse TurnOn([FromRoute] string hardwareId)
     {
-        var connectionState = _deviceService.ToggleDevice(hardwareId);
+        var connectionState = _deviceService.TurnDevice(hardwareId, true);
+        return new ConnectionResponse { Connected = connectionState, HardwareId = hardwareId };
+    }
+
+    [HttpPost("{hardwareId}/turn_off")]
+    public virtual ConnectionResponse TurnOff([FromRoute] string hardwareId)
+    {
+        var connectionState = _deviceService.TurnDevice(hardwareId, false);
         return new ConnectionResponse { Connected = connectionState, HardwareId = hardwareId };
     }
 }

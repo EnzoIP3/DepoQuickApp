@@ -61,17 +61,17 @@ public class DeviceServiceTests
     [TestMethod]
     [DataRow("hardwareId")]
     [DataRow("")]
-    public void Toggle_WhenHardwareIdIsInvalid_ThrowsArgumentException(string id)
+    public void TurnDevice_WhenHardwareIdIsInvalid_ThrowsArgumentException(string id)
     {
         // Act
-        Func<bool> act = () => _deviceService.ToggleDevice(id);
+        Func<bool> act = () => _deviceService.TurnDevice(id, true);
 
         // Assert
         act.Should().Throw<ArgumentException>().WithMessage("Hardware ID is invalid.");
     }
 
     [TestMethod]
-    public void Toggle_WhenHardwareIdIsValid_ReturnsConnected()
+    public void TurnDevice_WhenHardwareIdIsValid_ReturnsConnected()
     {
         // Arrange
         var ownedDevice =
@@ -83,7 +83,7 @@ public class DeviceServiceTests
         _ownedDeviceRepository.Setup(x => x.Update(ownedDevice)).Verifiable();
 
         // Act
-        var result = _deviceService.ToggleDevice(hardwareId);
+        var result = _deviceService.TurnDevice(hardwareId, false);
 
         // Assert
         result.Should().BeFalse();
@@ -91,14 +91,14 @@ public class DeviceServiceTests
     }
 
     [TestMethod]
-    public void Toggle_WhenOwnedDeviceDoesNotExist_ThrowsKeyNotFoundException()
+    public void TurnDevice_WhenOwnedDeviceDoesNotExist_ThrowsKeyNotFoundException()
     {
         // Arrange
         var hardwareId = Guid.NewGuid().ToString();
         _ownedDeviceRepository.Setup(x => x.Exists(Guid.Parse(hardwareId))).Returns(false);
 
         // Act
-        Func<bool> act = () => _deviceService.ToggleDevice(hardwareId);
+        Func<bool> act = () => _deviceService.TurnDevice(hardwareId, true);
 
         // Assert
         act.Should().Throw<KeyNotFoundException>().WithMessage("The device is not registered in this home.");

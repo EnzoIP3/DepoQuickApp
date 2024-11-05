@@ -28,12 +28,12 @@ public class DeviceService : IDeviceService
         return devices;
     }
 
-    public bool ToggleDevice(string hardwareId)
+    public bool TurnDevice(string hardwareId, bool state)
     {
         EnsureHardwareIdIsValid(hardwareId);
         EnsureOwnedDeviceExists(hardwareId);
         OwnedDevice ownedDevice = OwnedDeviceRepository.GetByHardwareId(Guid.Parse(hardwareId));
-        ownedDevice.Connected = !ownedDevice.Connected;
+        ownedDevice.Connected = state;
         OwnedDeviceRepository.Update(ownedDevice);
         return ownedDevice.Connected;
     }

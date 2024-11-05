@@ -225,6 +225,22 @@ public class HomeOwnerControllerTests
     }
     #endregion
     #region Error
+    [TestMethod]
+    public void NameDevice_WithInvalidNewName_ThrowsArgumentException()
+    {
+        // Arrange
+        var request = new NameDeviceRequest
+        {
+            DeviceId = Guid.NewGuid().ToString(),
+            NewName = string.Empty
+        };
+        var items = new Dictionary<object, object?> { { Item.UserLogged, _user } };
+        _httpContextMock.Setup(h => h.Items).Returns(items);
+
+        // Act & Assert
+        var ex = Assert.ThrowsException<ArgumentException>(() => _controller.NameDevice(request));
+        Assert.AreEqual("NewName cannot be null or empty", ex.Message);
+    }
 
     [TestMethod]
     public void NameDevice_WithInvalidDeviceId_ThrowsArgumentException()

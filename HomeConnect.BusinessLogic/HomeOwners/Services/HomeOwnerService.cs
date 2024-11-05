@@ -84,6 +84,11 @@ public class HomeOwnerService : IHomeOwnerService
 
     public void NameDevice(Guid ownerId, Guid deviceId, string newName)
     {
+        if (ownerId == Guid.Empty)
+        {
+            throw new ArgumentException("Owner ID cannot be empty");
+        }
+
         var device = OwnedDeviceRepository.GetByHardwareId(deviceId);
 
         device.Name = newName;

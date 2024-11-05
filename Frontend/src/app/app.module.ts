@@ -7,9 +7,8 @@ import { AppComponent } from "./app.component";
 import { ToolbarComponent } from "../components/toolbar/toolbar.component";
 import { SidebarComponent } from "../components/sidebar/sidebar.component";
 import { PageNotFoundComponent } from "./page-not-found/page-not-found.component";
-import { provideHttpClient, withInterceptors } from "@angular/common/http";
-import { tokenExpirationInterceptor } from "../interceptors/token-expiration.interceptor";
-import { HomeComponent } from './home/home.component';
+import { provideHttpClient } from "@angular/common/http";
+import { HomeComponent } from "./home/home.component";
 
 @NgModule({
     declarations: [AppComponent, PageNotFoundComponent, HomeComponent],
@@ -20,9 +19,7 @@ import { HomeComponent } from './home/home.component';
         ToolbarComponent,
         SidebarComponent
     ],
-    providers: [
-        provideHttpClient(withInterceptors([tokenExpirationInterceptor]))
-    ],
+    providers: [provideHttpClient()],
     bootstrap: [AppComponent]
 })
 export class AppModule {}

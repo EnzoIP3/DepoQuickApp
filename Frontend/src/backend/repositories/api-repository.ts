@@ -3,8 +3,6 @@ import {
     HttpErrorResponse,
     HttpHeaders
 } from "@angular/common/http";
-import { inject } from "@angular/core";
-import { Router } from "@angular/router";
 import { Observable, catchError, retry, throwError } from "rxjs";
 
 export interface RequestConfig {
@@ -14,10 +12,11 @@ export interface RequestConfig {
 
 export default abstract class ApiRepository {
     private static readonly RETRY_ATTEMPTS = 3;
-    private static readonly AUTH_TOKEN_KEY = "token";
     private static readonly DEFAULT_ACCEPT = "application/json";
     private static readonly DEFAULT_ERROR_MESSAGE =
         "Something went wrong, please try again later.";
+    private static readonly DEFAULT_EXPIRED_TOKEN_MESSAGE =
+        "Your session has expired, please reload the page";
 
     protected readonly fullEndpoint: string;
 
@@ -64,7 +63,7 @@ export default abstract class ApiRepository {
     }
 
     private getAuthToken(): string {
-        return localStorage.getItem(ApiRepository.AUTH_TOKEN_KEY) ?? "";
+        return localStorage.getItem("token") ?? "";
     }
 
     private executeRequest<T>(requestFn: () => Observable<T>): Observable<T> {
@@ -77,9 +76,16 @@ export default abstract class ApiRepository {
     protected handleError(error: HttpErrorResponse) {
         let errorMessage = ApiRepository.DEFAULT_ERROR_MESSAGE;
         let isServerError = "message" in error.error;
+        let isExpiredTokenError =
+            error.status === 401 && localStorage.getItem("token");
 
         if (isServerError) {
             errorMessage = error.error.message;
+        }
+
+        if (isExpiredTokenError) {
+            errorMessage = ApiRepository.DEFAULT_EXPIRED_TOKEN_MESSAGE;
+            localStorage.clear();
         }
 
         return throwError(() => new Error(errorMessage));

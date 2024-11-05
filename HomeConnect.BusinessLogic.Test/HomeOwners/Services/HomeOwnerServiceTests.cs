@@ -706,14 +706,16 @@ public class HomeOwnerServiceTests
         // Arrange
         var ownedDevice = new OwnedDevice { HardwareId = Guid.NewGuid(), Name = "OldName" };
         _ownedDeviceRepositoryMock.Setup(repo => repo.GetByHardwareId(ownedDevice.HardwareId)).Returns(ownedDevice);
-        _ownedDeviceRepositoryMock.Setup(repo => repo.Update(It.IsAny<OwnedDevice>()));
+        _ownedDeviceRepositoryMock.Setup(repo => repo.Rename(It.IsAny<OwnedDevice>(), It.IsAny<string>()))
+            .Callback<OwnedDevice, string>((device, newName) => device.Name = newName)
+            .Verifiable();
 
         // Act
         _homeOwnerService.NameDevice(Guid.NewGuid(), ownedDevice.HardwareId, "NewName");
 
         // Assert
         Assert.AreEqual("NewName", ownedDevice.Name);
-        _ownedDeviceRepositoryMock.Verify(repo => repo.Update(ownedDevice), Times.Once);
+        _ownedDeviceRepositoryMock.Verify(repo => repo.Rename(ownedDevice, "NewName"), Times.Once);
     }
 
     #endregion

@@ -10,4 +10,5 @@ public interface IOwnedDeviceRepository
     OwnedDevice GetByHardwareId(Guid hardwareId);
     bool Exists(Guid hardwareId);
     void Update(OwnedDevice ownedDevice);
+    void Rename(OwnedDevice ownedDevice, string newName);
 }

@@ -110,8 +110,7 @@ public class HomeOwnerService : IHomeOwnerService
             throw new ArgumentException("Device does not exist");
         }
 
-        device.Name = newName;
-        OwnedDeviceRepository.Update(device);
+        OwnedDeviceRepository.Rename(device, newName);
     }
 
     private void ValidateNameHomeParameters(Guid ownerId, Guid homeId, string newName)

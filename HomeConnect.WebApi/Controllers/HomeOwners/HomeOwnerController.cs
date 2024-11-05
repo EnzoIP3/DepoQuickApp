@@ -73,6 +73,11 @@ public class HomeOwnerController(IUserService userService, IHomeOwnerService hom
             throw new ArgumentException("DeviceId cannot be null or empty");
         }
 
+        if (string.IsNullOrEmpty(request.NewName))
+        {
+            throw new ArgumentException("NewName cannot be null or empty");
+        }
+
         return (Guid.Parse(request.DeviceId), request.NewName);
     }
 

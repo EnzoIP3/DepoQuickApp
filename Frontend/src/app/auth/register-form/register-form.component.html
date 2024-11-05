@@ -1,31 +1,81 @@
 <div class="centered-content">
-    <app-icon-title title="Register as a home owner" icon="pi-user-plus" class="mb-4 text-primary-600 text-center" />
+    <app-icon-title
+        title="Register as a home owner"
+        icon="pi-user-plus"
+        class="mb-4 text-primary-600 text-center"
+    />
     <app-form [form]="registerForm" (onSubmit)="onSubmit()">
-        <app-form-input type="text" label="First Name" placeholder="John" name="name" [form]="registerForm"
-            iconClass="pi pi-user" [formField]="formFields.firstName">
+        <app-form-input
+            type="text"
+            label="First Name"
+            placeholder="John"
+            name="name"
+            [form]="registerForm"
+            iconClass="pi pi-user"
+            [formField]="formFields.firstName"
+        >
         </app-form-input>
 
-        <app-form-input type="text" label="Last Name" placeholder="Doe" name="surname" [form]="registerForm"
-            iconClass="pi pi-user-plus" [formField]="formFields.surname">
+        <app-form-input
+            type="text"
+            label="Last Name"
+            placeholder="Doe"
+            name="surname"
+            [form]="registerForm"
+            iconClass="pi pi-user-plus"
+            [formField]="formFields.surname"
+        >
         </app-form-input>
 
-        <app-form-input type="url" label="Profile Picture URL" placeholder="https://example.com/photo.jpg"
-            name="profilePicture" [form]="registerForm" iconClass="pi pi-image" [formField]="formFields.profilePicture">
+        <app-form-input
+            type="url"
+            label="Profile Picture URL"
+            placeholder="https://example.com/photo.jpg"
+            name="profilePicture"
+            [form]="registerForm"
+            iconClass="pi pi-image"
+            [formField]="formFields.profilePicture"
+        >
         </app-form-input>
 
-        <app-form-input type="text" label="Email" placeholder="email@example.com" name="email" [form]="registerForm"
-            iconClass="pi pi-envelope" [formField]="formFields.email">
+        <app-form-input
+            type="text"
+            label="Email"
+            placeholder="email@example.com"
+            name="email"
+            [form]="registerForm"
+            iconClass="pi pi-envelope"
+            [formField]="formFields.email"
+        >
         </app-form-input>
 
-        <app-form-input type="password" label="Password" placeholder="*****" name="password" [form]="registerForm"
-            iconClass="pi pi-lock" [formField]="formFields.password">
+        <app-form-input
+            type="password"
+            label="Password"
+            placeholder="*****"
+            name="password"
+            [form]="registerForm"
+            iconClass="pi pi-lock"
+            [formField]="formFields.password"
+        >
         </app-form-input>
 
-        <app-form-button title="Register" color="primary" [loading]="registerStatus.loading"
-            [disabled]="!registerForm.valid" />
+        <app-form-button
+            title="Register"
+            color="primary"
+            [loading]="registerStatus.loading"
+            [disabled]="!registerForm.valid"
+        />
 
-        <app-message *ngIf="registerStatus.success" text="You have successfully registered! Now you can login."
-            severity="success" />
-        <app-message *ngIf="registerStatus.error" [text]="registerStatus.error" severity="error" />
+        <app-message
+            *ngIf="registerStatus.success"
+            text="You have successfully registered! Now you can login."
+            severity="success"
+        />
+        <app-message
+            *ngIf="registerStatus.error"
+            [text]="registerStatus.error"
+            severity="error"
+        />
     </app-form>
 </div>

@@ -1,16 +1,42 @@
 <div class="centered-content">
-    <app-icon-title title="Login to your account" icon="pi-sign-in"
-        class="mb-4 text-primary-600 text-center" />
+    <app-icon-title
+        title="Login to your account"
+        icon="pi-sign-in"
+        class="mb-4 text-primary-600 text-center"
+    />
     <app-form [form]="loginForm" (onSubmit)="onSubmit()">
-        <app-form-input type="text" label="Email" placeholder="email@example.com" name="email" [form]="loginForm"
-            iconClass="pi pi-envelope" [formField]="formFields.email">
+        <app-form-input
+            type="text"
+            label="Email"
+            placeholder="email@example.com"
+            name="email"
+            [form]="loginForm"
+            iconClass="pi pi-envelope"
+            [formField]="formFields.email"
+        >
         </app-form-input>
 
-        <app-form-input type="password" label="Password" placeholder="*****" name="password" [form]="loginForm"
-            iconClass="pi pi-lock" [formField]="formFields.password">
+        <app-form-input
+            type="password"
+            label="Password"
+            placeholder="*****"
+            name="password"
+            [form]="loginForm"
+            iconClass="pi pi-lock"
+            [formField]="formFields.password"
+        >
         </app-form-input>
 
-        <app-form-button title="Login" color="primary" [loading]="loginStatus.loading" [disabled]="!loginForm.valid" />
-        <app-message *ngIf="loginStatus.error" [text]="loginStatus.error" severity="error" />
+        <app-form-button
+            title="Login"
+            color="primary"
+            [loading]="loginStatus.loading"
+            [disabled]="!loginForm.valid"
+        />
+        <app-message
+            *ngIf="loginStatus.error"
+            [text]="loginStatus.error"
+            severity="error"
+        />
     </app-form>
 </div>

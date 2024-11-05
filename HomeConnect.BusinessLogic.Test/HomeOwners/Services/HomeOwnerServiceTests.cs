@@ -748,6 +748,28 @@ public class HomeOwnerServiceTests
         _ownedDeviceRepositoryMock.Setup(repo => repo.GetByHardwareId(It.IsAny<Guid>())).Returns((OwnedDevice)null);
         _homeOwnerService.NameDevice(Guid.NewGuid(), Guid.NewGuid(), "NewName");
     }
+
+    [TestMethod]
+    public void NameDevice_ShouldThrowUnauthorizedAccessException_WhenMemberDoesNotHavePermission()
+    {
+        // Arrange
+        var home = new Home(_user, "Main St 123", 12.5, 12.5, 5);
+        var member = new Member(_user, new List<HomePermission>());
+        home.Members.Add(member);
+
+        var ownedDevice = new OwnedDevice
+        {
+            HardwareId = Guid.NewGuid(),
+            Name = "OldName",
+            Home = home
+        };
+
+        _ownedDeviceRepositoryMock.Setup(repo => repo.GetByHardwareId(ownedDevice.HardwareId)).Returns(ownedDevice);
+
+        // Act & Assert
+        Assert.ThrowsException<UnauthorizedAccessException>(() =>
+            _homeOwnerService.NameDevice(_user.Id, ownedDevice.HardwareId, "NewName"));
+    }
     #endregion
     #endregion
 }

@@ -110,6 +110,13 @@ public class HomeOwnerService : IHomeOwnerService
             throw new ArgumentException("Device does not exist");
         }
 
+        var home = device.Home;
+        var member = home.Members.FirstOrDefault(m => m.User.Id == ownerId);
+        if (member == null || !member.HasPermission(new HomePermission(HomePermission.RenameDevice)))
+        {
+            throw new UnauthorizedAccessException("Member does not have permission to rename the device");
+        }
+
         OwnedDeviceRepository.Rename(device, newName);
     }
 

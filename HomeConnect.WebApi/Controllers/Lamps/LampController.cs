@@ -39,7 +39,7 @@ public class LampController(
         return new CreateLampResponse { Id = createdLamp.Id };
     }
 
-    [HttpPost("{hardwareId}/turnOn")]
+    [HttpPost("{hardwareId}/turn_on")]
     public NotifyResponse TurnOn([FromRoute] string hardwareId)
     {
         NotificationArgs args = CreateTurnNotificationArgs(hardwareId, true);
@@ -47,7 +47,7 @@ public class LampController(
         return new NotifyResponse { HardwareId = hardwareId };
     }
 
-    [HttpPost("{hardwareId}/turnOff")]
+    [HttpPost("{hardwareId}/turn_off")]
     public NotifyResponse TurnOff([FromRoute] string hardwareId)
     {
         NotificationArgs args = CreateTurnNotificationArgs(hardwareId, false);

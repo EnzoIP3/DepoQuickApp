@@ -15,14 +15,31 @@ export class AuthService {
     constructor(private readonly _repository: AuthApiRepositoryService) {}
 
     private getUserLoggedFromLocalStorage(): UserLogged | null {
-        const token = localStorage.getItem("token");
+        const localStorageData = this.getLocalStorageData();
 
-        if (token) {
-            const roles = JSON.parse(localStorage.getItem("roles") || "[]");
-            return { token, permissions: roles };
+        if (localStorageData?.token) {
+            return localStorageData;
         }
 
         return null;
+    }
+
+    private getLocalStorageData(): UserLogged | null {
+        const localStorageDataString = localStorage.getItem("user");
+
+        if (localStorageDataString) {
+            try {
+                return JSON.parse(localStorageDataString) as UserLogged;
+            } catch {
+                return null;
+            }
+        }
+
+        return null;
+    }
+
+    private setLocalStorageData(data: UserLogged): void {
+        localStorage.setItem("user", JSON.stringify(data));
     }
 
     get userLogged(): Observable<UserLogged | null> {
@@ -38,11 +55,7 @@ export class AuthService {
     public login(authRequest: AuthRequest): Observable<UserLogged> {
         return this._repository.login(authRequest).pipe(
             tap((userLogged) => {
-                localStorage.setItem("token", userLogged.token);
-                localStorage.setItem(
-                    "permissions",
-                    JSON.stringify(userLogged.permissions)
-                );
+                this.setLocalStorageData(userLogged);
                 this._userLogged$.next(userLogged);
             })
         );

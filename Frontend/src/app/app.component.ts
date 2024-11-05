@@ -3,7 +3,9 @@ import { Component } from "@angular/core";
 @Component({
     selector: "app-root",
     template: `
-        <app-sidebar [(visible)]="sidebarVisible"></app-sidebar>
+        <app-permission-sidebar
+            [(sidebarVisible)]="sidebarVisible"
+        ></app-permission-sidebar>
         <app-toolbar [title]="title" (onClick)="openSidebar()"></app-toolbar>
         <router-outlet />
     `,

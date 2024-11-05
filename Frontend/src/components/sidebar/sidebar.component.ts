@@ -12,20 +12,7 @@ import { SidebarModule } from "primeng/sidebar";
 export class SidebarComponent {
     @Input() visible: boolean = false;
     @Output() visibleChange = new EventEmitter<boolean>();
-
-    items: MenuItem[] = [
-        {
-            label: "Login",
-            icon: "pi pi-sign-in",
-            routerLink: ["/login"],
-            routerLinkActiveOptions: { exact: true }
-        },
-        {
-            label: "Register",
-            icon: "pi pi-user-plus",
-            routerLink: ["/register"]
-        }
-    ];
+    @Input() routes: MenuItem[] = [];
 
     handleHide() {
         this.visible = false;

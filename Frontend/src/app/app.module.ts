@@ -9,6 +9,7 @@ import { SidebarComponent } from "../components/sidebar/sidebar.component";
 import { PageNotFoundComponent } from "./page-not-found/page-not-found.component";
 import { provideHttpClient } from "@angular/common/http";
 import { HomeComponent } from "./home/home.component";
+import { PermissionSidebarComponent } from "../business-components/permission-sidebar/permission-sidebar.component";
 
 @NgModule({
     declarations: [AppComponent, PageNotFoundComponent, HomeComponent],
@@ -17,7 +18,8 @@ import { HomeComponent } from "./home/home.component";
         BrowserAnimationsModule,
         AppRoutingModule,
         ToolbarComponent,
-        SidebarComponent
+        SidebarComponent,
+        PermissionSidebarComponent
     ],
     providers: [provideHttpClient()],
     bootstrap: [AppComponent]

@@ -46,6 +46,8 @@ public class OwnedDeviceRepository : IOwnedDeviceRepository
 
     public void Rename(OwnedDevice ownedDevice, string newName)
     {
-        throw new NotImplementedException();
+        ownedDevice.Name = newName;
+        _context.OwnedDevices.Update(ownedDevice);
+        _context.SaveChanges();
     }
 }

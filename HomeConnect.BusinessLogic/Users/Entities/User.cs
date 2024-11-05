@@ -172,6 +172,6 @@ public class User
 
     public List<SystemPermission> GetPermissions()
     {
-        throw new NotImplementedException();
+        return [];
     }
 }

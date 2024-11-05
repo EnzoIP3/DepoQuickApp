@@ -199,4 +199,28 @@ public class HomeOwnerControllerTests
 
     #endregion
     #endregion
+
+    #region NameDevice
+    [TestMethod]
+    public void NameDevice_WithValidRequest_ReturnsDeviceId()
+    {
+        // Arrange
+        var request = new NameDeviceRequest
+        {
+            DeviceId = Guid.NewGuid().ToString(),
+            NewName = "New Device Name"
+        };
+        var items = new Dictionary<object, object?> { { Item.UserLogged, _user } };
+        _httpContextMock.Setup(h => h.Items).Returns(items);
+        _homeOwnerService.Setup(x => x.NameDevice(_user.Id, Guid.Parse(request.DeviceId), request.NewName));
+
+        // Act
+        NameDeviceResponse response = _controller.NameDevice(request);
+
+        // Assert
+        _homeOwnerService.Verify(x => x.NameDevice(_user.Id, Guid.Parse(request.DeviceId), request.NewName), Times.Once);
+        response.Should().NotBeNull();
+        response.DeviceId.Should().Be(request.DeviceId);
+    }
+    #endregion
 }

@@ -82,6 +82,11 @@ public class HomeOwnerService : IHomeOwnerService
         HomeRepository.Rename(home, newName);
     }
 
+    public void NameDevice(Guid ownerId, Guid deviceId, string newName)
+    {
+        throw new NotImplementedException();
+    }
+
     private void ValidateNameHomeParameters(Guid ownerId, Guid homeId, string newName)
     {
         if (ownerId == Guid.Empty)

@@ -56,6 +56,13 @@ public class HomeOwnerController(IUserService userService, IHomeOwnerService hom
         return new NameHomeResponse { HomeId = request.HomeId };
     }
 
+    [HttpPost("name_device")]
+    [AuthorizationFilter(SystemPermission.NameDevice)]
+    public NameDeviceResponse NameDevice([FromBody] NameDeviceRequest request)
+    {
+        throw new NotImplementedException();
+    }
+
     private static (Guid HomeId, string NewName) NameHomeArgsFromRequest(NameHomeRequest request)
     {
         if (string.IsNullOrEmpty(request.HomeId))

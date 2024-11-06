@@ -1,4 +1,3 @@
-using System;
 using System.Diagnostics.CodeAnalysis;
 using BusinessLogic.Admins.Services;
 using BusinessLogic.Auth.Repositories;
@@ -17,10 +16,7 @@ using BusinessLogic.Users.Services;
 using HomeConnect.DataAccess;
 using HomeConnect.DataAccess.Repositories;
 using HomeConnect.WebApi.Filters;
-using Microsoft.AspNetCore.Builder;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Configuration;
-using Microsoft.Extensions.DependencyInjection;
 
 var builder = WebApplication.CreateBuilder(args);
 

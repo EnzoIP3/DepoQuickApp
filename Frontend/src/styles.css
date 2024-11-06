@@ -3,6 +3,11 @@
 @import "primeicons/primeicons.css";
 @import "primeflex/primeflex.css";
 
+body {
+    margin: 0;
+    padding: 0;
+}
+
 .centered-content {
     height: 100vh;
     margin-top: -105.83px;

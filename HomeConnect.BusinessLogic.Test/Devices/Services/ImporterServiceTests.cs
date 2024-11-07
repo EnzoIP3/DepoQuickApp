@@ -19,6 +19,7 @@ public class ImporterServiceTests
     private Mock<IDeviceImporter> _mockDeviceImporter = null!;
     private Mock<IBusinessOwnerService> _mockBusinessOwnerService = null!;
     private ImporterService _importerService = null!;
+    private readonly string _importFilesPath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "ImportFiles");
 
     [TestInitialize]
     public void Initialize()
@@ -157,5 +158,48 @@ public class ImporterServiceTests
             args.Interior == cameraArgs.Interior)), Times.Once);
     }
 
+    #endregion
+
+    #region GetImportFiles
+    [TestMethod]
+    public void GetImportFiles_WhenDirectoryExists_ShouldReturnListOfFileNames()
+    {
+        // Arrange
+        var fileNames = new List<string> { "file1.txt", "file2.txt" };
+        Directory.CreateDirectory(_importFilesPath);
+        foreach (var fileName in fileNames)
+        {
+            File.Create(Path.Combine(_importFilesPath, fileName)).Dispose();
+        }
+
+        // Act
+        var result = _importerService.GetImportFiles();
+
+        // Assert
+        CollectionAssert.AreEqual(fileNames, result);
+
+        // Cleanup
+        Directory.Delete(_importFilesPath, true);
+    }
+
+    [TestMethod]
+    public void GetImportFiles_WhenDirectoryDoesNotExist_ShouldCreateDirectoryAndReturnEmptyList()
+    {
+        // Arrange
+        if (Directory.Exists(_importFilesPath))
+        {
+            Directory.Delete(_importFilesPath, true);
+        }
+
+        // Act
+        var result = _importerService.GetImportFiles();
+
+        // Assert
+        Assert.IsTrue(Directory.Exists(_importFilesPath));
+        Assert.AreEqual(0, result.Count);
+
+        // Cleanup
+        Directory.Delete(_importFilesPath, true);
+    }
     #endregion
 }

@@ -83,6 +83,11 @@ public class ImporterService : IImporterService
 
     public List<string> GetImportFiles()
     {
-        throw new NotImplementedException();
+        if (!Directory.Exists(ImporterFilesPath))
+        {
+            Directory.CreateDirectory(ImporterFilesPath);
+        }
+
+        return Directory.GetFiles(ImporterFilesPath).Select(Path.GetFileName).ToList();
     }
 }

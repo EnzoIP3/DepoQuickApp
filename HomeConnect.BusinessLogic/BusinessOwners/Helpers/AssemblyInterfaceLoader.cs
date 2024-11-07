@@ -2,10 +2,20 @@ using System.Reflection;
 
 namespace BusinessLogic.BusinessOwners.Helpers;
 
-public sealed class AssemblyInterfaceLoader<TInterface>(string path)
+public sealed class AssemblyInterfaceLoader<TInterface>
     where TInterface : class
 {
-    private readonly DirectoryInfo _directory = new(path);
+    public AssemblyInterfaceLoader(string path)
+    {
+        if (!Directory.Exists(path))
+        {
+            Directory.CreateDirectory(path);
+        }
+
+        _directory = new DirectoryInfo(path);
+    }
+
+    private readonly DirectoryInfo _directory = null!;
     private List<Type> _implementations = [];
 
     public List<string> GetImplementationsList()

@@ -34,4 +34,22 @@ public class ValidatorServiceTests
         Assert.AreEqual(1, result.Count);
         Assert.AreEqual(validatorName, result[0].Name);
     }
+
+    [TestMethod]
+    public void GetValidatorByName_WhenCalled_ShouldReturnValidator()
+    {
+        // Arrange
+        var validatorName = "ValidatorName";
+        var validator = new Mock<IModeloValidador>();
+        _mockAssemblyInterfaceLoader
+            .Setup(x => x.GetImplementation(validatorName, It.IsAny<string>()))
+            .Returns(validator.Object);
+
+        // Act
+        var result = _validatorService.GetValidatorByName(validatorName);
+
+        // Assert
+        Assert.IsNotNull(result);
+        Assert.AreEqual(validator.Object, result);
+    }
 }

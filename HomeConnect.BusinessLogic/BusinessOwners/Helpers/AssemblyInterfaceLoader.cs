@@ -2,25 +2,25 @@ using System.Reflection;
 
 namespace BusinessLogic.BusinessOwners.Helpers;
 
-public sealed class AssemblyInterfaceLoader<TInterface>
+public sealed class AssemblyInterfaceLoader<TInterface> : IAssemblyInterfaceLoader<TInterface>
     where TInterface : class
 {
-    public AssemblyInterfaceLoader(string path)
+    private DirectoryInfo CreateDirectoryInfo(string path)
     {
         if (!Directory.Exists(path))
         {
             Directory.CreateDirectory(path);
         }
 
-        _directory = new DirectoryInfo(path);
+        return new DirectoryInfo(path);
     }
 
-    private readonly DirectoryInfo _directory = null!;
     private List<Type> _implementations = [];
 
-    public List<string> GetImplementationsList()
+    public List<string> GetImplementationsList(string path)
     {
-        var files = _directory
+        var directory = CreateDirectoryInfo(path);
+        var files = directory
             .GetFiles("*.dll")
             .ToList();
 
@@ -47,9 +47,9 @@ public sealed class AssemblyInterfaceLoader<TInterface>
         return _implementations.ConvertAll(t => t.Name);
     }
 
-    public TInterface GetImplementation(string implementationName, params object[] args)
+    public TInterface GetImplementation(string implementationName, string path, params object[] args)
     {
-        GetImplementationsList();
+        GetImplementationsList(path);
         var index = _implementations.FindIndex(t => t.Name == implementationName);
 
         if (index == -1)

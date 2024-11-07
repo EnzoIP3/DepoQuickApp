@@ -2,6 +2,7 @@ using System.Diagnostics.CodeAnalysis;
 using BusinessLogic.Admins.Services;
 using BusinessLogic.Auth.Repositories;
 using BusinessLogic.Auth.Services;
+using BusinessLogic.BusinessOwners.Helpers;
 using BusinessLogic.BusinessOwners.Repositories;
 using BusinessLogic.BusinessOwners.Services;
 using BusinessLogic.Devices.Repositories;
@@ -17,6 +18,7 @@ using HomeConnect.DataAccess;
 using HomeConnect.DataAccess.Repositories;
 using HomeConnect.WebApi.Filters;
 using Microsoft.EntityFrameworkCore;
+using ModeloValidador.Abstracciones;
 
 WebApplicationBuilder builder = WebApplication.CreateBuilder(args);
 
@@ -61,6 +63,7 @@ services.AddScoped<IAdminService, AdminService>();
 services.AddScoped<IBusinessOwnerService, BusinessOwnerService>();
 services.AddScoped<INotificationService, NotificationService>();
 services.AddScoped<IValidatorService, ValidatorService>();
+services.AddScoped<IAssemblyInterfaceLoader<IModeloValidador>, AssemblyInterfaceLoader<IModeloValidador>>();
 
 WebApplication app = builder.Build();
 

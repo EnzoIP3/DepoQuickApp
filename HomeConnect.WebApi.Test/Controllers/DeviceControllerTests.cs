@@ -156,7 +156,7 @@ public class DeviceControllerTests
             new Role { Name = "BusinessOwner", Permissions = [] });
         var items = new Dictionary<object, object?> { { Item.UserLogged, userLoggedIn } };
         _httpContextMock.Setup(h => h.Items).Returns(items);
-        var args = new ImportDevicesArgs { ImporterName = importerName, Route = route, User = userLoggedIn };
+        var args = new ImportDevicesArgs { ImporterName = importerName, FileName = route, User = userLoggedIn };
         _importerService.Setup(x => x.ImportDevices(args)).Returns(expectedDevices);
 
         // Act

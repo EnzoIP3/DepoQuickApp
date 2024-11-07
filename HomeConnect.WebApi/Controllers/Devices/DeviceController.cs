@@ -95,7 +95,7 @@ public class DeviceController : ControllerBase
         var args = new ImportDevicesArgs
         {
             ImporterName = request.ImporterName,
-            Route = request.Route,
+            FileName = request.Route,
             User = userLoggedIn!
         };
         var addedDevices = _importerService.ImportDevices(args);

@@ -21,6 +21,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SixLettersValidator", "SixL
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SixCharacters3Letters3NumbersValidator", "SixCharacters3Letters3NumbersValidator\SixCharacters3Letters3NumbersValidator.csproj", "{31C565FF-8761-4297-8C9D-EB74D64D3842}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "JsonDeviceImporter", "JsonDeviceImporter\JsonDeviceImporter.csproj", "{2D3B874E-BE73-4F7B-8554-6CF32BC72E66}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -66,5 +68,9 @@ Global
 		{31C565FF-8761-4297-8C9D-EB74D64D3842}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{31C565FF-8761-4297-8C9D-EB74D64D3842}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{31C565FF-8761-4297-8C9D-EB74D64D3842}.Release|Any CPU.Build.0 = Release|Any CPU
+		{2D3B874E-BE73-4F7B-8554-6CF32BC72E66}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{2D3B874E-BE73-4F7B-8554-6CF32BC72E66}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{2D3B874E-BE73-4F7B-8554-6CF32BC72E66}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{2D3B874E-BE73-4F7B-8554-6CF32BC72E66}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 EndGlobal

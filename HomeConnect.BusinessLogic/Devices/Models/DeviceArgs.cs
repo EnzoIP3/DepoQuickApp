@@ -1,4 +1,4 @@
-namespace BusinessLogic.Devices.Services;
+namespace BusinessLogic.Devices.Models;
 
 public struct DeviceArgs
 {

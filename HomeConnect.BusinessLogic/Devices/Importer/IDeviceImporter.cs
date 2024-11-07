@@ -1,4 +1,6 @@
-namespace BusinessLogic.Devices.Services;
+using BusinessLogic.Devices.Models;
+
+namespace BusinessLogic.Devices.Importer;
 
 public interface IDeviceImporter
 {

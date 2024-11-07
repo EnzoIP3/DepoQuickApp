@@ -1,6 +1,6 @@
 ﻿using ModeloValidador.Abstracciones;
 
-namespace SixLettersValidator;
+namespace SixLettersModelValidator;
 
 public class SixLettersModelValidator : IModeloValidador
 {

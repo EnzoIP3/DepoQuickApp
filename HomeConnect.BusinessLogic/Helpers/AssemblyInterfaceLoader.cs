@@ -1,6 +1,6 @@
 using System.Reflection;
 
-namespace BusinessLogic.BusinessOwners.Helpers;
+namespace BusinessLogic.Helpers;
 
 public sealed class AssemblyInterfaceLoader<TInterface> : IAssemblyInterfaceLoader<TInterface>
     where TInterface : class

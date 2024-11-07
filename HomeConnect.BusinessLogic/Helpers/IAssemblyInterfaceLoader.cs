@@ -1,4 +1,4 @@
-namespace BusinessLogic.BusinessOwners.Helpers;
+namespace BusinessLogic.Helpers;
 
 public interface IAssemblyInterfaceLoader<TInterface>
     where TInterface : class

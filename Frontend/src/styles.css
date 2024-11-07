@@ -1,0 +1,35 @@
+@import "primeng/resources/themes/lara-light-indigo/theme.css";
+@import "primeng/resources/primeng.css";
+@import "primeicons/primeicons.css";
+@import "primeflex/primeflex.css";
+
+body {
+    margin: 0;
+    padding: 0;
+}
+
+.centered-content {
+    height: 100vh;
+    margin-top: -105.83px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    margin: -105.83px auto 0 auto;
+    width: 50%;
+}
+
+@media (max-width: 768px) {
+    .centered-content {
+        width: 100%;
+    }
+}
+
+@media (max-height: 768px) {
+    .centered-content {
+        height: 100%;
+        width: 100%;
+        margin: 0;
+        margin-top: 15px;
+        justify-content: start;
+    }
+}

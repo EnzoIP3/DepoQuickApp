@@ -63,6 +63,8 @@ services.AddScoped<IAdminService, AdminService>();
 services.AddScoped<IBusinessOwnerService, BusinessOwnerService>();
 services.AddScoped<INotificationService, NotificationService>();
 services.AddScoped<IValidatorService, ValidatorService>();
+services.AddScoped<IImporterService, ImporterService>();
+services.AddScoped<IAssemblyInterfaceLoader<IDeviceImporter>, AssemblyInterfaceLoader<IDeviceImporter>>();
 services.AddScoped<IAssemblyInterfaceLoader<IModeloValidador>, AssemblyInterfaceLoader<IModeloValidador>>();
 
 WebApplication app = builder.Build();

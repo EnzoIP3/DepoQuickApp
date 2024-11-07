@@ -31,9 +31,19 @@ public class Context(DbContextOptions<Context> options) : DbContext(options)
         ConfigureRolePermissions(modelBuilder);
         ConfigureUserRole(modelBuilder);
         ConfigureMemberRelations(modelBuilder);
+        ConfigureOwnedDevices(modelBuilder);
         SeedAdminUser(modelBuilder);
 
         base.OnModelCreating(modelBuilder);
+    }
+
+    private static void ConfigureOwnedDevices(ModelBuilder modelBuilder)
+    {
+        modelBuilder.Entity<OwnedDevice>()
+            .HasDiscriminator<string>("DeviceType")
+            .HasValue<OwnedDevice>("OwnedDevice")
+            .HasValue<LampOwnedDevice>("LampOwnedDevice")
+            .HasValue<SensorOwnedDevice>("SensorOwnedDevice");
     }
 
     private void SeedRoles(ModelBuilder modelBuilder)
@@ -61,7 +71,9 @@ public class Context(DbContextOptions<Context> options) : DbContext(options)
             new SystemPermission { Value = SystemPermission.CreateBusiness },
             new SystemPermission { Value = SystemPermission.CreateCamera },
             new SystemPermission { Value = SystemPermission.CreateSensor },
-            new SystemPermission { Value = SystemPermission.UpdateMember });
+            new SystemPermission { Value = SystemPermission.UpdateMember },
+            new SystemPermission { Value = SystemPermission.CreateMotionSensor },
+            new SystemPermission { Value = SystemPermission.CreateLamp });
     }
 
     private void ConfigureRolePermissions(ModelBuilder modelBuilder)
@@ -84,7 +96,9 @@ public class Context(DbContextOptions<Context> options) : DbContext(options)
                 new { RolesName = Role.HomeOwner, PermissionsValue = SystemPermission.GetNotifications },
                 new { RolesName = Role.BusinessOwner, PermissionsValue = SystemPermission.CreateBusiness },
                 new { RolesName = Role.BusinessOwner, PermissionsValue = SystemPermission.CreateCamera },
-                new { RolesName = Role.BusinessOwner, PermissionsValue = SystemPermission.CreateSensor }));
+                new { RolesName = Role.BusinessOwner, PermissionsValue = SystemPermission.CreateSensor },
+                new { RolesName = Role.BusinessOwner, PermissionsValue = SystemPermission.CreateMotionSensor },
+                new { RolesName = Role.BusinessOwner, PermissionsValue = SystemPermission.CreateLamp }));
     }
 
     private void ConfigureUserRole(ModelBuilder modelBuilder)

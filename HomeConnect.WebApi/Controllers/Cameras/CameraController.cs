@@ -8,7 +8,6 @@ using BusinessLogic.Roles.Entities;
 using BusinessLogic.Users.Entities;
 using BusinessLogic.Users.Services;
 using HomeConnect.WebApi.Controllers.Cameras.Models;
-using HomeConnect.WebApi.Controllers.Devices;
 using HomeConnect.WebApi.Controllers.Devices.Models;
 using HomeConnect.WebApi.Filters;
 using Microsoft.AspNetCore.Mvc;
@@ -21,8 +20,7 @@ public class CameraController(
     INotificationService notificationService,
     IDeviceService deviceService,
     IBusinessOwnerService businessOwnerService,
-    IUserService userService)
-    : BaseDeviceController(deviceService)
+    IUserService userService) : ControllerBase
 {
     [HttpPost]
     [AuthenticationFilter]
@@ -53,18 +51,9 @@ public class CameraController(
     [HttpPost("{hardwareId}/movement-detected")]
     public NotifyResponse MovementDetected([FromRoute] string hardwareId)
     {
-        EnsureDeviceIsConnected(hardwareId);
         NotificationArgs args = CreateMovementDetectedNotificationArgs(hardwareId);
-        notificationService.Notify(args);
+        notificationService.Notify(args, deviceService);
         return new NotifyResponse { HardwareId = hardwareId };
-    }
-
-    private void EnsureDeviceIsConnected(string hardwareId)
-    {
-        if (!deviceService.IsConnected(hardwareId))
-        {
-            throw new ArgumentException("Device is not connected");
-        }
     }
 
     private static NotificationArgs CreateMovementDetectedNotificationArgs(string hardwareId)
@@ -76,10 +65,9 @@ public class CameraController(
     [HttpPost("{hardwareId}/person-detected")]
     public NotifyResponse PersonDetected([FromRoute] string hardwareId, [FromBody] PersonDetectedRequest request)
     {
-        EnsureDeviceIsConnected(hardwareId);
         NotificationArgs args = CreatePersonDetectedNotificationArgs(hardwareId, request.UserId ?? string.Empty);
         EnsureDetectedUserIsRegistered(request.UserId ?? string.Empty);
-        notificationService.Notify(args);
+        notificationService.Notify(args, deviceService);
         return new NotifyResponse { HardwareId = hardwareId };
     }
 

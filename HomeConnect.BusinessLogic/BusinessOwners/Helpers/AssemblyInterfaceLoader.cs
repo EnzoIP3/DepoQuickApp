@@ -8,7 +8,7 @@ public sealed class AssemblyInterfaceLoader<TInterface>(string path)
     private readonly DirectoryInfo _directory = new(path);
     private List<Type> _implementations = [];
 
-    public List<string> GetImplementations()
+    public List<string> GetImplementationsList()
     {
         var files = _directory
             .GetFiles("*.dll")
@@ -39,6 +39,7 @@ public sealed class AssemblyInterfaceLoader<TInterface>(string path)
 
     public TInterface GetImplementation(string implementationName, params object[] args)
     {
+        GetImplementationsList();
         var index = _implementations.FindIndex(t => t.Name == implementationName);
 
         if (index == -1)

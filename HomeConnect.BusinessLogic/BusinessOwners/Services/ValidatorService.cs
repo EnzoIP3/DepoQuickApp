@@ -11,7 +11,7 @@ public class ValidatorService : IValidatorService
 
     public List<ValidatorInfo> GetValidators()
     {
-        return _loadAssembly.GetImplementations()
+        return _loadAssembly.GetImplementationsList()
             .Select(validatorName => new ValidatorInfo { Name = validatorName })
             .ToList();
     }

@@ -129,4 +129,146 @@ public class OwnedDeviceRepositoryTests
     }
 
     #endregion
+
+    #region UpdateLampState
+    #region Error
+    [TestMethod]
+    public void UpdateLampState_WhenOwnedDeviceIsNotALamp_ThrowsInvalidOperationException()
+    {
+        // Arrange
+        var device = new Device("Sensor", 12345, "A sensor",
+            "https://sensor.com/image.png", [], "Sensor", _business);
+        var ownedDevice = new OwnedDevice(_home, device);
+        _context.Devices.Add(device);
+        _context.OwnedDevices.Add(ownedDevice);
+        _context.SaveChanges();
+
+        // Act
+        Action act = () => _ownedDeviceRepository.UpdateLampState(ownedDevice.HardwareId, true);
+
+        // Assert
+        act.Should().Throw<InvalidOperationException>().WithMessage("The device is not a lamp.");
+    }
+    #endregion
+
+    #region Success
+    [TestMethod]
+    public void UpdateLampState_WhenOwnedDeviceIsALamp_UpdatesLampState()
+    {
+        // Arrange
+        var device = new Device("Lamp", 12345, "A lamp",
+            "https://lamp.com/image.png", [], "Lamp", _business);
+        var ownedDevice = new LampOwnedDevice(_home, device);
+        _context.Devices.Add(device);
+        _context.OwnedDevices.Add(ownedDevice);
+        _context.SaveChanges();
+
+        // Act
+        _ownedDeviceRepository.UpdateLampState(ownedDevice.HardwareId, true);
+
+        // Assert
+        OwnedDevice result = _ownedDeviceRepository.GetByHardwareId(ownedDevice.HardwareId);
+        var lamp = (LampOwnedDevice)result;
+        lamp.State.Should().BeTrue();
+    }
+    #endregion
+    #endregion
+
+    #region UpdateSensorState
+
+    #region Error
+    [TestMethod]
+    public void UpdateSensorState_WhenDeviceIsNotASensor_ThrowsInvalidOperationException()
+    {
+        // Arrange
+        var device = new Device("Camera", 12345, "A camera",
+            "https://camera.com/image.png", [], "Camera", _business);
+        var ownedDevice = new OwnedDevice(_home, device);
+        _context.Devices.Add(device);
+        _context.OwnedDevices.Add(ownedDevice);
+        _context.SaveChanges();
+
+        // Act
+        Action act = () => _ownedDeviceRepository.UpdateSensorState(ownedDevice.HardwareId, true);
+
+        // Assert
+        act.Should().Throw<InvalidOperationException>().WithMessage("The device is not a sensor.");
+    }
+    #endregion
+    #endregion
+
+    #region GetLampState
+    [TestMethod]
+    public void GetLampState_IfDeviceIsNotALamp_ThrowsInvalidOperationException()
+    {
+        // Arrange
+        var device = new Device("Sensor", 12345, "A sensor",
+            "https://sensor.com/image.png", [], "Sensor", _business);
+        var ownedDevice = new OwnedDevice(_home, device);
+        _context.Devices.Add(device);
+        _context.OwnedDevices.Add(ownedDevice);
+        _context.SaveChanges();
+
+        // Act
+        Action act = () => _ownedDeviceRepository.GetLampState(ownedDevice.HardwareId);
+
+        // Assert
+        act.Should().Throw<InvalidOperationException>().WithMessage("The device is not a lamp.");
+    }
+
+    [TestMethod]
+    public void GetLampState_IfDeviceIsALamp_ReturnsLampState()
+    {
+        // Arrange
+        var device = new Device("Lamp", 12345, "A lamp",
+            "https://lamp.com/image.png", [], "Lamp", _business);
+        var ownedDevice = new LampOwnedDevice(_home, device);
+        _context.Devices.Add(device);
+        _context.OwnedDevices.Add(ownedDevice);
+        _context.SaveChanges();
+
+        // Act
+        var result = _ownedDeviceRepository.GetLampState(ownedDevice.HardwareId);
+
+        // Assert
+        result.Should().BeFalse();
+    }
+    #endregion
+    #region GetSensorState
+    [TestMethod]
+    public void GetSensorState_IfDeviceIsNotASensor_ThrowsInvalidOperationException()
+    {
+        // Arrange
+        var device = new Device("Camera", 12345, "A camera",
+            "https://camera.com/image.png", [], "Camera", _business);
+        var ownedDevice = new SensorOwnedDevice(_home, device);
+        _context.Devices.Add(device);
+        _context.OwnedDevices.Add(ownedDevice);
+        _context.SaveChanges();
+
+        // Act
+        Action act = () => _ownedDeviceRepository.GetSensorState(ownedDevice.HardwareId);
+
+        // Assert
+        act.Should().Throw<InvalidOperationException>().WithMessage("The device is not a sensor.");
+    }
+
+    [TestMethod]
+    public void GetSensorState_IfDeviceIsASensor_ReturnsSensorState()
+    {
+        // Arrange
+        var device = new Device("Sensor", 12345, "A sensor",
+            "https://sensor.com/image.png", [], "Sensor", _business);
+        var ownedDevice = new SensorOwnedDevice(_home, device);
+        _context.Devices.Add(device);
+        _context.OwnedDevices.Add(ownedDevice);
+        _context.SaveChanges();
+
+        // Act
+        var result = _ownedDeviceRepository.GetSensorState(ownedDevice.HardwareId);
+
+        // Assert
+        result.Should().BeFalse();
+    }
+    #endregion
 }

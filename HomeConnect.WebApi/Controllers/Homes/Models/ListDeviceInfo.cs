@@ -1,3 +1,5 @@
+using BusinessLogic.Devices.Entities;
+
 namespace HomeConnect.WebApi.Controllers.Homes.Models;
 
 public record ListDeviceInfo
@@ -8,4 +10,22 @@ public record ListDeviceInfo
     public string Type { get; set; } = null!;
     public int ModelNumber { get; set; }
     public string Photo { get; set; } = null!;
+    public bool? State { get; set; }
+    public bool? IsOpen { get; set; }
+
+    public static ListDeviceInfo FromOwnedDevice(OwnedDevice ownedDevice)
+    {
+        var dto = ownedDevice.ToOwnedDeviceDto();
+        return new ListDeviceInfo
+        {
+            HardwareId = dto.HardwareId,
+            Name = dto.Name,
+            BusinessName = dto.BusinessName,
+            Type = dto.Type,
+            ModelNumber = dto.ModelNumber,
+            Photo = dto.Photo,
+            State = dto.State,
+            IsOpen = dto.IsOpen
+        };
+    }
 }

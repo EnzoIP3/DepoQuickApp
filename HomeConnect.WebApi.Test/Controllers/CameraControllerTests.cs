@@ -101,7 +101,7 @@ public class CameraControllerTests
         var hardwareId = "hardwareId";
         var args = new NotificationArgs { HardwareId = hardwareId, Date = DateTime.Now, Event = "movement-detected" };
         _deviceServiceMock.Setup(x => x.IsConnected(hardwareId)).Returns(true);
-        _notificationServiceMock.Setup(x => x.Notify(args));
+        _notificationServiceMock.Setup(x => x.Notify(args, _deviceServiceMock.Object));
 
         // Act
         NotifyResponse result = _cameraController.MovementDetected(hardwareId);
@@ -109,22 +109,6 @@ public class CameraControllerTests
         // Assert
         result.Should().NotBeNull();
         result.HardwareId.Should().Be(hardwareId);
-    }
-
-    [TestMethod]
-    public void MovementDetected_WhenCameraIsDisconnected_ThrowsArgumentException()
-    {
-        // Arrange
-        var hardwareId = "hardwareId";
-        var args = new NotificationArgs { HardwareId = hardwareId, Date = DateTime.Now, Event = "movement-detected" };
-        _deviceServiceMock.Setup(x => x.IsConnected(hardwareId)).Returns(false);
-
-        // Act
-        Func<NotifyResponse> act = () => _cameraController.MovementDetected(hardwareId);
-
-        // Assert
-        act.Should().Throw<ArgumentException>().WithMessage("Device is not connected");
-        _deviceServiceMock.VerifyAll();
     }
 
     #endregion
@@ -144,7 +128,7 @@ public class CameraControllerTests
             Event = $"person detected with id: {request.UserId}"
         };
         _deviceServiceMock.Setup(x => x.IsConnected(hardwareId)).Returns(true);
-        _notificationServiceMock.Setup(x => x.Notify(args));
+        _notificationServiceMock.Setup(x => x.Notify(args, _deviceServiceMock.Object));
         _userService.Setup(x => x.Exists(request.UserId)).Returns(true);
 
         // Act
@@ -168,7 +152,7 @@ public class CameraControllerTests
             Event = $"person detected with id: {request.UserId}"
         };
         _deviceServiceMock.Setup(x => x.IsConnected(hardwareId)).Returns(true);
-        _notificationServiceMock.Setup(x => x.Notify(args)).Throws<ArgumentException>();
+        _notificationServiceMock.Setup(x => x.Notify(args, _deviceServiceMock.Object)).Throws<ArgumentException>();
         _userService.Setup(x => x.Exists(request.UserId)).Returns(false);
 
         // Act
@@ -176,28 +160,6 @@ public class CameraControllerTests
 
         // Assert
         act.Should().Throw<ArgumentException>().WithMessage("User detected by camera is not found");
-    }
-
-    [TestMethod]
-    public void PersonDetected_WhenCameraIsDisconnected_ThrowsArgumentException()
-    {
-        // Arrange
-        var hardwareId = "hardwareId";
-        var request = new PersonDetectedRequest { UserId = "userId" };
-        var args = new NotificationArgs
-        {
-            HardwareId = hardwareId,
-            Date = DateTime.Now,
-            Event = $"person detected with id: {request.UserId}"
-        };
-        _deviceServiceMock.Setup(x => x.IsConnected(hardwareId)).Returns(false);
-
-        // Act
-        Func<NotifyResponse> act = () => _cameraController.PersonDetected(hardwareId, request);
-
-        // Assert
-        act.Should().Throw<ArgumentException>().WithMessage("Device is not connected");
-        _deviceServiceMock.VerifyAll();
     }
 
     #endregion

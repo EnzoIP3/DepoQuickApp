@@ -18,6 +18,8 @@ public record SystemPermission
     public const string CreateBusiness = "create-business";
     public const string CreateCamera = "create-camera";
     public const string CreateSensor = "create-sensor";
+    public const string CreateMotionSensor = "create-motion-sensor";
+    public const string CreateLamp = "create-lamp";
     public const string GetNotifications = "get-notifications";
     public const string GetHomes = "get-homes";
     public const string NameHome = "name-home";

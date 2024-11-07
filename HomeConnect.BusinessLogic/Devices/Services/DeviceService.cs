@@ -1,19 +1,24 @@
 using BusinessLogic.Devices.Entities;
 using BusinessLogic.Devices.Models;
 using BusinessLogic.Devices.Repositories;
+using BusinessLogic.Notifications.Models;
+using BusinessLogic.Notifications.Services;
 
 namespace BusinessLogic.Devices.Services;
 
 public class DeviceService : IDeviceService
 {
-    public DeviceService(IDeviceRepository deviceRepository, IOwnedDeviceRepository ownedDeviceRepository)
+    public DeviceService(IDeviceRepository deviceRepository, IOwnedDeviceRepository ownedDeviceRepository,
+        INotificationService notificationService)
     {
         DeviceRepository = deviceRepository;
         OwnedDeviceRepository = ownedDeviceRepository;
+        NotificationService = notificationService;
     }
 
     private IDeviceRepository DeviceRepository { get; }
     private IOwnedDeviceRepository OwnedDeviceRepository { get; }
+    private INotificationService NotificationService { get; }
 
     public PagedData<Device> GetDevices(GetDevicesArgs parameters)
     {
@@ -23,12 +28,12 @@ public class DeviceService : IDeviceService
         return devices;
     }
 
-    public bool ToggleDevice(string hardwareId)
+    public bool TurnDevice(string hardwareId, bool state)
     {
         EnsureHardwareIdIsValid(hardwareId);
         EnsureOwnedDeviceExists(hardwareId);
         OwnedDevice ownedDevice = OwnedDeviceRepository.GetByHardwareId(Guid.Parse(hardwareId));
-        ownedDevice.Connected = !ownedDevice.Connected;
+        ownedDevice.Connected = state;
         OwnedDeviceRepository.Update(ownedDevice);
         return ownedDevice.Connected;
     }
@@ -44,6 +49,38 @@ public class DeviceService : IDeviceService
         EnsureOwnedDeviceExists(hardwareId);
         OwnedDevice ownedDevice = OwnedDeviceRepository.GetByHardwareId(Guid.Parse(hardwareId));
         return ownedDevice.Connected;
+    }
+
+    public void TurnLamp(string hardwareId, bool state, NotificationArgs args)
+    {
+        EnsureHardwareIdIsValid(hardwareId);
+        EnsureOwnedDeviceExists(hardwareId);
+        SendLampNotification(hardwareId, state, args);
+        OwnedDeviceRepository.UpdateLampState(Guid.Parse(hardwareId), state);
+    }
+
+    private void SendLampNotification(string hardwareId, bool state, NotificationArgs args)
+    {
+        if (OwnedDeviceRepository.GetLampState(Guid.Parse(hardwareId)) != state)
+        {
+            NotificationService.Notify(args, this);
+        }
+    }
+
+    public void UpdateSensorState(string hardwareId, bool state, NotificationArgs args)
+    {
+        EnsureHardwareIdIsValid(hardwareId);
+        EnsureOwnedDeviceExists(hardwareId);
+        SendSensorNotification(hardwareId, state, args);
+        OwnedDeviceRepository.UpdateSensorState(Guid.Parse(hardwareId), state);
+    }
+
+    private void SendSensorNotification(string hardwareId, bool state, NotificationArgs args)
+    {
+        if (OwnedDeviceRepository.GetSensorState(Guid.Parse(hardwareId)) != state)
+        {
+            NotificationService.Notify(args, this);
+        }
     }
 
     private void EnsureOwnedDeviceExists(string hardwareId)

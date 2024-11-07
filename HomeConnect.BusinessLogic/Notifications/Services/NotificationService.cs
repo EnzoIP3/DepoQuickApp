@@ -1,5 +1,6 @@
 using BusinessLogic.Devices.Entities;
 using BusinessLogic.Devices.Repositories;
+using BusinessLogic.Devices.Services;
 using BusinessLogic.HomeOwners.Entities;
 using BusinessLogic.Notifications.Entities;
 using BusinessLogic.Notifications.Models;
@@ -20,13 +21,22 @@ public class NotificationService : INotificationService
     private INotificationRepository NotificationRepository { get; }
     private IOwnedDeviceRepository OwnedDeviceRepository { get; }
 
-    public void Notify(NotificationArgs args)
+    public void Notify(NotificationArgs args, IDeviceService deviceService)
     {
         EnsureOwnedDeviceExists(args.HardwareId);
+        EnsureDeviceIsConnected(args.HardwareId, deviceService);
         OwnedDevice ownedDevice = OwnedDeviceRepository.GetByHardwareId(Guid.Parse(args.HardwareId));
         Home home = ownedDevice.Home;
         var shouldReceiveNotification = new HomePermission(HomePermission.GetNotifications);
         NotifyUsersWithPermission(args, home, shouldReceiveNotification, ownedDevice);
+    }
+
+    private static void EnsureDeviceIsConnected(string hardwareId, IDeviceService deviceService)
+    {
+        if (!deviceService.IsConnected(hardwareId))
+        {
+            throw new ArgumentException("Device is not connected");
+        }
     }
 
     public List<Notification> GetNotifications(Guid userId, string? deviceFilter = null, DateTime? dateFilter = null,

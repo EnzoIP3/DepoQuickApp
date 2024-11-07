@@ -16,15 +16,16 @@ public class ImporterService : IImporterService
 
     private IBusinessOwnerService BusinessOwnerService { get; }
     private IAssemblyInterfaceLoader<IDeviceImporter> LoadAssembly { get; }
-    private static readonly string Path = AppDomain.CurrentDomain.BaseDirectory + "Importers";
+    private static readonly string ImportersPath = AppDomain.CurrentDomain.BaseDirectory + "Importers";
+    private static readonly string ImporterFilesPath = AppDomain.CurrentDomain.BaseDirectory + "ImportFiles";
     public List<string> GetImporters()
     {
-        return LoadAssembly.GetImplementationsList(Path);
+        return LoadAssembly.GetImplementationsList(ImportersPath);
     }
 
     public List<string> ImportDevices(ImportDevicesArgs args)
     {
-        IDeviceImporter importer = LoadAssembly.GetImplementation(args.ImporterName, Path);
+        IDeviceImporter importer = LoadAssembly.GetImplementation(args.ImporterName, ImportersPath);
         var deviceArgs = importer.ImportDevices(args.Route);
         CreateDevicesFromArgs(deviceArgs, args.User);
         return deviceArgs.Select(deviceArg => deviceArg.Name).ToList();

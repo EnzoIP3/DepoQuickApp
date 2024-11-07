@@ -1,6 +1,6 @@
 using BusinessLogic.BusinessOwners.Models;
 
-namespace BusinessLogic.BusinessOwners.Services;
+namespace BusinessLogic.Devices.Services;
 
 public interface IImporterService
 {

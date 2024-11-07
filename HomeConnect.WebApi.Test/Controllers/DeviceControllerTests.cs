@@ -151,6 +151,7 @@ public class DeviceControllerTests
         {
             ImportedDevices = expectedDevices
         };
+        var request = new ImportDevicesRequest { ImporterName = importerName, Route = route };
         var userLoggedIn = new User("John", "Doe", "email@email.com", "Password@100",
             new Role { Name = "BusinessOwner", Permissions = [] });
         var items = new Dictionary<object, object?> { { Item.UserLogged, userLoggedIn } };
@@ -159,7 +160,7 @@ public class DeviceControllerTests
         _importerService.Setup(x => x.ImportDevices(args)).Returns(expectedDevices);
 
         // Act
-        var response = _controller.ImportDevices(importerName, route);
+        var response = _controller.ImportDevices(request);
 
         // Assert
         _importerService.Verify(x => x.ImportDevices(args), Times.Once);

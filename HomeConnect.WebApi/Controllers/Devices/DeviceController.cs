@@ -89,10 +89,15 @@ public class DeviceController : ControllerBase
     }
 
     [HttpPost]
-    public ImportDevicesResponse ImportDevices([FromBody] string importerName, [FromBody] string route)
+    public ImportDevicesResponse ImportDevices([FromBody] ImportDevicesRequest request)
     {
         var userLoggedIn = HttpContext.Items[Item.UserLogged] as User;
-        var args = new ImportDevicesArgs { ImporterName = importerName, Route = route, User = userLoggedIn! };
+        var args = new ImportDevicesArgs
+        {
+            ImporterName = request.ImporterName,
+            Route = request.Route,
+            User = userLoggedIn!
+        };
         var addedDevices = _importerService.ImportDevices(args);
         return new ImportDevicesResponse { ImportedDevices = addedDevices };
     }
@@ -104,4 +109,10 @@ public class DeviceController : ControllerBase
         var files = _importerService.GetImportFiles();
         return new GetImportFilesResponse { ImportFiles = files };
     }
+}
+
+public struct ImportDevicesRequest
+{
+    public string ImporterName { get; set; }
+    public string Route { get; set; }
 }

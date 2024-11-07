@@ -13,6 +13,8 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace HomeConnect.WebApi.Controllers.MotionSensors;
 
+[ApiController]
+[Route("motion_sensors")]
 public class MotionSensorController(
     INotificationService notificationService,
     IDeviceService deviceService,

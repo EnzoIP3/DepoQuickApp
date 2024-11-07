@@ -12,6 +12,8 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace HomeConnect.WebApi.Controllers.Lamps;
 
+[ApiController]
+[Route("lamps")]
 public class LampController(
     IBusinessOwnerService businessOwnerService,
     IDeviceService deviceService)

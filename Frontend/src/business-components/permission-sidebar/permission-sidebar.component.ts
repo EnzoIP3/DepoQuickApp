@@ -4,6 +4,7 @@ import { AuthService } from "../../backend/services/auth/auth.service";
 import { Subscription } from "rxjs";
 import UserLogged from "../../backend/services/auth/models/user-logged";
 import Route from "./models/route";
+import { Router } from "@angular/router";
 
 @Component({
     selector: "app-permission-sidebar",
@@ -24,6 +25,11 @@ export class PermissionSidebarComponent {
             label: "Home",
             icon: "pi pi-home",
             routerLink: ["/home"]
+        },
+        {
+            label: "Logout",
+            icon: "pi pi-sign-out",
+            command: () => this.handleLogout()
         }
     ];
 
@@ -40,7 +46,10 @@ export class PermissionSidebarComponent {
         }
     ];
 
-    constructor(private readonly _authService: AuthService) {}
+    constructor(
+        private readonly _authService: AuthService,
+        private readonly _router: Router
+    ) {}
 
     ngOnInit() {
         this._routesSubscription = this._authService.userLogged.subscribe(
@@ -60,6 +69,11 @@ export class PermissionSidebarComponent {
         } else {
             return this.unauthenticatedRoutes;
         }
+    }
+
+    private handleLogout() {
+        this._authService.logout();
+        this._router.navigate(["/login"]);
     }
 
     ngOnDestroy() {

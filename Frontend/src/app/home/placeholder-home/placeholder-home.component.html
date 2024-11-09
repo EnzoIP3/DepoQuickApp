@@ -1,2 +1,2 @@
-<p>placeholder-home works!</p>
-<a (click)="logout()" class="text-primary cursor-pointer">Logout</a>
+<app-table [columns]="tableColumns" [data]="tableData" [loading]="isLoading" (filter)="onFilter($event)">
+</app-table>

@@ -14,7 +14,7 @@ export class DevicesApiRepositoryService extends ApiRepository {
         super(environment.apiUrl, "devices", http);
     }
 
-    public getDevices(queries: DevicesRequest): Observable<DevicesResponse[]> {
-        return this.get<DevicesResponse[]>({ queries });
+    public getDevices(request: DevicesRequest): Observable<DevicesResponse[]> {
+        return this.get<DevicesResponse[]>({ queries: request });
     }
 }

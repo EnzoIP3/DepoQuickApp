@@ -1,8 +1,9 @@
-import { Component, NgModule } from "@angular/core";
+import { NgModule } from "@angular/core";
 import { RouterModule, Routes } from "@angular/router";
 import { authGuard } from "../../guards/auth.guard";
 import { noAuthGuard } from "../../guards/no-auth.guard";
 import { RootPageComponent } from "./root-page/root-page.component";
+import { TestPageComponent } from "./test-page/test-page.component";
 
 const routes: Routes = [
     {
@@ -19,7 +20,7 @@ const routes: Routes = [
         children: [
             {
                 path: "",
-                component: Component
+                component: TestPageComponent
             }
         ]
     }

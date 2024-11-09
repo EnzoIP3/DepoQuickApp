@@ -1,16 +1,12 @@
-<p-table [columns]="columns" [value]="data" [loading]="loading" [showLoader]="false" (onFilter)="applyFilter($event)">
+<p-table [columns]="columns" [value]="data" [loading]="loading" [showLoader]="false">
     <ng-template pTemplate="header" let-columns>
         <tr>
             <th *ngFor="let col of columns">
                 {{ col.header }}
-                <ng-container *ngIf="col.filter">
-                    <p-columnFilter [field]="col.field" matchMode="in" display="menu" [showMatchModes]="false"
-                        [showOperator]="false" [showAddButton]="false" />
-                </ng-container>
             </th>
         </tr>
     </ng-template>
-    <ng-template pTemplate="body" let-rowData let-columns="columns" *ngIf="!loading">
+    <ng-template pTemplate="body" let-rowData let-columns="columns" *ngIf="loading">
         <tr>
             <td *ngFor="let col of columns">
                 {{ rowData[col.field] }}

@@ -10,7 +10,7 @@ import { Observable } from "rxjs";
 export class DevicesService {
     constructor(private readonly _repository: DevicesApiRepositoryService) {}
 
-    public getDevices(request: DevicesRequest): Observable<DevicesResponse[]> {
+    public getDevices(request?: DevicesRequest): Observable<DevicesResponse> {
         return this._repository.getDevices(request);
     }
 }

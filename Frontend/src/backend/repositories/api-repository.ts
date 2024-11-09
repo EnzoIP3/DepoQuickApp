@@ -73,7 +73,8 @@ export default abstract class ApiRepository {
     }
 
     private getAuthToken(): string {
-        return localStorage.getItem("token") ?? "";
+        const user = JSON.parse(localStorage.getItem("user") || "{}");
+        return `Bearer ${user.token}`; 
     }
 
     private executeRequest<T>(requestFn: () => Observable<T>): Observable<T> {
@@ -87,7 +88,7 @@ export default abstract class ApiRepository {
         let errorMessage = ApiRepository.DEFAULT_ERROR_MESSAGE;
         let isServerError = "message" in error.error;
         let isExpiredTokenError =
-            error.status === 401 && localStorage.getItem("token");
+            error.status === 401 && localStorage.getItem("user");
 
         if (isServerError) {
             errorMessage = error.error.message;

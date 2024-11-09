@@ -55,7 +55,6 @@ public class SensorControllerTests
             Name = sensor.Name,
             SecondaryPhotos = sensor.SecondaryPhotos,
             Type = sensor.Type.ToString(),
-            Validator = "Validator 1"
         };
         var sensorRequest = new CreateSensorRequest
         {
@@ -64,7 +63,6 @@ public class SensorControllerTests
             ModelNumber = sensor.ModelNumber,
             Name = sensor.Name,
             SecondaryPhotos = sensor.SecondaryPhotos,
-            Validator = "Validator 1"
         };
         _businessOwnerServiceMock.Setup(x => x.CreateDevice(sensorArgs)).Returns(sensor);
         var items = new Dictionary<object, object?> { { Item.UserLogged, user } };

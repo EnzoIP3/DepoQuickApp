@@ -94,7 +94,7 @@ public class BusinessOwnerService : IBusinessOwnerService
 
     private Device CreateDevice(CreateDeviceArgs args, Business business)
     {
-        EnsureModelNumberIsValid(args.ModelNumber, args.Validator);
+        EnsureModelNumberIsValid(args.ModelNumber, business.Validator);
         return new Device(
             args.Name,
             args.ModelNumber,
@@ -119,7 +119,7 @@ public class BusinessOwnerService : IBusinessOwnerService
 
     private Camera CreateCamera(CreateCameraArgs args, Business business)
     {
-        EnsureModelNumberIsValid(args.ModelNumber, args.Validator);
+        EnsureModelNumberIsValid(args.ModelNumber, business.Validator);
         return new Camera(
             args.Name,
             args.ModelNumber,

@@ -12,5 +12,4 @@ public record CreateDeviceArgs
     public string MainPhoto { get; set; } = null!;
     public List<string>? SecondaryPhotos { get; set; }
     public string Type { get; set; } = null!;
-    public string? Validator { get; set; } = null;
 }

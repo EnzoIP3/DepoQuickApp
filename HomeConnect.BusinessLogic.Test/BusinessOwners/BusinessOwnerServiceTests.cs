@@ -299,7 +299,7 @@ public class BusinessOwnerServiceTests
     public void CreateDevice_WhenHasAValidatorAndModelNumberIsInvalid_ThrowsArgumentException()
     {
         // Arrange
-        var business = new Business("12345", "Business Name", "https://example.com/image.png", _owner);
+        var business = new Business("12345", "Business Name", "https://example.com/image.png", _owner, "validator");
         var args = new CreateDeviceArgs
         {
             Owner = _owner,
@@ -309,7 +309,6 @@ public class BusinessOwnerServiceTests
             MainPhoto = MainPhoto,
             SecondaryPhotos = _secondaryPhotos,
             Type = Type,
-            Validator = "Validator"
         };
         _deviceRepository.Setup(x =>
             x.ExistsByModelNumber(args.ModelNumber)).Returns(false);
@@ -317,7 +316,7 @@ public class BusinessOwnerServiceTests
         _businessRepository.Setup(x => x.GetByOwnerId(_owner.Id)).Returns(business);
         _businessRepository.Setup(x => x.ExistsByOwnerId(_owner.Id)).Returns(true);
         _validatorService.Setup(x =>
-            x.GetValidatorByName(args.Validator)).Returns(_modeloValidador.Object);
+            x.GetValidatorByName(business.Validator!)).Returns(_modeloValidador.Object);
         _modeloValidador.Setup(x =>
             x.EsValido(It.Is<Modelo>(m => m.Value == args.ModelNumber))).Returns(false);
 
@@ -483,7 +482,7 @@ public class BusinessOwnerServiceTests
     public void CreateCamera_WhenHasAValidatorAndModelNumberIsInvalid_ThrowsArgumentException()
     {
         // Arrange
-        var business = new Business("RUTexample", "Business Name", "https://example.com/image.png", _owner);
+        var business = new Business("RUTexample", "Business Name", "https://example.com/image.png", _owner, "validator");
         var args = new CreateCameraArgs
         {
             Owner = _owner,
@@ -496,7 +495,6 @@ public class BusinessOwnerServiceTests
             PersonDetection = false,
             Exterior = false,
             Interior = true,
-            Validator = "Validator"
         };
         _deviceRepository.Setup(x =>
             x.ExistsByModelNumber(args.ModelNumber)).Returns(false);
@@ -504,7 +502,7 @@ public class BusinessOwnerServiceTests
         _businessRepository.Setup(x => x.GetByOwnerId(_owner.Id)).Returns(business);
         _businessRepository.Setup(x => x.ExistsByOwnerId(_owner.Id)).Returns(true);
         _validatorService.Setup(x =>
-            x.GetValidatorByName(args.Validator)).Returns(_modeloValidador.Object);
+            x.GetValidatorByName(business.Validator!)).Returns(_modeloValidador.Object);
         _modeloValidador.Setup(x =>
             x.EsValido(It.Is<Modelo>(m => m.Value == args.ModelNumber))).Returns(false);
 

@@ -117,7 +117,7 @@ public class ImporterServiceTests
         };
         var deviceNames = deviceArgs.Select(deviceArg => deviceArg.Name).ToList();
         _mockDeviceImporter
-            .Setup(x => x.ImportDevices(route))
+            .Setup(x => x.ImportDevices(Path.Combine(_importFilesPath, route)))
             .Returns(deviceArgs);
         _mockAssemblyInterfaceLoader
             .Setup(x => x.GetImplementation(importerName, It.IsAny<string>()))
@@ -136,7 +136,7 @@ public class ImporterServiceTests
         Assert.AreEqual(deviceNames[1], result[1]);
 
         _mockAssemblyInterfaceLoader.Verify(x => x.GetImplementation(importerName, It.IsAny<string>()), Times.Once);
-        _mockDeviceImporter.Verify(x => x.ImportDevices(route), Times.Once);
+        _mockDeviceImporter.Verify(x => x.ImportDevices(Path.Combine(_importFilesPath, route)), Times.Once);
         _mockBusinessOwnerService.Verify(x => x.CreateDevice(It.Is<CreateDeviceArgs>(args =>
             args.SecondaryPhotos != null &&
             args.Owner == sensorArgs.Owner &&

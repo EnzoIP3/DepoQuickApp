@@ -1,5 +1,4 @@
-<p-table [columns]="columns" [value]="data" [loading]="loading" [showLoader]="false" styleClass="border-round shadow-1"
-    (onFilter)="applyFilter($event)">
+<p-table [columns]="columns" [value]="data" [loading]="loading" [showLoader]="false" (onFilter)="applyFilter($event)">
     <ng-template pTemplate="header" let-columns>
         <tr>
             <th *ngFor="let col of columns">

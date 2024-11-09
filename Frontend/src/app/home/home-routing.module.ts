@@ -1,7 +1,6 @@
-import { NgModule } from "@angular/core";
+import { Component, NgModule } from "@angular/core";
 import { RouterModule, Routes } from "@angular/router";
 import { HomePageComponent } from "./home-page/home-page.component";
-import { PlaceholderHomeComponent } from "./placeholder-home/placeholder-home.component";
 import { authGuard } from "../../guards/auth.guard";
 import { noAuthGuard } from "../../guards/no-auth.guard";
 
@@ -20,7 +19,7 @@ const routes: Routes = [
         children: [
             {
                 path: "",
-                component: PlaceholderHomeComponent
+                component: Component
             }
         ]
     }

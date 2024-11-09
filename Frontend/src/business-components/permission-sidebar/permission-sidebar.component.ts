@@ -3,8 +3,8 @@ import { SidebarComponent } from "../../components/sidebar/sidebar.component";
 import { AuthService } from "../../backend/services/auth/auth.service";
 import { Subscription } from "rxjs";
 import UserLogged from "../../backend/services/auth/models/user-logged";
-import Route from "./models/route";
 import { Router } from "@angular/router";
+import Route from "../../components/sidebar/models/route";
 
 @Component({
     selector: "app-permission-sidebar",

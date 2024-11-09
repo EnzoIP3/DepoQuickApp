@@ -7,7 +7,7 @@ import { Observable, catchError, retry, throwError } from "rxjs";
 
 export interface RequestConfig {
     extraResource?: string;
-    query?: string;
+    queries?: Record<string, any>;
 }
 
 export default abstract class ApiRepository {
@@ -55,11 +55,21 @@ export default abstract class ApiRepository {
 
     private buildRequestUrl({
         extraResource = "",
-        query = ""
+        queries = {}
     }: RequestConfig): string {
+        const formattedQueries = this.formatQueries(queries);
         const formattedExtra = extraResource ? `/${extraResource}` : "";
-        const formattedQuery = query ? `?${query}` : "";
-        return `${this.fullEndpoint}${formattedExtra}${formattedQuery}`;
+        const queryString = formattedQueries ? `?${formattedQueries}` : "";
+        return `${this.fullEndpoint}${formattedExtra}${queryString}`;
+    }
+
+    private formatQueries(queries: Record<string, any>): string {
+        return Object.entries(queries)
+            .map(
+                ([key, value]) =>
+                    `${encodeURIComponent(key)}=${encodeURIComponent(value)}`
+            )
+            .join("&");
     }
 
     private getAuthToken(): string {

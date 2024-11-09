@@ -2,9 +2,9 @@ import { Component } from "@angular/core";
 
 @Component({
     selector: "app-home-page",
-    templateUrl: "./home-page.component.html"
+    templateUrl: "./root-page.component.html"
 })
-export class HomePageComponent {
+export class RootPageComponent {
     title = "HomeConnect";
     sidebarVisible = false;
 

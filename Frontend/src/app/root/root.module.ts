@@ -1,0 +1,17 @@
+import { NgModule } from "@angular/core";
+import { CommonModule } from "@angular/common";
+import { PermissionSidebarComponent } from "../../business-components/permission-sidebar/permission-sidebar.component";
+import { ToolbarComponent } from "../../components/toolbar/toolbar.component";
+import { RootPageComponent } from "./root-page/root-page.component";
+import { RootRoutingModule } from "./root-routing.module";
+
+@NgModule({
+    declarations: [RootPageComponent],
+    imports: [
+        CommonModule,
+        RootRoutingModule,
+        PermissionSidebarComponent,
+        ToolbarComponent
+    ]
+})
+export class RootModule {}

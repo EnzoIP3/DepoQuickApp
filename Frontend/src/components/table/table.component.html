@@ -7,8 +7,8 @@
             </th>
         </tr>
     </ng-template>
-    <ng-template pTemplate="body" let-rowData let-columns="columns" *ngIf="loading">
-        <tr [pSelectableRow]="rowData">
+    <ng-template pTemplate="body" let-rowData let-columns="columns">
+        <tr [pSelectableRow]="rowData" *ngIf="!loading">
             <td *ngFor="let col of columns">
                 {{ rowData[col.field] }}
             </td>

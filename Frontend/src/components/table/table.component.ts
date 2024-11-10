@@ -5,6 +5,7 @@ import { SkeletonModule } from "primeng/skeleton";
 import TableColumn from "./models/table-column";
 import { InputTextModule } from "primeng/inputtext";
 import { FormsModule } from "@angular/forms";
+import { PaginatorModule } from "primeng/paginator";
 
 @Component({
     selector: "app-table",
@@ -14,7 +15,8 @@ import { FormsModule } from "@angular/forms";
         CommonModule,
         SkeletonModule,
         InputTextModule,
-        FormsModule
+        FormsModule,
+        PaginatorModule
     ],
     templateUrl: "./table.component.html"
 })

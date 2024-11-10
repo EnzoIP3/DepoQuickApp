@@ -1,10 +1,9 @@
-﻿using System.Text.Json;
-using BusinessLogic.Devices.Entities;
+using System.Text.Json;
 using BusinessLogic.Devices.Importer;
 using BusinessLogic.Devices.Models;
-using JsonDeviceImporter.Models;
+using JsonImporter.Models;
 
-namespace JsonDeviceImporter;
+namespace JsonImporter;
 
 public class JsonDeviceImporter : IDeviceImporter
 {

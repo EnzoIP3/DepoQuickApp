@@ -1,4 +1,4 @@
-namespace JsonDeviceImporter.Models;
+namespace JsonImporter.Models;
 
 public struct Dispositivo
 {

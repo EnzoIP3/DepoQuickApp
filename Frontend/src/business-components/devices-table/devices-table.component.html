@@ -1,1 +1,3 @@
 <app-table [columns]="columns" [data]="devices" [loading]="loading" />
+<app-paginator [currentPage]="pagination?.page" [totalPages]="pagination?.totalPages" [pageSize]="pagination?.pageSize"
+    (pageChange)="onPageChange($event)" />

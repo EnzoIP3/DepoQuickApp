@@ -1,7 +1,7 @@
-import PaginationResponse from "../../pagination-response";
+import Pagination from "../../pagination";
 import Device from "./device";
 
 export default interface DevicesResponse {
     devices: Device[];
-    pagination: PaginationResponse;
+    pagination: Pagination;
 }

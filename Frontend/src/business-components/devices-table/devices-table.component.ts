@@ -2,16 +2,18 @@ import { Component } from "@angular/core";
 import { TableComponent } from "../../components/table/table.component";
 import { DevicesService } from "../../backend/services/devices/devices.service";
 import DevicesResponse from "../../backend/services/devices/models/devices-response";
-import PaginationResponse from "../../backend/services/pagination-response";
+import PaginationResponse from "../../backend/services/pagination";
 import Device from "../../backend/services/devices/models/device";
 import TableColumn from "../../components/table/models/table-column";
 import { Subscription } from "rxjs";
 import { MessageService } from "primeng/api";
+import Pagination from "../../backend/services/pagination";
+import { PaginatorComponent } from "../../components/paginator/paginator.component";
 
 @Component({
     selector: "app-devices-table",
     standalone: true,
-    imports: [TableComponent],
+    imports: [TableComponent, PaginatorComponent],
     templateUrl: "./devices-table.component.html"
 })
 export class DevicesTableComponent {
@@ -46,8 +48,21 @@ export class DevicesTableComponent {
     ) {}
 
     ngOnInit() {
+        this._subscribeToDevices();
+    }
+
+    onPageChange(pagination: Pagination): void {
+        this.loading = true;
+        this._subscribeToDevices(pagination);
+    }
+
+    ngOnDestroy() {
+        this._devicesSubscription?.unsubscribe();
+    }
+
+    private _subscribeToDevices(pagination?: Pagination): void {
         this._devicesSubscription = this._devicesService
-            .getDevices()
+            .getDevices(pagination ? { ...pagination } : {})
             .subscribe({
                 next: (response: DevicesResponse) => {
                     this.devices = response.devices;
@@ -63,9 +78,5 @@ export class DevicesTableComponent {
                     });
                 }
             });
-    }
-
-    ngOnDestroy() {
-        this._devicesSubscription?.unsubscribe();
     }
 }

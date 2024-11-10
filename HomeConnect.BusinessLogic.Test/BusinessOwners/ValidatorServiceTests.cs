@@ -42,7 +42,7 @@ public class ValidatorServiceTests
         var validatorName = "ValidatorName";
         var validator = new Mock<IModeloValidador>();
         _mockAssemblyInterfaceLoader
-            .Setup(x => x.GetImplementation(validatorName, It.IsAny<string>()))
+            .Setup(x => x.GetImplementationByName(validatorName, It.IsAny<string>()))
             .Returns(validator.Object);
 
         // Act
@@ -86,6 +86,26 @@ public class ValidatorServiceTests
         // Assert
         Assert.IsNotNull(result);
         Assert.AreEqual(validatorId, result);
+    }
+    #endregion
+
+    #region GetValidator
+    [TestMethod]
+    public void GetValidator_WhenCalled_ShouldReturnValidator()
+    {
+        // Arrange
+        var validatorId = Guid.NewGuid();
+        var validator = new Mock<IModeloValidador>();
+        _mockAssemblyInterfaceLoader
+            .Setup(x => x.GetImplementationById(validatorId, It.IsAny<string>()))
+            .Returns(validator.Object);
+
+        // Act
+        var result = _validatorService.GetValidator(validatorId);
+
+        // Assert
+        Assert.IsNotNull(result);
+        Assert.AreEqual(validator.Object, result);
     }
     #endregion
 }

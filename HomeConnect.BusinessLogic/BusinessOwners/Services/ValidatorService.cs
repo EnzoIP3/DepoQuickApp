@@ -23,7 +23,7 @@ public class ValidatorService : IValidatorService
 
     public IModeloValidador GetValidatorByName(string validatorName)
     {
-        return LoadAssembly.GetImplementation(validatorName, Path);
+        return LoadAssembly.GetImplementationByName(validatorName, Path);
     }
 
     public bool Exists(string argsValidator)
@@ -38,6 +38,6 @@ public class ValidatorService : IValidatorService
 
     public IModeloValidador GetValidator(Guid? validatorId)
     {
-        throw new NotImplementedException();
+        return LoadAssembly.GetImplementationById(validatorId, Path);
     }
 }

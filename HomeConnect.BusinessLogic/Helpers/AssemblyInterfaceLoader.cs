@@ -47,7 +47,7 @@ public sealed class AssemblyInterfaceLoader<TInterface> : IAssemblyInterfaceLoad
         return _implementations.ConvertAll(t => t.Name);
     }
 
-    public TInterface GetImplementation(string implementationName, string path, params object[] args)
+    public TInterface GetImplementationByName(string implementationName, string path, params object[] args)
     {
         GetImplementationsList(path);
         var index = _implementations.FindIndex(t => t.Name == implementationName);
@@ -63,7 +63,7 @@ public sealed class AssemblyInterfaceLoader<TInterface> : IAssemblyInterfaceLoad
 
     public Guid? GetImplementationIdByName(string implementationName, string path)
     {
-        return GetImplementation(implementationName, path).GetType().GUID;
+        return GetImplementationByName(implementationName, path).GetType().GUID;
     }
 
     private TInterface GetImplementationByIndex(int index, params object[] args)
@@ -71,5 +71,19 @@ public sealed class AssemblyInterfaceLoader<TInterface> : IAssemblyInterfaceLoad
         var type = _implementations.ElementAt(index);
 
         return Activator.CreateInstance(type, args) as TInterface;
+    }
+
+    public TInterface GetImplementationById(Guid? implementationId, string path)
+    {
+        GetImplementationsList(path);
+        var index = _implementations.FindIndex(t => t.GUID == implementationId);
+
+        if (index == -1)
+        {
+            throw new InvalidOperationException(
+                $"No implementation found for interface {typeof(TInterface).Name} with GUID {implementationId}");
+        }
+
+        return GetImplementationByIndex(index);
     }
 }

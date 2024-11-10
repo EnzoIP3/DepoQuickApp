@@ -18,23 +18,19 @@ export class DevicesTableComponent {
     columns: TableColumn[] = [
         {
             field: "name",
-            header: "Name",
-            filter: true
+            header: "Name"
         },
         {
             field: "businessName",
-            header: "Business Name",
-            filter: true
+            header: "Business Name"
         },
         {
             field: "type",
-            header: "Type",
-            filter: true
+            header: "Type"
         },
         {
             field: "modelNumber",
-            header: "Model Number",
-            filter: true
+            header: "Model Number"
         }
     ];
 

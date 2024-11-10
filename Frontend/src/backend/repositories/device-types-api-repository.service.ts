@@ -10,10 +10,10 @@ import DeviceTypesResponse from "../services/device-types/models/device-types-re
 })
 export class DeviceTypesApiRepositoryService extends ApiRepository {
     constructor(http: HttpClient) {
-        super(environment.apiUrl, "device-types", http);
+        super(environment.apiUrl, "device_types", http);
     }
 
-    public getDeviceTypes(): Observable<DeviceTypesResponse[]> {
-        return this.get<DeviceTypesResponse[]>();
+    public getDeviceTypes(): Observable<DeviceTypesResponse> {
+        return this.get<DeviceTypesResponse>();
     }
 }

@@ -61,6 +61,11 @@ public sealed class AssemblyInterfaceLoader<TInterface> : IAssemblyInterfaceLoad
         return GetImplementationByIndex(index, args);
     }
 
+    public Guid? GetImplementationIdByName(string implementationName, string path)
+    {
+        return GetImplementation(implementationName, path).GetType().GUID;
+    }
+
     private TInterface GetImplementationByIndex(int index, params object[] args)
     {
         var type = _implementations.ElementAt(index);

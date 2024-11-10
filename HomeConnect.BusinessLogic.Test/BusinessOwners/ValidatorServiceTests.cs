@@ -68,4 +68,24 @@ public class ValidatorServiceTests
         // Assert
         Assert.IsTrue(result);
     }
+
+    #region GetValidatorIdByName
+    [TestMethod]
+    public void GetValidatorIdByName_WhenCalled_ShouldReturnValidatorId()
+    {
+        // Arrange
+        var validatorName = "ValidatorName";
+        var validatorId = Guid.NewGuid();
+        _mockAssemblyInterfaceLoader
+            .Setup(x =>
+            x.GetImplementationIdByName(validatorName, It.IsAny<string>())).Returns(validatorId);
+
+        // Act
+        var result = _validatorService.GetValidatorIdByName(validatorName);
+
+        // Assert
+        Assert.IsNotNull(result);
+        Assert.AreEqual(validatorId, result);
+    }
+    #endregion
 }

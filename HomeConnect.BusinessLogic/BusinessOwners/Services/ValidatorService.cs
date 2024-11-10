@@ -33,7 +33,7 @@ public class ValidatorService : IValidatorService
 
     public Guid? GetValidatorIdByName(string validatorName)
     {
-        throw new NotImplementedException();
+        return LoadAssembly.GetImplementationIdByName(validatorName, Path);
     }
 
     public IModeloValidador GetValidator(Guid? validatorId)

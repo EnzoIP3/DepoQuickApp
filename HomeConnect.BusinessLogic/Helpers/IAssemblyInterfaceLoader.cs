@@ -5,4 +5,5 @@ public interface IAssemblyInterfaceLoader<TInterface>
 {
     List<string> GetImplementationsList(string path);
     TInterface GetImplementation(string implementationName, string path, params object[] args);
+    Guid? GetImplementationIdByName(string implementationName, string path);
 }

@@ -6,6 +6,7 @@ import PaginationResponse from "../../backend/services/pagination-response";
 import Device from "../../backend/services/devices/models/device";
 import TableColumn from "../../components/table/models/table-column";
 import { Subscription } from "rxjs";
+import { MessageService } from "primeng/api";
 
 @Component({
     selector: "app-devices-table",
@@ -34,7 +35,7 @@ export class DevicesTableComponent {
             field: "modelNumber",
             header: "Model Number",
             filter: true
-        },
+        }
     ];
 
     private _devicesSubscription: Subscription | null = null;
@@ -43,7 +44,10 @@ export class DevicesTableComponent {
     pagination: PaginationResponse | null = null;
     loading: boolean = true;
 
-    constructor(private readonly _devicesService: DevicesService) {}
+    constructor(
+        private readonly _devicesService: DevicesService,
+        private readonly _messageService: MessageService
+    ) {}
 
     ngOnInit() {
         this._devicesSubscription = this._devicesService
@@ -55,8 +59,12 @@ export class DevicesTableComponent {
                     this.loading = false;
                 },
                 error: (error) => {
-                    console.error(error);
                     this.loading = false;
+                    this._messageService.add({
+                        severity: "error",
+                        summary: "Error",
+                        detail: error.message
+                    });
                 }
             });
     }

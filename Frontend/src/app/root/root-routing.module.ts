@@ -3,7 +3,7 @@ import { RouterModule, Routes } from "@angular/router";
 import { authGuard } from "../../guards/auth.guard";
 import { noAuthGuard } from "../../guards/no-auth.guard";
 import { RootPageComponent } from "./root-page/root-page.component";
-import { TestPageComponent } from "./test-page/test-page.component";
+import { DevicesTableComponent } from "../../business-components/devices-table/devices-table.component";
 
 const routes: Routes = [
     {
@@ -20,7 +20,7 @@ const routes: Routes = [
         children: [
             {
                 path: "",
-                component: TestPageComponent
+                component: DevicesTableComponent
             }
         ]
     }

@@ -25,7 +25,9 @@ export class TableComponent {
     @Input() data: any[] = [];
     @Input() loading: boolean = false;
 
-    public readonly loadingArray = new Array(
-        TableComponent.DEFAULT_LOADING_ROWS
-    );
+    get loadingArray() {
+        return new Array(
+            this.columns.length || TableComponent.DEFAULT_LOADING_ROWS
+        );
+    }
 }

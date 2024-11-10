@@ -52,4 +52,20 @@ public class ValidatorServiceTests
         Assert.IsNotNull(result);
         Assert.AreEqual(validator.Object, result);
     }
+
+    [TestMethod]
+    public void Exists_WhenValidatorExists_ShouldReturnTrue()
+    {
+        // Arrange
+        var validatorName = "ValidatorName";
+        _mockAssemblyInterfaceLoader
+            .Setup(x => x.GetImplementationsList(It.IsAny<string>()))
+            .Returns(new List<string> { validatorName });
+
+        // Act
+        var result = _validatorService.Exists(validatorName);
+
+        // Assert
+        Assert.IsTrue(result);
+    }
 }

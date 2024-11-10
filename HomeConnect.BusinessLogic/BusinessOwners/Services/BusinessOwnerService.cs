@@ -34,7 +34,7 @@ public class BusinessOwnerService : IBusinessOwnerService
         EnsureBusinessPrerequisites(ownerId, args.Rut);
         EnsureValidatorExists(args.Validator);
         User owner = GetUserById(ownerId);
-        var business = new Business(args.Rut, args.Name, args.Logo, owner);
+        var business = new Business(args.Rut, args.Name, args.Logo, owner, args.Validator);
         BusinessRepository.Add(business);
         return business;
     }

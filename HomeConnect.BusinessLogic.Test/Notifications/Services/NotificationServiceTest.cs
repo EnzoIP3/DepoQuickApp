@@ -1,6 +1,7 @@
 using BusinessLogic.BusinessOwners.Entities;
 using BusinessLogic.Devices.Entities;
 using BusinessLogic.Devices.Repositories;
+using BusinessLogic.Devices.Services;
 using BusinessLogic.HomeOwners.Entities;
 using BusinessLogic.Notifications.Entities;
 using BusinessLogic.Notifications.Models;
@@ -21,6 +22,7 @@ public class NotificationServiceTest
     private readonly User _user = new("owner", "owner", "owner@email.com", "Password@100", _role);
     private Mock<INotificationRepository> _mockNotificationRepository = null!;
     private Mock<IOwnedDeviceRepository> _mockOwnedDeviceRepository = null!;
+    private Mock<IDeviceService> _mockDeviceService = null!;
     private NotificationService _notificationService = null!;
 
     [TestInitialize]
@@ -28,6 +30,7 @@ public class NotificationServiceTest
     {
         _mockOwnedDeviceRepository = new Mock<IOwnedDeviceRepository>();
         _mockNotificationRepository = new Mock<INotificationRepository>();
+        _mockDeviceService = new Mock<IDeviceService>();
         _notificationService =
             new NotificationService(_mockNotificationRepository.Object, _mockOwnedDeviceRepository.Object);
     }
@@ -156,7 +159,7 @@ public class NotificationServiceTest
         _mockOwnedDeviceRepository.Setup(x => x.Exists(Guid.Parse(args.HardwareId))).Returns(false);
 
         // Act
-        Action act = () => _notificationService.Notify(args);
+        Action act = () => _notificationService.Notify(args, _mockDeviceService.Object);
 
         // Assert
         act.Should().Throw<KeyNotFoundException>();
@@ -184,11 +187,12 @@ public class NotificationServiceTest
             Event = "Test Event",
             Date = DateTime.Now
         };
+        _mockDeviceService.Setup(x => x.IsConnected(args.HardwareId)).Returns(true);
         _mockOwnedDeviceRepository.Setup(x => x.Exists(Guid.Parse(args.HardwareId))).Returns(true);
         _mockOwnedDeviceRepository.Setup(x => x.GetByHardwareId(Guid.Parse(args.HardwareId))).Returns(ownedDevice);
 
         // Act
-        _notificationService.Notify(args);
+        _notificationService.Notify(args, _mockDeviceService.Object);
 
         // Assert
         _mockNotificationRepository.Verify(x => x.Add(It.Is<Notification>(
@@ -203,5 +207,21 @@ public class NotificationServiceTest
                 n.User == member.User)), Times.Once);
     }
 
+    [TestMethod]
+    public void Notify_WhenDeviceIsDisconnected_ThrowsArgumentException()
+    {
+        // Arrange
+        var hardwareId = Guid.NewGuid().ToString();
+        var args = new NotificationArgs { HardwareId = hardwareId, Date = DateTime.Now, Event = "example" };
+        _mockOwnedDeviceRepository.Setup(x => x.Exists(Guid.Parse(hardwareId))).Returns(true);
+        _mockDeviceService.Setup(x => x.IsConnected(hardwareId)).Returns(false);
+
+        // Act
+        var act = () => _notificationService.Notify(args, _mockDeviceService.Object);
+
+        // Assert
+        act.Should().Throw<ArgumentException>().WithMessage("Device is not connected");
+        _mockDeviceService.VerifyAll();
+    }
     #endregion
 }

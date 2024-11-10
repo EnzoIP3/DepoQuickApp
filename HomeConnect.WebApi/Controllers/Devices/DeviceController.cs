@@ -109,10 +109,18 @@ public class DeviceController : ControllerBase
         var files = _importerService.GetImportFiles();
         return new GetImportFilesResponse { ImportFiles = files };
     }
-}
 
-public struct ImportDevicesRequest
-{
-    public string ImporterName { get; set; }
-    public string Route { get; set; }
+    [HttpPost("{hardwareId}/turn_on")]
+    public virtual ConnectionResponse TurnOn([FromRoute] string hardwareId)
+    {
+        var connectionState = _deviceService.TurnDevice(hardwareId, true);
+        return new ConnectionResponse { Connected = connectionState, HardwareId = hardwareId };
+    }
+
+    [HttpPost("{hardwareId}/turn_off")]
+    public virtual ConnectionResponse TurnOff([FromRoute] string hardwareId)
+    {
+        var connectionState = _deviceService.TurnDevice(hardwareId, false);
+        return new ConnectionResponse { Connected = connectionState, HardwareId = hardwareId };
+    }
 }

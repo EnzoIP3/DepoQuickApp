@@ -21,11 +21,16 @@ using HomeConnect.WebApi.Filters;
 using Microsoft.EntityFrameworkCore;
 using ModeloValidador.Abstracciones;
 
-WebApplicationBuilder builder = WebApplication.CreateBuilder(args);
-
-// Add services to the container.
+var builder = WebApplication.CreateBuilder(args);
 
 builder.Services
+    .AddCors(options =>
+    {
+        options.AddDefaultPolicy(
+            b => b.AllowAnyOrigin()
+                .AllowAnyMethod()
+                .AllowAnyHeader());
+    })
     .AddControllers(
         options =>
         {
@@ -36,8 +41,8 @@ builder.Services
         options.SuppressMapClientErrors = true;
     });
 
-IServiceCollection services = builder.Services;
-ConfigurationManager configuration = builder.Configuration;
+var services = builder.Services;
+var configuration = builder.Configuration;
 var connectionString = configuration.GetConnectionString("DefaultConnection");
 
 if (string.IsNullOrEmpty(connectionString))
@@ -77,6 +82,8 @@ app.UseHttpsRedirection();
 app.UseAuthorization();
 
 app.MapControllers();
+
+app.UseCors();
 
 app.Run();
 

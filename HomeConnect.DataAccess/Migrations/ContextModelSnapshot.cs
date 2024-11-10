@@ -123,6 +123,11 @@ namespace HomeConnect.DataAccess.Migrations
                     b.Property<Guid>("DeviceId")
                         .HasColumnType("uniqueidentifier");
 
+                    b.Property<string>("DeviceType")
+                        .IsRequired()
+                        .HasMaxLength(21)
+                        .HasColumnType("nvarchar(21)");
+
                     b.Property<Guid>("HomeId")
                         .HasColumnType("uniqueidentifier");
 
@@ -131,8 +136,12 @@ namespace HomeConnect.DataAccess.Migrations
                     b.HasIndex("DeviceId");
 
                     b.HasIndex("HomeId");
+                    
+                    b.ToTable("OwnedDevices");
 
-                    b.ToTable("OwnedDevices", (string)null);
+                    b.HasDiscriminator<string>("DeviceType").HasValue("OwnedDevice");
+
+                    b.UseTphMappingStrategy();
                 });
 
             modelBuilder.Entity("BusinessLogic.HomeOwners.Entities.Home", b =>
@@ -153,6 +162,9 @@ namespace HomeConnect.DataAccess.Migrations
 
                     b.Property<int>("MaxMembers")
                         .HasColumnType("int");
+
+                    b.Property<string>("NickName")
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<Guid>("OwnerId")
                         .HasColumnType("uniqueidentifier");
@@ -324,6 +336,14 @@ namespace HomeConnect.DataAccess.Migrations
                         new
                         {
                             Value = "update-member"
+                        },
+                        new
+                        {
+                            Value = "create-motion-sensor"
+                        },
+                        new
+                        {
+                            Value = "create-lamp"
                         });
                 });
 
@@ -475,6 +495,16 @@ namespace HomeConnect.DataAccess.Migrations
                         {
                             PermissionsValue = "create-sensor",
                             RolesName = "BusinessOwner"
+                        },
+                        new
+                        {
+                            PermissionsValue = "create-motion-sensor",
+                            RolesName = "BusinessOwner"
+                        },
+                        new
+                        {
+                            PermissionsValue = "create-lamp",
+                            RolesName = "BusinessOwner"
                         });
                 });
 
@@ -511,6 +541,26 @@ namespace HomeConnect.DataAccess.Migrations
                         .HasColumnType("bit");
 
                     b.HasDiscriminator().HasValue("Camera");
+                });
+
+            modelBuilder.Entity("BusinessLogic.Devices.Entities.LampOwnedDevice", b =>
+                {
+                    b.HasBaseType("BusinessLogic.Devices.Entities.OwnedDevice");
+
+                    b.Property<bool>("State")
+                        .HasColumnType("bit");
+
+                    b.HasDiscriminator().HasValue("LampOwnedDevice");
+                });
+
+            modelBuilder.Entity("BusinessLogic.Devices.Entities.SensorOwnedDevice", b =>
+                {
+                    b.HasBaseType("BusinessLogic.Devices.Entities.OwnedDevice");
+
+                    b.Property<bool>("IsOpen")
+                        .HasColumnType("bit");
+
+                    b.HasDiscriminator().HasValue("SensorOwnedDevice");
                 });
 
             modelBuilder.Entity("BusinessLogic.Auth.Entities.Token", b =>

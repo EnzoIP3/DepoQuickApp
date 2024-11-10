@@ -19,6 +19,7 @@ public class HomeOwnerServiceTests
     private readonly User _user =
         new("John", "Doe", "test@example.com", "12345678@My",
             new Role());
+    private readonly string _modelNumber = "123";
 
     private Mock<IDeviceRepository> _deviceRepositoryMock = null!;
     private HomeOwnerService _homeOwnerService = null!;
@@ -339,6 +340,59 @@ public class HomeOwnerServiceTests
 
         // Assert
         _ownedDeviceRepositoryMock.Verify(x => x.Add(It.IsAny<OwnedDevice>()), Times.Exactly(2));
+    }
+
+    [TestMethod]
+    public void AddDevicesToHome_WhenArgumentsAreValidAndDeviceTypeIsLamp_AddsDeviceWithStateFalse()
+    {
+        // Arrange
+        var home = new Home(_user, "Main St 123", 1.0, 2.0, 5);
+        var device = new Device("Lamp", _modelNumber, "A sensor",
+            "https://example.com/image.png", [], "Lamp", new Business());
+        var addDeviceModel = new AddDevicesArgs
+        {
+            HomeId = home.Id.ToString(),
+            DeviceIds = [device.Id.ToString()]
+        };
+        _deviceRepositoryMock.Setup(x => x.Get(device.Id)).Returns(device);
+        _homeRepositoryMock.Setup(x => x.Exists(home.Id)).Returns(true);
+        _homeRepositoryMock.Setup(x => x.Get(home.Id)).Returns(home);
+        _ownedDeviceRepositoryMock.Setup(x => x.Add(It.IsAny<LampOwnedDevice>())).Verifiable();
+        _ownedDeviceRepositoryMock.Setup(x => x.GetOwnedDevicesByHome(home)).Returns(new List<OwnedDevice>());
+
+        // Act
+        _homeOwnerService.AddDeviceToHome(addDeviceModel);
+
+        // Assert
+        _ownedDeviceRepositoryMock.Verify(x => x.Add(It.Is<LampOwnedDevice>(lamp => lamp.State == false && lamp.Device == device)), Times.Once);
+    }
+
+    [TestMethod]
+    public void AddDevicesToHome_WhenArgumentsAreValidAndDeviceTypeIsSensor_AddsDeviceWithIsOpenSetToFalse()
+    {
+        // Arrange
+        var home = new Home(_user, "Main St 123", 1.0, 2.0, 5);
+        var device = new Device("Sensor", _modelNumber, "A sensor",
+            "https://example.com/image.png", [], "Sensor", new Business());
+        var addDeviceModel = new AddDevicesArgs
+        {
+            HomeId = home.Id.ToString(),
+            DeviceIds = [device.Id.ToString()]
+        };
+        _deviceRepositoryMock.Setup(x => x.Get(device.Id)).Returns(device);
+        _homeRepositoryMock.Setup(x => x.Exists(home.Id)).Returns(true);
+        _homeRepositoryMock.Setup(x => x.Get(home.Id)).Returns(home);
+        _ownedDeviceRepositoryMock.Setup(x => x.Add(
+            It.IsAny<SensorOwnedDevice>())).Verifiable();
+        _ownedDeviceRepositoryMock.Setup(x => x.GetOwnedDevicesByHome(home)).
+            Returns(new List<OwnedDevice>());
+
+        // Act
+        _homeOwnerService.AddDeviceToHome(addDeviceModel);
+
+        // Assert
+        _ownedDeviceRepositoryMock.Verify(x => x.Add(It.Is<SensorOwnedDevice>(
+            sensor => sensor.IsOpen == false && sensor.Device == device)), Times.Once);
     }
 
     #endregion

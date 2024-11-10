@@ -193,4 +193,38 @@ public class DeviceControllerTests
             .ComparingByMembers<GetImportFilesResponse>());
     }
     #endregion
+
+    #region Turning
+    [TestMethod]
+    public void TurnOn_WithHardwareId_ReturnsConnectionResponse()
+    {
+        // Arrange
+        var hardwareId = "hardwareId";
+        _deviceService.Setup(x => x.TurnDevice(hardwareId, true)).Returns(true);
+
+        // Act
+        ConnectionResponse result = _controller.TurnOn(hardwareId);
+
+        // Assert
+        result.Should().NotBeNull();
+        result.HardwareId.Should().Be(hardwareId);
+        result.Connected.Should().BeTrue();
+    }
+
+    [TestMethod]
+    public void TurnOff_WithHardwareId_ReturnsConnectionResponse()
+    {
+        // Arrange
+        var hardwareId = "hardwareId";
+        _deviceService.Setup(x => x.TurnDevice(hardwareId, false)).Returns(false);
+
+        // Act
+        ConnectionResponse result = _controller.TurnOff(hardwareId);
+
+        // Assert
+        result.Should().NotBeNull();
+        result.HardwareId.Should().Be(hardwareId);
+        result.Connected.Should().BeFalse();
+    }
+    #endregion
 }

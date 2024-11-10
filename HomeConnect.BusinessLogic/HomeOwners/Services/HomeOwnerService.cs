@@ -215,7 +215,10 @@ public class HomeOwnerService : IHomeOwnerService
 
     private void AddDevicesToHome(Home home, List<Device> devices)
     {
-        devices.ForEach(device => OwnedDeviceRepository.Add(new OwnedDevice(home, device)));
+        devices.ForEach(device =>
+        {
+            OwnedDeviceRepository.Add(OwnedDeviceFactory.CreateOwnedDevice(home, device));
+        });
     }
 
     private void EnsureHomeExists(Guid homeId)

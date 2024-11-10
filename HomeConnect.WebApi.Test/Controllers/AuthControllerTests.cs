@@ -29,7 +29,9 @@ public class AuthControllerTests
         // Arrange
         var request = new CreateTokenRequest { Email = "email", Password = "password" };
         var args = new CreateTokenArgs { Email = request.Email, Password = request.Password };
-        var user = new User() { Roles = [new Role() { Name = "Admin" }] };
+        var permissions = new List<SystemPermission>() { new("Permission") };
+        var role = new Role() { Name = "Admin", Permissions = permissions };
+        var user = new User() { Roles = [role] };
         var token = new Token();
         _tokenService.Setup(x => x.CreateToken(args)).Returns(token.Id.ToString());
         _tokenService.Setup(x => x.GetUserFromToken(token.Id.ToString())).Returns(user);
@@ -40,6 +42,6 @@ public class AuthControllerTests
         // Assert
         _tokenService.Verify(x => x.CreateToken(args), Times.Once);
         response.Token.Should().Be(token.Id.ToString());
-        response.Roles.Should().BeEquivalentTo(["Admin"]);
+        response.Permissions.Should().BeEquivalentTo(new List<string> { "Permission" });
     }
 }

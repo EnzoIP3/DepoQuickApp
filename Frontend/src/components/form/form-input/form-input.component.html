@@ -1,0 +1,14 @@
+<div class="field" [formGroup]="form">
+    <p-iconField iconPosition="left">
+        <p-inputIcon [styleClass]="iconClass"></p-inputIcon>
+        <input
+            [type]="type"
+            pInputText
+            [formControlName]="name"
+            [placeholder]="placeholder"
+            class="w-full"
+            [ngClass]="errorClass"
+        />
+    </p-iconField>
+    <small *ngIf="error" class="text-red-500">{{ error }}</small>
+</div>

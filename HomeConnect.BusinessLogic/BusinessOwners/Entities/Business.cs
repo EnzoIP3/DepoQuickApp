@@ -14,7 +14,7 @@ public class Business
     {
     }
 
-    public Business(string rut, string name, string logo, User owner, string? validator = null)
+    public Business(string rut, string name, string logo, User owner, Guid? validator = null)
     {
         Rut = rut;
         Name = name;
@@ -55,7 +55,7 @@ public class Business
         }
     }
 
-    public string? Validator { get; set; } = null;
+    public Guid? Validator { get; set; } = null;
 
     public User Owner { get; set; } = null!;
 

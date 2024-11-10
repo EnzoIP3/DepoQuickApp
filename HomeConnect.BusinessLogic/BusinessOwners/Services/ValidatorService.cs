@@ -30,4 +30,14 @@ public class ValidatorService : IValidatorService
     {
         return LoadAssembly.GetImplementationsList(Path).Contains(argsValidator);
     }
+
+    public Guid? GetValidatorIdByName(string validatorName)
+    {
+        throw new NotImplementedException();
+    }
+
+    public IModeloValidador GetValidator(Guid? validatorId)
+    {
+        throw new NotImplementedException();
+    }
 }

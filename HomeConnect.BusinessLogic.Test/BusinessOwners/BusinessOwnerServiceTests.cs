@@ -1,4 +1,5 @@
-﻿using BusinessLogic.BusinessOwners.Entities;
+﻿using System.Security.Cryptography.X509Certificates;
+using BusinessLogic.BusinessOwners.Entities;
 using BusinessLogic.BusinessOwners.Models;
 using BusinessLogic.BusinessOwners.Repositories;
 using BusinessLogic.BusinessOwners.Services;
@@ -20,6 +21,7 @@ public class BusinessOwnerServiceTests
     private const string ModelNumber = "123";
     private const string Description = "Device Description";
     private const string MainPhoto = "https://www.example.com/photo1.jpg";
+    private Guid _validatorId = Guid.NewGuid();
 
     private const string Type = "Device Type";
 
@@ -118,6 +120,42 @@ public class BusinessOwnerServiceTests
             b.Name == _businessName &&
             b.Owner.Email == _ownerEmail)), Times.Once);
         returnedBusiness.Rut.Should().Be(_businessRut);
+    }
+
+    [TestMethod]
+    public void CreateBusiness_WhenCalledWithAValidValidator_CreatesBusiness()
+    {
+        // Arrange
+        var args = new CreateBusinessArgs
+        {
+            OwnerId = _owner.Id.ToString(),
+            Rut = _businessRut,
+            Name = _businessName,
+            Logo = _businessLogo,
+            Validator = "validator"
+        };
+        var validatorId = Guid.NewGuid();
+        _userRepository.Setup(x => x.Exists(_owner.Id)).Returns(true);
+        _userRepository.Setup(x => x.Get(_owner.Id)).Returns(_owner);
+        _userRepository.Setup(x => x.Exists(_owner.Id)).Returns(true);
+        _businessRepository.Setup(x => x.GetByOwnerId(_owner.Id)).Returns(_existingBusiness);
+        _businessRepository.Setup(x => x.Add(It.IsAny<Business>()));
+        _businessRepository.Setup(x => x.Exists(_businessRut)).Returns(false);
+        _businessRepository.Setup(x => x.ExistsByOwnerId(_owner.Id)).Returns(false);
+        _validatorService.Setup(x => x.Exists(args.Validator)).Returns(true);
+        _validatorService.Setup(x => x.GetValidatorIdByName(args.Validator)).Returns(validatorId);
+
+        // Act
+        _businessOwnerService.CreateBusiness(args);
+
+        // Assert
+        _businessRepository.Verify(x => x.Add(It.Is<Business>(b =>
+            b.Rut == _businessRut &&
+            b.Name == _businessName &&
+            b.Owner.Email == _ownerEmail &&
+            b.Validator == validatorId)));
+        _validatorService.Verify(x => x.GetValidatorIdByName(args.Validator), Times.Once);
+        _validatorService.Verify(x => x.Exists(args.Validator), Times.Once);
     }
 
     #endregion
@@ -328,7 +366,7 @@ public class BusinessOwnerServiceTests
     public void CreateDevice_WhenHasAValidatorAndModelNumberIsInvalid_ThrowsArgumentException()
     {
         // Arrange
-        var business = new Business("12345", "Business Name", "https://example.com/image.png", _owner, "validator");
+        var business = new Business("12345", "Business Name", "https://example.com/image.png", _owner, _validatorId);
         var args = new CreateDeviceArgs
         {
             Owner = _owner,
@@ -345,7 +383,7 @@ public class BusinessOwnerServiceTests
         _businessRepository.Setup(x => x.GetByOwnerId(_owner.Id)).Returns(business);
         _businessRepository.Setup(x => x.ExistsByOwnerId(_owner.Id)).Returns(true);
         _validatorService.Setup(x =>
-            x.GetValidatorByName(business.Validator!)).Returns(_modeloValidador.Object);
+            x.GetValidator(business.Validator!)).Returns(_modeloValidador.Object);
         _modeloValidador.Setup(x =>
             x.EsValido(It.Is<Modelo>(m => m.Value == args.ModelNumber))).Returns(false);
 
@@ -511,7 +549,7 @@ public class BusinessOwnerServiceTests
     public void CreateCamera_WhenHasAValidatorAndModelNumberIsInvalid_ThrowsArgumentException()
     {
         // Arrange
-        var business = new Business("RUTexample", "Business Name", "https://example.com/image.png", _owner, "validator");
+        var business = new Business("RUTexample", "Business Name", "https://example.com/image.png", _owner, _validatorId);
         var args = new CreateCameraArgs
         {
             Owner = _owner,
@@ -531,7 +569,7 @@ public class BusinessOwnerServiceTests
         _businessRepository.Setup(x => x.GetByOwnerId(_owner.Id)).Returns(business);
         _businessRepository.Setup(x => x.ExistsByOwnerId(_owner.Id)).Returns(true);
         _validatorService.Setup(x =>
-            x.GetValidatorByName(business.Validator!)).Returns(_modeloValidador.Object);
+            x.GetValidator(business.Validator!)).Returns(_modeloValidador.Object);
         _modeloValidador.Setup(x =>
             x.EsValido(It.Is<Modelo>(m => m.Value == args.ModelNumber))).Returns(false);
 

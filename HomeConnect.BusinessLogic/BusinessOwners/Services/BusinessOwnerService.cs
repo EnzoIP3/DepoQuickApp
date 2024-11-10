@@ -33,10 +33,21 @@ public class BusinessOwnerService : IBusinessOwnerService
         Guid ownerId = ParseAndValidateOwnerId(args.OwnerId);
         EnsureBusinessPrerequisites(ownerId, args.Rut);
         EnsureValidatorExists(args.Validator);
+        Guid? validatorId = GetValidatorId(args.Validator);
         User owner = GetUserById(ownerId);
-        var business = new Business(args.Rut, args.Name, args.Logo, owner, args.Validator);
+        var business = new Business(args.Rut, args.Name, args.Logo, owner, validatorId);
         BusinessRepository.Add(business);
         return business;
+    }
+
+    private Guid? GetValidatorId(string? argsValidator)
+    {
+        if (argsValidator != null)
+        {
+            return ValidatorService.GetValidatorIdByName(argsValidator);
+        }
+
+        return null;
     }
 
     private void EnsureValidatorExists(string? argsValidator)
@@ -114,11 +125,11 @@ public class BusinessOwnerService : IBusinessOwnerService
             business);
     }
 
-    private void EnsureModelNumberIsValid(string? modelNumber, string? validatorName)
+    private void EnsureModelNumberIsValid(string? modelNumber, Guid? validatorName)
     {
         if (validatorName != null && modelNumber != null)
         {
-            IModeloValidador validator = ValidatorService.GetValidatorByName(validatorName);
+            IModeloValidador validator = ValidatorService.GetValidator(validatorName);
             if (!validator.EsValido(new Modelo(modelNumber)))
             {
                 throw new ArgumentException("The model number is not valid according to the specified validator.");

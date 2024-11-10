@@ -29,6 +29,7 @@ public class BusinessControllerTests
     private PagedData<Business> _pagedList = null!;
     private Role _role = null!;
     private User _user = null!;
+    private Guid _validatorId = Guid.NewGuid();
 
     [TestInitialize]
     public void Initialize()
@@ -44,7 +45,7 @@ public class BusinessControllerTests
         _otherUser = new User("Name1", "Surname1", "email1@email.com", "Password@100", _role);
         _businesses =
         [
-            new Business("123456789123", "Business 1", "https://example.com/image.png", _user, "Validator"),
+            new Business("123456789123", "Business 1", "https://example.com/image.png", _user, _validatorId),
             new Business("123456789124", "Business 2", "https://example.com/image.png", _otherUser),
         ];
         _expectedPagination = new Pagination { Page = 1, PageSize = 10, TotalPages = 1 };

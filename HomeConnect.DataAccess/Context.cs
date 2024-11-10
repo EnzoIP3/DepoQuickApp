@@ -73,7 +73,9 @@ public class Context(DbContextOptions<Context> options) : DbContext(options)
             new SystemPermission { Value = SystemPermission.CreateSensor },
             new SystemPermission { Value = SystemPermission.UpdateMember },
             new SystemPermission { Value = SystemPermission.CreateMotionSensor },
-            new SystemPermission { Value = SystemPermission.CreateLamp });
+            new SystemPermission { Value = SystemPermission.CreateLamp },
+            new SystemPermission { Value = SystemPermission.GetHomes },
+            new SystemPermission { Value = SystemPermission.NameHome });
     }
 
     private void ConfigureRolePermissions(ModelBuilder modelBuilder)
@@ -94,6 +96,8 @@ public class Context(DbContextOptions<Context> options) : DbContext(options)
                 new { RolesName = Role.HomeOwner, PermissionsValue = SystemPermission.GetMembers },
                 new { RolesName = Role.HomeOwner, PermissionsValue = SystemPermission.UpdateMember },
                 new { RolesName = Role.HomeOwner, PermissionsValue = SystemPermission.GetNotifications },
+                new { RolesName = Role.HomeOwner, PermissionsValue = SystemPermission.GetHomes },
+                new { RolesName = Role.HomeOwner, PermissionsValue = SystemPermission.NameHome },
                 new { RolesName = Role.BusinessOwner, PermissionsValue = SystemPermission.CreateBusiness },
                 new { RolesName = Role.BusinessOwner, PermissionsValue = SystemPermission.CreateCamera },
                 new { RolesName = Role.BusinessOwner, PermissionsValue = SystemPermission.CreateSensor },

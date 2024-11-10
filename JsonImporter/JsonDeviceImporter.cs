@@ -14,7 +14,7 @@ public class JsonDeviceImporter : IDeviceImporter
         EnsureJsonIsNotNull(json);
         Root? deviceList = DeserializeJson(json);
         EnsureDeviceListIsNotNull(deviceList);
-        return deviceList.Value.Devices!.Select(device => ToDeviceArgs(device)).ToList();
+        return deviceList.Value.Dispositivos!.Select(device => ToDeviceArgs(device)).ToList();
     }
 
     private static void EnsureFileExists(string route)

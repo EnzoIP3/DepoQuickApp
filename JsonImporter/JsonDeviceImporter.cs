@@ -74,7 +74,8 @@ public class JsonDeviceImporter : IDeviceImporter
                 ModelNumber = device.Modelo,
                 MainPhoto = device.Fotos.First(foto => foto.EsPrincipal).Path,
                 SecondaryPhotos = device.Fotos.Where(foto => !foto.EsPrincipal).Select(foto => foto.Path).ToList(),
-                Type = tipo
+                Type = tipo,
+                Description = "Imported device with model number " + device.Modelo + " and name " + device.Nombre
             };
         }
         else
@@ -86,6 +87,7 @@ public class JsonDeviceImporter : IDeviceImporter
                 MainPhoto = device.Fotos.First(foto => foto.EsPrincipal).Path,
                 SecondaryPhotos = device.Fotos.Where(foto => !foto.EsPrincipal).Select(foto => foto.Path).ToList(),
                 Type = tipo,
+                Description = "Imported device with model number " + device.Modelo + " and name " + device.Nombre,
                 MotionDetection = device.MovementDetection,
                 PersonDetection = device.PersonDetection
             };

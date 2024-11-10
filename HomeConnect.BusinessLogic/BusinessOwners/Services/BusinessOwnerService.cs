@@ -32,10 +32,19 @@ public class BusinessOwnerService : IBusinessOwnerService
     {
         Guid ownerId = ParseAndValidateOwnerId(args.OwnerId);
         EnsureBusinessPrerequisites(ownerId, args.Rut);
+        EnsureValidatorExists(args.Validator);
         User owner = GetUserById(ownerId);
         var business = new Business(args.Rut, args.Name, args.Logo, owner);
         BusinessRepository.Add(business);
         return business;
+    }
+
+    private void EnsureValidatorExists(string? argsValidator)
+    {
+        if (argsValidator != null && !ValidatorService.Exists(argsValidator))
+        {
+            throw new ArgumentException("The specified validator does not exist.");
+        }
     }
 
     public Device CreateDevice(CreateDeviceArgs args)

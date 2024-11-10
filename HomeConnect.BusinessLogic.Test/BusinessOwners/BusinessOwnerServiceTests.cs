@@ -191,6 +191,35 @@ public class BusinessOwnerServiceTests
         _businessRepository.Verify(x => x.Add(It.IsAny<Business>()), Times.Never);
     }
 
+    [TestMethod]
+    public void CreateBusiness_WhenValidatorDoesNotExists_ThrowsException()
+    {
+        // Arrange
+        var args = new CreateBusinessArgs
+        {
+            OwnerId = _owner.Id.ToString(),
+            Rut = _businessRut,
+            Name = _businessName,
+            Logo = _businessLogo,
+            Validator = "validator"
+        };
+        _userRepository.Setup(x => x.Exists(_owner.Id)).Returns(true);
+        _userRepository.Setup(x => x.Get(_owner.Id)).Returns(_owner);
+        _userRepository.Setup(x => x.Exists(_owner.Id)).Returns(true);
+        _businessRepository.Setup(x => x.GetByOwnerId(_owner.Id)).Returns(_existingBusiness);
+        _businessRepository.Setup(x => x.Add(It.IsAny<Business>()));
+        _businessRepository.Setup(x => x.Exists(_businessRut)).Returns(false);
+        _businessRepository.Setup(x => x.ExistsByOwnerId(_owner.Id)).Returns(false);
+        _validatorService.Setup(x => x.Exists(args.Validator)).Returns(false);
+
+        // Act
+        Action act = () => _businessOwnerService.CreateBusiness(args);
+
+        // Assert
+        act.Should().Throw<ArgumentException>().WithMessage("The specified validator does not exist.");
+        _businessRepository.Verify(x => x.Add(It.IsAny<Business>()), Times.Never);
+    }
+
     #endregion
 
     #endregion

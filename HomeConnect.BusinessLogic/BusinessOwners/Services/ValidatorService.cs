@@ -25,4 +25,9 @@ public class ValidatorService : IValidatorService
     {
         return LoadAssembly.GetImplementation(validatorName, Path);
     }
+
+    public bool Exists(string argsValidator)
+    {
+        throw new NotImplementedException();
+    }
 }

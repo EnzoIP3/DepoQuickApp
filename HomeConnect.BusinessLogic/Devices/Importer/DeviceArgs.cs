@@ -1,15 +1,19 @@
-namespace BusinessLogic.Devices.Models;
+namespace BusinessLogic.Devices.Importer;
 
 public struct DeviceArgs
 {
-    public string Name { get; set; }
-    public string ModelNumber { get; set; }
-    public string Description { get; set; }
-    public string MainPhoto { get; set; }
-    public List<string> SecondaryPhotos { get; set; }
-    public string Type { get; set; }
-    public bool? MotionDetection { get; set; }
-    public bool? PersonDetection { get; set; }
-    public bool? IsExterior { get; set; }
-    public bool? IsInterior { get; set; }
+    public DeviceArgs()
+    {
+    }
+
+    public string Name { get; set; } = null;
+    public string ModelNumber { get; set; } = null;
+    public string Description { get; set; } = null;
+    public string MainPhoto { get; set; } = null;
+    public List<string> SecondaryPhotos { get; set; } = null;
+    public string Type { get; set; } = null;
+    public bool? MotionDetection { get; set; } = null;
+    public bool? PersonDetection { get; set; } = null;
+    public bool? IsExterior { get; set; } = false;
+    public bool? IsInterior { get; set; } = true;
 }

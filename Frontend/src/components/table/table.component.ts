@@ -24,10 +24,16 @@ export class TableComponent {
     @Input() columns: TableColumn[] = [];
     @Input() data: any[] = [];
     @Input() loading: boolean = false;
+    @Input() clickableRows: boolean = false;
+    @Output() rowClick = new EventEmitter<any>();
 
     get loadingArray() {
         return new Array(
             this.columns.length || TableComponent.DEFAULT_LOADING_ROWS
         );
+    }
+
+    handleRowClick(row: any) {
+        this.rowClick.emit(row.data);
     }
 }

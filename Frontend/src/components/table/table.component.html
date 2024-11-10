@@ -1,4 +1,5 @@
-<p-table [columns]="columns" [value]="data" [loading]="loading" [showLoader]="false">
+<p-table [columns]="columns" [value]="data" [loading]="loading" [showLoader]="false"
+    [selectionMode]="clickableRows ? 'single' : null" (onRowSelect)="handleRowClick($event)">
     <ng-template pTemplate="header" let-columns>
         <tr>
             <th *ngFor="let col of columns">
@@ -7,7 +8,7 @@
         </tr>
     </ng-template>
     <ng-template pTemplate="body" let-rowData let-columns="columns" *ngIf="loading">
-        <tr>
+        <tr [pSelectableRow]="rowData">
             <td *ngFor="let col of columns">
                 {{ rowData[col.field] }}
             </td>

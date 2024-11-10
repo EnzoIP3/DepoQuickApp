@@ -19,7 +19,6 @@ public class DeviceImporterController : ControllerBase
     }
 
     [HttpGet]
-    [Route("importers")]
     public GetImportersResponse GetImporters()
     {
         var importers = _importerService.GetImporters();

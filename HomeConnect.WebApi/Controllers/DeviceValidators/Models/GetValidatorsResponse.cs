@@ -1,4 +1,4 @@
-namespace HomeConnect.WebApi.Controllers.Devices.Models;
+namespace HomeConnect.WebApi.Controllers.DeviceValidators.Models;
 
 public struct GetValidatorsResponse
 {

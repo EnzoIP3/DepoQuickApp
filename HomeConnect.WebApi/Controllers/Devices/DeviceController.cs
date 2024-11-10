@@ -67,11 +67,6 @@ public class DeviceController : ControllerBase
         };
     }
 
-    private static GetValidatorsResponse CreateGetValidatorsResponse(List<ValidatorInfo> validators)
-    {
-        return new GetValidatorsResponse { Validators = validators.Select(v => v.Name).ToList() };
-    }
-
     [HttpPost]
     public ImportDevicesResponse ImportDevices([FromBody] ImportDevicesRequest request)
     {

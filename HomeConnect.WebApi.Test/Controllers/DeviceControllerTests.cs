@@ -113,32 +113,6 @@ public class DeviceControllerTests
     }
     #endregion
 
-    #region GetImporters
-    [TestMethod]
-    public void GetImporters_WhenCalled_ReturnsGetImportersResponse()
-    {
-        // Arrange
-        var importers = new List<string>
-        {
-            "Importer1",
-            "Importer2"
-        };
-        var expectedResponse = new GetImportersResponse
-        {
-            Importers = importers
-        };
-        _importerService.Setup(x => x.GetImporters()).Returns(importers);
-
-        // Act
-        GetImportersResponse response = _controller.GetImporters();
-
-        // Assert
-        _importerService.Verify(x => x.GetImporters(), Times.Once);
-        response.Should().BeEquivalentTo(expectedResponse, options => options
-            .ComparingByMembers<GetImportersResponse>());
-    }
-    #endregion
-
     #region ImportDevices
     [TestMethod]
     public void ImportDevices_WhenCalledWithValidImporterNameAndRoute_ReturnsImportDevicesResponse()

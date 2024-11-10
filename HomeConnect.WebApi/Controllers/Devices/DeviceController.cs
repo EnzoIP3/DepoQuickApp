@@ -68,7 +68,6 @@ public class DeviceController : ControllerBase
     }
 
     [HttpGet]
-    [Route("validators")]
     public GetValidatorsResponse GetValidators()
     {
         var validators = _validatorService.GetValidators();
@@ -78,14 +77,6 @@ public class DeviceController : ControllerBase
     private static GetValidatorsResponse CreateGetValidatorsResponse(List<ValidatorInfo> validators)
     {
         return new GetValidatorsResponse { Validators = validators.Select(v => v.Name).ToList() };
-    }
-
-    [HttpGet]
-    [Route("importers")]
-    public GetImportersResponse GetImporters()
-    {
-        var importers = _importerService.GetImporters();
-        return new GetImportersResponse { Importers = importers };
     }
 
     [HttpPost]

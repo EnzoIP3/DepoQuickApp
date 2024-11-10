@@ -1,0 +1,12 @@
+<p-panel [toggleable]="toggleable" styleClass="shadow-1">
+    <ng-template pTemplate="header">
+        <div class="flex align-items-center gap-2">
+            <i *ngIf="icon" class="pi {{ icon }}"></i>
+            <span>{{ title }}</span>
+        </div>
+    </ng-template>
+
+    <ng-template pTemplate="content">
+        <ng-content></ng-content>
+    </ng-template>
+</p-panel>

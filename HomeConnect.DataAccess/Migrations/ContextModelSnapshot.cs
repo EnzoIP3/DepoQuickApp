@@ -38,7 +38,7 @@ namespace HomeConnect.DataAccess.Migrations
 
                     b.HasIndex("UserId");
 
-                    b.ToTable("Tokens");
+                    b.ToTable("Tokens", (string)null);
                 });
 
             modelBuilder.Entity("BusinessLogic.BusinessOwners.Entities.Business", b =>
@@ -61,7 +61,7 @@ namespace HomeConnect.DataAccess.Migrations
 
                     b.HasIndex("OwnerId");
 
-                    b.ToTable("Businesses");
+                    b.ToTable("Businesses", (string)null);
                 });
 
             modelBuilder.Entity("BusinessLogic.Devices.Entities.Device", b =>
@@ -86,9 +86,8 @@ namespace HomeConnect.DataAccess.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<string>("ModelNumber")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                    b.Property<int>("ModelNumber")
+                        .HasColumnType("int");
 
                     b.Property<string>("Name")
                         .IsRequired()
@@ -105,7 +104,7 @@ namespace HomeConnect.DataAccess.Migrations
 
                     b.HasIndex("BusinessRut");
 
-                    b.ToTable("Devices");
+                    b.ToTable("Devices", (string)null);
 
                     b.HasDiscriminator().HasValue("Device");
 
@@ -133,7 +132,7 @@ namespace HomeConnect.DataAccess.Migrations
 
                     b.HasIndex("HomeId");
 
-                    b.ToTable("OwnedDevices");
+                    b.ToTable("OwnedDevices", (string)null);
                 });
 
             modelBuilder.Entity("BusinessLogic.HomeOwners.Entities.Home", b =>
@@ -155,9 +154,6 @@ namespace HomeConnect.DataAccess.Migrations
                     b.Property<int>("MaxMembers")
                         .HasColumnType("int");
 
-                    b.Property<string>("NickName")
-                        .HasColumnType("nvarchar(max)");
-
                     b.Property<Guid>("OwnerId")
                         .HasColumnType("uniqueidentifier");
 
@@ -165,7 +161,7 @@ namespace HomeConnect.DataAccess.Migrations
 
                     b.HasIndex("OwnerId");
 
-                    b.ToTable("Homes");
+                    b.ToTable("Homes", (string)null);
                 });
 
             modelBuilder.Entity("BusinessLogic.HomeOwners.Entities.HomePermission", b =>
@@ -180,7 +176,7 @@ namespace HomeConnect.DataAccess.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("HomePermissions");
+                    b.ToTable("HomePermissions", (string)null);
                 });
 
             modelBuilder.Entity("BusinessLogic.HomeOwners.Entities.Member", b =>
@@ -201,7 +197,7 @@ namespace HomeConnect.DataAccess.Migrations
 
                     b.HasIndex("UserId");
 
-                    b.ToTable("Members");
+                    b.ToTable("Members", (string)null);
                 });
 
             modelBuilder.Entity("BusinessLogic.Notifications.Entities.Notification", b =>
@@ -232,7 +228,7 @@ namespace HomeConnect.DataAccess.Migrations
 
                     b.HasIndex("UserId");
 
-                    b.ToTable("Notifications");
+                    b.ToTable("Notifications", (string)null);
                 });
 
             modelBuilder.Entity("BusinessLogic.Roles.Entities.Role", b =>
@@ -242,7 +238,7 @@ namespace HomeConnect.DataAccess.Migrations
 
                     b.HasKey("Name");
 
-                    b.ToTable("Roles");
+                    b.ToTable("Roles", (string)null);
 
                     b.HasData(
                         new
@@ -266,7 +262,7 @@ namespace HomeConnect.DataAccess.Migrations
 
                     b.HasKey("Value");
 
-                    b.ToTable("Permissions");
+                    b.ToTable("Permissions", (string)null);
 
                     b.HasData(
                         new
@@ -361,7 +357,7 @@ namespace HomeConnect.DataAccess.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Users");
+                    b.ToTable("Users", (string)null);
 
                     b.HasData(
                         new
@@ -402,7 +398,7 @@ namespace HomeConnect.DataAccess.Migrations
 
                     b.HasIndex("RolesName");
 
-                    b.ToTable("RoleSystemPermission");
+                    b.ToTable("RoleSystemPermission", (string)null);
 
                     b.HasData(
                         new

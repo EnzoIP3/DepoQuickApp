@@ -4,6 +4,7 @@ using BusinessLogic.HomeOwners.Models;
 using BusinessLogic.HomeOwners.Services;
 using BusinessLogic.Roles.Entities;
 using BusinessLogic.Users.Entities;
+using HomeConnect.WebApi.Controllers.HomeOwners.Models;
 using HomeConnect.WebApi.Controllers.Homes.Models;
 using HomeConnect.WebApi.Filters;
 using Microsoft.AspNetCore.Mvc;
@@ -15,6 +16,23 @@ namespace HomeConnect.WebApi.Controllers.Homes;
 [AuthenticationFilter]
 public class HomeController(IHomeOwnerService homeOwnerService) : ControllerBase
 {
+    [HttpGet]
+    [AuthorizationFilter(SystemPermission.GetHomes)]
+    public GetHomesResponse GetHomes()
+    {
+        var userLoggedIn = HttpContext.Items[Item.UserLogged] as User;
+        List<Home> homes = homeOwnerService.GetHomesByOwnerId(userLoggedIn!.Id);
+        var homeInfos = homes.Select(h => new ListHomeInfo
+        {
+            Id = h.Id.ToString(),
+            Address = h.Address,
+            Latitude = h.Latitude,
+            Longitude = h.Longitude,
+            MaxMembers = h.MaxMembers
+        }).ToList();
+        return new GetHomesResponse { Homes = homeInfos };
+    }
+
     [HttpPost]
     [AuthorizationFilter(SystemPermission.CreateHome)]
     public CreateHomeResponse CreateHome([FromBody] CreateHomeRequest request)

@@ -29,23 +29,6 @@ public class HomeOwnerController(IUserService userService, IHomeOwnerService hom
         return new CreateHomeOwnerResponse { Id = user.Id.ToString() };
     }
 
-    [HttpGet("homes")]
-    [AuthorizationFilter(SystemPermission.GetHomes)]
-    public GetHomesResponse GetHomes()
-    {
-        var userLoggedIn = HttpContext.Items[Item.UserLogged] as User;
-        List<Home> homes = homeOwnerService.GetHomesByOwnerId(userLoggedIn.Id);
-        var homeInfos = homes.Select(h => new ListHomeInfo
-        {
-            Id = h.Id.ToString(),
-            Address = h.Address,
-            Latitude = h.Latitude,
-            Longitude = h.Longitude,
-            MaxMembers = h.MaxMembers
-        }).ToList();
-        return new GetHomesResponse { Homes = homeInfos };
-    }
-
     [HttpPost("name_home")]
     [AuthorizationFilter(SystemPermission.NameHome)]
     public NameHomeResponse NameHome([FromBody] NameHomeRequest request)

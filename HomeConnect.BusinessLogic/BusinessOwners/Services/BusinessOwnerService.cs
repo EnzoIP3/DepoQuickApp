@@ -42,7 +42,7 @@ public class BusinessOwnerService : IBusinessOwnerService
 
     private Guid? GetValidatorId(string? argsValidator)
     {
-        if (argsValidator != null)
+        if (!string.IsNullOrWhiteSpace(argsValidator))
         {
             return ValidatorService.GetValidatorIdByName(argsValidator);
         }
@@ -52,7 +52,7 @@ public class BusinessOwnerService : IBusinessOwnerService
 
     private void EnsureValidatorExists(string? argsValidator)
     {
-        if (argsValidator != null && !ValidatorService.Exists(argsValidator))
+        if (!string.IsNullOrWhiteSpace(argsValidator) && !ValidatorService.Exists(argsValidator))
         {
             throw new ArgumentException("The specified validator does not exist.");
         }

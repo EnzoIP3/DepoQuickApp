@@ -36,7 +36,8 @@ public class BusinessController(IAdminService adminService, IBusinessOwnerServic
             Name = request.Name ?? string.Empty,
             Logo = request.Logo ?? string.Empty,
             OwnerId = userLoggedIn?.Id.ToString() ?? string.Empty,
-            Rut = request.Rut ?? string.Empty
+            Rut = request.Rut ?? string.Empty,
+            Validator = request.Validator ?? string.Empty
         };
         Business business = businessOwnerService.CreateBusiness(args);
         return new CreateBusinessResponse { Rut = business.Rut };

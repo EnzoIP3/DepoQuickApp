@@ -44,8 +44,8 @@ public class BusinessControllerTests
         _otherUser = new User("Name1", "Surname1", "email1@email.com", "Password@100", _role);
         _businesses =
         [
-            new Business("123456789123", "Business 1", "https://example.com/image.png", _user),
-            new Business("123456789124", "Business 2", "https://example.com/image.png", _otherUser)
+            new Business("123456789123", "Business 1", "https://example.com/image.png", _user, "Validator"),
+            new Business("123456789124", "Business 2", "https://example.com/image.png", _otherUser),
         ];
         _expectedPagination = new Pagination { Page = 1, PageSize = 10, TotalPages = 1 };
         _pagedList = new PagedData<Business>
@@ -61,13 +61,15 @@ public class BusinessControllerTests
                 Name = "Business 1",
                 OwnerId = _user.Id.ToString(),
                 Rut = "123456789123",
-                Logo = "https://example.com/image.png"
+                Logo = "https://example.com/image.png",
+                Validator = "Validator"
             };
         _businessRequest = new CreateBusinessRequest
         {
             Name = "Business 1",
             Rut = _businesses[0].Rut,
-            Logo = "https://example.com/image.png"
+            Logo = "https://example.com/image.png",
+            Validator = "Validator"
         };
     }
 

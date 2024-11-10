@@ -87,32 +87,6 @@ public class DeviceControllerTests
         response.Should().BeEquivalentTo(expectedResponse);
     }
 
-    #region GetValidators
-    [TestMethod]
-    public void GetValidators_WhenCalled_ReturnsGetValidatorsResponse()
-    {
-        // Arrange
-        var validators = new List<ValidatorInfo>
-        {
-            new ValidatorInfo { Name = "Validator1" },
-            new ValidatorInfo { Name = "Validator2" }
-        };
-        var expectedResponse = new GetValidatorsResponse
-        {
-            Validators = validators.Select(v => v.Name).ToList()
-        };
-        _validatorService.Setup(x => x.GetValidators()).Returns(validators);
-
-        // Act
-        GetValidatorsResponse response = _controller.GetValidators();
-
-        // Assert
-        _validatorService.Verify(x => x.GetValidators(), Times.Once);
-        response.Should().BeEquivalentTo(expectedResponse, options => options
-            .ComparingByMembers<GetValidatorsResponse>());
-    }
-    #endregion
-
     #region ImportDevices
     [TestMethod]
     public void ImportDevices_WhenCalledWithValidImporterNameAndRoute_ReturnsImportDevicesResponse()
@@ -140,31 +114,6 @@ public class DeviceControllerTests
         _importerService.Verify(x => x.ImportDevices(args), Times.Once);
         response.Should().BeEquivalentTo(expectedResponse, options => options
             .ComparingByMembers<ImportDevicesResponse>());
-    }
-    #endregion
-    #region GetImportFiles
-    [TestMethod]
-    public void GetImportFiles_WhenCalled_ReturnsGetImportFilesResponse()
-    {
-        // Arrange
-        var files = new List<string>
-        {
-            "file1.csv",
-            "file2.json"
-        };
-        var expectedResponse = new GetImportFilesResponse
-        {
-            ImportFiles = files
-        };
-        _importerService.Setup(x => x.GetImportFiles()).Returns(files);
-
-        // Act
-        GetImportFilesResponse response = _controller.GetImportFiles();
-
-        // Assert
-        _importerService.Verify(x => x.GetImportFiles(), Times.Once);
-        response.Should().BeEquivalentTo(expectedResponse, options => options
-            .ComparingByMembers<GetImportFilesResponse>());
     }
     #endregion
 

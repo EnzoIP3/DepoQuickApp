@@ -1,21 +1,22 @@
 using BusinessLogic.Devices.Services;
 using FluentAssertions;
 using HomeConnect.WebApi.Controllers.DeviceImporters;
+using HomeConnect.WebApi.Controllers.DeviceImporters.Models;
 using HomeConnect.WebApi.Controllers.Devices.Models;
 using Moq;
 
 namespace HomeConnect.WebApi.Test.Controllers;
 [TestClass]
-public class DeviceImporterTests
+public class DeviceImporterControllerTests
 {
-    private DeviceImporter _controller = null!;
+    private DeviceImporterController _controller = null!;
     private Mock<IImporterService> _importerService = null!;
 
     [TestInitialize]
     public void Initialize()
     {
         _importerService = new Mock<IImporterService>();
-        _controller = new DeviceImporter(_importerService.Object);
+        _controller = new DeviceImporterController(_importerService.Object);
     }
     #region GetImporters
     [TestMethod]

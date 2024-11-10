@@ -67,13 +67,6 @@ public class DeviceController : ControllerBase
         };
     }
 
-    [HttpGet]
-    public GetValidatorsResponse GetValidators()
-    {
-        var validators = _validatorService.GetValidators();
-        return CreateGetValidatorsResponse(validators);
-    }
-
     private static GetValidatorsResponse CreateGetValidatorsResponse(List<ValidatorInfo> validators)
     {
         return new GetValidatorsResponse { Validators = validators.Select(v => v.Name).ToList() };
@@ -91,14 +84,6 @@ public class DeviceController : ControllerBase
         };
         var addedDevices = _importerService.ImportDevices(args);
         return new ImportDevicesResponse { ImportedDevices = addedDevices };
-    }
-
-    [HttpGet]
-    [Route("import_files")]
-    public GetImportFilesResponse GetImportFiles()
-    {
-        var files = _importerService.GetImportFiles();
-        return new GetImportFilesResponse { ImportFiles = files };
     }
 
     [HttpPost("{hardwareId}/turn_on")]

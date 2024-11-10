@@ -303,38 +303,6 @@ public class BusinessOwnerServiceTests
     #endregion
 
     #region Error
-
-    [TestMethod]
-    public void CreateDevice_WhenDeviceAlreadyExists_ThrowsException()
-    {
-        // Arrange
-        var business = new Business("12345", "Business Name", "https://example.com/image.png", _owner);
-        var args = new CreateDeviceArgs
-        {
-            Owner = _owner,
-            Name = DeviceName,
-            ModelNumber = ModelNumber,
-            Description = Description,
-            MainPhoto = MainPhoto,
-            SecondaryPhotos = _secondaryPhotos,
-            Type = DeviceType.Camera.ToString()
-        };
-        _deviceRepository
-            .Setup(x => x.ExistsByModelNumber(args.ModelNumber))
-            .Returns(true);
-        _deviceRepository.Setup(x => x.Add(It.IsAny<Device>()));
-        _businessRepository.Setup(x => x.GetByOwnerId(_owner.Id)).Returns(business);
-        _businessRepository.Setup(x => x.ExistsByOwnerId(_owner.Id)).Returns(true);
-
-        // Act
-        Action act = () =>
-            _businessOwnerService.CreateDevice(args);
-
-        // Assert
-        act.Should().Throw<InvalidOperationException>().WithMessage("Device already exists");
-        _deviceRepository.Verify(x => x.Add(It.IsAny<Device>()), Times.Never);
-    }
-
     [TestMethod]
     public void CreateDevice_WhenBusinessDoesNotExist_ThrowsException()
     {
@@ -480,40 +448,6 @@ public class BusinessOwnerServiceTests
     #endregion
 
     #region Error
-
-    [TestMethod]
-    public void CreateCamera_WhenCameraAlreadyExists_ThrowsException()
-    {
-        // Arrange
-        var business = new Business("RUTexample", "Business Name", "https://example.com/image.png", _owner);
-        var args = new CreateCameraArgs
-        {
-            Owner = _owner,
-            Name = DeviceName,
-            ModelNumber = ModelNumber,
-            Description = Description,
-            MainPhoto = MainPhoto,
-            SecondaryPhotos = _secondaryPhotos,
-            MotionDetection = false,
-            PersonDetection = false,
-            Exterior = false,
-            Interior = true
-        };
-        _deviceRepository
-            .Setup(x => x.ExistsByModelNumber(args.ModelNumber))
-            .Returns(true);
-        _deviceRepository.Setup(x => x.Add(It.IsAny<Device>()));
-        _businessRepository.Setup(x => x.GetByOwnerId(_owner.Id)).Returns(business);
-        _businessRepository.Setup(x => x.ExistsByOwnerId(_owner.Id)).Returns(true);
-
-        // Act
-        Action act = () => _businessOwnerService.CreateCamera(args);
-
-        // Assert
-        act.Should().Throw<InvalidOperationException>().WithMessage("Device already exists");
-        _deviceRepository.Verify(x => x.Add(It.IsAny<Device>()), Times.Never);
-    }
-
     [TestMethod]
     public void CreateCamera_WhenBusinessDoesNotExist_ThrowsException()
     {

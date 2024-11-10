@@ -62,7 +62,6 @@ public class BusinessOwnerService : IBusinessOwnerService
     {
         Business business = GetValidatedBusiness(args.Owner.Id);
         Device device = CreateDevice(args, business);
-        EnsureDeviceDoesNotExist(args.ModelNumber);
         DeviceRepository.Add(device);
         return device;
     }
@@ -71,17 +70,8 @@ public class BusinessOwnerService : IBusinessOwnerService
     {
         Business business = GetValidatedBusiness(args.Owner.Id);
         Camera camera = CreateCamera(args, business);
-        EnsureDeviceDoesNotExist(args.ModelNumber);
         DeviceRepository.Add(camera);
         return camera;
-    }
-
-    private void EnsureDeviceDoesNotExist(string? modelNumber)
-    {
-        if (DeviceRepository.ExistsByModelNumber(modelNumber!))
-        {
-            throw new InvalidOperationException("Device already exists");
-        }
     }
 
     private static Guid ParseAndValidateOwnerId(string ownerId)

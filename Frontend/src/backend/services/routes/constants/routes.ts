@@ -3,21 +3,21 @@ import { Permissions } from "./permissions";
 
 export const AuthenticatedRoutes: Route[] = [
     {
-        label: "Dashboard",
+        label: "Devices",
         items: [
             {
-                label: "Home",
-                icon: "pi pi-compass",
-                routerLink: ["/home"]
+                label: "All devices",
+                icon: "pi pi-lightbulb",
+                routerLink: ["/devices"]
             }
         ]
     },
     {
-        label: "Home Owner",
+        label: "Homes",
         permission: Permissions.CREATE_HOME,
         items: [
             {
-                label: "Homes",
+                label: "My homes",
                 icon: "pi pi-home",
                 routerLink: ["/homes"]
             }

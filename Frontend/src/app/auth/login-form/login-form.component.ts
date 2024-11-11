@@ -51,7 +51,7 @@ export class LoginFormComponent {
             next: () => {
                 this.loginStatus.loading = false;
                 this.loginForm.reset();
-                this._router.navigate(["/home"]);
+                this._router.navigate(["/devices"]);
             },
             error: (error) => {
                 this.loginStatus.loading = false;

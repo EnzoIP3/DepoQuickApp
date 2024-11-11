@@ -13,11 +13,11 @@ const routes: Routes = [
             import("../auth/auth.module").then((m) => m.AuthModule)
     },
     {
-        path: "home",
+        path: "devices",
         component: RootPageComponent,
         canActivate: [authGuard],
         loadChildren: () =>
-            import("../home/home.module").then((m) => m.HomeModule)
+            import("../devices/devices.module").then((m) => m.HomeModule)
     },
     {
         path: "homes",

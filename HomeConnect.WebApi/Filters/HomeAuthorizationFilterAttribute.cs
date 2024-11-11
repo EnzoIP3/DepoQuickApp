@@ -82,7 +82,7 @@ public class HomeAuthorizationFilterAttribute(string permission) : Attribute, IA
         {
             return homeOwnerService.GetHome(homeIdParsed);
         }
-        catch (ArgumentException)
+        catch (KeyNotFoundException)
         {
             return null;
         }

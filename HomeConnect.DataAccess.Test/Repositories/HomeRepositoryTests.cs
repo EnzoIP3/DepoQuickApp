@@ -209,6 +209,7 @@ public class HomeRepositoryTests
     #endregion
 
     #region Rename
+
     [TestMethod]
     public void Rename_RenamesHome()
     {
@@ -224,5 +225,29 @@ public class HomeRepositoryTests
         Assert.IsNotNull(updatedHome);
         Assert.AreEqual(newName, updatedHome.NickName);
     }
+
+    #endregion
+
+    #region GetHomesByUserId
+
+    #region Success
+
+    [TestMethod]
+    public void GetHomesByUserId_WhenUserOwnsHomes_ReturnsHomes()
+    {
+        // Arrange
+        var home2 = new Home(_homeOwner, "Main St 456", 12.5, 12.5, 5);
+        _context.Homes.Add(home2);
+        _context.SaveChanges();
+
+        // Act
+        var result = _homeRepository.GetHomesByUserId(_homeOwner.Id);
+
+        // Assert
+        result.Should().Contain(_home).And.Contain(home2);
+    }
+
+    #endregion
+
     #endregion
 }

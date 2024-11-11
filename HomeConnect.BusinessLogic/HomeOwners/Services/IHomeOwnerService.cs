@@ -15,5 +15,5 @@ public interface IHomeOwnerService
     public void AddDeviceToHome(AddDevicesArgs addDevicesArgs);
     Home GetHome(Guid homeId);
     public List<Home> GetHomesByOwnerId(Guid userId);
-    public void NameHome(Guid ownerId, Guid homeId, string newName);
+    public void NameHome(NameHomeArgs args);
 }

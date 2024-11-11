@@ -40,11 +40,12 @@ public class HomeController(IHomeOwnerService homeOwnerService) : ControllerBase
     {
         var userLoggedIn = HttpContext.Items[Item.UserLogged] as User;
         var nameHomeArgs = NameHomeArgsFromRequest(request, homesId);
-        homeOwnerService.NameHome(userLoggedIn!.Id, nameHomeArgs.HomeId, nameHomeArgs.NewName);
+        nameHomeArgs.OwnerId = userLoggedIn!.Id;
+        homeOwnerService.NameHome(nameHomeArgs);
         return new NameHomeResponse { HomeId = homesId };
     }
 
-    private static (Guid HomeId, string NewName) NameHomeArgsFromRequest(NameHomeRequest request, string homesId)
+    private static NameHomeArgs NameHomeArgsFromRequest(NameHomeRequest request, string homesId)
     {
         if (string.IsNullOrEmpty(homesId))
         {
@@ -56,7 +57,7 @@ public class HomeController(IHomeOwnerService homeOwnerService) : ControllerBase
             throw new ArgumentException("NewName cannot be null or empty");
         }
 
-        return (Guid.Parse(homesId), request.NewName);
+        return new NameHomeArgs { HomeId = Guid.Parse(homesId), NewName = request.NewName };
     }
 
     [HttpPost]

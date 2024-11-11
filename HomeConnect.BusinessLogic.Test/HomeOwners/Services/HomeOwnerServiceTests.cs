@@ -683,15 +683,17 @@ public class HomeOwnerServiceTests
         var homeId = Guid.NewGuid();
         var newName = "New Home Name";
         var home = new Home { Id = homeId, NickName = "Old Name" };
+        var args = new NameHomeArgs { OwnerId = ownerId, HomeId = homeId, NewName = newName };
 
         _homeRepositoryMock.Setup(repo => repo.Exists(homeId)).Returns(true);
-        _homeRepositoryMock.Setup(repo => repo.Get(homeId)).Returns(home);
+        _homeRepositoryMock.Setup(repo =>
+            repo.Get(homeId)).Returns(home);
         _homeRepositoryMock.Setup(repo => repo.Rename(It.IsAny<Home>(), It.IsAny<string>()))
             .Callback<Home, string>((h, n) => h.NickName = n)
             .Verifiable();
 
         // Act
-        _homeOwnerService.NameHome(ownerId, homeId, newName);
+        _homeOwnerService.NameHome(args);
 
         // Assert
         Assert.AreEqual(newName, home.NickName);
@@ -709,10 +711,11 @@ public class HomeOwnerServiceTests
         var ownerId = Guid.Empty;
         var homeId = Guid.NewGuid();
         var newName = "New Home Name";
+        var args = new NameHomeArgs { OwnerId = ownerId, HomeId = homeId, NewName = newName };
 
         // Act & Assert
         var exception =
-            Assert.ThrowsException<ArgumentException>(() => _homeOwnerService.NameHome(ownerId, homeId, newName));
+            Assert.ThrowsException<ArgumentException>(() => _homeOwnerService.NameHome(args));
         Assert.AreEqual("Owner ID cannot be empty", exception.Message);
     }
 
@@ -723,10 +726,11 @@ public class HomeOwnerServiceTests
         var ownerId = Guid.NewGuid();
         var homeId = Guid.Empty;
         var newName = "New Home Name";
+        var args = new NameHomeArgs { OwnerId = ownerId, HomeId = homeId, NewName = newName };
 
         // Act & Assert
         var exception =
-            Assert.ThrowsException<ArgumentException>(() => _homeOwnerService.NameHome(ownerId, homeId, newName));
+            Assert.ThrowsException<ArgumentException>(() => _homeOwnerService.NameHome(args));
         Assert.AreEqual("Home ID cannot be empty", exception.Message);
     }
 
@@ -737,10 +741,11 @@ public class HomeOwnerServiceTests
         var ownerId = Guid.NewGuid();
         var homeId = Guid.NewGuid();
         var newName = string.Empty;
+        var args = new NameHomeArgs { OwnerId = ownerId, HomeId = homeId, NewName = newName };
 
         // Act & Assert
         var exception =
-            Assert.ThrowsException<ArgumentException>(() => _homeOwnerService.NameHome(ownerId, homeId, newName));
+            Assert.ThrowsException<ArgumentException>(() => _homeOwnerService.NameHome(args));
         Assert.AreEqual("New name cannot be null or empty", exception.Message);
     }
 

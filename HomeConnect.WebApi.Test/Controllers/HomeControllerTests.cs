@@ -492,14 +492,15 @@ public class HomeControllerTests
         var request = new NameHomeRequest { NewName = "New Home Name" };
         var homeId = Guid.NewGuid();
         var items = new Dictionary<object, object?> { { Item.UserLogged, _user } };
+        var args = new NameHomeArgs { HomeId = homeId, NewName = request.NewName, OwnerId = _user.Id };
         _httpContextMock.Setup(h => h.Items).Returns(items);
-        _homeOwnerService.Setup(x => x.NameHome(_user.Id, homeId, request.NewName));
+        _homeOwnerService.Setup(x => x.NameHome(args));
 
         // Act
         NameHomeResponse response = _controller.NameHome(homeId.ToString(), request);
 
         // Assert
-        _homeOwnerService.Verify(x => x.NameHome(_user.Id, homeId, request.NewName), Times.Once);
+        _homeOwnerService.Verify(x => x.NameHome(args), Times.Once);
         response.Should().NotBeNull();
         response.HomeId.Should().Be(homeId.ToString());
     }

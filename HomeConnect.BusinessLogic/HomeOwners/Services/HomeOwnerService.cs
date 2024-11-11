@@ -72,12 +72,11 @@ public class HomeOwnerService : IHomeOwnerService
         return homes;
     }
 
-    public void NameHome(Guid ownerId, Guid homeId, string newName)
+    public void NameHome(NameHomeArgs args)
     {
-        ValidateNameHomeParameters(ownerId, homeId, newName);
-
-        Home home = GetHome(homeId);
-        HomeRepository.Rename(home, newName);
+        ValidateNameHomeParameters(args.OwnerId, args.HomeId, args.NewName);
+        Home home = GetHome(args.HomeId);
+        HomeRepository.Rename(home, args.NewName);
     }
 
     private void ValidateNameHomeParameters(Guid ownerId, Guid homeId, string newName)

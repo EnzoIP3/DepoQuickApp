@@ -2,6 +2,7 @@ namespace BusinessLogic.HomeOwners.Entities;
 
 public class HomePermission
 {
+    public const string GetHome = "get-home";
     public const string AddMember = "add-members";
     public const string AddDevice = "add-devices";
     public const string GetDevices = "get-devices";

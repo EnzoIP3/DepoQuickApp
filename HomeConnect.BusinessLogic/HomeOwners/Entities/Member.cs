@@ -20,13 +20,12 @@ public class Member
         HomePermissions = homePermissions;
     }
 
-    [Key]
-    public Guid Id { get; set; } = Guid.NewGuid();
+    [Key] public Guid Id { get; set; } = Guid.NewGuid();
 
     public User User { get; init; } = null!;
     public Guid UserId { get; set; }
 
-    public List<HomePermission> HomePermissions { get; set; } = [];
+    public List<HomePermission> HomePermissions { get; set; } = [new(HomePermission.GetHome)];
 
     public Home Home { get; set; } = null!;
     public Guid HomeId { get; set; }

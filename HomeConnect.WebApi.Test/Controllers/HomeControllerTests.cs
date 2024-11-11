@@ -542,4 +542,34 @@ public class HomeControllerTests
     #endregion
 
     #endregion
+
+    #region GetHome
+
+    #region Success
+
+    [TestMethod]
+    public void GetHome_WithValidRequest_ReturnsHome()
+    {
+        // Arrange
+        var homeId = _home.Id;
+        var items = new Dictionary<object, object?> { { Item.UserLogged, _user } };
+        _httpContextMock.Setup(h => h.Items).Returns(items);
+        _homeOwnerService.Setup(x => x.GetHome(homeId)).Returns(_home);
+
+        // Act
+        GetHomeResponse response = _controller.GetHome(homeId.ToString());
+
+        // Assert
+        _homeOwnerService.VerifyAll();
+        response.Id.Should().Be(_home.Id.ToString());
+        response.Owner.Id.Should().Be(_home.Owner.Id.ToString());
+        response.Address.Should().Be(_home.Address);
+        response.Latitude.Should().Be(_home.Latitude);
+        response.Longitude.Should().Be(_home.Longitude);
+        response.MaxMembers.Should().Be(_home.MaxMembers);
+    }
+
+    #endregion
+
+    #endregion
 }

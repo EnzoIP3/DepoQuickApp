@@ -46,6 +46,14 @@ public class HomeController(IHomeOwnerService homeOwnerService) : ControllerBase
         return new NameHomeResponse { HomeId = homesId };
     }
 
+    [HttpGet("{homesId}")]
+    [HomeAuthorizationFilter(HomePermission.GetHome)]
+    [AuthorizationFilter(SystemPermission.GetHomes)]
+    public GetHomeResponse GetHome([FromRoute] string homesId)
+    {
+        throw new NotImplementedException();
+    }
+
     private static NameHomeArgs NameHomeArgsFromRequest(NameHomeRequest request, string homesId)
     {
         if (string.IsNullOrEmpty(homesId))

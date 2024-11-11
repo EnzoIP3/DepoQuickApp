@@ -571,18 +571,18 @@ public class HomeOwnerServiceTests
         Guid memberId = member.Id;
         _homeRepositoryMock.Setup(x => x.ExistsMember(memberId)).Returns(true);
         _homeRepositoryMock.Setup(x => x.GetMemberById(memberId)).Returns(member);
-        var permissionList = new List<HomePermission> { new(HomePermission.GetNotifications) };
+        var permission = new HomePermission(HomePermission.GetNotifications);
 
         _homeRepositoryMock.Setup(e =>
             e.UpdateMember(It.Is<Member>(x =>
-                x.User == _user && x.HomePermissions.First().Value == HomePermission.GetNotifications)));
+                x.User == _user && x.HomePermissions.Any(p => p.Value == HomePermission.GetNotifications))));
 
         // Act
         _homeOwnerService.UpdateMemberNotifications(memberId, true);
 
         // Assert
         _homeRepositoryMock.VerifyAll();
-        member.HomePermissions.Should().BeEquivalentTo(permissionList);
+        member.HomePermissions.Any(p => p.Value == HomePermission.GetNotifications).Should().BeTrue();
     }
 
     [TestMethod]

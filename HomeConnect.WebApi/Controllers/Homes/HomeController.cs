@@ -51,7 +51,22 @@ public class HomeController(IHomeOwnerService homeOwnerService) : ControllerBase
     [AuthorizationFilter(SystemPermission.GetHomes)]
     public GetHomeResponse GetHome([FromRoute] string homesId)
     {
-        throw new NotImplementedException();
+        var home = homeOwnerService.GetHome(Guid.Parse(homesId));
+        return new GetHomeResponse
+        {
+            Id = home.Id.ToString(),
+            Address = home.Address,
+            Latitude = home.Latitude,
+            Longitude = home.Longitude,
+            MaxMembers = home.MaxMembers,
+            Owner = new OwnerInfo
+            {
+                Id = home.Owner.Id.ToString(),
+                Name = home.Owner.Name,
+                Surname = home.Owner.Surname,
+                ProfilePicture = home.Owner.ProfilePicture
+            }
+        };
     }
 
     private static NameHomeArgs NameHomeArgsFromRequest(NameHomeRequest request, string homesId)

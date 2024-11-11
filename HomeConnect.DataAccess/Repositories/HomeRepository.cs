@@ -76,7 +76,7 @@ public class HomeRepository : IHomeRepository
     public List<Home> GetHomesByUserId(Guid userId)
     {
         return _context.Homes.Include(h => h.Members).ThenInclude(m => m.User).Include(h => h.Owner)
-            .Where(h => h.Owner.Id == userId).ToList();
+            .Where(h => h.Owner.Id == userId || h.Members.Any(m => m.User.Id == userId)).ToList();
     }
 
     private void EnsureHomeDoesNotExist(Home home)

@@ -12,7 +12,7 @@ namespace HomeConnect.WebApi.Controllers.HomeOwners;
 
 [ApiController]
 [Route("home_owners")]
-public class HomeOwnerController(IUserService userService, IHomeOwnerService homeOwnerService) : ControllerBase
+public class HomeOwnerController(IUserService userService) : ControllerBase
 {
     [HttpPost]
     public CreateHomeOwnerResponse CreateHomeOwner([FromBody] CreateHomeOwnerRequest args)
@@ -27,30 +27,5 @@ public class HomeOwnerController(IUserService userService, IHomeOwnerService hom
             ProfilePicture = args.ProfilePicture
         });
         return new CreateHomeOwnerResponse { Id = user.Id.ToString() };
-    }
-
-    [HttpPost("name_home")]
-    [AuthorizationFilter(SystemPermission.NameHome)]
-    public NameHomeResponse NameHome([FromBody] NameHomeRequest request)
-    {
-        var userLoggedIn = HttpContext.Items[Item.UserLogged] as User;
-        var nameHomeArgs = NameHomeArgsFromRequest(request);
-        homeOwnerService.NameHome(userLoggedIn.Id, nameHomeArgs.HomeId, nameHomeArgs.NewName);
-        return new NameHomeResponse { HomeId = request.HomeId };
-    }
-
-    private static (Guid HomeId, string NewName) NameHomeArgsFromRequest(NameHomeRequest request)
-    {
-        if (string.IsNullOrEmpty(request.HomeId))
-        {
-            throw new ArgumentException("HomeId cannot be null or empty");
-        }
-
-        if (string.IsNullOrEmpty(request.NewName))
-        {
-            throw new ArgumentException("NewName cannot be null or empty");
-        }
-
-        return (Guid.Parse(request.HomeId), request.NewName);
     }
 }

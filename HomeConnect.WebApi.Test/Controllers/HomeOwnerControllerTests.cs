@@ -28,7 +28,7 @@ public class HomeOwnerControllerTests
         _httpContextMock = new Mock<HttpContext>(MockBehavior.Strict);
         _userService = new Mock<IUserService>(MockBehavior.Strict);
         _homeOwnerService = new Mock<IHomeOwnerService>(MockBehavior.Strict);
-        _controller = new HomeOwnerController(_userService.Object, _homeOwnerService.Object);
+        _controller = new HomeOwnerController(_userService.Object);
 
         _user = new("John", "Doe", "email@email.com", "Password@100",
             new Role { Name = "HomeOwner", Permissions = [] });
@@ -73,68 +73,4 @@ public class HomeOwnerControllerTests
         _userService.Verify(x => x.CreateUser(args), Times.Once);
         response.Id.Should().Be(user.Id.ToString());
     }
-
-    #region NameHome
-    #region Success
-    [TestMethod]
-    public void NameHome_WithValidRequest_ReturnsHomeId()
-    {
-        // Arrange
-        var request = new NameHomeRequest
-        {
-            HomeId = Guid.NewGuid().ToString(),
-            NewName = "New Home Name"
-        };
-        var items = new Dictionary<object, object?> { { Item.UserLogged, _user } };
-        _httpContextMock.Setup(h => h.Items).Returns(items);
-        _homeOwnerService.Setup(x => x.NameHome(_user.Id, Guid.Parse(request.HomeId), request.NewName));
-
-        // Act
-        NameHomeResponse response = _controller.NameHome(request);
-
-        // Assert
-        _homeOwnerService.Verify(x => x.NameHome(_user.Id, Guid.Parse(request.HomeId), request.NewName), Times.Once);
-        response.Should().NotBeNull();
-        response.HomeId.Should().Be(request.HomeId);
-    }
-    #endregion
-
-    #region Error
-
-    [TestMethod]
-    public void NameHome_WithInvalidNewName_ThrowsArgumentException()
-    {
-        // Arrange
-        var request = new NameHomeRequest
-        {
-            HomeId = Guid.NewGuid().ToString(),
-            NewName = string.Empty
-        };
-        var items = new Dictionary<object, object?> { { Item.UserLogged, _user } };
-        _httpContextMock.Setup(h => h.Items).Returns(items);
-
-        // Act & Assert
-        var ex = Assert.ThrowsException<ArgumentException>(() => _controller.NameHome(request));
-        Assert.AreEqual("NewName cannot be null or empty", ex.Message);
-    }
-
-    [TestMethod]
-    public void NameHome_WithInvalidHomeId_ThrowsArgumentException()
-    {
-        // Arrange
-        var request = new NameHomeRequest
-        {
-            HomeId = string.Empty,
-            NewName = "New Home Name"
-        };
-        var items = new Dictionary<object, object?> { { Item.UserLogged, _user } };
-        _httpContextMock.Setup(h => h.Items).Returns(items);
-
-        // Act & Assert
-        var ex = Assert.ThrowsException<ArgumentException>(() => _controller.NameHome(request));
-        Assert.AreEqual("HomeId cannot be null or empty", ex.Message);
-    }
-
-    #endregion
-    #endregion
 }

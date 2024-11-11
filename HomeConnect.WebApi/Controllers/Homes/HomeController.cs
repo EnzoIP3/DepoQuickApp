@@ -33,6 +33,31 @@ public class HomeController(IHomeOwnerService homeOwnerService) : ControllerBase
         return new GetHomesResponse { Homes = homeInfos };
     }
 
+    [HttpPatch("{homesId}/name")]
+    [AuthorizationFilter(SystemPermission.NameHome)]
+    public NameHomeResponse NameHome([FromRoute] string homesId, [FromBody] NameHomeRequest request)
+    {
+        var userLoggedIn = HttpContext.Items[Item.UserLogged] as User;
+        var nameHomeArgs = NameHomeArgsFromRequest(request, homesId);
+        homeOwnerService.NameHome(userLoggedIn!.Id, nameHomeArgs.HomeId, nameHomeArgs.NewName);
+        return new NameHomeResponse { HomeId = homesId };
+    }
+
+    private static (Guid HomeId, string NewName) NameHomeArgsFromRequest(NameHomeRequest request, string homesId)
+    {
+        if (string.IsNullOrEmpty(homesId))
+        {
+            throw new ArgumentException("HomeId cannot be null or empty");
+        }
+
+        if (string.IsNullOrEmpty(request.NewName))
+        {
+            throw new ArgumentException("NewName cannot be null or empty");
+        }
+
+        return (Guid.Parse(homesId), request.NewName);
+    }
+
     [HttpPost]
     [AuthorizationFilter(SystemPermission.CreateHome)]
     public CreateHomeResponse CreateHome([FromBody] CreateHomeRequest request)

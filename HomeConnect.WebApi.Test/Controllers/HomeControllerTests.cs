@@ -11,9 +11,6 @@ using HomeConnect.WebApi.Controllers.Homes;
 using HomeConnect.WebApi.Controllers.Homes.Models;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.Abstractions;
-using Microsoft.AspNetCore.Mvc.Filters;
-using Microsoft.AspNetCore.Routing;
 using Moq;
 
 namespace HomeConnect.WebApi.Test.Controllers;
@@ -21,15 +18,14 @@ namespace HomeConnect.WebApi.Test.Controllers;
 [TestClass]
 public class HomeControllerTests
 {
-    private static readonly User User = new("John", "Doe", "email@email.com", "Password@100",
+    private static readonly User _user = new("John", "Doe", "email@email.com", "Password@100",
         new Role { Name = "HomeOwner", Permissions = [] });
 
-    private readonly Home _home = new(User, "Road 123", 50.456, 100.789, 3);
+    private readonly Home _home = new(_user, "Road 123", 50.456, 100.789, 3);
 
     private readonly User _otherUser = new("Jane", "Doe", "email2@email.com", "Password@100",
         new Role { Name = "HomeOwner", Permissions = [] });
 
-    private AuthorizationFilterContext _context = null!;
     private HomeController _controller = null!;
     private Mock<IHomeOwnerService> _homeOwnerService = null!;
     private Mock<HttpContext> _httpContextMock = null!;
@@ -43,12 +39,6 @@ public class HomeControllerTests
         {
             ControllerContext = new ControllerContext { HttpContext = _httpContextMock.Object }
         };
-        _context = new AuthorizationFilterContext(
-            new ActionContext(
-                _httpContextMock.Object,
-                new RouteData(),
-                new ActionDescriptor()),
-            new List<IFilterMetadata>());
     }
 
     #region CreateHome
@@ -65,13 +55,13 @@ public class HomeControllerTests
             MaxMembers = 3,
             Name = "Lo de Maxi"
         };
-        var items = new Dictionary<object, object?> { { Item.UserLogged, User } };
+        var items = new Dictionary<object, object?> { { Item.UserLogged, _user } };
         _httpContextMock.Setup(h => h.Items).Returns(items);
-        var home = new Home(User, request.Address, request.Latitude, request.Longitude, request.MaxMembers,
+        var home = new Home(_user, request.Address, request.Latitude, request.Longitude, request.MaxMembers,
             request.Name);
         var args = new CreateHomeArgs
         {
-            HomeOwnerId = User.Id.ToString(),
+            HomeOwnerId = _user.Id.ToString(),
             Address = request.Address,
             Latitude = request.Latitude,
             Longitude = request.Longitude,
@@ -99,18 +89,18 @@ public class HomeControllerTests
         // Arrange
         var request = new AddMemberRequest
         {
-            MemberId = User.Id.ToString(), CanAddDevices = true, CanListDevices = false
+            MemberId = _user.Id.ToString(), CanAddDevices = true, CanListDevices = false
         };
-        var items = new Dictionary<object, object?> { { Item.UserLogged, User } };
+        var items = new Dictionary<object, object?> { { Item.UserLogged, _user } };
         _httpContextMock.Setup(h => h.Items).Returns(items);
         var args = new AddMemberArgs
         {
             HomeId = _home.Id.ToString(),
-            UserId = User.Id.ToString(),
+            UserId = _user.Id.ToString(),
             CanAddDevices = request.CanAddDevices,
             CanListDevices = request.CanListDevices
         };
-        _homeOwnerService.Setup(x => x.AddMemberToHome(args)).Returns(User.Id);
+        _homeOwnerService.Setup(x => x.AddMemberToHome(args)).Returns(_user.Id);
 
         // Act
         AddMemberResponse response = _controller.AddMember(_home.Id.ToString(), request);
@@ -119,7 +109,7 @@ public class HomeControllerTests
         _homeOwnerService.VerifyAll();
         response.Should().NotBeNull();
         response.HomeId.Should().Be(_home.Id.ToString());
-        response.MemberId.Should().Be(User.Id.ToString());
+        response.MemberId.Should().Be(_user.Id.ToString());
     }
 
     #endregion
@@ -139,7 +129,7 @@ public class HomeControllerTests
             business, true, true, false, true);
 
         var request = new AddDevicesRequest { DeviceIds = [sensor.Id.ToString(), camera.Id.ToString()] };
-        var items = new Dictionary<object, object?> { { Item.UserLogged, User } };
+        var items = new Dictionary<object, object?> { { Item.UserLogged, _user } };
         _httpContextMock.Setup(h => h.Items).Returns(items);
         var args = new AddDevicesArgs { HomeId = _home.Id.ToString(), DeviceIds = request.DeviceIds };
         _homeOwnerService.Setup(x => x.AddDeviceToHome(args));
@@ -180,7 +170,7 @@ public class HomeControllerTests
                 MainPhoto = "https://www.example.com/photo2.jpg",
                 Business = new Business { Name = "Name2" }
             });
-        var items = new Dictionary<object, object?> { { Item.UserLogged, User } };
+        var items = new Dictionary<object, object?> { { Item.UserLogged, _user } };
         _httpContextMock.Setup(h => h.Items).Returns(items);
         _homeOwnerService.Setup(x => x.GetHomeDevices(_home.Id.ToString()))
             .Returns(new List<OwnedDevice> { device1, device2 });
@@ -244,7 +234,7 @@ public class HomeControllerTests
                 MainPhoto = "https://www.example.com/photo2.jpg",
                 Business = new Business { Name = "Name2" }
             });
-        var items = new Dictionary<object, object?> { { Item.UserLogged, User } };
+        var items = new Dictionary<object, object?> { { Item.UserLogged, _user } };
         _httpContextMock.Setup(h => h.Items).Returns(items);
         _homeOwnerService.Setup(x => x.GetHomeDevices(_home.Id.ToString()))
             .Returns(new List<OwnedDevice> { lamp1, lamp2 });
@@ -310,7 +300,7 @@ public class HomeControllerTests
                 MainPhoto = "https://www.example.com/photo2.jpg",
                 Business = new Business { Name = "Name2" }
             });
-        var items = new Dictionary<object, object?> { { Item.UserLogged, User } };
+        var items = new Dictionary<object, object?> { { Item.UserLogged, _user } };
         _httpContextMock.Setup(h => h.Items).Returns(items);
         _homeOwnerService.Setup(x => x.GetHomeDevices(_home.Id.ToString()))
             .Returns(new List<OwnedDevice> { sensor1, sensor2 });
@@ -365,7 +355,7 @@ public class HomeControllerTests
         var owner = new User("owner", "owner", "email@email.com", "Password@100",
             new Role { Name = "HomeOwner", Permissions = [] });
         var home = new Home(owner, "Road 123", 50.456, 100.789, 3);
-        var member = new Member(User,
+        var member = new Member(_user,
         [
             new HomePermission(HomePermission.AddDevice),
             new HomePermission(HomePermission.GetDevices)
@@ -374,7 +364,7 @@ public class HomeControllerTests
             [new HomePermission(HomePermission.AddDevice), new HomePermission(HomePermission.GetDevices)]);
         home.AddMember(member);
         home.AddMember(otherMember);
-        var items = new Dictionary<object, object?> { { Item.UserLogged, User } };
+        var items = new Dictionary<object, object?> { { Item.UserLogged, _user } };
         _httpContextMock.Setup(h => h.Items).Returns(items);
         _homeOwnerService.Setup(x => x.GetHomeMembers(home.Id.ToString()))
             .Returns([member, otherMember]);
@@ -449,9 +439,9 @@ public class HomeControllerTests
             Longitude = -118.2437,
             MaxMembers = 6
         };
-        var items = new Dictionary<object, object?> { { Item.UserLogged, User } };
+        var items = new Dictionary<object, object?> { { Item.UserLogged, _user } };
         _httpContextMock.Setup(h => h.Items).Returns(items);
-        _homeOwnerService.Setup(x => x.GetHomesByOwnerId(User.Id))
+        _homeOwnerService.Setup(x => x.GetHomesByOwnerId(_user.Id))
             .Returns([home1, home2]);
 
         var expectedResponse = new GetHomesResponse
@@ -488,6 +478,67 @@ public class HomeControllerTests
         response.Homes.Should().HaveCount(2);
         response.Homes.Should().BeEquivalentTo(expectedResponse.Homes);
     }
+
+    #endregion
+
+    #region NameHome
+
+    #region Success
+
+    [TestMethod]
+    public void NameHome_WithValidRequest_ReturnsHomeId()
+    {
+        // Arrange
+        var request = new NameHomeRequest { NewName = "New Home Name" };
+        var homeId = Guid.NewGuid();
+        var items = new Dictionary<object, object?> { { Item.UserLogged, _user } };
+        _httpContextMock.Setup(h => h.Items).Returns(items);
+        _homeOwnerService.Setup(x => x.NameHome(_user.Id, homeId, request.NewName));
+
+        // Act
+        NameHomeResponse response = _controller.NameHome(homeId.ToString(), request);
+
+        // Assert
+        _homeOwnerService.Verify(x => x.NameHome(_user.Id, homeId, request.NewName), Times.Once);
+        response.Should().NotBeNull();
+        response.HomeId.Should().Be(homeId.ToString());
+    }
+
+    #endregion
+
+    #region Error
+
+    [TestMethod]
+    public void NameHome_WithInvalidNewName_ThrowsArgumentException()
+    {
+        // Arrange
+        var request = new NameHomeRequest { NewName = string.Empty };
+        var items = new Dictionary<object, object?> { { Item.UserLogged, _user } };
+        _httpContextMock.Setup(h => h.Items).Returns(items);
+
+        // Act
+        var act = () => _controller.NameHome(Guid.NewGuid().ToString(), request);
+
+        // Assert
+        act.Should().Throw<ArgumentException>();
+    }
+
+    [TestMethod]
+    public void NameHome_WithInvalidHomeId_ThrowsArgumentException()
+    {
+        // Arrange
+        var request = new NameHomeRequest { NewName = "New Home Name" };
+        var items = new Dictionary<object, object?> { { Item.UserLogged, _user } };
+        _httpContextMock.Setup(h => h.Items).Returns(items);
+
+        // Act
+        var act = () => _controller.NameHome(string.Empty, request);
+
+        // Assert
+        act.Should().Throw<ArgumentException>();
+    }
+
+    #endregion
 
     #endregion
 }

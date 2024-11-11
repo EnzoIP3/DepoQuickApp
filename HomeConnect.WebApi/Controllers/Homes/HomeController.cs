@@ -55,6 +55,7 @@ public class HomeController(IHomeOwnerService homeOwnerService) : ControllerBase
         return new GetHomeResponse
         {
             Id = home.Id.ToString(),
+            Name = home.NickName,
             Address = home.Address,
             Latitude = home.Latitude,
             Longitude = home.Longitude,

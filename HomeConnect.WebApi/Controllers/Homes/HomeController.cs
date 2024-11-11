@@ -25,6 +25,7 @@ public class HomeController(IHomeOwnerService homeOwnerService) : ControllerBase
         var homeInfos = homes.Select(h => new ListHomeInfo
         {
             Id = h.Id.ToString(),
+            Name = h.NickName,
             Address = h.Address,
             Latitude = h.Latitude,
             Longitude = h.Longitude,

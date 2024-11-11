@@ -24,7 +24,6 @@ export class DeviceTypesTableComponent {
     private _deviceTypesSubscription: Subscription | null = null;
 
     deviceTypes: { type: string }[] = [];
-    pagination: PaginationResponse | null = null;
     loading: boolean = true;
 
     constructor(

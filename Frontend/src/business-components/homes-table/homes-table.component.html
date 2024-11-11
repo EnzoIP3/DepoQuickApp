@@ -1,1 +1,2 @@
-<p>homes-table works!</p>
+<app-table [columns]="columns" [data]="homes" [loading]="loading" [clickableRows]="true"
+    (rowClick)="onRowClick($event)" />

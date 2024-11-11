@@ -3,6 +3,7 @@ import { RouterModule, Routes } from "@angular/router";
 import { authGuard } from "../../guards/auth.guard";
 import { noAuthGuard } from "../../guards/no-auth.guard";
 import { RootPageComponent } from "./root-page/root-page.component";
+import { HomesTableComponent } from "../../business-components/homes-table/homes-table.component";
 
 const routes: Routes = [
     {
@@ -23,6 +24,11 @@ const routes: Routes = [
                     import("../home/home.module").then((m) => m.HomeModule)
             }
         ]
+    },
+    {
+        path: "homes",
+        component: HomesTableComponent,
+        canActivate: [authGuard]
     }
 ];
 

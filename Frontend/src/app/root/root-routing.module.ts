@@ -3,7 +3,6 @@ import { RouterModule, Routes } from "@angular/router";
 import { authGuard } from "../../guards/auth.guard";
 import { noAuthGuard } from "../../guards/no-auth.guard";
 import { RootPageComponent } from "./root-page/root-page.component";
-import { HomesTableComponent } from "../../business-components/homes-table/homes-table.component";
 
 const routes: Routes = [
     {
@@ -17,18 +16,15 @@ const routes: Routes = [
         path: "home",
         component: RootPageComponent,
         canActivate: [authGuard],
-        children: [
-            {
-                path: "",
-                loadChildren: () =>
-                    import("../home/home.module").then((m) => m.HomeModule)
-            }
-        ]
+        loadChildren: () =>
+            import("../home/home.module").then((m) => m.HomeModule)
     },
     {
         path: "homes",
-        component: HomesTableComponent,
-        canActivate: [authGuard]
+        component: RootPageComponent,
+        canActivate: [authGuard],
+        loadChildren: () =>
+            import("../homes/homes.module").then((m) => m.HomesModule)
     }
 ];
 

@@ -1,7 +1,6 @@
 import { Component, Input } from "@angular/core";
 import { HomesService } from "../../backend/services/homes/homes.service";
 import { MessageService } from "primeng/api";
-import { Router } from "@angular/router";
 import { Subscription } from "rxjs";
 import GetHomeResponse from "../../backend/services/homes/models/get-home-response";
 import ListItem from "../../components/list/models/list-item";
@@ -37,7 +36,7 @@ export class HomeTableComponent {
                     this.listItems = [
                         {
                             label: "Owner Name",
-                            value: response.owner.name
+                            value: `${response.owner.name} ${response.owner.surname}`
                         },
                         {
                             label: "Address",
@@ -56,10 +55,11 @@ export class HomeTableComponent {
                             value: response.maxMembers.toString()
                         }
                     ];
-                    console.log(response);
+
                     if (response.name) {
                         this.title = response.name;
                     }
+
                     this.loading = false;
                 },
                 error: (error) => {

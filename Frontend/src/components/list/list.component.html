@@ -1,4 +1,4 @@
-<div *ngFor="let item of items">
+<div *ngFor="let item of items; let i = index">
     <p *ngIf="item.value">
         <span class="text-gray-700">
             {{ item.label }}:
@@ -15,5 +15,5 @@
             N/A
         </span>
     </p>
-    <p-divider />
+    <p-divider *ngIf="i + 1 < items.length" />
 </div>

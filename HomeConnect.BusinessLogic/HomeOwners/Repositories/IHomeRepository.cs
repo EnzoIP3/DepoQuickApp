@@ -12,4 +12,5 @@ public interface IHomeRepository
     bool Exists(Guid homeId);
     bool ExistsMember(Guid memberId);
     void Rename(Home home, string newName);
+    List<Home> GetHomesByUserId(Guid userId);
 }

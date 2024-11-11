@@ -66,11 +66,9 @@ public class HomeOwnerService : IHomeOwnerService
         return HomeRepository.Get(homeId);
     }
 
-    public List<Home> GetHomesByOwnerId(Guid ownerId)
+    public List<Home> GetHomesByOwnerId(Guid userId)
     {
-        User user = UserRepository.Get(ownerId);
-        List<Member> members = MemberRepository.GetMembersByUserId(ownerId);
-        var homes = members.Select(m => m.Home).ToList();
+        var homes = HomeRepository.GetHomesByUserId(userId);
         return homes;
     }
 

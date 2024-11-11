@@ -201,10 +201,7 @@ public class HomeOwnerServiceTests
         // Arrange
         var model = new AddMemberArgs
         {
-            HomeId = homeId,
-            UserId = homeOwnerId,
-            CanAddDevices = true,
-            CanListDevices = true
+            HomeId = homeId, UserId = homeOwnerId, CanAddDevices = true, CanListDevices = true
         };
 
         // Act
@@ -324,8 +321,7 @@ public class HomeOwnerServiceTests
             true, true, true);
         var addDeviceModel = new AddDevicesArgs
         {
-            HomeId = home.Id.ToString(),
-            DeviceIds = [device.Id.ToString(), camera.Id.ToString()]
+            HomeId = home.Id.ToString(), DeviceIds = [device.Id.ToString(), camera.Id.ToString()]
         };
         _deviceRepositoryMock.Setup(x => x.Get(device.Id)).Returns(device);
         _deviceRepositoryMock.Setup(x => x.Get(camera.Id)).Returns(camera);
@@ -348,11 +344,7 @@ public class HomeOwnerServiceTests
         var home = new Home(_user, "Main St 123", 1.0, 2.0, 5);
         var device = new Device("Lamp", 1, "A sensor",
             "https://example.com/image.png", [], "Lamp", new Business());
-        var addDeviceModel = new AddDevicesArgs
-        {
-            HomeId = home.Id.ToString(),
-            DeviceIds = [device.Id.ToString()]
-        };
+        var addDeviceModel = new AddDevicesArgs { HomeId = home.Id.ToString(), DeviceIds = [device.Id.ToString()] };
         _deviceRepositoryMock.Setup(x => x.Get(device.Id)).Returns(device);
         _homeRepositoryMock.Setup(x => x.Exists(home.Id)).Returns(true);
         _homeRepositoryMock.Setup(x => x.Get(home.Id)).Returns(home);
@@ -363,7 +355,8 @@ public class HomeOwnerServiceTests
         _homeOwnerService.AddDeviceToHome(addDeviceModel);
 
         // Assert
-        _ownedDeviceRepositoryMock.Verify(x => x.Add(It.Is<LampOwnedDevice>(lamp => lamp.State == false && lamp.Device == device)), Times.Once);
+        _ownedDeviceRepositoryMock.Verify(
+            x => x.Add(It.Is<LampOwnedDevice>(lamp => lamp.State == false && lamp.Device == device)), Times.Once);
     }
 
     [TestMethod]
@@ -373,18 +366,13 @@ public class HomeOwnerServiceTests
         var home = new Home(_user, "Main St 123", 1.0, 2.0, 5);
         var device = new Device("Sensor", 1, "A sensor",
             "https://example.com/image.png", [], "Sensor", new Business());
-        var addDeviceModel = new AddDevicesArgs
-        {
-            HomeId = home.Id.ToString(),
-            DeviceIds = [device.Id.ToString()]
-        };
+        var addDeviceModel = new AddDevicesArgs { HomeId = home.Id.ToString(), DeviceIds = [device.Id.ToString()] };
         _deviceRepositoryMock.Setup(x => x.Get(device.Id)).Returns(device);
         _homeRepositoryMock.Setup(x => x.Exists(home.Id)).Returns(true);
         _homeRepositoryMock.Setup(x => x.Get(home.Id)).Returns(home);
         _ownedDeviceRepositoryMock.Setup(x => x.Add(
             It.IsAny<SensorOwnedDevice>())).Verifiable();
-        _ownedDeviceRepositoryMock.Setup(x => x.GetOwnedDevicesByHome(home)).
-            Returns(new List<OwnedDevice>());
+        _ownedDeviceRepositoryMock.Setup(x => x.GetOwnedDevicesByHome(home)).Returns(new List<OwnedDevice>());
 
         // Act
         _homeOwnerService.AddDeviceToHome(addDeviceModel);
@@ -665,28 +653,28 @@ public class HomeOwnerServiceTests
     #endregion
 
     #region GetHomesByOwnerId
+
     [TestMethod]
     public void GetHomesByOwnerId_WhenCalled_ReturnsCorrectHomes()
     {
         // Arrange
-        _userRepositoryMock.Setup(repo => repo.Get(_user.Id)).Returns(_user);
-        _memberRepositoryMock.Setup(repo => repo.GetMembersByUserId(_user.Id)).Returns(_testMembers);
+        _homeRepositoryMock.Setup(repo => repo.GetHomesByUserId(_user.Id))
+            .Returns(_testMembers.Select(m => m.Home).ToList());
 
         // Act
         List<Home> homes = _homeOwnerService.GetHomesByOwnerId(_user.Id);
 
         // Assert
-        _userRepositoryMock.Verify(repo => repo.Get(_user.Id), Times.Once);
-        _memberRepositoryMock.Verify(repo => repo.GetMembersByUserId(_user.Id), Times.Once);
-        Assert.IsNotNull(homes);
-        Assert.AreEqual(2, homes.Count);
-        Assert.IsTrue(homes.Any(h => h.Address == "Amarales 3420"));
-        Assert.IsTrue(homes.Any(h => h.Address == "Arteaga 1470"));
+        _homeRepositoryMock.Verify(repo => repo.GetHomesByUserId(_user.Id), Times.Once);
+        homes.Should().BeEquivalentTo(_testMembers.Select(m => m.Home).ToList());
     }
+
     #endregion
 
     #region NameHome
+
     #region Success
+
     [TestMethod]
     public void NameHome_ShouldAssignNickName()
     {
@@ -709,8 +697,11 @@ public class HomeOwnerServiceTests
         Assert.AreEqual(newName, home.NickName);
         _homeRepositoryMock.Verify(repo => repo.Rename(home, newName), Times.Once);
     }
+
     #endregion
+
     #region Error
+
     [TestMethod]
     public void NameHome_WhenOwnerIdIsEmpty_ThrowsException()
     {
@@ -720,7 +711,8 @@ public class HomeOwnerServiceTests
         var newName = "New Home Name";
 
         // Act & Assert
-        var exception = Assert.ThrowsException<ArgumentException>(() => _homeOwnerService.NameHome(ownerId, homeId, newName));
+        var exception =
+            Assert.ThrowsException<ArgumentException>(() => _homeOwnerService.NameHome(ownerId, homeId, newName));
         Assert.AreEqual("Owner ID cannot be empty", exception.Message);
     }
 
@@ -733,7 +725,8 @@ public class HomeOwnerServiceTests
         var newName = "New Home Name";
 
         // Act & Assert
-        var exception = Assert.ThrowsException<ArgumentException>(() => _homeOwnerService.NameHome(ownerId, homeId, newName));
+        var exception =
+            Assert.ThrowsException<ArgumentException>(() => _homeOwnerService.NameHome(ownerId, homeId, newName));
         Assert.AreEqual("Home ID cannot be empty", exception.Message);
     }
 
@@ -746,9 +739,12 @@ public class HomeOwnerServiceTests
         var newName = string.Empty;
 
         // Act & Assert
-        var exception = Assert.ThrowsException<ArgumentException>(() => _homeOwnerService.NameHome(ownerId, homeId, newName));
+        var exception =
+            Assert.ThrowsException<ArgumentException>(() => _homeOwnerService.NameHome(ownerId, homeId, newName));
         Assert.AreEqual("New name cannot be null or empty", exception.Message);
     }
+
     #endregion
+
     #endregion
 }

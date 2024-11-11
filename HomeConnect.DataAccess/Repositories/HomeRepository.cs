@@ -73,6 +73,11 @@ public class HomeRepository : IHomeRepository
         _context.SaveChanges();
     }
 
+    public List<Home> GetHomesByUserId(Guid userId)
+    {
+        throw new NotImplementedException();
+    }
+
     private void EnsureHomeDoesNotExist(Home home)
     {
         if (_context.Homes.Any(h => h.Address == home.Address))

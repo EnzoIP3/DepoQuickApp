@@ -247,6 +247,16 @@ public class HomeRepositoryTests
         result.Should().Contain(_home).And.Contain(home2);
     }
 
+    [TestMethod]
+    public void GetHomesByUserId_WhenUserIsMember_ReturnsHomes()
+    {
+        // Act
+        var result = _homeRepository.GetHomesByUserId(_otherOwner.Id);
+
+        // Assert
+        result.Should().Contain(_home);
+    }
+
     #endregion
 
     #endregion

@@ -1,19 +1,27 @@
-<div *ngFor="let item of items; let i = index">
-    <p *ngIf="item.value">
-        <span class="text-gray-700">
-            {{ item.label }}:
-        </span>
-        <span class="text-primary font-bold">
-            {{ item.value }}
-        </span>
-    </p>
-    <p *ngIf="!item.value">
-        <span class="text-gray-700">
-            {{ item.label }}:
-        </span>
-        <span class="text-gray-500">
-            N/A
-        </span>
-    </p>
-    <p-divider *ngIf="i + 1 < items.length" />
-</div>
+<ng-container *ngIf="!loading">
+    <ng-container *ngFor="let item of items; let i = index">
+        <p *ngIf="item.value">
+            <span class="text-gray-700">
+                {{ item.label }}:
+            </span>
+            <span class="text-primary font-bold">
+                {{ item.value }}
+            </span>
+        </p>
+        <p *ngIf="!item.value">
+            <span class="text-gray-700">
+                {{ item.label }}:
+            </span>
+            <span class="text-gray-500">
+                N/A
+            </span>
+        </p>
+        <p-divider *ngIf="i + 1 < items.length" />
+    </ng-container>
+</ng-container>
+<ng-container *ngIf="loading">
+    <ng-container *ngFor="let _ of loadingArray; let i = index">
+        <p-skeleton />
+        <p-divider *ngIf="i + 1 < items.length" />
+    </ng-container>
+</ng-container>

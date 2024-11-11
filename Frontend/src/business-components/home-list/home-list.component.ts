@@ -8,12 +8,12 @@ import { ListComponent } from "../../components/list/list.component";
 import { PanelComponent } from "../../components/panel/panel.component";
 
 @Component({
-    selector: "app-home-table",
+    selector: "app-home-list",
     standalone: true,
     imports: [ListComponent, PanelComponent],
-    templateUrl: "./home-table.component.html"
+    templateUrl: "./home-list.component.html"
 })
-export class HomeTableComponent {
+export class HomeListComponent {
     @Input() id!: string;
 
     title: string = "Unnamed home";

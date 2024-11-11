@@ -35,6 +35,7 @@ public class HomeController(IHomeOwnerService homeOwnerService) : ControllerBase
     }
 
     [HttpPatch("{homesId}/name")]
+    [HomeAuthorizationFilter(HomePermission.NameHome)]
     [AuthorizationFilter(SystemPermission.NameHome)]
     public NameHomeResponse NameHome([FromRoute] string homesId, [FromBody] NameHomeRequest request)
     {

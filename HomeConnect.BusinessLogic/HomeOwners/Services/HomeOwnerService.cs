@@ -222,7 +222,7 @@ public class HomeOwnerService : IHomeOwnerService
     {
         if (!HomeRepository.Exists(homeId))
         {
-            throw new ArgumentException("Home does not exist.");
+            throw new KeyNotFoundException("Home does not exist.");
         }
     }
 

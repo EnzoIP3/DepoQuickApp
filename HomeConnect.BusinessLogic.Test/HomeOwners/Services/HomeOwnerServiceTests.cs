@@ -626,7 +626,7 @@ public class HomeOwnerServiceTests
         Func<Home> act = () => _homeOwnerService.GetHome(nonExistentHomeId);
 
         // Assert
-        act.Should().Throw<ArgumentException>().WithMessage("Home does not exist.");
+        act.Should().Throw<KeyNotFoundException>().WithMessage("Home does not exist.");
     }
 
     #endregion

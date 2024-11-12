@@ -275,4 +275,9 @@ public class HomeOwnerService : IHomeOwnerService
 
         return parsedGuid;
     }
+
+    public List<HomePermission> GetHomePermissions(Guid homeId, Guid userId)
+    {
+        throw new NotImplementedException();
+    }
 }

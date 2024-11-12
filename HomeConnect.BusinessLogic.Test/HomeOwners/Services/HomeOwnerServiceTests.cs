@@ -752,4 +752,34 @@ public class HomeOwnerServiceTests
     #endregion
 
     #endregion
+
+    #region GetHomePermissions
+
+    #region Success
+
+    [TestMethod]
+    public void GetHomePermissions_WhenCalled_ReturnsCorrectPermissions()
+    {
+        // Arrange
+        var owner = new User("John", "Doe", "johndoe@gmail.com", "12345678@My",
+            new Role());
+        var home = new Home(owner, "Main St 123", 1.0, 2.0, 5);
+        var member = new Member(_user, [new HomePermission(HomePermission.GetHome)]);
+        home.AddMember(member);
+        _homeRepositoryMock.Setup(repo => repo.Exists(home.Id))
+            .Returns(true);
+        _homeRepositoryMock.Setup(repo => repo.Get(home.Id))
+            .Returns(home);
+
+        // Act
+        List<HomePermission> permissions = _homeOwnerService.GetHomePermissions(home.Id, _user.Id);
+
+        // Assert
+        _homeRepositoryMock.Verify(repo => repo.Get(home.Id), Times.Once);
+        permissions.Should().BeEquivalentTo(member.HomePermissions);
+    }
+
+    #endregion
+
+    #endregion
 }

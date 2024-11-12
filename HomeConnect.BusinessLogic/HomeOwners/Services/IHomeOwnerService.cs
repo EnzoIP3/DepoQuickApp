@@ -16,4 +16,5 @@ public interface IHomeOwnerService
     Home GetHome(Guid homeId);
     public List<Home> GetHomesByOwnerId(Guid userId);
     public void NameHome(NameHomeArgs args);
+    public List<HomePermission> GetHomePermissions(Guid homeId, Guid userId);
 }

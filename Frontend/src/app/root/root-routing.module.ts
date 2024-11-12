@@ -17,7 +17,7 @@ const routes: Routes = [
         component: RootPageComponent,
         canActivate: [authGuard],
         loadChildren: () =>
-            import("../devices/devices.module").then((m) => m.HomeModule)
+            import("../devices/devices.module").then((m) => m.DevicesModule)
     },
     {
         path: "homes",

@@ -5,6 +5,8 @@ import { environment } from "../../environments/environment";
 import ApiRepository from "./api-repository";
 import GetHomesResponse from "../services/homes/models/get-homes-response";
 import GetHomeResponse from "../services/homes/models/get-home-response";
+import AddHomeRequest from "../services/homes/models/add-home-request";
+import AddHomeResponse from "../services/homes/models/add-home-response";
 
 @Injectable({
     providedIn: "root"
@@ -20,5 +22,11 @@ export class HomesApiRepositoryService extends ApiRepository {
 
     public getHome(id: string): Observable<GetHomeResponse> {
         return this.get<GetHomeResponse>({ extraResource: id });
+    }
+
+    public addHome(
+        addHomeRequest: AddHomeRequest
+    ): Observable<AddHomeResponse> {
+        return this.post<AddHomeResponse>(addHomeRequest);
     }
 }

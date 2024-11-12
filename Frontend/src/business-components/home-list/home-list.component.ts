@@ -6,6 +6,7 @@ import GetHomeResponse from "../../backend/services/homes/models/get-home-respon
 import ListItem from "../../components/list/models/list-item";
 import { ListComponent } from "../../components/list/list.component";
 import { PanelComponent } from "../../components/panel/panel.component";
+import { Router } from "@angular/router";
 
 @Component({
     selector: "app-home-list",
@@ -25,7 +26,8 @@ export class HomeListComponent {
 
     constructor(
         private readonly _homesService: HomesService,
-        private readonly _messageService: MessageService
+        private readonly _messageService: MessageService,
+        private readonly _router: Router
     ) {}
 
     ngOnInit() {
@@ -69,6 +71,7 @@ export class HomeListComponent {
                         summary: "Error",
                         detail: error.message
                     });
+                    this._router.navigate(["/homes"]);
                 }
             });
     }

@@ -17,4 +17,4 @@ import { PanelComponent } from "../../components/panel/panel.component";
         PanelComponent
     ]
 })
-export class HomeModule {}
+export class DevicesModule {}

@@ -280,9 +280,15 @@ public class HomeOwnerService : IHomeOwnerService
     {
         var home = GetHome(homeId);
         var member = home.Members.FirstOrDefault(m => m.User.Id == userId);
+
         if (member == null)
         {
-            throw new ArgumentException("You do not belong to this home.");
+            if (home.Owner.Id != userId)
+            {
+                throw new ArgumentException("You do not belong to this home.");
+            }
+
+            return HomePermission.AllPermissions;
         }
 
         return member!.HomePermissions;

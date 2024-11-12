@@ -279,18 +279,26 @@ public class HomeOwnerService : IHomeOwnerService
     public List<HomePermission> GetHomePermissions(Guid homeId, Guid userId)
     {
         var home = GetHome(homeId);
-        var member = home.Members.FirstOrDefault(m => m.User.Id == userId);
+        var member = GetMemberFromHome(home, userId);
+        EnsureUserBelongsToHome(member, home, userId);
+        return member == null ? HomePermission.AllPermissions : GetPermissionsForMember(member);
+    }
 
-        if (member == null)
+    private void EnsureUserBelongsToHome(Member? member, Home home, Guid userId)
+    {
+        if (member == null && home.Owner.Id != userId)
         {
-            if (home.Owner.Id != userId)
-            {
-                throw new ArgumentException("You do not belong to this home.");
-            }
-
-            return HomePermission.AllPermissions;
+            throw new ArgumentException("You do not belong to this home.");
         }
+    }
 
-        return member!.HomePermissions;
+    private Member? GetMemberFromHome(Home home, Guid userId)
+    {
+        return home.Members.FirstOrDefault(m => m.User.Id == userId);
+    }
+
+    private List<HomePermission> GetPermissionsForMember(Member member)
+    {
+        return member.HomePermissions;
     }
 }

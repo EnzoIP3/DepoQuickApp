@@ -278,6 +278,8 @@ public class HomeOwnerService : IHomeOwnerService
 
     public List<HomePermission> GetHomePermissions(Guid homeId, Guid userId)
     {
-        throw new NotImplementedException();
+        var home = GetHome(homeId);
+        var member = home.Members.FirstOrDefault(m => m.User.Id == userId);
+        return member!.HomePermissions;
     }
 }

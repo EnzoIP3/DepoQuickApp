@@ -572,4 +572,33 @@ public class HomeControllerTests
     #endregion
 
     #endregion
+
+    #region GetHomePermissions
+
+    #region Success
+
+    [TestMethod]
+    public void GetHomePermissions_WithValidRequest_ReturnsHomePermissions()
+    {
+        // Arrange
+        var homeId = _home.Id;
+        var items = new Dictionary<object, object?> { { Item.UserLogged, _user } };
+        _httpContextMock.Setup(h => h.Items).Returns(items);
+        _homeOwnerService.Setup(x => x.GetHomePermissions(homeId, _user.Id))
+            .Returns([new HomePermission(HomePermission.AddDevice), new HomePermission(HomePermission.GetDevices)]);
+
+        // Act
+        GetHomePermissionsResponse response = _controller.GetHomePermissions(homeId.ToString());
+
+        // Assert
+        _homeOwnerService.VerifyAll();
+        response.HomeId.Should().Be(homeId.ToString());
+        response.HomePermissions.Should().NotBeNullOrEmpty();
+        response.HomePermissions.Should().HaveCount(2);
+        response.HomePermissions.Should().BeEquivalentTo(new[] { HomePermission.AddDevice, HomePermission.GetDevices });
+    }
+
+    #endregion
+
+    #endregion
 }

@@ -34,6 +34,19 @@ public class HomeController(IHomeOwnerService homeOwnerService) : ControllerBase
         return new GetHomesResponse { Homes = homeInfos };
     }
 
+    [HttpGet("{homesId}/permissions")]
+    [HomeAuthorizationFilter]
+    [AuthorizationFilter(SystemPermission.GetHomes)]
+    public GetHomePermissionsResponse GetHomePermissions([FromRoute] string homesId)
+    {
+        var userLoggedIn = HttpContext.Items[Item.UserLogged] as User;
+        var permissions = homeOwnerService.GetHomePermissions(Guid.Parse(homesId), userLoggedIn!.Id);
+        return new GetHomePermissionsResponse
+        {
+            HomeId = homesId, HomePermissions = permissions.Select(p => p.Value).ToList()
+        };
+    }
+
     [HttpPatch("{homesId}/name")]
     [HomeAuthorizationFilter(HomePermission.NameHome)]
     [AuthorizationFilter(SystemPermission.NameHome)]

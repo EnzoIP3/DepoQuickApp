@@ -8,7 +8,7 @@ using Microsoft.AspNetCore.Mvc.Filters;
 namespace HomeConnect.WebApi.Filters;
 
 [AttributeUsage(AttributeTargets.Class | AttributeTargets.Method)]
-public class HomeAuthorizationFilterAttribute(string permission) : Attribute, IAuthorizationFilter
+public class HomeAuthorizationFilterAttribute(string? permission = null) : Attribute, IAuthorizationFilter
 {
     private const string HomeIdRoute = "homesId";
     private const string MemberIdRoute = "membersId";
@@ -102,9 +102,9 @@ public class HomeAuthorizationFilterAttribute(string permission) : Attribute, IA
         }
     }
 
-    private static bool UserHasRequiredPermission(User user, Home home, string permission)
+    private static bool UserHasRequiredPermission(User user, Home home, string? permission)
     {
-        var homePermission = new HomePermission(permission);
+        var homePermission = new HomePermission(permission ?? string.Empty);
         return IsHomeOwner(user, home) || UserIsMemberWithPermission(user, home, homePermission);
     }
 
@@ -116,7 +116,7 @@ public class HomeAuthorizationFilterAttribute(string permission) : Attribute, IA
     private static bool UserIsMemberWithPermission(User user, Home home, HomePermission homePermission)
     {
         Member? member = home.Members.FirstOrDefault(m => m.User.Id == user.Id);
-        return member != null && member.HasPermission(homePermission);
+        return member != null && (member.HasPermission(homePermission) || homePermission.Value == string.Empty);
     }
 
     private static IHomeOwnerService GetHomeOwnerService(AuthorizationFilterContext context)
@@ -149,8 +149,15 @@ public class HomeAuthorizationFilterAttribute(string permission) : Attribute, IA
         SetResult(context, HttpStatusCode.NotFound, "NotFound", message);
     }
 
-    private static void SetForbiddenResult(AuthorizationFilterContext context, string permission)
+    private static void SetForbiddenResult(AuthorizationFilterContext context, string? permission)
     {
+        if (permission == null)
+        {
+            SetResult(context, HttpStatusCode.Forbidden, "Forbidden",
+                "You do not belong to this home");
+            return;
+        }
+
         SetResult(context, HttpStatusCode.Forbidden, "Forbidden", $"Missing home permission: {permission}");
     }
 

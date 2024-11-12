@@ -779,6 +779,23 @@ public class HomeOwnerServiceTests
         permissions.Should().BeEquivalentTo(member.HomePermissions);
     }
 
+    [TestMethod]
+    public void GetHomePermissions_WhenUserIsOwner_ReturnsAllPermissions()
+    {
+        // Arrange
+        var home = new Home(_user, "Main St 123", 1.0, 2.0, 5);
+        _homeRepositoryMock.Setup(repo => repo.Exists(home.Id))
+            .Returns(true);
+        _homeRepositoryMock.Setup(repo => repo.Get(home.Id))
+            .Returns(home);
+
+        // Act
+        List<HomePermission> permissions = _homeOwnerService.GetHomePermissions(home.Id, _user.Id);
+
+        // Assert
+        permissions.Should().BeEquivalentTo(HomePermission.AllPermissions);
+    }
+
     #endregion
 
     #region Error

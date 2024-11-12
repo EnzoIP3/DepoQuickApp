@@ -39,6 +39,7 @@ export default abstract class ApiRepository {
 
     protected get<T>(config: RequestConfig = {}): Observable<T> {
         const url = this.buildRequestUrl(config);
+        console.log(url);
         return this.executeRequest(() => this.http.get<T>(url, this.headers));
     }
 

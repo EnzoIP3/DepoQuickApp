@@ -1,16 +1,16 @@
 <div class="centered-content">
     <app-icon-title title="Register a new home" icon="pi-home" class="mb-4 text-primary-600 text-center" />
     <app-form [form]="homeForm" (onSubmit)="onSubmit()">
-        <app-form-input type="text" label="Address" placeholder="Avenida Italia 123" name="address"
+        <app-form-input type="text" label="Address" placeholder="Address" name="address"
             [form]="homeForm" iconClass="pi pi-map-marker" [formField]="formFields.address"></app-form-input>
 
-        <app-form-input type="number" label="Latitude" placeholder="20.00" name="latitude" [form]="homeForm"
+        <app-form-input type="number" label="Latitude" placeholder="Latitude" name="latitude" [form]="homeForm"
             iconClass="pi pi-compass" [formField]="formFields.latitude"></app-form-input>
 
-        <app-form-input type="number" label="Longitude" placeholder="20.00" name="longitude" [form]="homeForm"
+        <app-form-input type="number" label="Longitude" placeholder="Longitude" name="longitude" [form]="homeForm"
             iconClass="pi pi-compass" [formField]="formFields.longitude"></app-form-input>
 
-        <app-form-input type="number" label="Max Members" placeholder="4" name="maxMembers" [form]="homeForm"
+        <app-form-input type="number" label="Max Members" placeholder="Max Members" name="maxMembers" [form]="homeForm"
             iconClass="pi pi-users" [formField]="formFields.maxMembers"></app-form-input>
 
         <app-form-button title="Register Home" color="primary" [loading]="homeStatus.loading"

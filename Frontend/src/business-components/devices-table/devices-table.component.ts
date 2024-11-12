@@ -9,6 +9,7 @@ import { Subscription } from "rxjs";
 import { MessageService } from "primeng/api";
 import Pagination from "../../backend/services/pagination";
 import { PaginatorComponent } from "../../components/paginator/paginator.component";
+import FilterValues from "../../components/table/models/filter-values";
 
 @Component({
     selector: "app-devices-table",
@@ -36,10 +37,13 @@ export class DevicesTableComponent {
         }
     ];
 
+    filterableColumns: string[] = ["name", "type", "modelNumber", "businessName"];
+
     private _devicesSubscription: Subscription | null = null;
 
     devices: Device[] = [];
     pagination: PaginationResponse | null = null;
+    filters: FilterValues = {};
     loading: boolean = true;
 
     constructor(
@@ -53,16 +57,21 @@ export class DevicesTableComponent {
 
     onPageChange(pagination: Pagination): void {
         this.loading = true;
-        this._subscribeToDevices(pagination);
+        this._subscribeToDevices({ ...pagination, ...this.filters });
+    }
+
+    onFilterChange(filters: FilterValues) {
+        this.filters = filters;
+        this._subscribeToDevices({ ...this.pagination, ...filters })
     }
 
     ngOnDestroy() {
         this._devicesSubscription?.unsubscribe();
     }
 
-    private _subscribeToDevices(pagination?: Pagination): void {
+    private _subscribeToDevices(queries?: object): void {
         this._devicesSubscription = this._devicesService
-            .getDevices(pagination ? { ...pagination } : {})
+            .getDevices(queries ? { ...queries } : {})
             .subscribe({
                 next: (response: DevicesResponse) => {
                     this.devices = response.devices;

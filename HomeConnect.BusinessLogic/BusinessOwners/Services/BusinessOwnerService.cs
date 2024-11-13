@@ -78,6 +78,8 @@ public class BusinessOwnerService : IBusinessOwnerService
     {
         EnsureBusinessIsFromOwner(args.BusinessRut, args.OwnerId);
         EnsureValidatorExists(args.Validator);
+        Guid? validatorId = GetValidatorId(args.Validator);
+        BusinessRepository.UpdateValidator(args.BusinessRut, validatorId!.Value);
     }
 
     private void EnsureBusinessIsFromOwner(string argsBusinessRut, string argsOwnerId)

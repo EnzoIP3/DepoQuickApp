@@ -564,5 +564,33 @@ public class BusinessOwnerServiceTests
     }
 
     #endregion
+    #region Success
+    [TestMethod]
+    public void UpdateValidator_WhenCalledWithValidRequest_UpdatesValidator()
+    {
+        // Arrange
+        var business = new Business("RUTexample", "Business Name", "https://example.com/image.png", _owner);
+        var args = new UpdateValidatorArgs
+        {
+            BusinessRut = business.Rut,
+            Validator = "validator",
+            OwnerId = _owner.Id.ToString()
+        };
+        var validatorId = Guid.NewGuid();
+        _businessRepository.Setup(x => x.Get(business.Rut)).Returns(business);
+        _validatorService.Setup(x => x.Exists(args.Validator)).Returns(true);
+        _validatorService.Setup(x => x.GetValidatorIdByName(args.Validator)).Returns(validatorId);
+        _businessRepository.Setup(x => x.UpdateValidator(business.Rut, validatorId));
+
+        // Act
+        _businessOwnerService.UpdateValidator(args);
+
+        // Assert
+        _businessRepository.Verify(x => x.Get(business.Rut), Times.Once);
+        _businessRepository.Verify(x => x.UpdateValidator(business.Rut, validatorId), Times.Once);
+        _validatorService.Verify(x => x.GetValidatorIdByName(args.Validator), Times.Once);
+        _validatorService.Verify(x => x.Exists(args.Validator), Times.Once);
+    }
+    #endregion
     #endregion
 }

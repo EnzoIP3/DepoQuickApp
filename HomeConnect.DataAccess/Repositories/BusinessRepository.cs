@@ -21,6 +21,11 @@ public class BusinessRepository : PaginatedRepositoryBase<Business>, IBusinessRe
         return GetAllPaged(currentPage, pageSize, filters);
     }
 
+    public void UpdateValidator(string argsBusinessRut, Guid validatorId)
+    {
+        throw new NotImplementedException();
+    }
+
     public Business Get(string rut)
     {
         return Context.Businesses.First(b => b.Rut == rut);

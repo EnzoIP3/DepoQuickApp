@@ -1,4 +1,5 @@
 using BusinessLogic.Devices.Services;
+using HomeConnect.WebApi.Controllers.DeviceImportFiles.Models;
 using HomeConnect.WebApi.Controllers.Devices.Models;
 using HomeConnect.WebApi.Filters;
 using Microsoft.AspNetCore.Mvc;

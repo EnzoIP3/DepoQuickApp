@@ -192,4 +192,26 @@ public class BusinessControllerTests
     }
 
     #endregion
+
+    #region UpdateValidator
+    [TestMethod]
+    public void UpdateValidator_WhenCalledWithValidRequest_ReturnsUpdateValidatorResponse()
+    {
+        // Arrange
+        _businessOwnerService.Setup(x => x.UpdateValidator(It.IsAny<UpdateValidatorArgs>()));
+        var items = new Dictionary<object, object?> { { Item.UserLogged, _user } };
+        _httpContextMock.Setup(h => h.Items).Returns(items);
+
+        var request = new UpdateValidatorRequest { Validator = "Validator" };
+        var expectedResponse = new UpdateValidatorResponse { BusinessRut = _businesses[0].Rut, Validator = "Validator" };
+
+        // Act
+        UpdateValidatorResponse response = _controller.UpdateValidator(_businesses[0].Rut, request);
+
+        // Assert
+        _businessOwnerService.VerifyAll();
+        response.Should().NotBeNull();
+        response.Should().BeEquivalentTo(expectedResponse);
+    }
+    #endregion
 }

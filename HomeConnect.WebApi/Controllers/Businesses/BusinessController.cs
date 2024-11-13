@@ -64,4 +64,19 @@ public class BusinessController(IAdminService adminService, IBusinessOwnerServic
             }
         };
     }
+
+    [HttpPatch("{businessId}/validator")]
+    [AuthorizationFilter(SystemPermission.UpdateBusinessValidator)]
+    public UpdateValidatorResponse UpdateValidator(string businessId, [FromBody] UpdateValidatorRequest request)
+    {
+        var userLoggedIn = HttpContext.Items[Item.UserLogged] as User;
+        var args = new UpdateValidatorArgs
+        {
+            BusinessRut = businessId,
+            Validator = request.Validator ?? string.Empty,
+            OwnerId = userLoggedIn?.Id.ToString() ?? string.Empty
+        };
+        businessOwnerService.UpdateValidator(args);
+        return new UpdateValidatorResponse { BusinessRut = args.BusinessRut, Validator = args.Validator };
+    }
 }

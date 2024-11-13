@@ -73,7 +73,8 @@ public class Context(DbContextOptions<Context> options) : DbContext(options)
             new SystemPermission { Value = SystemPermission.CreateSensor },
             new SystemPermission { Value = SystemPermission.UpdateMember },
             new SystemPermission { Value = SystemPermission.CreateMotionSensor },
-            new SystemPermission { Value = SystemPermission.CreateLamp });
+            new SystemPermission { Value = SystemPermission.CreateLamp },
+            new SystemPermission { Value = SystemPermission.UpdateBusinessValidator });
     }
 
     private void ConfigureRolePermissions(ModelBuilder modelBuilder)

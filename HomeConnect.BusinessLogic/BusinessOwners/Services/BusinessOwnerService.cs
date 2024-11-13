@@ -74,6 +74,11 @@ public class BusinessOwnerService : IBusinessOwnerService
         return camera;
     }
 
+    public void UpdateValidator(UpdateValidatorArgs args)
+    {
+        throw new NotImplementedException();
+    }
+
     private static Guid ParseAndValidateOwnerId(string ownerId)
     {
         if (!Guid.TryParse(ownerId, out Guid parsedOwnerId))

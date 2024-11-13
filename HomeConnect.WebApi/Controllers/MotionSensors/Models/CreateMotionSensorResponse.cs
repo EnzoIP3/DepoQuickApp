@@ -1,4 +1,4 @@
-namespace HomeConnect.WebApi.Controllers.MotionSensors;
+namespace HomeConnect.WebApi.Controllers.MotionSensors.Models;
 
 public struct CreateMotionSensorResponse
 {

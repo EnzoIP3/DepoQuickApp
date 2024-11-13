@@ -74,4 +74,31 @@ public class RoomControllerTests
         response.DeviceId.Should().Be(hardwareId.ToString());
         response.RoomId.Should().Be(roomId);
     }
+
+    [TestMethod]
+    public void MoveDevice_WhenCalledWithValidRequest_ReturnsExpectedResponse()
+    {
+        // Arrange
+        var sourceRoomId = "123e4567-e89b-12d3-a456-426614174000";
+        var targetRoomId = "123e4567-e89b-12d3-a456-426614174001";
+        var deviceId = "123e4567-e89b-12d3-a456-426614174002";
+
+        _homeOwnerService.Setup(x => x.MoveDevice(sourceRoomId, targetRoomId, deviceId)).Verifiable();
+
+        var request = new MoveDeviceRequest
+        {
+            SourceRoomId = sourceRoomId,
+            TargetRoomId = targetRoomId
+        };
+
+        // Act
+        var response = _controller.MoveDevice(deviceId, request);
+
+        // Assert
+        _homeOwnerService.VerifyAll();
+        response.Should().NotBeNull();
+        response.SourceRoomId.Should().Be(sourceRoomId);
+        response.TargetRoomId.Should().Be(targetRoomId);
+        response.DeviceId.Should().Be(deviceId);
+    }
 }

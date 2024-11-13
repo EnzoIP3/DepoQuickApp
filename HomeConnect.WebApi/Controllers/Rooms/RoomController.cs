@@ -19,4 +19,10 @@ public class RoomController(IHomeOwnerService homeOwnerService) : ControllerBase
         Guid hardwareId = homeOwnerService.AddOwnedDeviceToRoom(roomId, request.DeviceId);
         return new AddOwnedDeviceToRoomResponse { DeviceId = hardwareId.ToString(), RoomId = roomId };
     }
+
+    [HttpPost("{deviceId}/move")]
+    public MoveDeviceResponse MoveDevice([FromRoute] string deviceId, [FromBody] MoveDeviceRequest request)
+    {
+        throw new NotImplementedException();
+    }
 }

@@ -76,10 +76,19 @@ public class BusinessOwnerService : IBusinessOwnerService
 
     public void UpdateValidator(UpdateValidatorArgs args)
     {
+        EnsureBusinessExistsFromRut(args.BusinessRut);
         EnsureBusinessIsFromOwner(args.BusinessRut, args.OwnerId);
         EnsureValidatorExists(args.Validator);
         Guid? validatorId = GetValidatorId(args.Validator);
-        BusinessRepository.UpdateValidator(args.BusinessRut, validatorId!.Value);
+        BusinessRepository.UpdateValidator(args.BusinessRut, validatorId);
+    }
+
+    private void EnsureBusinessExistsFromRut(string argsBusinessRut)
+    {
+        if (!BusinessRepository.Exists(argsBusinessRut))
+        {
+            throw new ArgumentException("The business does not exist.");
+        }
     }
 
     private void EnsureBusinessIsFromOwner(string argsBusinessRut, string argsOwnerId)

@@ -49,6 +49,13 @@ export default abstract class ApiRepository {
         );
     }
 
+    protected patch<T>(body: any, extraResource = ""): Observable<T> {
+        const url = this.buildRequestUrl({ extraResource });
+        return this.executeRequest(() =>
+            this.http.patch<T>(url, body, this.headers)
+        );
+    }
+
     private buildFullEndpoint(apiOrigin: string, endpoint: string): string {
         return `${apiOrigin}/${endpoint}`;
     }

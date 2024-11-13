@@ -20,7 +20,13 @@
     <ng-template pTemplate="body" let-rowData let-columns="columns">
         <tr [pSelectableRow]="rowData" *ngIf="!loading">
             <td *ngFor="let col of columns">
-                {{ rowData[col.field] }}
+                <ng-container *ngIf="customTemplates[col.field]; else defaultCell">
+                    <ng-container
+                        *ngTemplateOutlet="customTemplates[col.field]; context: { value: rowData[col.field], row: rowData }"></ng-container>
+                </ng-container>
+                <ng-template #defaultCell>
+                    {{ rowData[col.field] }}
+                </ng-template>
             </td>
         </tr>
     </ng-template>

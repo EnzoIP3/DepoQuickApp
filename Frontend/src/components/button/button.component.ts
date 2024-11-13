@@ -1,4 +1,4 @@
-import { Component, Input } from "@angular/core";
+import { Component, EventEmitter, Input, Output } from "@angular/core";
 import { RouterModule } from "@angular/router";
 import { ButtonModule } from "primeng/button";
 
@@ -24,4 +24,5 @@ export class ButtonComponent {
         | "contrast"
         | null
         | undefined;
+    @Output() click = new EventEmitter<any>();
 }

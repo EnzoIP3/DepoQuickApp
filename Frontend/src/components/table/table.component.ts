@@ -1,4 +1,4 @@
-import { Component, Input, Output, EventEmitter } from "@angular/core";
+import { Component, Input, Output, EventEmitter, TemplateRef } from "@angular/core";
 import { TableModule } from "primeng/table";
 import { CommonModule } from "@angular/common";
 import { SkeletonModule } from "primeng/skeleton";
@@ -31,6 +31,7 @@ export class TableComponent {
     @Input() loading: boolean = false;
     @Input() clickableRows: boolean = false;
     @Input() filterableColumns: string[] = [];
+    @Input() customTemplates: { [key: string]: TemplateRef<any> } = {};
     @Output() rowClick = new EventEmitter<any>();
     @Output() filter = new EventEmitter<FilterValues>();
 

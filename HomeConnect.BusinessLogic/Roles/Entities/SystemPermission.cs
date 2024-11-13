@@ -24,6 +24,10 @@ public record SystemPermission
     public const string GetHomes = "get-homes";
     public const string NameHome = "name-home";
     public const string UpdateBusinessValidator = "update-business-validator";
+    public const string GetDeviceValidators = "get-device-validators";
+    public const string ImportDevices = "import-devices";
+    public const string GetDeviceImportFiles = "get-device-import-files";
+    public const string GetDeviceImporters = "get-device-importers";
 
     public SystemPermission()
     {

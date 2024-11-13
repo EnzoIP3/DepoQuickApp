@@ -1,5 +1,6 @@
 using BusinessLogic.BusinessOwners.Models;
 using BusinessLogic.BusinessOwners.Services;
+using BusinessLogic.Roles.Entities;
 using HomeConnect.WebApi.Controllers.DeviceValidators.Models;
 using HomeConnect.WebApi.Filters;
 using Microsoft.AspNetCore.Mvc;
@@ -19,6 +20,7 @@ public class DeviceValidatorController : ControllerBase
     }
 
     [HttpGet]
+    [AuthorizationFilter(SystemPermission.GetDeviceValidators)]
     public GetValidatorsResponse GetValidators()
     {
         var validators = _validatorService.GetValidators();

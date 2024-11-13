@@ -4,6 +4,7 @@ using BusinessLogic.BusinessOwners.Services;
 using BusinessLogic.Devices.Entities;
 using BusinessLogic.Devices.Models;
 using BusinessLogic.Devices.Services;
+using BusinessLogic.Roles.Entities;
 using BusinessLogic.Users.Entities;
 using HomeConnect.WebApi.Controllers.Devices.Models;
 using HomeConnect.WebApi.Controllers.Homes.Models;
@@ -70,6 +71,7 @@ public class DeviceController : ControllerBase
     }
 
     [HttpPost]
+    [AuthorizationFilter(SystemPermission.ImportDevices)]
     public ImportDevicesResponse ImportDevices([FromBody] ImportDevicesRequest request)
     {
         var userLoggedIn = HttpContext.Items[Item.UserLogged] as User;

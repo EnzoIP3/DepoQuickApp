@@ -1,4 +1,5 @@
 using BusinessLogic.Devices.Services;
+using BusinessLogic.Roles.Entities;
 using HomeConnect.WebApi.Controllers.DeviceImportFiles.Models;
 using HomeConnect.WebApi.Filters;
 using Microsoft.AspNetCore.Mvc;
@@ -18,6 +19,7 @@ public class DeviceImportFilesController
     }
 
     [HttpGet]
+    [AuthorizationFilter(SystemPermission.GetDeviceImportFiles)]
     public GetImportFilesResponse GetImportFiles()
     {
         var files = _importerService.GetImportFiles();

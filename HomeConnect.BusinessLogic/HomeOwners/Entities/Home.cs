@@ -173,7 +173,7 @@ public class Home
 
     private void EnsureMemberIsNotAlreadyAdded(Member member)
     {
-        if (Members.Any(m => m == member))
+        if (Members.Any(m => m.User.Id == member.User.Id))
         {
             throw new InvalidOperationException("The member is already added to this home.");
         }

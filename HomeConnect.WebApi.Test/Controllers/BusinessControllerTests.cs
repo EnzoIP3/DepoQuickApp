@@ -29,6 +29,7 @@ public class BusinessControllerTests
     private PagedData<Business> _pagedList = null!;
     private Role _role = null!;
     private User _user = null!;
+    private readonly Guid _validatorId = Guid.NewGuid();
 
     [TestInitialize]
     public void Initialize()
@@ -44,8 +45,8 @@ public class BusinessControllerTests
         _otherUser = new User("Name1", "Surname1", "email1@email.com", "Password@100", _role);
         _businesses =
         [
-            new Business("123456789123", "Business 1", "https://example.com/image.png", _user),
-            new Business("123456789124", "Business 2", "https://example.com/image.png", _otherUser)
+            new Business("123456789123", "Business 1", "https://example.com/image.png", _user, _validatorId),
+            new Business("123456789124", "Business 2", "https://example.com/image.png", _otherUser),
         ];
         _expectedPagination = new Pagination { Page = 1, PageSize = 10, TotalPages = 1 };
         _pagedList = new PagedData<Business>
@@ -61,13 +62,15 @@ public class BusinessControllerTests
                 Name = "Business 1",
                 OwnerId = _user.Id.ToString(),
                 Rut = "123456789123",
-                Logo = "https://example.com/image.png"
+                Logo = "https://example.com/image.png",
+                Validator = "Validator"
             };
         _businessRequest = new CreateBusinessRequest
         {
             Name = "Business 1",
             Rut = _businesses[0].Rut,
-            Logo = "https://example.com/image.png"
+            Logo = "https://example.com/image.png",
+            Validator = "Validator"
         };
     }
 
@@ -188,5 +191,27 @@ public class BusinessControllerTests
         response.Should().BeEquivalentTo(expectedResponse);
     }
 
+    #endregion
+
+    #region UpdateValidator
+    [TestMethod]
+    public void UpdateValidator_WhenCalledWithValidRequest_ReturnsUpdateValidatorResponse()
+    {
+        // Arrange
+        _businessOwnerService.Setup(x => x.UpdateValidator(It.IsAny<UpdateValidatorArgs>()));
+        var items = new Dictionary<object, object?> { { Item.UserLogged, _user } };
+        _httpContextMock.Setup(h => h.Items).Returns(items);
+
+        var request = new UpdateValidatorRequest { Validator = "Validator" };
+        var expectedResponse = new UpdateValidatorResponse { BusinessRut = _businesses[0].Rut, Validator = "Validator" };
+
+        // Act
+        UpdateValidatorResponse response = _controller.UpdateValidator(_businesses[0].Rut, request);
+
+        // Assert
+        _businessOwnerService.VerifyAll();
+        response.Should().NotBeNull();
+        response.Should().BeEquivalentTo(expectedResponse);
+    }
     #endregion
 }

@@ -5,6 +5,7 @@ using BusinessLogic.Devices.Entities;
 using BusinessLogic.Devices.Repositories;
 using BusinessLogic.Users.Entities;
 using BusinessLogic.Users.Repositories;
+using ModeloValidador.Abstracciones;
 
 namespace BusinessLogic.BusinessOwners.Services;
 
@@ -13,32 +14,54 @@ public class BusinessOwnerService : IBusinessOwnerService
     public BusinessOwnerService(
         IUserRepository userRepository,
         IBusinessRepository businessRepository,
-        IDeviceRepository deviceRepository)
+        IDeviceRepository deviceRepository,
+        IValidatorService validatorService)
     {
         UserRepository = userRepository;
         BusinessRepository = businessRepository;
         DeviceRepository = deviceRepository;
+        ValidatorService = validatorService;
     }
 
     private IUserRepository UserRepository { get; }
     private IBusinessRepository BusinessRepository { get; }
     private IDeviceRepository DeviceRepository { get; }
+    private IValidatorService ValidatorService { get; }
 
     public Business CreateBusiness(CreateBusinessArgs args)
     {
         Guid ownerId = ParseAndValidateOwnerId(args.OwnerId);
         EnsureBusinessPrerequisites(ownerId, args.Rut);
+        EnsureValidatorExists(args.Validator);
+        Guid? validatorId = GetValidatorId(args.Validator);
         User owner = GetUserById(ownerId);
-        var business = new Business(args.Rut, args.Name, args.Logo, owner);
+        var business = new Business(args.Rut, args.Name, args.Logo, owner, validatorId);
         BusinessRepository.Add(business);
         return business;
+    }
+
+    private Guid? GetValidatorId(string? argsValidator)
+    {
+        if (!string.IsNullOrWhiteSpace(argsValidator))
+        {
+            return ValidatorService.GetValidatorIdByName(argsValidator);
+        }
+
+        return null;
+    }
+
+    private void EnsureValidatorExists(string? argsValidator)
+    {
+        if (!string.IsNullOrWhiteSpace(argsValidator) && !ValidatorService.Exists(argsValidator))
+        {
+            throw new ArgumentException("The specified validator does not exist.");
+        }
     }
 
     public Device CreateDevice(CreateDeviceArgs args)
     {
         Business business = GetValidatedBusiness(args.Owner.Id);
         Device device = CreateDevice(args, business);
-        EnsureDeviceDoesNotExist(args.ModelNumber);
         DeviceRepository.Add(device);
         return device;
     }
@@ -47,16 +70,25 @@ public class BusinessOwnerService : IBusinessOwnerService
     {
         Business business = GetValidatedBusiness(args.Owner.Id);
         Camera camera = CreateCamera(args, business);
-        EnsureDeviceDoesNotExist(args.ModelNumber);
         DeviceRepository.Add(camera);
         return camera;
     }
 
-    private void EnsureDeviceDoesNotExist(int? modelNumber)
+    public void UpdateValidator(UpdateValidatorArgs args)
     {
-        if (DeviceRepository.ExistsByModelNumber(modelNumber!.Value))
+        EnsureBusinessIsFromOwner(args.BusinessRut, args.OwnerId);
+        EnsureValidatorExists(args.Validator);
+        Guid? validatorId = GetValidatorId(args.Validator);
+        BusinessRepository.UpdateValidator(args.BusinessRut, validatorId!.Value);
+    }
+
+    private void EnsureBusinessIsFromOwner(string argsBusinessRut, string argsOwnerId)
+    {
+        Guid ownerId = ParseAndValidateOwnerId(argsOwnerId);
+        Business business = BusinessRepository.Get(argsBusinessRut);
+        if (business.Owner.Id != ownerId)
         {
-            throw new InvalidOperationException("Device already exists");
+            throw new InvalidOperationException("The business does not belong to the specified owner.");
         }
     }
 
@@ -88,8 +120,9 @@ public class BusinessOwnerService : IBusinessOwnerService
         return BusinessRepository.GetByOwnerId(ownerId);
     }
 
-    private static Device CreateDevice(CreateDeviceArgs args, Business business)
+    private Device CreateDevice(CreateDeviceArgs args, Business business)
     {
+        EnsureModelNumberIsValid(args.ModelNumber, business.Validator);
         return new Device(
             args.Name,
             args.ModelNumber,
@@ -100,8 +133,21 @@ public class BusinessOwnerService : IBusinessOwnerService
             business);
     }
 
-    private static Camera CreateCamera(CreateCameraArgs args, Business business)
+    private void EnsureModelNumberIsValid(string? modelNumber, Guid? validatorName)
     {
+        if (validatorName != null && modelNumber != null)
+        {
+            IModeloValidador validator = ValidatorService.GetValidator(validatorName);
+            if (!validator.EsValido(new Modelo(modelNumber)))
+            {
+                throw new ArgumentException("The model number is not valid according to the specified validator.");
+            }
+        }
+    }
+
+    private Camera CreateCamera(CreateCameraArgs args, Business business)
+    {
+        EnsureModelNumberIsValid(args.ModelNumber, business.Validator);
         return new Camera(
             args.Name,
             args.ModelNumber,

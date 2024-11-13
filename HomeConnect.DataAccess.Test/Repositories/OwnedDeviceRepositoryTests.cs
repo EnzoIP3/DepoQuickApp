@@ -11,6 +11,8 @@ namespace HomeConnect.DataAccess.Test.Repositories;
 [TestClass]
 public class OwnedDeviceRepositoryTests
 {
+    private readonly string _modelNumber = "123";
+
     private readonly Context _context = DbContextBuilder.BuildTestDbContext();
     private Business _business = null!;
     private User _businessOwner = null!;
@@ -33,7 +35,7 @@ public class OwnedDeviceRepositoryTests
 
         _home = new Home(_homeOwner, "Main St 123", 12.5, 12.5, 5);
         _business = new Business("123456789123", "Business Name", "https://example.com/image.png", _businessOwner);
-        _device = new Device("Sensor", 12345, "A sensor", "https://sensor.com/image.png", [], "Sensor", _business);
+        _device = new Device("Sensor", "12345", "A sensor", "https://sensor.com/image.png", [], "Sensor", _business);
 
         _ownedDevice = new OwnedDevice(_home, _device) { Connected = false };
 
@@ -136,7 +138,7 @@ public class OwnedDeviceRepositoryTests
     public void UpdateLampState_WhenOwnedDeviceIsNotALamp_ThrowsInvalidOperationException()
     {
         // Arrange
-        var device = new Device("Sensor", 12345, "A sensor",
+        var device = new Device("Sensor", _modelNumber, "A sensor",
             "https://sensor.com/image.png", [], "Sensor", _business);
         var ownedDevice = new OwnedDevice(_home, device);
         _context.Devices.Add(device);
@@ -156,7 +158,7 @@ public class OwnedDeviceRepositoryTests
     public void UpdateLampState_WhenOwnedDeviceIsALamp_UpdatesLampState()
     {
         // Arrange
-        var device = new Device("Lamp", 12345, "A lamp",
+        var device = new Device("Lamp", _modelNumber, "A lamp",
             "https://lamp.com/image.png", [], "Lamp", _business);
         var ownedDevice = new LampOwnedDevice(_home, device);
         _context.Devices.Add(device);
@@ -181,7 +183,7 @@ public class OwnedDeviceRepositoryTests
     public void UpdateSensorState_WhenDeviceIsNotASensor_ThrowsInvalidOperationException()
     {
         // Arrange
-        var device = new Device("Camera", 12345, "A camera",
+        var device = new Device("Camera", _modelNumber, "A camera",
             "https://camera.com/image.png", [], "Camera", _business);
         var ownedDevice = new OwnedDevice(_home, device);
         _context.Devices.Add(device);
@@ -202,7 +204,7 @@ public class OwnedDeviceRepositoryTests
     public void GetLampState_IfDeviceIsNotALamp_ThrowsInvalidOperationException()
     {
         // Arrange
-        var device = new Device("Sensor", 12345, "A sensor",
+        var device = new Device("Sensor", _modelNumber, "A sensor",
             "https://sensor.com/image.png", [], "Sensor", _business);
         var ownedDevice = new OwnedDevice(_home, device);
         _context.Devices.Add(device);
@@ -220,7 +222,7 @@ public class OwnedDeviceRepositoryTests
     public void GetLampState_IfDeviceIsALamp_ReturnsLampState()
     {
         // Arrange
-        var device = new Device("Lamp", 12345, "A lamp",
+        var device = new Device("Lamp", _modelNumber, "A lamp",
             "https://lamp.com/image.png", [], "Lamp", _business);
         var ownedDevice = new LampOwnedDevice(_home, device);
         _context.Devices.Add(device);
@@ -239,7 +241,7 @@ public class OwnedDeviceRepositoryTests
     public void GetSensorState_IfDeviceIsNotASensor_ThrowsInvalidOperationException()
     {
         // Arrange
-        var device = new Device("Camera", 12345, "A camera",
+        var device = new Device("Camera", _modelNumber, "A camera",
             "https://camera.com/image.png", [], "Camera", _business);
         var ownedDevice = new SensorOwnedDevice(_home, device);
         _context.Devices.Add(device);
@@ -257,7 +259,7 @@ public class OwnedDeviceRepositoryTests
     public void GetSensorState_IfDeviceIsASensor_ReturnsSensorState()
     {
         // Arrange
-        var device = new Device("Sensor", 12345, "A sensor",
+        var device = new Device("Sensor", _modelNumber, "A sensor",
             "https://sensor.com/image.png", [], "Sensor", _business);
         var ownedDevice = new SensorOwnedDevice(_home, device);
         _context.Devices.Add(device);

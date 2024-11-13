@@ -48,7 +48,7 @@ public class CameraControllerTests
     {
         // Arrange
         var user = new User();
-        var camera = new Camera("Name", 123, "Description", "https://example.com/photo.png", [],
+        var camera = new Camera("Name", "123", "Description", "https://example.com/photo.png", [],
             new Business(), true, true,
             true,
             true);
@@ -60,10 +60,10 @@ public class CameraControllerTests
             Exterior = true,
             Interior = true,
             MainPhoto = "MainPhoto",
-            ModelNumber = 123,
+            ModelNumber = "123",
             MotionDetection = true,
             PersonDetection = true,
-            SecondaryPhotos = []
+            SecondaryPhotos = [],
         };
         var cameraRequest = new CreateCameraRequest
         {
@@ -75,7 +75,7 @@ public class CameraControllerTests
             ModelNumber = cameraArgs.ModelNumber,
             MotionDetection = cameraArgs.MotionDetection,
             PersonDetection = cameraArgs.PersonDetection,
-            SecondaryPhotos = cameraArgs.SecondaryPhotos
+            SecondaryPhotos = cameraArgs.SecondaryPhotos,
         };
         _businessOwnerService.Setup(x => x.CreateCamera(cameraArgs)).Returns(camera);
         var items = new Dictionary<object, object?> { { Item.UserLogged, user } };

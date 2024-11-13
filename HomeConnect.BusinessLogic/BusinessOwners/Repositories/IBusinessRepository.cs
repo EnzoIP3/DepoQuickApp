@@ -12,4 +12,6 @@ public interface IBusinessRepository
 
     PagedData<Business> GetPaged(int currentPage, int pageSize, string? fullNameFilter = null,
         string? nameFilter = null);
+
+    void UpdateValidator(string argsBusinessRut, Guid validatorId);
 }

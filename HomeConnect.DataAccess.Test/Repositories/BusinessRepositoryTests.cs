@@ -252,4 +252,20 @@ public class BusinessRepositoryTests
     #endregion
 
     #endregion
+
+    #region UpdateValidator
+    [TestMethod]
+    public void UpdateValidator_WhenBusinessExists_UpdatesValidator()
+    {
+        // Arrange
+        var business = _validBusiness;
+        var validatorId = Guid.NewGuid();
+
+        // Act
+        _businessRepository.UpdateValidator(business.Rut, validatorId);
+
+        // Assert
+        business.Validator.Should().Be(validatorId);
+    }
+    #endregion
 }

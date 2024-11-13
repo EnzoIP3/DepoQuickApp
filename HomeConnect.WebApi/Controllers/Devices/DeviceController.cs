@@ -1,7 +1,11 @@
 using BusinessLogic;
+using BusinessLogic.BusinessOwners.Models;
+using BusinessLogic.BusinessOwners.Services;
 using BusinessLogic.Devices.Entities;
 using BusinessLogic.Devices.Models;
 using BusinessLogic.Devices.Services;
+using BusinessLogic.Roles.Entities;
+using BusinessLogic.Users.Entities;
 using HomeConnect.WebApi.Controllers.Devices.Models;
 using HomeConnect.WebApi.Controllers.Homes.Models;
 using HomeConnect.WebApi.Filters;
@@ -16,10 +20,15 @@ namespace HomeConnect.WebApi.Controllers.Devices;
 public class DeviceController : ControllerBase
 {
     private readonly IDeviceService _deviceService;
+    private readonly IValidatorService _validatorService;
+    private readonly IImporterService _importerService;
 
-    public DeviceController(IDeviceService deviceService)
+    public DeviceController(IDeviceService deviceService, IValidatorService validatorService,
+        IImporterService importerService)
     {
         _deviceService = deviceService;
+        _validatorService = validatorService;
+        _importerService = importerService;
     }
 
     [HttpGet]
@@ -59,6 +68,21 @@ public class DeviceController : ControllerBase
                 TotalPages = devices.TotalPages
             }
         };
+    }
+
+    [HttpPost]
+    [AuthorizationFilter(SystemPermission.ImportDevices)]
+    public ImportDevicesResponse ImportDevices([FromBody] ImportDevicesRequest request)
+    {
+        var userLoggedIn = HttpContext.Items[Item.UserLogged] as User;
+        var args = new ImportDevicesArgs
+        {
+            ImporterName = request.ImporterName,
+            FileName = request.Route,
+            User = userLoggedIn!
+        };
+        var addedDevices = _importerService.ImportDevices(args);
+        return new ImportDevicesResponse { ImportedDevices = addedDevices };
     }
 
     [HttpPost("{hardwareId}/turn_on")]

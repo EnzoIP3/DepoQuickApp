@@ -7,7 +7,7 @@ import { Observable, catchError, retry, throwError } from "rxjs";
 
 export interface RequestConfig {
     extraResource?: string;
-    query?: string;
+    queries?: Record<string, any>;
 }
 
 export default abstract class ApiRepository {
@@ -55,15 +55,26 @@ export default abstract class ApiRepository {
 
     private buildRequestUrl({
         extraResource = "",
-        query = ""
+        queries = {}
     }: RequestConfig): string {
+        const formattedQueries = this.formatQueries(queries);
         const formattedExtra = extraResource ? `/${extraResource}` : "";
-        const formattedQuery = query ? `?${query}` : "";
-        return `${this.fullEndpoint}${formattedExtra}${formattedQuery}`;
+        const queryString = formattedQueries ? `?${formattedQueries}` : "";
+        return `${this.fullEndpoint}${formattedExtra}${queryString}`;
+    }
+
+    private formatQueries(queries: Record<string, any>): string {
+        return Object.entries(queries)
+            .map(
+                ([key, value]) =>
+                    `${encodeURIComponent(key)}=${encodeURIComponent(value)}`
+            )
+            .join("&");
     }
 
     private getAuthToken(): string {
-        return localStorage.getItem("token") ?? "";
+        const user = JSON.parse(localStorage.getItem("user") || "{}");
+        return `Bearer ${user.token}`; 
     }
 
     private executeRequest<T>(requestFn: () => Observable<T>): Observable<T> {
@@ -75,11 +86,11 @@ export default abstract class ApiRepository {
 
     protected handleError(error: HttpErrorResponse) {
         let errorMessage = ApiRepository.DEFAULT_ERROR_MESSAGE;
-        let isServerError = "message" in error.error;
+        let isClientError = error.error instanceof ErrorEvent;
         let isExpiredTokenError =
-            error.status === 401 && localStorage.getItem("token");
+            error.status === 401 && localStorage.getItem("user");
 
-        if (isServerError) {
+        if (!isClientError && error.error) {
             errorMessage = error.error.message;
         }
 

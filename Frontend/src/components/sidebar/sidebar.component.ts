@@ -1,7 +1,7 @@
 import { Component, EventEmitter, Input, Output } from "@angular/core";
-import { MenuItem } from "primeng/api";
 import { MenuModule } from "primeng/menu";
 import { SidebarModule } from "primeng/sidebar";
+import Route from "./models/route";
 
 @Component({
     selector: "app-sidebar",
@@ -12,7 +12,7 @@ import { SidebarModule } from "primeng/sidebar";
 export class SidebarComponent {
     @Input() visible: boolean = false;
     @Output() visibleChange = new EventEmitter<boolean>();
-    @Input() routes: MenuItem[] = [];
+    @Input() routes: Route[] = [];
 
     handleHide() {
         this.visible = false;

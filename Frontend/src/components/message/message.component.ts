@@ -10,7 +10,7 @@ import { MessagesModule } from "primeng/messages";
 })
 export class MessageComponent {
     @Input() text: string | undefined;
-    @Input() severity: string | undefined;
+    @Input() severity: "success" | "info" | "warn" | "error" | undefined;
     messages: Message[] = [];
 
     ngOnInit() {

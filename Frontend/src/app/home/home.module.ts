@@ -3,17 +3,18 @@ import { CommonModule } from "@angular/common";
 
 import { HomeRoutingModule } from "./home-routing.module";
 import { HomePageComponent } from "./home-page/home-page.component";
-import { PermissionSidebarComponent } from "../../business-components/permission-sidebar/permission-sidebar.component";
-import { ToolbarComponent } from "../../components/toolbar/toolbar.component";
-import { PlaceholderHomeComponent } from "./placeholder-home/placeholder-home.component";
+import { DevicesTableComponent } from "../../business-components/devices-table/devices-table.component";
+import { DeviceTypesTableComponent } from "../../business-components/device-types-table/device-types-table.component";
+import { PanelComponent } from "../../components/panel/panel.component";
 
 @NgModule({
-    declarations: [HomePageComponent, PlaceholderHomeComponent],
+    declarations: [HomePageComponent],
     imports: [
-        CommonModule,
-        HomeRoutingModule,
-        PermissionSidebarComponent,
-        ToolbarComponent
-    ]
+    CommonModule,
+    HomeRoutingModule,
+    DevicesTableComponent,
+    DeviceTypesTableComponent,
+    PanelComponent
+]
 })
 export class HomeModule {}

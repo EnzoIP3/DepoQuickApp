@@ -517,4 +517,29 @@ public class BusinessOwnerServiceTests
     #endregion
 
     #endregion
+    #region UpdateValidator
+
+    #region Error
+    [TestMethod]
+    public void UpdateValidator_WhenBusinessIsNotFromUser_ThrowsInvalidOperationException()
+    {
+        // Arrange
+        var business = new Business("RUTexample", "Business Name", "https://example.com/image.png", _owner);
+        var args = new UpdateValidatorArgs
+        {
+            BusinessRut = business.Rut,
+            Validator = "validator",
+            OwnerId = Guid.NewGuid().ToString()
+        };
+        _businessRepository.Setup(x => x.Get(business.Rut)).Returns(business);
+
+        // Act
+        Action act = () => _businessOwnerService.UpdateValidator(args);
+
+        // Assert
+        act.Should().Throw<InvalidOperationException>().WithMessage("The business does not belong to the specified owner.");
+    }
+
+    #endregion
+    #endregion
 }

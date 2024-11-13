@@ -76,7 +76,17 @@ public class BusinessOwnerService : IBusinessOwnerService
 
     public void UpdateValidator(UpdateValidatorArgs args)
     {
-        throw new NotImplementedException();
+        EnsureBusinessIsFromOwner(args.BusinessRut, args.OwnerId);
+    }
+
+    private void EnsureBusinessIsFromOwner(string argsBusinessRut, string argsOwnerId)
+    {
+        Guid ownerId = ParseAndValidateOwnerId(argsOwnerId);
+        Business business = BusinessRepository.Get(argsBusinessRut);
+        if (business.Owner.Id != ownerId)
+        {
+            throw new InvalidOperationException("The business does not belong to the specified owner.");
+        }
     }
 
     private static Guid ParseAndValidateOwnerId(string ownerId)

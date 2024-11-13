@@ -18,7 +18,7 @@ public class RoomControllerTests
     public void Initialize()
     {
         _homeOwnerService = new Mock<IHomeOwnerService>(MockBehavior.Strict);
-        _controller = new RoomController();
+        _controller = new RoomController(_homeOwnerService.Object);
     }
 
     [TestMethod]

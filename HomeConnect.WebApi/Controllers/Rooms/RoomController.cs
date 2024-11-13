@@ -4,11 +4,12 @@ using Microsoft.AspNetCore.Mvc;
 
 [ApiController]
 [Route("rooms")]
-public class RoomController : ControllerBase
+public class RoomController(IHomeOwnerService homeOwnerService) : ControllerBase
 {
     [HttpPost]
     public CreateRoomResponse CreateRoom([FromBody] AddRoomArgs args)
     {
-        throw new NotImplementedException();
+        var room = homeOwnerService.CreateRoom(args.HomeId, args.Name);
+        return new CreateRoomResponse { RoomId = room.Id.ToString() };
     }
 }

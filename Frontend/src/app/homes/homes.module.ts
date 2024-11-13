@@ -15,21 +15,23 @@ import { IconTitleComponent } from "../../components/icon-title/icon-title.compo
 import { FormComponent } from "../../components/form/form/form.component";
 import { AddMemberFormComponent } from './add-member-form/add-member-form.component';
 import { FormToggleButtonComponent } from "../../components/form/form-toggle-button/form-toggle-button.component";
+import { MembersTableComponent } from "../../business-components/members-table/members-table.component";
 
 @NgModule({
     declarations: [HomesPageComponent, HomePageComponent, AddHomeFormComponent, AddMemberFormComponent],
     imports: [
-        CommonModule,
-        HomesRoutingModule,
-        PanelComponent,
-        HomesTableComponent,
-        HomeListComponent,
-        ButtonComponent,
-        FormButtonComponent,
-        FormInputComponent,
-        FormToggleButtonComponent,
-        IconTitleComponent,
-        FormComponent
-    ]
+    CommonModule,
+    HomesRoutingModule,
+    PanelComponent,
+    HomesTableComponent,
+    HomeListComponent,
+    ButtonComponent,
+    FormButtonComponent,
+    FormInputComponent,
+    FormToggleButtonComponent,
+    IconTitleComponent,
+    FormComponent,
+    MembersTableComponent
+]
 })
 export class HomesModule {}

@@ -8,7 +8,8 @@ import GetHomeResponse from "../services/homes/models/get-home-response";
 import AddHomeRequest from "../services/homes/models/add-home-request";
 import AddHomeResponse from "../services/homes/models/add-home-response";
 import AddMemberRequest from "../services/homes/models/add-member-request";
-import AddMemberResponse from "../services/homes/models/add-member.response";
+import AddMemberResponse from "../services/homes/models/add-member-response";
+import GetMembersResponse from "../services/homes/models/get-members-response";
 
 @Injectable({
     providedIn: "root"
@@ -40,5 +41,11 @@ export class HomesApiRepositoryService extends ApiRepository {
             addMemberRequest,
             `${homeId}/members`
         );
+    }
+
+    public getMembers(homeId: string): Observable<GetMembersResponse> {
+        return this.get<GetMembersResponse>({
+            extraResource: `${homeId}/members`
+        });
     }
 }

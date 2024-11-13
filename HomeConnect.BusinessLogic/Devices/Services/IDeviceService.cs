@@ -12,4 +12,5 @@ public interface IDeviceService
     bool IsConnected(string hardwareId);
     void TurnLamp(string hardwareId, bool state, NotificationArgs args);
     void UpdateSensorState(string hardwareId, bool state, NotificationArgs args);
+    void MoveDevice(string requestSourceRoomId, string requestTargetRoomId, string deviceId);
 }

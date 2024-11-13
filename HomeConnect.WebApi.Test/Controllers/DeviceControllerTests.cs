@@ -8,6 +8,7 @@ using FluentAssertions;
 using HomeConnect.WebApi.Controllers.Devices;
 using HomeConnect.WebApi.Controllers.Devices.Models;
 using HomeConnect.WebApi.Controllers.Homes.Models;
+using HomeConnect.WebApi.Controllers.Rooms.Models;
 using Moq;
 using GetDevicesResponse = HomeConnect.WebApi.Controllers.Devices.Models.GetDevicesResponse;
 
@@ -103,5 +104,32 @@ public class DeviceControllerTests
         result.Should().NotBeNull();
         result.HardwareId.Should().Be(hardwareId);
         result.Connected.Should().BeFalse();
+    }
+
+    [TestMethod]
+    public void MoveDevice_WhenCalledWithValidRequest_ReturnsExpectedResponse()
+    {
+        // Arrange
+        var sourceRoomId = "123e4567-e89b-12d3-a456-426614174000";
+        var targetRoomId = "123e4567-e89b-12d3-a456-426614174001";
+        var deviceId = "123e4567-e89b-12d3-a456-426614174002";
+
+        _deviceService.Setup(x => x.MoveDevice(sourceRoomId, targetRoomId, deviceId)).Verifiable();
+
+        var request = new MoveDeviceRequest
+        {
+            SourceRoomId = sourceRoomId,
+            TargetRoomId = targetRoomId
+        };
+
+        // Act
+        var response = _controller.MoveDevice(deviceId, request);
+
+        // Assert
+        _deviceService.VerifyAll();
+        response.Should().NotBeNull();
+        response.SourceRoomId.Should().Be(sourceRoomId);
+        response.TargetRoomId.Should().Be(targetRoomId);
+        response.DeviceId.Should().Be(deviceId);
     }
 }

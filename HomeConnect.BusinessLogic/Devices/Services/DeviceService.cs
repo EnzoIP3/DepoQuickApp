@@ -75,6 +75,11 @@ public class DeviceService : IDeviceService
         OwnedDeviceRepository.UpdateSensorState(Guid.Parse(hardwareId), state);
     }
 
+    public void MoveDevice(string requestSourceRoomId, string requestTargetRoomId, string deviceId)
+    {
+        throw new NotImplementedException();
+    }
+
     private void SendSensorNotification(string hardwareId, bool state, NotificationArgs args)
     {
         if (OwnedDeviceRepository.GetSensorState(Guid.Parse(hardwareId)) != state)

@@ -391,7 +391,7 @@ public class HomeControllerTests
             [
                 new ListMemberInfo
                 {
-                    Id = member.User.Id.ToString(),
+                    Id = member.Id.ToString(),
                     Name = member.User.Name,
                     Surname = member.User.Surname,
                     Photo = member.User.ProfilePicture ?? string.Empty,
@@ -402,7 +402,7 @@ public class HomeControllerTests
 
                 new ListMemberInfo
                 {
-                    Id = otherMember.User.Id.ToString(),
+                    Id = otherMember.Id.ToString(),
                     Name = otherMember.User.Name,
                     Surname = otherMember.User.Surname,
                     Photo = otherMember.User.ProfilePicture ?? string.Empty,

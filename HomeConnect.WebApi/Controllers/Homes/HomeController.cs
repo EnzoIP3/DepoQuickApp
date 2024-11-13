@@ -146,7 +146,7 @@ public class HomeController(IHomeOwnerService homeOwnerService) : ControllerBase
         List<Member> members = homeOwnerService.GetHomeMembers(homesId);
         var memberInfos = members.Select(m => new ListMemberInfo
         {
-            Id = m.User.Id.ToString(),
+            Id = m.Id.ToString(),
             Name = m.User.Name,
             Surname = m.User.Surname,
             Photo = m.User.ProfilePicture ?? string.Empty,

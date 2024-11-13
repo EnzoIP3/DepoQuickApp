@@ -39,7 +39,6 @@ export default abstract class ApiRepository {
 
     protected get<T>(config: RequestConfig = {}): Observable<T> {
         const url = this.buildRequestUrl(config);
-        console.log(url);
         return this.executeRequest(() => this.http.get<T>(url, this.headers));
     }
 
@@ -75,7 +74,7 @@ export default abstract class ApiRepository {
 
     private getAuthToken(): string {
         const user = JSON.parse(localStorage.getItem("user") || "{}");
-        return `Bearer ${user.token}`; 
+        return `Bearer ${user.token}`;
     }
 
     private executeRequest<T>(requestFn: () => Observable<T>): Observable<T> {
@@ -87,11 +86,11 @@ export default abstract class ApiRepository {
 
     protected handleError(error: HttpErrorResponse) {
         let errorMessage = ApiRepository.DEFAULT_ERROR_MESSAGE;
-        let isClientError = error.error instanceof ErrorEvent;
+        let isServerError = "message" in error.error;
         let isExpiredTokenError =
             error.status === 401 && localStorage.getItem("user");
 
-        if (!isClientError && error.error) {
+        if (isServerError) {
             errorMessage = error.error.message;
         }
 

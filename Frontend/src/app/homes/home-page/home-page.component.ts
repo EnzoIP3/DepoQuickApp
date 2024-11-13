@@ -6,6 +6,7 @@ import { ActivatedRoute } from "@angular/router";
     templateUrl: "./home-page.component.html"
 })
 export class HomePageComponent {
+    title = "Unnamed home";
     id!: string;
 
     constructor(private route: ActivatedRoute) {}

@@ -1,23 +1,22 @@
-import { Component, Input } from "@angular/core";
+import { Component, EventEmitter, Input, Output } from "@angular/core";
 import { HomesService } from "../../backend/services/homes/homes.service";
 import { MessageService } from "primeng/api";
 import { Subscription } from "rxjs";
 import GetHomeResponse from "../../backend/services/homes/models/get-home-response";
 import ListItem from "../../components/list/models/list-item";
 import { ListComponent } from "../../components/list/list.component";
-import { PanelComponent } from "../../components/panel/panel.component";
 import { Router } from "@angular/router";
 
 @Component({
     selector: "app-home-list",
     standalone: true,
-    imports: [ListComponent, PanelComponent],
+    imports: [ListComponent],
     templateUrl: "./home-list.component.html"
 })
 export class HomeListComponent {
     @Input() id!: string;
+    @Output() onHomeNameChange = new EventEmitter<string>();
 
-    title: string = "Unnamed home";
     loading: boolean = true;
     home: GetHomeResponse | null = null;
     listItems: ListItem[] = [];
@@ -59,7 +58,7 @@ export class HomeListComponent {
                     ];
 
                     if (response.name) {
-                        this.title = response.name;
+                        this.onHomeNameChange.emit(response.name);
                     }
 
                     this.loading = false;

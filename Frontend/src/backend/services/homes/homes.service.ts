@@ -5,6 +5,8 @@ import GetHomesResponse from "./models/get-homes-response";
 import GetHomeResponse from "./models/get-home-response";
 import AddHomeRequest from "./models/add-home-request";
 import AddHomeResponse from "./models/add-home-response";
+import AddMemberRequest from "./models/add-member-request";
+import AddMemberResponse from "./models/add-member.response";
 
 @Injectable({
     providedIn: "root"
@@ -24,5 +26,12 @@ export class HomesService {
         addHomeRequest: AddHomeRequest
     ): Observable<AddHomeResponse> {
         return this._repository.addHome(addHomeRequest);
+    }
+
+    public addMember(
+        homeId: string,
+        addMemberRequest: AddMemberRequest
+    ): Observable<AddMemberResponse> {
+        return this._repository.addMember(homeId, addMemberRequest);
     }
 }

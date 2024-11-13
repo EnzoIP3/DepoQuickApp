@@ -13,9 +13,11 @@ import { FormButtonComponent } from "../../components/form/form-button/form-butt
 import { FormInputComponent } from "../../components/form/form-input/form-input.component";
 import { IconTitleComponent } from "../../components/icon-title/icon-title.component";
 import { FormComponent } from "../../components/form/form/form.component";
+import { AddMemberFormComponent } from './add-member-form/add-member-form.component';
+import { FormToggleButtonComponent } from "../../components/form/form-toggle-button/form-toggle-button.component";
 
 @NgModule({
-    declarations: [HomesPageComponent, HomePageComponent, AddHomeFormComponent],
+    declarations: [HomesPageComponent, HomePageComponent, AddHomeFormComponent, AddMemberFormComponent],
     imports: [
         CommonModule,
         HomesRoutingModule,
@@ -25,6 +27,7 @@ import { FormComponent } from "../../components/form/form/form.component";
         ButtonComponent,
         FormButtonComponent,
         FormInputComponent,
+        FormToggleButtonComponent,
         IconTitleComponent,
         FormComponent
     ]

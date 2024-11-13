@@ -1,3 +1,12 @@
 <div class="mt-2">
-    <app-home-list [id]="id" />
+    <app-panel [title]="title" icon="pi-home" [toggleable]="false">
+        <app-home-list [id]="id" (onHomeNameChange)="title = $event" />
+    </app-panel>
+</div>
+<div class="mt-2 w-fit">
+    <app-panel title="Add Members" icon="pi-users" [toggleable]="true">
+            <div class="w-fit">
+                <app-add-member-form [homeId]="id" />
+            </div>
+    </app-panel>
 </div>

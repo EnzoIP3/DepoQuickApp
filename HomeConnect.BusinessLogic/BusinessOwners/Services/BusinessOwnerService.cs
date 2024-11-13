@@ -77,6 +77,7 @@ public class BusinessOwnerService : IBusinessOwnerService
     public void UpdateValidator(UpdateValidatorArgs args)
     {
         EnsureBusinessIsFromOwner(args.BusinessRut, args.OwnerId);
+        EnsureValidatorExists(args.Validator);
     }
 
     private void EnsureBusinessIsFromOwner(string argsBusinessRut, string argsOwnerId)

@@ -558,9 +558,9 @@ public class BusinessOwnerServiceTests
         Action act = () => _businessOwnerService.UpdateValidator(args);
 
         // Assert
+        act.Should().Throw<ArgumentException>().WithMessage("The specified validator does not exist.");
         _businessRepository.Verify(x => x.Get(business.Rut), Times.Once);
         _validatorService.Verify(x => x.Exists(args.Validator), Times.Once);
-        act.Should().Throw<ArgumentException>().WithMessage("The specified validator does not exist.");
     }
 
     #endregion

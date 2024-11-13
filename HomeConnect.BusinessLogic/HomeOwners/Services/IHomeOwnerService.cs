@@ -16,4 +16,5 @@ public interface IHomeOwnerService
     Home GetHome(Guid homeId);
     public List<Home> GetHomesByOwnerId(Guid ownerId);
     public void NameHome(Guid ownerId, Guid homeId, string newName);
+    Room CreateRoom(string homeId, string name);
 }

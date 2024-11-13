@@ -6,6 +6,7 @@ using BusinessLogic.Devices.Services;
 using BusinessLogic.Helpers;
 using BusinessLogic.Roles.Entities;
 using BusinessLogic.Users.Entities;
+using FluentAssertions;
 using Moq;
 
 namespace HomeConnect.BusinessLogic.Test.Devices.Services;
@@ -43,8 +44,8 @@ public class ImporterServiceTests
         var result = _importerService.GetImporters();
 
         // Assert
-        Assert.AreEqual(1, result.Count);
-        Assert.AreEqual(importerName, result[0]);
+        result.Should().HaveCount(1);
+        result[0].Should().Be(importerName);
     }
     #endregion
 
@@ -127,9 +128,9 @@ public class ImporterServiceTests
         var result = _importerService.ImportDevices(importDevicesArgs);
 
         // Assert
-        Assert.AreEqual(deviceNames.Count, result.Count);
-        Assert.AreEqual(deviceNames[0], result[0]);
-        Assert.AreEqual(deviceNames[1], result[1]);
+        result.Should().HaveCount(deviceNames.Count);
+        result[0].Should().Be(deviceNames[0]);
+        result[1].Should().Be(deviceNames[1]);
 
         _mockAssemblyInterfaceLoader.Verify(x => x.GetImplementationByName(importerName, It.IsAny<string>()), Times.Once);
         _mockDeviceImporter.Verify(x => x.ImportDevices(Path.Combine(_importFilesPath, route)), Times.Once);
@@ -174,7 +175,7 @@ public class ImporterServiceTests
         var result = _importerService.GetImportFiles();
 
         // Assert
-        CollectionAssert.AreEqual(fileNames, result);
+        result.Should().BeEquivalentTo(fileNames);
 
         // Cleanup
         Directory.Delete(_importFilesPath, true);
@@ -193,8 +194,8 @@ public class ImporterServiceTests
         var result = _importerService.GetImportFiles();
 
         // Assert
-        Assert.IsTrue(Directory.Exists(_importFilesPath));
-        Assert.AreEqual(0, result.Count);
+        Directory.Exists(_importFilesPath).Should().BeTrue();
+        result.Should().BeEmpty();
 
         // Cleanup
         Directory.Delete(_importFilesPath, true);

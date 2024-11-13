@@ -43,7 +43,7 @@ public class HomeOwnerService : IHomeOwnerService
     public Guid AddMemberToHome(AddMemberArgs args)
     {
         ValidateAddMemberArgs(args);
-        User user = GetUserById(args.UserId);
+        User user = GetUserByEmail(args.UserEmail);
         Home home = GetHome(Guid.Parse(args.HomeId));
         Member member = CreateMember(user, args);
         home.AddMember(member);
@@ -144,25 +144,33 @@ public class HomeOwnerService : IHomeOwnerService
 
     private void ValidateCreateHomeArgs(CreateHomeArgs args)
     {
+        EnsureNoArgumentsAreEmpty(args);
+        EnsureGuidIsValid(args.HomeOwnerId, "Home Owner ID");
+        EnsureUserExistsById(args.HomeOwnerId);
+    }
+
+    private static void EnsureNoArgumentsAreEmpty(CreateHomeArgs args)
+    {
         if (string.IsNullOrWhiteSpace(args.HomeOwnerId) || string.IsNullOrWhiteSpace(args.Address))
         {
             throw new ArgumentException("All arguments are required.");
         }
-
-        EnsureUserExists(args.HomeOwnerId);
     }
 
     private void ValidateAddMemberArgs(AddMemberArgs args)
     {
-        if (string.IsNullOrWhiteSpace(args.HomeId) || string.IsNullOrWhiteSpace(args.UserId))
+        EnsureNoArgumentsAreMissing(args);
+        EnsureGuidIsValid(args.HomeId, "Home ID");
+        EnsureMemberIsNotAlreadyAdded(args);
+        EnsureUserExistsByEmail(args.UserEmail);
+    }
+
+    private static void EnsureNoArgumentsAreMissing(AddMemberArgs args)
+    {
+        if (string.IsNullOrWhiteSpace(args.HomeId) || string.IsNullOrWhiteSpace(args.UserEmail))
         {
             throw new ArgumentException("All arguments are required.");
         }
-
-        EnsureGuidIsValid(args.HomeId, "Home ID");
-        EnsureGuidIsValid(args.UserId, "Member ID");
-        EnsureMemberIsNotAlreadyAdded(args);
-        EnsureUserExists(args.UserId);
     }
 
     private void EnsureAddressIsUnique(string address)
@@ -173,10 +181,15 @@ public class HomeOwnerService : IHomeOwnerService
         }
     }
 
+    private User GetUserByEmail(string userEmail)
+    {
+        EnsureUserExistsByEmail(userEmail);
+        return UserRepository.GetByEmail(userEmail);
+    }
+
     private User GetUserById(string userId)
     {
-        Guid guid = ValidateAndParseGuid(userId);
-        EnsureUserExists(userId);
+        var guid = ValidateAndParseGuid(userId);
         return UserRepository.Get(guid);
     }
 
@@ -226,9 +239,18 @@ public class HomeOwnerService : IHomeOwnerService
         }
     }
 
-    private void EnsureUserExists(string userId)
+    private void EnsureUserExistsByEmail(string userEmail)
     {
-        if (!UserRepository.Exists(Guid.Parse(userId)))
+        if (!UserRepository.ExistsByEmail(userEmail))
+        {
+            throw new ArgumentException("User does not exist.");
+        }
+    }
+
+    private void EnsureUserExistsById(string userId)
+    {
+        var guid = ValidateAndParseGuid(userId);
+        if (!UserRepository.Exists(guid))
         {
             throw new ArgumentException("User does not exist.");
         }
@@ -237,7 +259,7 @@ public class HomeOwnerService : IHomeOwnerService
     private void EnsureMemberIsNotAlreadyAdded(AddMemberArgs args)
     {
         Home home = GetHome(Guid.Parse(args.HomeId));
-        if (home.Members.Any(m => m.User.Id.ToString() == args.UserId))
+        if (home.Members.Any(m => m.User.Id.ToString() == args.UserEmail))
         {
             throw new InvalidOperationException("The member is already added to the home.");
         }

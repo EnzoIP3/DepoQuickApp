@@ -89,18 +89,19 @@ public class HomeControllerTests
         // Arrange
         var request = new AddMemberRequest
         {
-            MemberId = _user.Id.ToString(), CanAddDevices = true, CanListDevices = false
+            Email = _user.Email, CanAddDevices = true, CanListDevices = false
         };
         var items = new Dictionary<object, object?> { { Item.UserLogged, _user } };
         _httpContextMock.Setup(h => h.Items).Returns(items);
         var args = new AddMemberArgs
         {
             HomeId = _home.Id.ToString(),
-            UserId = _user.Id.ToString(),
+            UserEmail = _user.Email,
             CanAddDevices = request.CanAddDevices,
             CanListDevices = request.CanListDevices
         };
-        _homeOwnerService.Setup(x => x.AddMemberToHome(args)).Returns(_user.Id);
+        var memberId = Guid.NewGuid();
+        _homeOwnerService.Setup(x => x.AddMemberToHome(args)).Returns(memberId);
 
         // Act
         AddMemberResponse response = _controller.AddMember(_home.Id.ToString(), request);
@@ -109,7 +110,7 @@ public class HomeControllerTests
         _homeOwnerService.VerifyAll();
         response.Should().NotBeNull();
         response.HomeId.Should().Be(_home.Id.ToString());
-        response.MemberId.Should().Be(_user.Id.ToString());
+        response.MemberId.Should().Be(memberId.ToString());
     }
 
     #endregion

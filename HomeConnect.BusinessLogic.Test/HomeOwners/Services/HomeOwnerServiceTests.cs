@@ -66,6 +66,7 @@ public class HomeOwnerServiceTests
         var home = new Home(_user, model.Address, model.Latitude, model.Longitude, model.MaxMembers);
         _userRepositoryMock.Setup(x => x.Exists(Guid.Parse(model.HomeOwnerId))).Returns(true);
         _userRepositoryMock.Setup(x => x.Get(Guid.Parse(model.HomeOwnerId))).Returns(_user);
+        _userRepositoryMock.Setup(x => x.ExistsByEmail(_user.Email)).Returns(true);
         _homeRepositoryMock.Setup(x => x.Add(It.Is<Home>(x =>
             x.Address == model.Address && x.Latitude == model.Latitude && x.Longitude == model.Longitude &&
             x.MaxMembers == model.MaxMembers && x.Owner == _user))).Callback<Home>(x => x.Id = Guid.NewGuid());
@@ -169,13 +170,10 @@ public class HomeOwnerServiceTests
         var home = new Home(_user, "Main St 123", 1.0, 2.0, 5);
         var model = new AddMemberArgs
         {
-            HomeId = home.Id.ToString(),
-            UserId = invitedUser.Id.ToString(),
-            CanAddDevices = true,
-            CanListDevices = true
+            HomeId = home.Id.ToString(), UserEmail = invitedUser.Email, CanAddDevices = true, CanListDevices = true
         };
-        _userRepositoryMock.Setup(x => x.Exists(Guid.Parse(model.UserId))).Returns(true);
-        _userRepositoryMock.Setup(x => x.Get(Guid.Parse(model.UserId))).Returns(invitedUser);
+        _userRepositoryMock.Setup(x => x.ExistsByEmail(model.UserEmail)).Returns(true);
+        _userRepositoryMock.Setup(x => x.GetByEmail(model.UserEmail)).Returns(invitedUser);
         _homeRepositoryMock.Setup(x => x.Exists(Guid.Parse(model.HomeId))).Returns(true);
         _homeRepositoryMock.Setup(x => x.Get(Guid.Parse(model.HomeId))).Returns(home);
         _memberRepositoryMock.Setup(x => x.Add(It.IsAny<Member>())).Verifiable();
@@ -194,14 +192,14 @@ public class HomeOwnerServiceTests
     #region Error
 
     [TestMethod]
-    [DataRow("", "a99feb27-7dac-41ec-8fd2-942533868689")]
+    [DataRow("", "john.doe@gmail.com")]
     [DataRow("12345678-1234-1234-1234-123456789012", "")]
-    public void AddMemberToHome_WhenArgumentsHaveEmptyFields_ThrowsException(string homeId, string homeOwnerId)
+    public void AddMemberToHome_WhenArgumentsHaveEmptyFields_ThrowsException(string homeId, string homeOwnerEmail)
     {
         // Arrange
         var model = new AddMemberArgs
         {
-            HomeId = homeId, UserId = homeOwnerId, CanAddDevices = true, CanListDevices = true
+            HomeId = homeId, UserEmail = homeOwnerEmail, CanAddDevices = true, CanListDevices = true
         };
 
         // Act
@@ -218,7 +216,7 @@ public class HomeOwnerServiceTests
         var model = new AddMemberArgs
         {
             HomeId = "invalid-guid",
-            UserId = "a99feb27-7dac-41ec-8fd2-942533868689",
+            UserEmail = "a99feb27-7dac-41ec-8fd2-942533868689",
             CanAddDevices = true,
             CanListDevices = true
         };
@@ -231,42 +229,20 @@ public class HomeOwnerServiceTests
     }
 
     [TestMethod]
-    public void AddMemberToHome_WhenHomeOwnerIdIsNotAGuid_ThrowsException()
+    public void AddMemberToHome_WhenHomeOwnerEmailDoesNotExist_ThrowsException()
     {
         // Arrange
         var model = new AddMemberArgs
         {
             HomeId = "a99feb27-7dac-41ec-8fd2-942533868689",
-            UserId = "invalid-guid",
+            UserEmail = "not@exists.com",
             CanAddDevices = true,
             CanListDevices = true
         };
         _homeRepositoryMock.Setup(x => x.Exists(Guid.Parse(model.HomeId))).Returns(true);
         _homeRepositoryMock.Setup(x => x.Get(Guid.Parse(model.HomeId)))
             .Returns(new Home());
-
-        // Act
-        Func<Guid> act = () => _homeOwnerService.AddMemberToHome(model);
-
-        // Assert
-        act.Should().Throw<ArgumentException>();
-    }
-
-    [TestMethod]
-    public void AddMemberToHome_WhenHomeOwnerIdDoesNotExist_ThrowsException()
-    {
-        // Arrange
-        var model = new AddMemberArgs
-        {
-            HomeId = "a99feb27-7dac-41ec-8fd2-942533868689",
-            UserId = "a99feb27-7dac-41ec-8fd2-942533868689",
-            CanAddDevices = true,
-            CanListDevices = true
-        };
-        _homeRepositoryMock.Setup(x => x.Exists(Guid.Parse(model.HomeId))).Returns(true);
-        _homeRepositoryMock.Setup(x => x.Get(Guid.Parse(model.HomeId)))
-            .Returns(new Home());
-        _userRepositoryMock.Setup(x => x.Exists(Guid.Parse(model.UserId)))
+        _userRepositoryMock.Setup(x => x.ExistsByEmail(model.UserEmail))
             .Returns(false);
 
         // Act
@@ -288,7 +264,7 @@ public class HomeOwnerServiceTests
         var args = new AddMemberArgs
         {
             HomeId = home.Id.ToString(),
-            UserId = invitedUser.Id.ToString(),
+            UserEmail = invitedUser.Id.ToString(),
             CanAddDevices = true,
             CanListDevices = true
         };

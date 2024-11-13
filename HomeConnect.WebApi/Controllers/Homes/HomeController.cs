@@ -116,7 +116,7 @@ public class HomeController(IHomeOwnerService homeOwnerService) : ControllerBase
         var addMemberArgs = new AddMemberArgs
         {
             HomeId = homesId,
-            UserId = request.MemberId ?? string.Empty,
+            UserEmail = request.Email ?? string.Empty,
             CanAddDevices = request.CanAddDevices,
             CanListDevices = request.CanListDevices
         };

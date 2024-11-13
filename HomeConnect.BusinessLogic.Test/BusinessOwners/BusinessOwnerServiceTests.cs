@@ -530,6 +530,7 @@ public class BusinessOwnerServiceTests
             Validator = "validator",
             OwnerId = Guid.NewGuid().ToString()
         };
+        _businessRepository.Setup(x => x.Exists(business.Rut)).Returns(true);
         _businessRepository.Setup(x => x.Get(business.Rut)).Returns(business);
 
         // Act
@@ -537,6 +538,7 @@ public class BusinessOwnerServiceTests
 
         // Assert
         act.Should().Throw<InvalidOperationException>().WithMessage("The business does not belong to the specified owner.");
+        _businessRepository.Verify(x => x.Get(business.Rut), Times.Once);
     }
 
     [TestMethod]
@@ -550,6 +552,7 @@ public class BusinessOwnerServiceTests
             Validator = "validator",
             OwnerId = _owner.Id.ToString()
         };
+        _businessRepository.Setup(x => x.Exists(business.Rut)).Returns(true);
         _businessRepository.Setup(x => x.Get(business.Rut)).Returns(business);
         _validatorService.Setup(x => x.Exists(args.Validator)).Returns(false);
 
@@ -559,7 +562,28 @@ public class BusinessOwnerServiceTests
         // Assert
         act.Should().Throw<ArgumentException>().WithMessage("The specified validator does not exist.");
         _businessRepository.Verify(x => x.Get(business.Rut), Times.Once);
+        _businessRepository.Verify(x => x.Exists(business.Rut), Times.Once);
         _validatorService.Verify(x => x.Exists(args.Validator), Times.Once);
+    }
+
+    [TestMethod]
+    public void UpdateValidator_WhenBusinessDoesNotExist_ThrowsArgumentException()
+    {
+        // Arrange
+        var args = new UpdateValidatorArgs
+        {
+            BusinessRut = "RUTexample",
+            Validator = "validator",
+            OwnerId = _owner.Id.ToString()
+        };
+        _businessRepository.Setup(x => x.Exists(args.BusinessRut)).Returns(false);
+
+        // Act
+        Action act = () => _businessOwnerService.UpdateValidator(args);
+
+        // Assert
+        act.Should().Throw<ArgumentException>().WithMessage("The business does not exist.");
+        _businessRepository.Verify(x => x.Exists(args.BusinessRut), Times.Once);
     }
 
     #endregion
@@ -576,6 +600,7 @@ public class BusinessOwnerServiceTests
             OwnerId = _owner.Id.ToString()
         };
         var validatorId = Guid.NewGuid();
+        _businessRepository.Setup(x => x.Exists(business.Rut)).Returns(true);
         _businessRepository.Setup(x => x.Get(business.Rut)).Returns(business);
         _validatorService.Setup(x => x.Exists(args.Validator)).Returns(true);
         _validatorService.Setup(x => x.GetValidatorIdByName(args.Validator)).Returns(validatorId);
@@ -585,6 +610,7 @@ public class BusinessOwnerServiceTests
         _businessOwnerService.UpdateValidator(args);
 
         // Assert
+        _businessRepository.Verify(x => x.Exists(business.Rut), Times.Once);
         _businessRepository.Verify(x => x.Get(business.Rut), Times.Once);
         _businessRepository.Verify(x => x.UpdateValidator(business.Rut, validatorId), Times.Once);
         _validatorService.Verify(x => x.GetValidatorIdByName(args.Validator), Times.Once);
@@ -602,6 +628,7 @@ public class BusinessOwnerServiceTests
             Validator = null,
             OwnerId = _owner.Id.ToString()
         };
+        _businessRepository.Setup(x => x.Exists(business.Rut)).Returns(true);
         _businessRepository.Setup(x => x.Get(business.Rut)).Returns(business);
         _businessRepository.Setup(x => x.UpdateValidator(business.Rut, null));
 
@@ -609,6 +636,7 @@ public class BusinessOwnerServiceTests
         _businessOwnerService.UpdateValidator(args);
 
         // Assert
+        _businessRepository.Verify(x => x.Exists(business.Rut), Times.Once);
         _businessRepository.Verify(x => x.Get(business.Rut), Times.Once);
         _businessRepository.Verify(x => x.UpdateValidator(business.Rut, null), Times.Once);
     }

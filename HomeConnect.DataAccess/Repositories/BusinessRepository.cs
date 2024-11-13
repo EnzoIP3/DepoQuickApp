@@ -30,7 +30,7 @@ public class BusinessRepository : PaginatedRepositoryBase<Business>, IBusinessRe
 
     public Business Get(string rut)
     {
-        return Context.Businesses.First(b => b.Rut == rut);
+        return Context.Businesses.Include(b => b.Owner).First(b => b.Rut == rut);
     }
 
     public bool Exists(string rut)

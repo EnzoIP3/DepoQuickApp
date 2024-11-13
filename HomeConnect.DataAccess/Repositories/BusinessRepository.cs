@@ -23,7 +23,9 @@ public class BusinessRepository : PaginatedRepositoryBase<Business>, IBusinessRe
 
     public void UpdateValidator(string argsBusinessRut, Guid validatorId)
     {
-        throw new NotImplementedException();
+        var business = Get(argsBusinessRut);
+        business.Validator = validatorId;
+        Context.SaveChanges();
     }
 
     public Business Get(string rut)

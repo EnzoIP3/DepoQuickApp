@@ -21,7 +21,7 @@ public class BusinessRepository : PaginatedRepositoryBase<Business>, IBusinessRe
         return GetAllPaged(currentPage, pageSize, filters);
     }
 
-    public void UpdateValidator(string argsBusinessRut, Guid validatorId)
+    public void UpdateValidator(string argsBusinessRut, Guid? validatorId = null)
     {
         var business = Get(argsBusinessRut);
         business.Validator = validatorId;

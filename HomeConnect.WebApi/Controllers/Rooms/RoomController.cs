@@ -23,6 +23,12 @@ public class RoomController(IHomeOwnerService homeOwnerService) : ControllerBase
     [HttpPost("{deviceId}/move")]
     public MoveDeviceResponse MoveDevice([FromRoute] string deviceId, [FromBody] MoveDeviceRequest request)
     {
-        throw new NotImplementedException();
+        homeOwnerService.MoveDevice(request.SourceRoomId, request.TargetRoomId, deviceId);
+        return new MoveDeviceResponse
+        {
+            SourceRoomId = request.SourceRoomId,
+            TargetRoomId = request.TargetRoomId,
+            DeviceId = deviceId
+        };
     }
 }

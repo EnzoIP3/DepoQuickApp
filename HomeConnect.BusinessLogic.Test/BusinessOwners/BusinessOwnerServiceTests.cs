@@ -1,5 +1,4 @@
-﻿using System.Security.Cryptography.X509Certificates;
-using BusinessLogic.BusinessOwners.Entities;
+﻿using BusinessLogic.BusinessOwners.Entities;
 using BusinessLogic.BusinessOwners.Models;
 using BusinessLogic.BusinessOwners.Repositories;
 using BusinessLogic.BusinessOwners.Services;
@@ -21,7 +20,7 @@ public class BusinessOwnerServiceTests
     private const string ModelNumber = "123";
     private const string Description = "Device Description";
     private const string MainPhoto = "https://www.example.com/photo1.jpg";
-    private Guid _validatorId = Guid.NewGuid();
+    private readonly Guid _validatorId = Guid.NewGuid();
 
     private const string Type = "Device Type";
 

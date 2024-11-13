@@ -25,7 +25,7 @@ public class ValidatorServiceTests
         var validatorName = "ValidatorName";
         _mockAssemblyInterfaceLoader
             .Setup(x => x.GetImplementationsList(It.IsAny<string>()))
-            .Returns(new List<string> { validatorName });
+            .Returns([validatorName]);
 
         // Act
         var result = _validatorService.GetValidators();
@@ -60,7 +60,7 @@ public class ValidatorServiceTests
         var validatorName = "ValidatorName";
         _mockAssemblyInterfaceLoader
             .Setup(x => x.GetImplementationsList(It.IsAny<string>()))
-            .Returns(new List<string> { validatorName });
+            .Returns([validatorName]);
 
         // Act
         var result = _validatorService.Exists(validatorName);

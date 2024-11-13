@@ -1,6 +1,5 @@
 using System.Text.Json;
 using BusinessLogic.Devices.Importer;
-using BusinessLogic.Devices.Models;
 using JsonImporter.Models;
 
 namespace JsonImporter;
@@ -14,7 +13,7 @@ public class JsonDeviceImporter : IDeviceImporter
         EnsureJsonIsNotNull(json);
         Root? deviceList = DeserializeJson(json);
         EnsureDeviceListIsNotNull(deviceList);
-        return deviceList.Value.Dispositivos!.Select(device => ToDeviceArgs(device)).ToList();
+        return deviceList.Value.Dispositivos!.Select(ToDeviceArgs).ToList();
     }
 
     private static void EnsureFileExists(string route)

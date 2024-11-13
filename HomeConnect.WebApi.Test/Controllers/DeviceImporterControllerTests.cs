@@ -2,7 +2,6 @@ using BusinessLogic.Devices.Services;
 using FluentAssertions;
 using HomeConnect.WebApi.Controllers.DeviceImporters;
 using HomeConnect.WebApi.Controllers.DeviceImporters.Models;
-using HomeConnect.WebApi.Controllers.Devices.Models;
 using Moq;
 
 namespace HomeConnect.WebApi.Test.Controllers;

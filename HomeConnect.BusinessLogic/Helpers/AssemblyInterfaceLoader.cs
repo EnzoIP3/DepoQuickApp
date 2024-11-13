@@ -27,7 +27,7 @@ public sealed class AssemblyInterfaceLoader<TInterface> : IAssemblyInterfaceLoad
         _implementations = [];
         files.ForEach(file =>
         {
-            Assembly assemblyLoaded = Assembly.LoadFile(file.FullName);
+            var assemblyLoaded = Assembly.LoadFile(file.FullName);
             var loadedTypes = assemblyLoaded
                 .GetTypes()
                 .Where(t => t.IsClass && typeof(TInterface).IsAssignableFrom(t))

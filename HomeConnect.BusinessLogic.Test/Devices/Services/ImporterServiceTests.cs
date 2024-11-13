@@ -1,15 +1,11 @@
 using BusinessLogic.BusinessOwners.Models;
-using BusinessLogic.BusinessOwners.Repositories;
 using BusinessLogic.BusinessOwners.Services;
 using BusinessLogic.Devices.Entities;
 using BusinessLogic.Devices.Importer;
-using BusinessLogic.Devices.Models;
-using BusinessLogic.Devices.Repositories;
 using BusinessLogic.Devices.Services;
 using BusinessLogic.Helpers;
 using BusinessLogic.Roles.Entities;
 using BusinessLogic.Users.Entities;
-using BusinessLogic.Users.Repositories;
 using Moq;
 
 namespace HomeConnect.BusinessLogic.Test.Devices.Services;
@@ -41,7 +37,7 @@ public class ImporterServiceTests
         var importerName = "ImporterName";
         _mockAssemblyInterfaceLoader
             .Setup(x => x.GetImplementationsList(It.IsAny<string>()))
-            .Returns(new List<string> { importerName });
+            .Returns([importerName]);
 
         // Act
         var result = _importerService.GetImporters();
@@ -75,7 +71,7 @@ public class ImporterServiceTests
                 ModelNumber = "ModelNumber",
                 Description = "Description",
                 MainPhoto = "MainPhoto",
-                SecondaryPhotos = new List<string> { "SecondaryPhoto" },
+                SecondaryPhotos = ["SecondaryPhoto"],
                 Type = "Sensor",
             },
             new DeviceArgs
@@ -84,7 +80,7 @@ public class ImporterServiceTests
                 ModelNumber = "ModelNumber2",
                 Description = "Description2",
                 MainPhoto = "MainPhoto2",
-                SecondaryPhotos = new List<string>(),
+                SecondaryPhotos = [],
                 Type = "Camera",
                 MotionDetection = true,
                 PersonDetection = false,

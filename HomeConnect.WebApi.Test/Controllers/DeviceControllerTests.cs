@@ -94,7 +94,7 @@ public class DeviceControllerTests
         // Arrange
         var importerName = "Importer1";
         var route = "C:/Users/username/Documents/file.csv";
-        var expectedDevices = new List<string>{ Guid.NewGuid().ToString(), Guid.NewGuid().ToString() };
+        var expectedDevices = new List<string> { Guid.NewGuid().ToString(), Guid.NewGuid().ToString() };
         var expectedResponse = new ImportDevicesResponse
         {
             ImportedDevices = expectedDevices

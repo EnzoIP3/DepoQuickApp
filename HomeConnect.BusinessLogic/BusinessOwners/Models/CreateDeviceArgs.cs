@@ -1,4 +1,3 @@
-using System.ComponentModel.DataAnnotations;
 using BusinessLogic.Users.Entities;
 
 namespace BusinessLogic.BusinessOwners.Models;

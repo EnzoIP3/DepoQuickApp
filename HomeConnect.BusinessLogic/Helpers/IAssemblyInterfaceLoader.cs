@@ -1,5 +1,3 @@
-using ModeloValidador.Abstracciones;
-
 namespace BusinessLogic.Helpers;
 
 public interface IAssemblyInterfaceLoader<TInterface>

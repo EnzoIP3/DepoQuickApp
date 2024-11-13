@@ -29,7 +29,7 @@ public class BusinessControllerTests
     private PagedData<Business> _pagedList = null!;
     private Role _role = null!;
     private User _user = null!;
-    private Guid _validatorId = Guid.NewGuid();
+    private readonly Guid _validatorId = Guid.NewGuid();
 
     [TestInitialize]
     public void Initialize()

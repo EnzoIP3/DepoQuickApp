@@ -20,7 +20,7 @@ public class RoomController(IHomeOwnerService homeOwnerService) : ControllerBase
         return new AddOwnedDeviceToRoomResponse { DeviceId = hardwareId.ToString(), RoomId = roomId };
     }
 
-    [HttpPost("{deviceId}/move")]
+    [HttpPatch("devices/{deviceId}/room")]
     public MoveDeviceResponse MoveDevice([FromRoute] string deviceId, [FromBody] MoveDeviceRequest request)
     {
         homeOwnerService.MoveDevice(request.SourceRoomId, request.TargetRoomId, deviceId);

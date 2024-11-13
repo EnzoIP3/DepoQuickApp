@@ -87,6 +87,11 @@ public class HomeOwnerService : IHomeOwnerService
         throw new NotImplementedException();
     }
 
+    public Guid AddOwnedDeviceToRoom(string roomId, string requestDeviceId)
+    {
+        throw new NotImplementedException();
+    }
+
     private void ValidateNameHomeParameters(Guid ownerId, Guid homeId, string newName)
     {
         if (ownerId == Guid.Empty)

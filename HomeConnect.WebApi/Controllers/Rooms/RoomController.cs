@@ -12,4 +12,10 @@ public class RoomController(IHomeOwnerService homeOwnerService) : ControllerBase
         var room = homeOwnerService.CreateRoom(args.HomeId, args.Name);
         return new CreateRoomResponse { RoomId = room.Id.ToString() };
     }
+
+    [HttpPost("{roomId}/devices")]
+    public AddOwnedDeviceToRoomResponse AddOwnedDeviceToRoom([FromRoute] string roomId, [FromBody] AddOwnedDeviceToRoomRequest request)
+    {
+        throw new NotImplementedException();
+    }
 }

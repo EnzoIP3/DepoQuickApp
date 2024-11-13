@@ -49,4 +49,29 @@ public class RoomControllerTests
         response.Should().NotBeNull();
         response.RoomId.Should().Be(room.Id.ToString());
     }
+
+    [TestMethod]
+    public void AddOwnedDeviceToRoom_WhenCalledWithValidRequest_ReturnsExpectedResponse()
+    {
+        // Arrange
+        var roomId = "123e4567-e89b-12d3-a456-426614174000";
+        var deviceId = "123e4567-e89b-12d3-a456-426614174001";
+        var hardwareId = Guid.NewGuid();
+
+        _homeOwnerService.Setup(x => x.AddOwnedDeviceToRoom(roomId, deviceId)).Returns(hardwareId);
+
+        var request = new AddOwnedDeviceToRoomRequest
+        {
+            DeviceId = deviceId
+        };
+
+        // Act
+        var response = _controller.AddOwnedDeviceToRoom(roomId, request);
+
+        // Assert
+        _homeOwnerService.VerifyAll();
+        response.Should().NotBeNull();
+        response.DeviceId.Should().Be(hardwareId.ToString());
+        response.RoomId.Should().Be(roomId);
+    }
 }

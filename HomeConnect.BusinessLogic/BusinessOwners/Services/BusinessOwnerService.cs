@@ -93,6 +93,11 @@ public class BusinessOwnerService : IBusinessOwnerService
         return businesses;
     }
 
+    public PagedData<Device> GetDevices(string businessId, User user)
+    {
+        throw new NotImplementedException();
+    }
+
     private void EnsureBusinessExistsFromRut(string argsBusinessRut)
     {
         if (!BusinessRepository.Exists(argsBusinessRut))

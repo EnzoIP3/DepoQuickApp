@@ -1,6 +1,7 @@
 using BusinessLogic.BusinessOwners.Entities;
 using BusinessLogic.BusinessOwners.Models;
 using BusinessLogic.Devices.Entities;
+using BusinessLogic.Users.Entities;
 
 namespace BusinessLogic.BusinessOwners.Services;
 
@@ -11,4 +12,5 @@ public interface IBusinessOwnerService
     public Camera CreateCamera(CreateCameraArgs args);
     public void UpdateValidator(UpdateValidatorArgs args);
     public PagedData<Business> GetBusinesses(string ownerFilter);
+    public PagedData<Device> GetDevices(string businessId, User user);
 }

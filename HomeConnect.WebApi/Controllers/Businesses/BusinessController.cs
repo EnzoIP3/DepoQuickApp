@@ -3,11 +3,13 @@ using BusinessLogic.Admins.Services;
 using BusinessLogic.BusinessOwners.Entities;
 using BusinessLogic.BusinessOwners.Models;
 using BusinessLogic.BusinessOwners.Services;
+using BusinessLogic.Devices.Entities;
 using BusinessLogic.Roles.Entities;
 using BusinessLogic.Users.Entities;
 using HomeConnect.WebApi.Controllers.Businesses.Models;
 using HomeConnect.WebApi.Filters;
 using Microsoft.AspNetCore.Mvc;
+using GetDevicesResponse = HomeConnect.WebApi.Controllers.Businesses.Models.GetDevicesResponse;
 
 namespace HomeConnect.WebApi.Controllers.Businesses;
 
@@ -79,4 +81,45 @@ public class BusinessController(IAdminService adminService, IBusinessOwnerServic
         businessOwnerService.UpdateValidator(args);
         return new UpdateValidatorResponse { BusinessRut = args.BusinessRut, Validator = args.Validator };
     }
+
+    [HttpGet("{businessId}/devices")]
+    public GetDevicesResponse GetDevices(string businessId)
+    {
+        var userLoggedIn = HttpContext.Items[Item.UserLogged] as User;
+        PagedData<Device> devices = businessOwnerService.GetDevices(businessId, userLoggedIn!);
+        GetDevicesResponse response = ResponseFromDevices(devices);
+        return response;
+    }
+
+    private GetDevicesResponse ResponseFromDevices(PagedData<Device> devices)
+    {
+        return new GetDevicesResponse
+        {
+            Devices = devices.Data.Select(d => new DeviceInfo
+            {
+                Name = d.Name,
+                ModelNumber = d.ModelNumber,
+                Description = d.Description,
+                MainPhoto = d.MainPhoto,
+                SecondaryPhotos = d.SecondaryPhotos,
+                Type = d.Type.ToString()
+            }).ToList(),
+            Pagination = new Pagination
+            {
+                Page = devices.Page,
+                PageSize = devices.PageSize,
+                TotalPages = devices.TotalPages
+            }
+        };
+    }
+}
+
+public struct DeviceInfo
+{
+    public string Name { get; set; }
+    public string ModelNumber { get; set; }
+    public string Description { get; set; }
+    public string MainPhoto { get; set; }
+    public List<string> SecondaryPhotos { get; set; }
+    public string Type { get; set; }
 }

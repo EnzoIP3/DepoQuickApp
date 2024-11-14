@@ -809,6 +809,19 @@ public class HomeOwnerServiceTests
         // Assert
         act.Should().Throw<ArgumentException>().WithMessage("Home ID cannot be null or empty.");
     }
+
+    [TestMethod]
+    public void CreateRoom_ShouldThrowArgumentException_WhenNameIsNullOrEmpty()
+    {
+        // Arrange
+        var homeId = Guid.NewGuid().ToString();
+
+        // Act
+        Action act = () => _homeOwnerService.CreateRoom(homeId, null);
+
+        // Assert
+        act.Should().Throw<ArgumentException>().WithMessage("Room name cannot be null or empty.");
+    }
     #endregion
     #endregion
 }

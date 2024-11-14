@@ -63,6 +63,7 @@ public class UserController(IAdminService adminService, IUserService userService
     }
 
     [HttpGet("{userId}/businesses")]
+    [AuthorizationFilter(SystemPermission.GetBusinesses)]
     public GetBusinessesResponse GetBusinesses(string userId)
     {
         PagedData<Business> businesses = businessOwnerService.GetBusinesses(userId);

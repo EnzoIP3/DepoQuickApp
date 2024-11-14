@@ -431,7 +431,7 @@ public class DeviceServiceTests
         _homeRepository.Setup(r => r.GetRoomById(sourceRoomId)).Returns(sourceRoom);
         _homeRepository.Setup(r => r.GetRoomById(targetRoomId)).Returns(targetRoom);
         _homeRepository.Setup(r => r.UpdateRoom(It.IsAny<Room>())).Verifiable();
-        _deviceRepository.Setup(r => r.UpdateDevice(It.IsAny<OwnedDevice>())).Verifiable();
+        _deviceRepository.Setup(r => r.UpdateOwnedDevice(It.IsAny<OwnedDevice>())).Verifiable();
 
         // Act
         _deviceService.MoveDevice(sourceRoomId.ToString(), targetRoomId.ToString(), ownedDeviceId.ToString());

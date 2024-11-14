@@ -38,7 +38,7 @@ public class DeviceRepository : PaginatedRepositoryBase<Device>, IDeviceReposito
         return _context.Devices.Any(d => d.ModelNumber == modelNumber);
     }
 
-    public void UpdateDevice(OwnedDevice ownedDevice)
+    public void UpdateOwnedDevice(OwnedDevice ownedDevice)
     {
         throw new NotImplementedException();
     }

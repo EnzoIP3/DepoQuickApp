@@ -9,5 +9,5 @@ public interface IDeviceRepository
     Device Get(Guid deviceId);
     void Add(Device device);
     bool ExistsByModelNumber(int modelNumber);
-    void UpdateDevice(OwnedDevice ownedDevice);
+    void UpdateOwnedDevice(OwnedDevice ownedDevice);
 }

@@ -3,6 +3,7 @@ namespace BusinessLogic.HomeOwners.Entities;
 public class Room
 {
     private string _name = string.Empty;
+    private Home _home = null;
     public Guid Id { get; set; }
     public string Name
     {
@@ -18,5 +19,17 @@ public class Room
         }
     }
 
-    public Home Home { get; set; } = null!;
+    public Home Home
+    {
+        get => _home;
+        set
+        {
+            if(_home == null)
+            {
+                throw new ArgumentException("Room must have a home assigned.");
+            }
+
+            _home = value;
+        }
+    }
 }

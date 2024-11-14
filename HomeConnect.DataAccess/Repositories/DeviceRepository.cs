@@ -40,7 +40,8 @@ public class DeviceRepository : PaginatedRepositoryBase<Device>, IDeviceReposito
 
     public void UpdateOwnedDevice(OwnedDevice ownedDevice)
     {
-        throw new NotImplementedException();
+        _context.OwnedDevices.Update(ownedDevice);
+        _context.SaveChanges();
     }
 
     public PagedData<Device> GetPaged(GetDevicesArgs args)

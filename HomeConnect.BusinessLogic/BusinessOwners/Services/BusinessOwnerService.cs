@@ -95,7 +95,8 @@ public class BusinessOwnerService : IBusinessOwnerService
 
     public PagedData<Device> GetDevices(string businessId, User user)
     {
-        throw new NotImplementedException();
+        EnsureBusinessIsFromOwner(businessId, user.Id.ToString());
+        return null;
     }
 
     private void EnsureBusinessExistsFromRut(string argsBusinessRut)

@@ -685,4 +685,26 @@ public class BusinessOwnerServiceTests
             It.Is<FilterArgs>(a => a.OwnerIdFilter == _owner.Id)), Times.Once);
     }
     #endregion
+
+    #region GetDevices
+
+    #region Error
+
+    [TestMethod]
+    public void GetDevices_WhenBusinessDoesNotBelongToUser_ThrowsInvalidOperationException()
+    {
+        // Arrange
+        var business = new Business("RUTexample", "Business Name", "https://example.com/image.png", _owner);
+        var user = new User("John", "Doe", "email@email.com", "Password@1", new Role());
+        _businessRepository.Setup(x => x.Get(business.Rut)).Returns(business);
+
+        // Act
+        Action act = () => _businessOwnerService.GetDevices(business.Rut, user);
+
+        // Assert
+        act.Should().Throw<InvalidOperationException>().WithMessage("The business does not belong to the specified owner.");
+        _businessRepository.Verify(x => x.Get(business.Rut), Times.Once);
+    }
+    #endregion
+    #endregion
 }

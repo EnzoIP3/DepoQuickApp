@@ -42,10 +42,6 @@ public class HomeRepositoryTests
     [TestCleanup]
     public void Cleanup()
     {
-        _context.Rooms.RemoveRange(_context.Rooms);
-        _context.Homes.RemoveRange(_context.Homes);
-        _context.OwnedDevices.RemoveRange(_context.OwnedDevices);
-        _context.SaveChanges();
         _context.Database.EnsureDeleted();
     }
 
@@ -323,9 +319,9 @@ public class HomeRepositoryTests
     public void UpdateRoom_WhenOwnedDevicesAreUpdated_UpdatesOwnedDevicesList()
     {
         // Arrange
-        var home = new Home { Id = Guid.NewGuid(), Address = "Arteaga 1470" };
+        var home = new Home(_homeOwner, "Main St 123", 12.5, 12.5, 5);
         var room = new Room { Id = Guid.NewGuid(), Name = "Living Room", Home = home, OwnedDevices = new List<OwnedDevice>() };
-        var device = new Device { Id = Guid.NewGuid(), Name = "Device1" };
+        var device = new Device();
         var ownedDevice = new OwnedDevice { HardwareId = Guid.NewGuid(), Device = device, Home = home };
 
         _context.Homes.Add(home);

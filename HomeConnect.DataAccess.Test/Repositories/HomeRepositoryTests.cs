@@ -4,6 +4,7 @@ using BusinessLogic.Roles.Entities;
 using BusinessLogic.Users.Entities;
 using FluentAssertions;
 using HomeConnect.DataAccess.Repositories;
+using Microsoft.EntityFrameworkCore;
 
 namespace HomeConnect.DataAccess.Test.Repositories;
 
@@ -338,4 +339,31 @@ public class HomeRepositoryTests
         updatedRoom.Should().NotBeNull();
         updatedRoom.OwnedDevices.Should().ContainSingle(d => d.HardwareId == ownedDevice.HardwareId);
     }
+
+    #region UpdateHome
+    [TestMethod]
+    public void UpdateHome_WhenRoomsAreUpdated_UpdatesRoomsList()
+    {
+        // Arrange
+        var home = new Home(_homeOwner, "Main St 123", 12.5, 12.5, 5);
+        var room = new Room { Id = Guid.NewGuid(), Name = "Living Room", Home = home };
+
+        _context.Homes.Add(home);
+        _context.Rooms.Add(room);
+        _context.SaveChanges();
+
+        // Act
+        if (!home.Rooms.Any(r => r.Id == room.Id))
+        {
+            home.Rooms.Add(room);
+        }
+
+        _homeRepository.Update(home);
+
+        // Assert
+        var updatedHome = _context.Homes.Include(h => h.Rooms).FirstOrDefault(h => h.Id == home.Id);
+        updatedHome.Should().NotBeNull();
+        updatedHome.Rooms.Should().ContainSingle(r => r.Id == room.Id && r.Name == "Living Room");
+    }
+    #endregion
 }

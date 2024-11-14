@@ -1,3 +1,4 @@
+using BusinessLogic.Devices.Entities;
 using BusinessLogic.HomeOwners.Entities;
 using BusinessLogic.Roles.Entities;
 using BusinessLogic.Users.Entities;
@@ -41,6 +42,10 @@ public class HomeRepositoryTests
     [TestCleanup]
     public void Cleanup()
     {
+        _context.Rooms.RemoveRange(_context.Rooms);
+        _context.Homes.RemoveRange(_context.Homes);
+        _context.OwnedDevices.RemoveRange(_context.OwnedDevices);
+        _context.SaveChanges();
         _context.Database.EnsureDeleted();
     }
 
@@ -313,4 +318,28 @@ public class HomeRepositoryTests
     }
     #endregion
     #endregion
+
+    [TestMethod]
+    public void UpdateRoom_WhenOwnedDevicesAreUpdated_UpdatesOwnedDevicesList()
+    {
+        // Arrange
+        var home = new Home { Id = Guid.NewGuid(), Address = "Arteaga 1470" };
+        var room = new Room { Id = Guid.NewGuid(), Name = "Living Room", Home = home, OwnedDevices = new List<OwnedDevice>() };
+        var device = new Device { Id = Guid.NewGuid(), Name = "Device1" };
+        var ownedDevice = new OwnedDevice { HardwareId = Guid.NewGuid(), Device = device, Home = home };
+
+        _context.Homes.Add(home);
+        _context.Rooms.Add(room);
+        _context.OwnedDevices.Add(ownedDevice);
+        _context.SaveChanges();
+
+        // Act
+        room.OwnedDevices.Add(ownedDevice);
+        _homeRepository.UpdateRoom(room);
+
+        // Assert
+        var updatedRoom = _homeRepository.GetRoomById(room.Id);
+        updatedRoom.Should().NotBeNull();
+        updatedRoom.OwnedDevices.Should().ContainSingle(d => d.HardwareId == ownedDevice.HardwareId);
+    }
 }

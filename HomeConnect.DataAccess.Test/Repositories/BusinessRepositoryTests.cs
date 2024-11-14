@@ -183,6 +183,19 @@ public class BusinessRepositoryTests
         result.Data.Should().BeEquivalentTo(expected.Data);
     }
 
+    [TestMethod]
+    public void GetBusinesses_WithOwnerIdFilter_ReturnsFilteredBusinesses()
+    {
+        // Arrange
+        var expected = new PagedData<Business> { Data = [_validBusiness], Page = 1, PageSize = 2, TotalPages = 1 };
+
+        // Act
+        PagedData<Business> result = _businessRepository.GetPaged(1, 2, null, null, _validUser.Id);
+
+        // Assert
+        result.Data.Should().BeEquivalentTo(expected.Data);
+    }
+
     #endregion
 
     #region Add

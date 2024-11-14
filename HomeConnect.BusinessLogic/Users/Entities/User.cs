@@ -169,4 +169,9 @@ public class User
             throw new InvalidOperationException("User already has this role.");
         }
     }
+
+    public List<SystemPermission> GetPermissions()
+    {
+        return Roles.SelectMany(role => role.Permissions).Distinct().ToList();
+    }
 }

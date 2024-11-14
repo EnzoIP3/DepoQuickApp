@@ -31,9 +31,19 @@ public class Context(DbContextOptions<Context> options) : DbContext(options)
         ConfigureRolePermissions(modelBuilder);
         ConfigureUserRole(modelBuilder);
         ConfigureMemberRelations(modelBuilder);
+        ConfigureOwnedDevices(modelBuilder);
         SeedAdminUser(modelBuilder);
 
         base.OnModelCreating(modelBuilder);
+    }
+
+    private static void ConfigureOwnedDevices(ModelBuilder modelBuilder)
+    {
+        modelBuilder.Entity<OwnedDevice>()
+            .HasDiscriminator<string>("DeviceType")
+            .HasValue<OwnedDevice>("OwnedDevice")
+            .HasValue<LampOwnedDevice>("LampOwnedDevice")
+            .HasValue<SensorOwnedDevice>("SensorOwnedDevice");
     }
 
     private void SeedRoles(ModelBuilder modelBuilder)
@@ -61,7 +71,16 @@ public class Context(DbContextOptions<Context> options) : DbContext(options)
             new SystemPermission { Value = SystemPermission.CreateBusiness },
             new SystemPermission { Value = SystemPermission.CreateCamera },
             new SystemPermission { Value = SystemPermission.CreateSensor },
-            new SystemPermission { Value = SystemPermission.UpdateMember });
+            new SystemPermission { Value = SystemPermission.UpdateMember },
+            new SystemPermission { Value = SystemPermission.CreateMotionSensor },
+            new SystemPermission { Value = SystemPermission.CreateLamp },
+            new SystemPermission { Value = SystemPermission.GetHomes },
+            new SystemPermission { Value = SystemPermission.NameHome },
+            new SystemPermission { Value = SystemPermission.UpdateBusinessValidator },
+            new SystemPermission { Value = SystemPermission.GetDeviceValidators },
+            new SystemPermission { Value = SystemPermission.ImportDevices },
+            new SystemPermission { Value = SystemPermission.GetDeviceImportFiles },
+            new SystemPermission { Value = SystemPermission.GetDeviceImporters });
     }
 
     private void ConfigureRolePermissions(ModelBuilder modelBuilder)
@@ -82,9 +101,18 @@ public class Context(DbContextOptions<Context> options) : DbContext(options)
                 new { RolesName = Role.HomeOwner, PermissionsValue = SystemPermission.GetMembers },
                 new { RolesName = Role.HomeOwner, PermissionsValue = SystemPermission.UpdateMember },
                 new { RolesName = Role.HomeOwner, PermissionsValue = SystemPermission.GetNotifications },
+                new { RolesName = Role.HomeOwner, PermissionsValue = SystemPermission.GetHomes },
+                new { RolesName = Role.HomeOwner, PermissionsValue = SystemPermission.NameHome },
                 new { RolesName = Role.BusinessOwner, PermissionsValue = SystemPermission.CreateBusiness },
                 new { RolesName = Role.BusinessOwner, PermissionsValue = SystemPermission.CreateCamera },
-                new { RolesName = Role.BusinessOwner, PermissionsValue = SystemPermission.CreateSensor }));
+                new { RolesName = Role.BusinessOwner, PermissionsValue = SystemPermission.CreateSensor },
+                new { RolesName = Role.BusinessOwner, PermissionsValue = SystemPermission.CreateMotionSensor },
+                new { RolesName = Role.BusinessOwner, PermissionsValue = SystemPermission.CreateLamp },
+                new { RolesName = Role.BusinessOwner, PermissionsValue = SystemPermission.UpdateBusinessValidator },
+                new { RolesName = Role.BusinessOwner, PermissionsValue = SystemPermission.GetDeviceValidators },
+                new { RolesName = Role.BusinessOwner, PermissionsValue = SystemPermission.ImportDevices },
+                new { RolesName = Role.BusinessOwner, PermissionsValue = SystemPermission.GetDeviceImportFiles },
+                new { RolesName = Role.BusinessOwner, PermissionsValue = SystemPermission.GetDeviceImporters }));
     }
 
     private void ConfigureUserRole(ModelBuilder modelBuilder)

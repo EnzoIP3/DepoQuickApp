@@ -28,6 +28,8 @@ public class HomeControllerTests
     private readonly User _otherUser = new("Jane", "Doe", "email2@email.com", "Password@100",
         new Role { Name = "HomeOwner", Permissions = [] });
 
+    private const string ModelNumber = "123";
+
     private AuthorizationFilterContext _context = null!;
     private HomeController _controller = null!;
     private Mock<IHomeOwnerService> _homeOwnerService = null!;
@@ -97,7 +99,7 @@ public class HomeControllerTests
         // Arrange
         var request = new AddMemberRequest
         {
-            MemberId = _user.Id.ToString(),
+            Email = _user.Email,
             CanAddDevices = true,
             CanListDevices = false
         };
@@ -106,11 +108,12 @@ public class HomeControllerTests
         var args = new AddMemberArgs
         {
             HomeId = _home.Id.ToString(),
-            UserId = _user.Id.ToString(),
+            UserEmail = _user.Email,
             CanAddDevices = request.CanAddDevices,
             CanListDevices = request.CanListDevices
         };
-        _homeOwnerService.Setup(x => x.AddMemberToHome(args)).Returns(_user.Id);
+        var memberId = Guid.NewGuid();
+        _homeOwnerService.Setup(x => x.AddMemberToHome(args)).Returns(memberId);
 
         // Act
         AddMemberResponse response = _controller.AddMember(_home.Id.ToString(), request);
@@ -119,7 +122,7 @@ public class HomeControllerTests
         _homeOwnerService.VerifyAll();
         response.Should().NotBeNull();
         response.HomeId.Should().Be(_home.Id.ToString());
-        response.MemberId.Should().Be(_user.Id.ToString());
+        response.MemberId.Should().Be(memberId.ToString());
     }
 
     #endregion
@@ -133,9 +136,9 @@ public class HomeControllerTests
         var businessOwner = new User("Business", "Owner", "bo@email.com", "Password@100",
             new Role { Name = "BusinessOwner", Permissions = [] });
         var business = new Business("123456789123", "business", "https://example.com/image.png", businessOwner);
-        var sensor = new Device("sensor", 123, "a camera", "https://www.example.com/photo1.jpg", [],
+        var sensor = new Device("sensor", "123", "a camera", "https://www.example.com/photo1.jpg", [],
             "sensor", business);
-        var camera = new Camera("camera", 123, "a camera", "https://www.example.com/photo1.jpg", [],
+        var camera = new Camera("camera", "123", "a camera", "https://www.example.com/photo1.jpg", [],
             business, true, true, false, true);
 
         var request = new AddDevicesRequest { DeviceIds = [sensor.Id.ToString(), camera.Id.ToString()] };
@@ -167,7 +170,7 @@ public class HomeControllerTests
             {
                 Name = "Device1",
                 Type = DeviceType.Sensor,
-                ModelNumber = 1,
+                ModelNumber = "1",
                 MainPhoto = "https://www.example.com/photo1.jpg",
                 Business = new Business { Name = "Name1" }
             });
@@ -176,7 +179,7 @@ public class HomeControllerTests
             {
                 Name = "Device2",
                 Type = DeviceType.Camera,
-                ModelNumber = 2,
+                ModelNumber = "2",
                 MainPhoto = "https://www.example.com/photo2.jpg",
                 Business = new Business { Name = "Name2" }
             });
@@ -196,7 +199,8 @@ public class HomeControllerTests
                     BusinessName = device1.Device.Business.Name,
                     Type = device1.Device.Type.ToString(),
                     ModelNumber = device1.Device.ModelNumber,
-                    Photo = device1.Device.MainPhoto
+                    MainPhoto = device1.Device.MainPhoto,
+                    SecondaryPhotos = device1.Device.SecondaryPhotos
                 },
                 new ListDeviceInfo
                 {
@@ -205,7 +209,144 @@ public class HomeControllerTests
                     BusinessName = device2.Device.Business.Name,
                     Type = device2.Device.Type.ToString(),
                     ModelNumber = device2.Device.ModelNumber,
-                    Photo = device2.Device.MainPhoto
+                    MainPhoto = device2.Device.MainPhoto,
+                    SecondaryPhotos = device2.Device.SecondaryPhotos
+                }
+
+            ]
+        };
+
+        // Act
+        GetDevicesResponse response = _controller.GetDevices(_home.Id.ToString());
+
+        // Assert
+        _homeOwnerService.VerifyAll();
+        response.Should().NotBeNull();
+        response.Devices.Should().NotBeNullOrEmpty();
+        response.Devices.Should().HaveCount(2);
+        response.Devices.Should().BeEquivalentTo(expectedResponse.Devices);
+    }
+
+    [TestMethod]
+    public void GetDevices_WhenCalledWithAHomeWithALamp_ShouldHaveTheStateOfTheLamp()
+    {
+        // Arrange
+        var lamp1 = new LampOwnedDevice(_home,
+            new Device
+            {
+                Name = "Device1",
+                Type = DeviceType.Lamp,
+                ModelNumber = ModelNumber,
+                MainPhoto = "https://www.example.com/photo1.jpg",
+                Business = new Business { Name = "Name1" }
+            });
+        var lamp2 = new LampOwnedDevice(_home,
+            new Device
+            {
+                Name = "Device2",
+                Type = DeviceType.Lamp,
+                ModelNumber = "456",
+                MainPhoto = "https://www.example.com/photo2.jpg",
+                Business = new Business { Name = "Name2" }
+            });
+        var items = new Dictionary<object, object?> { { Item.UserLogged, _user } };
+        _httpContextMock.Setup(h => h.Items).Returns(items);
+        _homeOwnerService.Setup(x => x.GetHomeDevices(_home.Id.ToString()))
+            .Returns(new List<OwnedDevice> { lamp1, lamp2 });
+
+        var expectedResponse = new GetDevicesResponse
+        {
+            Devices =
+            [
+                new ListDeviceInfo
+                {
+                    HardwareId = lamp1.HardwareId.ToString(),
+                    Name = lamp1.Device.Name,
+                    BusinessName = lamp1.Device.Business.Name,
+                    Type = lamp1.Device.Type.ToString(),
+                    ModelNumber = lamp1.Device.ModelNumber,
+                    MainPhoto = lamp1.Device.MainPhoto,
+                    State = false,
+                    SecondaryPhotos = lamp1.Device.SecondaryPhotos
+                },
+                new ListDeviceInfo
+                {
+                    HardwareId = lamp2.HardwareId.ToString(),
+                    Name = lamp2.Device.Name,
+                    BusinessName = lamp2.Device.Business.Name,
+                    Type = lamp2.Device.Type.ToString(),
+                    ModelNumber = lamp2.Device.ModelNumber,
+                    MainPhoto = lamp2.Device.MainPhoto,
+                    State = false,
+                    SecondaryPhotos = lamp2.Device.SecondaryPhotos
+                }
+
+            ]
+        };
+
+        // Act
+        GetDevicesResponse response = _controller.GetDevices(_home.Id.ToString());
+
+        // Assert
+        _homeOwnerService.VerifyAll();
+        response.Should().NotBeNull();
+        response.Devices.Should().NotBeNullOrEmpty();
+        response.Devices.Should().HaveCount(2);
+        response.Devices.Should().BeEquivalentTo(expectedResponse.Devices);
+    }
+
+    [TestMethod]
+    public void GetDevices_WhenCalledWithAHomeWithASensor_ShouldHaveTheStateOfTheSensor()
+    {
+        // Arrange
+        var sensor1 = new SensorOwnedDevice(_home,
+            new Device
+            {
+                Name = "Device1",
+                Type = DeviceType.Sensor,
+                ModelNumber = ModelNumber,
+                MainPhoto = "https://www.example.com/photo1.jpg",
+                Business = new Business { Name = "Name1" }
+            });
+        var sensor2 = new SensorOwnedDevice(_home,
+            new Device
+            {
+                Name = "Device2",
+                Type = DeviceType.Sensor,
+                ModelNumber = "456",
+                MainPhoto = "https://www.example.com/photo2.jpg",
+                Business = new Business { Name = "Name2" }
+            });
+        var items = new Dictionary<object, object?> { { Item.UserLogged, _user } };
+        _httpContextMock.Setup(h => h.Items).Returns(items);
+        _homeOwnerService.Setup(x => x.GetHomeDevices(_home.Id.ToString()))
+            .Returns(new List<OwnedDevice> { sensor1, sensor2 });
+
+        var expectedResponse = new GetDevicesResponse
+        {
+            Devices =
+            [
+                new ListDeviceInfo
+                {
+                    HardwareId = sensor1.HardwareId.ToString(),
+                    Name = sensor1.Device.Name,
+                    BusinessName = sensor1.Device.Business.Name,
+                    Type = sensor1.Device.Type.ToString(),
+                    ModelNumber = sensor1.Device.ModelNumber,
+                    MainPhoto = sensor1.Device.MainPhoto,
+                    IsOpen = false,
+                    SecondaryPhotos = sensor1.Device.SecondaryPhotos
+                },
+                new ListDeviceInfo
+                {
+                    HardwareId = sensor2.HardwareId.ToString(),
+                    Name = sensor2.Device.Name,
+                    BusinessName = sensor2.Device.Business.Name,
+                    Type = sensor2.Device.Type.ToString(),
+                    ModelNumber = sensor2.Device.ModelNumber,
+                    MainPhoto = sensor2.Device.MainPhoto,
+                    IsOpen = false,
+                    SecondaryPhotos = sensor2.Device.SecondaryPhotos
                 }
 
             ]
@@ -268,7 +409,7 @@ public class HomeControllerTests
             [
                 new ListMemberInfo
                 {
-                    Id = member.User.Id.ToString(),
+                    Id = member.Id.ToString(),
                     Name = member.User.Name,
                     Surname = member.User.Surname,
                     Photo = member.User.ProfilePicture ?? string.Empty,
@@ -279,7 +420,7 @@ public class HomeControllerTests
 
                 new ListMemberInfo
                 {
-                    Id = otherMember.User.Id.ToString(),
+                    Id = otherMember.Id.ToString(),
                     Name = otherMember.User.Name,
                     Surname = otherMember.User.Surname,
                     Photo = otherMember.User.ProfilePicture ?? string.Empty,

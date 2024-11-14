@@ -1,0 +1,16 @@
+<app-table [columns]="columns" [data]="devices" [loading]="loading" [filterableColumns]="filterableColumns"
+    (filter)="onFilterChange($event)"
+    [customTemplates]="{mainPhoto: mainPhotoTemplate, secondaryPhotos: secondaryPhotosTemplate}" />
+<app-paginator [currentPage]="pagination?.page" [totalPages]="pagination?.totalPages" [pageSize]="pagination?.pageSize"
+    (pageChange)="onPageChange($event)" />
+
+<ng-template #mainPhotoTemplate let-row="row">
+    <app-avatar defaultIcon="pi pi-image" [image]="row.mainPhoto" shape="square" size="xlarge" />
+</ng-template>
+
+<ng-template #secondaryPhotosTemplate let-row="row">
+    <app-image-gallery [images]="row.secondaryPhotos" [imageTemplate]="imageTemplate" />
+    <ng-template #imageTemplate let-image>
+        <app-avatar defaultIcon="" [image]="image" shape="square" size="xlarge" />
+    </ng-template>
+</ng-template>

@@ -27,7 +27,7 @@ public class OwnedDeviceRepository : IOwnedDeviceRepository
 
     public OwnedDevice GetByHardwareId(Guid hardwareId)
     {
-        return _context.OwnedDevices.Include(od => od.Home).ThenInclude(h => h.Members)
+        return _context.OwnedDevices.Include(od => od.Device).Include(od => od.Home).ThenInclude(h => h.Members)
             .ThenInclude(m => m.User).Include(od => od.Home).ThenInclude(h => h.Members)
             .ThenInclude(m => m.HomePermissions).Include(od => od.Home).ThenInclude(h => h.Owner)
             .First(od => od.HardwareId == hardwareId);
@@ -49,5 +49,48 @@ public class OwnedDeviceRepository : IOwnedDeviceRepository
         ownedDevice.Name = newName;
         _context.OwnedDevices.Update(ownedDevice);
         _context.SaveChanges();
+    }
+
+    public void UpdateLampState(Guid hardwareId, bool state)
+    {
+        EnsureDeviceIsLamp(hardwareId);
+        var lamp = (LampOwnedDevice)GetByHardwareId(hardwareId);
+        lamp.State = state;
+        Update(lamp);
+    }
+
+    public void UpdateSensorState(Guid hardwareId, bool state)
+    {
+        EnsureDeviceIsSensor(hardwareId);
+    }
+
+    public bool GetLampState(Guid hardwareId)
+    {
+        EnsureDeviceIsLamp(hardwareId);
+        return ((LampOwnedDevice)GetByHardwareId(hardwareId)).State;
+    }
+
+    public bool GetSensorState(Guid hardwareId)
+    {
+        EnsureDeviceIsSensor(hardwareId);
+        return ((SensorOwnedDevice)GetByHardwareId(hardwareId)).IsOpen;
+    }
+
+    private void EnsureDeviceIsSensor(Guid hardwareId)
+    {
+        OwnedDevice ownedDevice = GetByHardwareId(hardwareId);
+        if (ownedDevice.Device.Type != DeviceType.Sensor)
+        {
+            throw new InvalidOperationException("The device is not a sensor.");
+        }
+    }
+
+    private void EnsureDeviceIsLamp(Guid hardwareId)
+    {
+        OwnedDevice ownedDevice = GetByHardwareId(hardwareId);
+        if (ownedDevice.Device.Type != DeviceType.Lamp)
+        {
+            throw new InvalidOperationException("The device is not a lamp.");
+        }
     }
 }

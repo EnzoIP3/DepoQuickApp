@@ -4,8 +4,10 @@ using BusinessLogic.Auth.Repositories;
 using BusinessLogic.Auth.Services;
 using BusinessLogic.BusinessOwners.Repositories;
 using BusinessLogic.BusinessOwners.Services;
+using BusinessLogic.Devices.Importer;
 using BusinessLogic.Devices.Repositories;
 using BusinessLogic.Devices.Services;
+using BusinessLogic.Helpers;
 using BusinessLogic.HomeOwners.Repositories;
 using BusinessLogic.HomeOwners.Services;
 using BusinessLogic.Notifications.Repositories;
@@ -17,12 +19,18 @@ using HomeConnect.DataAccess;
 using HomeConnect.DataAccess.Repositories;
 using HomeConnect.WebApi.Filters;
 using Microsoft.EntityFrameworkCore;
+using ModeloValidador.Abstracciones;
 
-WebApplicationBuilder builder = WebApplication.CreateBuilder(args);
-
-// Add services to the container.
+var builder = WebApplication.CreateBuilder(args);
 
 builder.Services
+    .AddCors(options =>
+    {
+        options.AddDefaultPolicy(
+            b => b.AllowAnyOrigin()
+                .AllowAnyMethod()
+                .AllowAnyHeader());
+    })
     .AddControllers(
         options =>
         {
@@ -33,8 +41,8 @@ builder.Services
         options.SuppressMapClientErrors = true;
     });
 
-IServiceCollection services = builder.Services;
-ConfigurationManager configuration = builder.Configuration;
+var services = builder.Services;
+var configuration = builder.Configuration;
 var connectionString = configuration.GetConnectionString("DefaultConnection");
 
 if (string.IsNullOrEmpty(connectionString))
@@ -60,6 +68,10 @@ services.AddScoped<IDeviceService, DeviceService>();
 services.AddScoped<IAdminService, AdminService>();
 services.AddScoped<IBusinessOwnerService, BusinessOwnerService>();
 services.AddScoped<INotificationService, NotificationService>();
+services.AddScoped<IValidatorService, ValidatorService>();
+services.AddScoped<IImporterService, ImporterService>();
+services.AddScoped<IAssemblyInterfaceLoader<IDeviceImporter>, AssemblyInterfaceLoader<IDeviceImporter>>();
+services.AddScoped<IAssemblyInterfaceLoader<IModeloValidador>, AssemblyInterfaceLoader<IModeloValidador>>();
 
 WebApplication app = builder.Build();
 
@@ -70,6 +82,8 @@ app.UseHttpsRedirection();
 app.UseAuthorization();
 
 app.MapControllers();
+
+app.UseCors();
 
 app.Run();
 

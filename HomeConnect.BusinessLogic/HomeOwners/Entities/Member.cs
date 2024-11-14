@@ -26,7 +26,7 @@ public class Member
     public User User { get; init; } = null!;
     public Guid UserId { get; set; }
 
-    public List<HomePermission> HomePermissions { get; set; } = [];
+    public List<HomePermission> HomePermissions { get; set; } = [new(HomePermission.GetHome)];
 
     public Home Home { get; set; } = null!;
     public Guid HomeId { get; set; }

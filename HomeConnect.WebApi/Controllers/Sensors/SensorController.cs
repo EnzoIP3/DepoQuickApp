@@ -3,10 +3,8 @@ using BusinessLogic.BusinessOwners.Services;
 using BusinessLogic.Devices.Entities;
 using BusinessLogic.Devices.Services;
 using BusinessLogic.Notifications.Models;
-using BusinessLogic.Notifications.Services;
 using BusinessLogic.Roles.Entities;
 using BusinessLogic.Users.Entities;
-using HomeConnect.WebApi.Controllers.Devices;
 using HomeConnect.WebApi.Controllers.Devices.Models;
 using HomeConnect.WebApi.Controllers.Sensors.Models;
 using HomeConnect.WebApi.Filters;
@@ -17,10 +15,9 @@ namespace HomeConnect.WebApi.Controllers.Sensors;
 [ApiController]
 [Route("sensors")]
 public class SensorController(
-    INotificationService notificationService,
     IDeviceService deviceService,
     IBusinessOwnerService businessOwnerService)
-    : BaseDeviceController(deviceService)
+    : ControllerBase
 {
     [HttpPost]
     [AuthenticationFilter]
@@ -36,7 +33,7 @@ public class SensorController(
             ModelNumber = request.ModelNumber,
             Name = request.Name ?? string.Empty,
             SecondaryPhotos = request.SecondaryPhotos,
-            Type = "Sensor"
+            Type = "Sensor",
         };
 
         Device createdSensor = businessOwnerService.CreateDevice(args);
@@ -45,20 +42,11 @@ public class SensorController(
     }
 
     [HttpPost("{hardwareId}/open")]
-    public NotifyResponse NotifyOpen([FromRoute] string hardwareId)
+    public NotifyResponse Open([FromRoute] string hardwareId)
     {
-        EnsureDeviceIsConnected(hardwareId);
         NotificationArgs notificationArgs = CreateOpenNotificationArgs(hardwareId);
-        notificationService.Notify(notificationArgs);
+        deviceService.UpdateSensorState(hardwareId, true, notificationArgs);
         return new NotifyResponse { HardwareId = hardwareId };
-    }
-
-    private void EnsureDeviceIsConnected(string hardwareId)
-    {
-        if (!deviceService.IsConnected(hardwareId))
-        {
-            throw new ArgumentException("Device is not connected");
-        }
     }
 
     private static NotificationArgs CreateOpenNotificationArgs(string hardwareId)
@@ -68,11 +56,10 @@ public class SensorController(
     }
 
     [HttpPost("{hardwareId}/close")]
-    public NotifyResponse NotifyClose([FromRoute] string hardwareId)
+    public NotifyResponse Close([FromRoute] string hardwareId)
     {
-        EnsureDeviceIsConnected(hardwareId);
         NotificationArgs notificationArgs = CreateCloseNotificationArgs(hardwareId);
-        notificationService.Notify(notificationArgs);
+        deviceService.UpdateSensorState(hardwareId, false, notificationArgs);
         return new NotifyResponse { HardwareId = hardwareId };
     }
 

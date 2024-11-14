@@ -26,4 +26,10 @@
         <ProjectReference Include="..\HomeConnect.BusinessLogic\HomeConnect.BusinessLogic.csproj"/>
     </ItemGroup>
 
+    <ItemGroup>
+      <Reference Include="ModeloValidador.Abstracciones">
+        <HintPath>..\ModelValidator\ModeloValidador.Abstracciones.dll</HintPath>
+      </Reference>
+    </ItemGroup>
+
 </Project>

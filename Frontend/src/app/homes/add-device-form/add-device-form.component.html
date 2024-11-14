@@ -1,0 +1,6 @@
+<app-form [form]="deviceForm" (onSubmit)="onSubmit()">
+    <app-form-multi-select [values]="availableDevices" placeholder="Select Devices" name="devices"
+        [loading]="devicesLoading" [form]="deviceForm" />
+    <app-form-button title="Associate Devices" color="primary" [loading]="devicesFormLoading"
+        [disabled]="!deviceForm.valid" />
+</app-form>

@@ -10,7 +10,7 @@ namespace HomeConnect.BusinessLogic.Test.Devices.Entities;
 public class CameraTest
 {
     private const string Name = "Name";
-    private const int ModelNumber = 123;
+    private const string ModelNumber = "123";
     private const string Description = "Description";
     private const string MainPhoto = "https://www.example.com/photo1.jpg";
 

@@ -1,0 +1,50 @@
+<p-table [columns]="columns" [value]="data" [loading]="loading" [showLoader]="false"
+    [selectionMode]="clickableRows ? 'single' : null" (onRowSelect)="handleRowClick($event)">
+    <ng-template pTemplate="header" let-columns>
+        <tr class="vertical-align-baseline">
+            <th *ngFor="let col of columns">
+                <div class="flex align-items-center">
+                    {{ col.header }}
+                    <button type="button" pButton icon="pi pi-filter" class="p-button-rounded p-button-text"
+                        (click)="toggleFilterVisibility(col.field)" *ngIf="filterableColumns.includes(col.field)">
+                    </button>
+                </div>
+                <div class="block m-0 p-0">
+                    <input *ngIf="isFilterVisible(col.field)" type="text" pInputText
+                        [placeholder]="'Filter by ' + col.header + '...'"
+                        (input)="handleFilterChange($event, col.field)" (keydown.enter)="handleFilterSubmit()" />
+                </div>
+            </th>
+        </tr>
+    </ng-template>
+    <ng-template pTemplate="emptymessage">
+        <tr>
+            <td [attr.colspan]="columns.length">
+                <div class="flex align-items-center justify-content-center gap-2">
+                    <div class="pi pi-info-circle"></div>
+                    <p>There is no data available.</p>
+                </div>
+            </td>
+        </tr>
+    </ng-template>
+    <ng-template pTemplate="body" let-rowData let-columns="columns">
+        <tr [pSelectableRow]="rowData" *ngIf="!loading">
+            <td *ngFor="let col of columns">
+                <ng-container *ngIf="customTemplates[col.field]; else defaultCell">
+                    <ng-container
+                        *ngTemplateOutlet="customTemplates[col.field]; context: { value: rowData[col.field], row: rowData }"></ng-container>
+                </ng-container>
+                <ng-template #defaultCell>
+                    {{ rowData[col.field] }}
+                </ng-template>
+            </td>
+        </tr>
+    </ng-template>
+    <ng-template pTemplate="loadingbody" let-columns>
+        <tr *ngFor="let _ of loadingArray">
+            <td *ngFor="let i of columns">
+                <p-skeleton />
+            </td>
+        </tr>
+    </ng-template>
+</p-table>

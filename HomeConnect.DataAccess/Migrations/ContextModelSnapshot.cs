@@ -57,6 +57,9 @@ namespace HomeConnect.DataAccess.Migrations
                     b.Property<Guid>("OwnerId")
                         .HasColumnType("uniqueidentifier");
 
+                    b.Property<Guid?>("Validator")
+                        .HasColumnType("uniqueidentifier");
+
                     b.HasKey("Rut");
 
                     b.HasIndex("OwnerId");
@@ -86,8 +89,9 @@ namespace HomeConnect.DataAccess.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<int>("ModelNumber")
-                        .HasColumnType("int");
+                    b.Property<string>("ModelNumber")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("Name")
                         .IsRequired()
@@ -123,6 +127,11 @@ namespace HomeConnect.DataAccess.Migrations
                     b.Property<Guid>("DeviceId")
                         .HasColumnType("uniqueidentifier");
 
+                    b.Property<string>("DeviceType")
+                        .IsRequired()
+                        .HasMaxLength(21)
+                        .HasColumnType("nvarchar(21)");
+
                     b.Property<Guid>("HomeId")
                         .HasColumnType("uniqueidentifier");
 
@@ -133,6 +142,10 @@ namespace HomeConnect.DataAccess.Migrations
                     b.HasIndex("HomeId");
 
                     b.ToTable("OwnedDevices");
+
+                    b.HasDiscriminator<string>("DeviceType").HasValue("OwnedDevice");
+
+                    b.UseTphMappingStrategy();
                 });
 
             modelBuilder.Entity("BusinessLogic.HomeOwners.Entities.Home", b =>
@@ -153,6 +166,9 @@ namespace HomeConnect.DataAccess.Migrations
 
                     b.Property<int>("MaxMembers")
                         .HasColumnType("int");
+
+                    b.Property<string>("NickName")
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<Guid>("OwnerId")
                         .HasColumnType("uniqueidentifier");
@@ -324,6 +340,42 @@ namespace HomeConnect.DataAccess.Migrations
                         new
                         {
                             Value = "update-member"
+                        },
+                        new
+                        {
+                            Value = "create-motion-sensor"
+                        },
+                        new
+                        {
+                            Value = "create-lamp"
+                        },
+                        new
+                        {
+                            Value = "get-homes"
+                        },
+                        new
+                        {
+                            Value = "name-home"
+                        },
+                        new
+                        {
+                            Value = "update-business-validator"
+                        },
+                        new
+                        {
+                            Value = "get-device-validators"
+                        },
+                        new
+                        {
+                            Value = "import-devices"
+                        },
+                        new
+                        {
+                            Value = "get-device-import-files"
+                        },
+                        new
+                        {
+                            Value = "get-device-importers"
                         });
                 });
 
@@ -463,6 +515,16 @@ namespace HomeConnect.DataAccess.Migrations
                         },
                         new
                         {
+                            PermissionsValue = "get-homes",
+                            RolesName = "HomeOwner"
+                        },
+                        new
+                        {
+                            PermissionsValue = "name-home",
+                            RolesName = "HomeOwner"
+                        },
+                        new
+                        {
                             PermissionsValue = "create-business",
                             RolesName = "BusinessOwner"
                         },
@@ -474,6 +536,41 @@ namespace HomeConnect.DataAccess.Migrations
                         new
                         {
                             PermissionsValue = "create-sensor",
+                            RolesName = "BusinessOwner"
+                        },
+                        new
+                        {
+                            PermissionsValue = "create-motion-sensor",
+                            RolesName = "BusinessOwner"
+                        },
+                        new
+                        {
+                            PermissionsValue = "create-lamp",
+                            RolesName = "BusinessOwner"
+                        },
+                        new
+                        {
+                            PermissionsValue = "update-business-validator",
+                            RolesName = "BusinessOwner"
+                        },
+                        new
+                        {
+                            PermissionsValue = "get-device-validators",
+                            RolesName = "BusinessOwner"
+                        },
+                        new
+                        {
+                            PermissionsValue = "import-devices",
+                            RolesName = "BusinessOwner"
+                        },
+                        new
+                        {
+                            PermissionsValue = "get-device-import-files",
+                            RolesName = "BusinessOwner"
+                        },
+                        new
+                        {
+                            PermissionsValue = "get-device-importers",
                             RolesName = "BusinessOwner"
                         });
                 });
@@ -511,6 +608,26 @@ namespace HomeConnect.DataAccess.Migrations
                         .HasColumnType("bit");
 
                     b.HasDiscriminator().HasValue("Camera");
+                });
+
+            modelBuilder.Entity("BusinessLogic.Devices.Entities.LampOwnedDevice", b =>
+                {
+                    b.HasBaseType("BusinessLogic.Devices.Entities.OwnedDevice");
+
+                    b.Property<bool>("State")
+                        .HasColumnType("bit");
+
+                    b.HasDiscriminator().HasValue("LampOwnedDevice");
+                });
+
+            modelBuilder.Entity("BusinessLogic.Devices.Entities.SensorOwnedDevice", b =>
+                {
+                    b.HasBaseType("BusinessLogic.Devices.Entities.OwnedDevice");
+
+                    b.Property<bool>("IsOpen")
+                        .HasColumnType("bit");
+
+                    b.HasDiscriminator().HasValue("SensorOwnedDevice");
                 });
 
             modelBuilder.Entity("BusinessLogic.Auth.Entities.Token", b =>

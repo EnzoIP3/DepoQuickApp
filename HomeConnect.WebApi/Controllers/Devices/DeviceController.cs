@@ -64,7 +64,9 @@ public class DeviceController : ControllerBase
             }).ToList(),
             Pagination = new Pagination
             {
-                Page = devices.Page, PageSize = devices.PageSize, TotalPages = devices.TotalPages
+                Page = devices.Page,
+                PageSize = devices.PageSize,
+                TotalPages = devices.TotalPages
             }
         };
     }
@@ -76,7 +78,9 @@ public class DeviceController : ControllerBase
         var userLoggedIn = HttpContext.Items[Item.UserLogged] as User;
         var args = new ImportDevicesArgs
         {
-            ImporterName = request.ImporterName, FileName = request.Route, User = userLoggedIn!
+            ImporterName = request.ImporterName,
+            FileName = request.Route,
+            User = userLoggedIn!
         };
         var addedDevices = _importerService.ImportDevices(args);
         return new ImportDevicesResponse { ImportedDevices = addedDevices };

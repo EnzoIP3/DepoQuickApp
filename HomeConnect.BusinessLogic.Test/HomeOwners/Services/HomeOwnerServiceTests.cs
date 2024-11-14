@@ -171,7 +171,10 @@ public class HomeOwnerServiceTests
         var home = new Home(_user, "Main St 123", 1.0, 2.0, 5);
         var model = new AddMemberArgs
         {
-            HomeId = home.Id.ToString(), UserEmail = invitedUser.Email, CanAddDevices = true, CanListDevices = true
+            HomeId = home.Id.ToString(),
+            UserEmail = invitedUser.Email,
+            CanAddDevices = true,
+            CanListDevices = true
         };
         _userRepositoryMock.Setup(x => x.ExistsByEmail(model.UserEmail)).Returns(true);
         _userRepositoryMock.Setup(x => x.GetByEmail(model.UserEmail)).Returns(invitedUser);
@@ -200,7 +203,10 @@ public class HomeOwnerServiceTests
         // Arrange
         var model = new AddMemberArgs
         {
-            HomeId = homeId, UserEmail = homeOwnerEmail, CanAddDevices = true, CanListDevices = true
+            HomeId = homeId,
+            UserEmail = homeOwnerEmail,
+            CanAddDevices = true,
+            CanListDevices = true
         };
 
         // Act
@@ -298,7 +304,8 @@ public class HomeOwnerServiceTests
             true, true, true);
         var addDeviceModel = new AddDevicesArgs
         {
-            HomeId = home.Id.ToString(), DeviceIds = [device.Id.ToString(), camera.Id.ToString()]
+            HomeId = home.Id.ToString(),
+            DeviceIds = [device.Id.ToString(), camera.Id.ToString()]
         };
         _deviceRepositoryMock.Setup(x => x.Get(device.Id)).Returns(device);
         _deviceRepositoryMock.Setup(x => x.Get(camera.Id)).Returns(camera);

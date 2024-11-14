@@ -29,6 +29,7 @@ public record SystemPermission
     public const string GetDeviceImportFiles = "get-device-import-files";
     public const string GetDeviceImporters = "get-device-importers";
     public const string GetBusinesses = "get-businesses";
+    public const string GetBusinessDevices = "get-business-devices";
 
     public SystemPermission()
     {

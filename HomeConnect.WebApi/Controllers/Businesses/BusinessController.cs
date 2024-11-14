@@ -82,6 +82,7 @@ public class BusinessController(IAdminService adminService, IBusinessOwnerServic
     }
 
     [HttpGet("{businessId}/devices")]
+    [AuthorizationFilter(SystemPermission.GetBusinessDevices)]
     public GetDevicesResponse GetDevices(string businessId)
     {
         var userLoggedIn = HttpContext.Items[Item.UserLogged] as User;

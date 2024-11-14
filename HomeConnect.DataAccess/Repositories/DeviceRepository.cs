@@ -72,7 +72,7 @@ public class DeviceRepository : PaginatedRepositoryBase<Device>, IDeviceReposito
     {
         if (!string.IsNullOrEmpty(deviceNameFilter))
         {
-            query = query.Where(d => d.Name == deviceNameFilter);
+            query = query.Where(d => d.Name.Contains(deviceNameFilter));
         }
 
         return query;
@@ -82,7 +82,7 @@ public class DeviceRepository : PaginatedRepositoryBase<Device>, IDeviceReposito
     {
         if (modelNumberFilter != null)
         {
-            query = query.Where(d => d.ModelNumber == modelNumberFilter);
+            query = query.Where(d => d.ModelNumber.Contains(modelNumberFilter));
         }
 
         return query;

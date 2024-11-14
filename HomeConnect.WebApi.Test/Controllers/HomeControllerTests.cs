@@ -197,7 +197,8 @@ public class HomeControllerTests
                     BusinessName = device1.Device.Business.Name,
                     Type = device1.Device.Type.ToString(),
                     ModelNumber = device1.Device.ModelNumber,
-                    Photo = device1.Device.MainPhoto
+                    MainPhoto = device1.Device.MainPhoto,
+                    SecondaryPhotos = device1.Device.SecondaryPhotos
                 },
                 new ListDeviceInfo
                 {
@@ -206,7 +207,8 @@ public class HomeControllerTests
                     BusinessName = device2.Device.Business.Name,
                     Type = device2.Device.Type.ToString(),
                     ModelNumber = device2.Device.ModelNumber,
-                    Photo = device2.Device.MainPhoto
+                    MainPhoto = device2.Device.MainPhoto,
+                    SecondaryPhotos = device2.Device.SecondaryPhotos
                 }
 
             ]
@@ -261,8 +263,9 @@ public class HomeControllerTests
                     BusinessName = lamp1.Device.Business.Name,
                     Type = lamp1.Device.Type.ToString(),
                     ModelNumber = lamp1.Device.ModelNumber,
-                    Photo = lamp1.Device.MainPhoto,
-                    State = false
+                    MainPhoto = lamp1.Device.MainPhoto,
+                    State = false,
+                    SecondaryPhotos = lamp1.Device.SecondaryPhotos
                 },
                 new ListDeviceInfo
                 {
@@ -271,8 +274,9 @@ public class HomeControllerTests
                     BusinessName = lamp2.Device.Business.Name,
                     Type = lamp2.Device.Type.ToString(),
                     ModelNumber = lamp2.Device.ModelNumber,
-                    Photo = lamp2.Device.MainPhoto,
-                    State = false
+                    MainPhoto = lamp2.Device.MainPhoto,
+                    State = false,
+                    SecondaryPhotos = lamp2.Device.SecondaryPhotos
                 }
 
             ]
@@ -327,8 +331,9 @@ public class HomeControllerTests
                     BusinessName = sensor1.Device.Business.Name,
                     Type = sensor1.Device.Type.ToString(),
                     ModelNumber = sensor1.Device.ModelNumber,
-                    Photo = sensor1.Device.MainPhoto,
-                    IsOpen = false
+                    MainPhoto = sensor1.Device.MainPhoto,
+                    IsOpen = false,
+                    SecondaryPhotos = sensor1.Device.SecondaryPhotos
                 },
                 new ListDeviceInfo
                 {
@@ -337,8 +342,9 @@ public class HomeControllerTests
                     BusinessName = sensor2.Device.Business.Name,
                     Type = sensor2.Device.Type.ToString(),
                     ModelNumber = sensor2.Device.ModelNumber,
-                    Photo = sensor2.Device.MainPhoto,
-                    IsOpen = false
+                    MainPhoto = sensor2.Device.MainPhoto,
+                    IsOpen = false,
+                    SecondaryPhotos = sensor2.Device.SecondaryPhotos
                 }
 
             ]

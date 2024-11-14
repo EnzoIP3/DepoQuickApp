@@ -8,6 +8,7 @@ public record OwnedDeviceDto
     public string Type { get; set; } = null!;
     public string ModelNumber { get; set; } = null!;
     public string Photo { get; set; } = null!;
+    public List<string> SecondaryPhotos { get; set; } = null!;
     public bool? State { get; set; }
     public bool? IsOpen { get; set; }
 }

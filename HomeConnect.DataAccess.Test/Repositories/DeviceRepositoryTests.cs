@@ -159,8 +159,8 @@ public class DeviceRepositoryTests
         PagedData<Device> result = _deviceRepository.GetPaged(args);
 
         // Assert
-        result.Data.Should().HaveCount(1);
-        result.Data.First().Name.Should().Be(deviceNameFilter);
+        result.Data.Should().HaveCount(2);
+        result.Data.All(d => d.Name.Contains(deviceNameFilter)).Should().BeTrue();
     }
 
     [TestMethod]

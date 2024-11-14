@@ -9,7 +9,8 @@ public record ListDeviceInfo
     public string BusinessName { get; set; } = null!;
     public string Type { get; set; } = null!;
     public string ModelNumber { get; set; } = null!;
-    public string Photo { get; set; } = null!;
+    public string MainPhoto { get; set; } = null!;
+    public List<string> SecondaryPhotos { get; set; } = null!;
     public bool? State { get; set; }
     public bool? IsOpen { get; set; }
 
@@ -23,7 +24,8 @@ public record ListDeviceInfo
             BusinessName = dto.BusinessName,
             Type = dto.Type,
             ModelNumber = dto.ModelNumber,
-            Photo = dto.Photo,
+            MainPhoto = dto.Photo,
+            SecondaryPhotos = dto.SecondaryPhotos,
             State = dto.State,
             IsOpen = dto.IsOpen
         };

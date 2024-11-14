@@ -16,8 +16,7 @@ public class OwnedDevice
         Device = device;
     }
 
-    [Key]
-    public Guid HardwareId { get; set; } = Guid.NewGuid();
+    [Key] public Guid HardwareId { get; set; } = Guid.NewGuid();
 
     public Home Home { get; init; } = null!;
     public Device Device { get; init; } = null!;
@@ -32,7 +31,8 @@ public class OwnedDevice
             BusinessName = Device.Business.Name,
             Type = Device.Type.ToString(),
             ModelNumber = Device.ModelNumber,
-            Photo = Device.MainPhoto
+            Photo = Device.MainPhoto,
+            SecondaryPhotos = Device.SecondaryPhotos
         };
     }
 }

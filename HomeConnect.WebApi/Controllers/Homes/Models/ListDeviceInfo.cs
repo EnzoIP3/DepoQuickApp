@@ -4,6 +4,7 @@ namespace HomeConnect.WebApi.Controllers.Homes.Models;
 
 public record ListDeviceInfo
 {
+    public string Id { get; set; } = null!;
     public string HardwareId { get; set; } = null!;
     public string Name { get; set; } = null!;
     public string BusinessName { get; set; } = null!;
@@ -19,6 +20,7 @@ public record ListDeviceInfo
         var dto = ownedDevice.ToOwnedDeviceDto();
         return new ListDeviceInfo
         {
+            Id = dto.Id,
             HardwareId = dto.HardwareId,
             Name = dto.Name,
             BusinessName = dto.BusinessName,

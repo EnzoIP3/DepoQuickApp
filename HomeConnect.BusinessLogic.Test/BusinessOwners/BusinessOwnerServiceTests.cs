@@ -642,4 +642,19 @@ public class BusinessOwnerServiceTests
     }
     #endregion
     #endregion
+
+    #region GetBusinesses
+    [TestMethod]
+    public void GetBusinesses_WhenCalledWithInvalidOwnerId_ThrowsArgumentException()
+    {
+        // Arrange
+        var ownerFilter = "not-a-guid";
+
+        // Act
+        Action act = () => _businessOwnerService.GetBusinesses(ownerFilter);
+
+        // Assert
+        act.Should().Throw<ArgumentException>().WithMessage("The business owner ID is not a valid GUID.");
+    }
+    #endregion
 }

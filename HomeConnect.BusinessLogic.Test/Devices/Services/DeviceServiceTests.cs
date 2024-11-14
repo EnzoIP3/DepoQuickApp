@@ -37,8 +37,9 @@ public class DeviceServiceTests
         _deviceRepository = new Mock<IDeviceRepository>(MockBehavior.Strict);
         _ownedDeviceRepository = new Mock<IOwnedDeviceRepository>(MockBehavior.Strict);
         _notificationService = new Mock<INotificationService>(MockBehavior.Strict);
+        _homeRepository = new Mock<IHomeRepository>(MockBehavior.Strict);
         _deviceService = new DeviceService(_deviceRepository.Object, _ownedDeviceRepository.Object,
-            _notificationService.Object);
+            _notificationService.Object, _homeRepository.Object);
 
         user1 = new User("name", "surname", "email1@email.com", "Password#100", new Role());
         user2 = new User("name", "surname", "email2@email.com", "Password#100", new Role());

@@ -1,6 +1,7 @@
 using BusinessLogic.Devices.Entities;
 using BusinessLogic.Devices.Models;
 using BusinessLogic.Devices.Repositories;
+using BusinessLogic.HomeOwners.Repositories;
 using BusinessLogic.Notifications.Models;
 using BusinessLogic.Notifications.Services;
 
@@ -9,8 +10,9 @@ namespace BusinessLogic.Devices.Services;
 public class DeviceService : IDeviceService
 {
     public DeviceService(IDeviceRepository deviceRepository, IOwnedDeviceRepository ownedDeviceRepository,
-        INotificationService notificationService)
+        INotificationService notificationService, IHomeRepository homeRepository)
     {
+        HomeRepository = homeRepository;
         DeviceRepository = deviceRepository;
         OwnedDeviceRepository = ownedDeviceRepository;
         NotificationService = notificationService;
@@ -19,6 +21,7 @@ public class DeviceService : IDeviceService
     private IDeviceRepository DeviceRepository { get; }
     private IOwnedDeviceRepository OwnedDeviceRepository { get; }
     private INotificationService NotificationService { get; }
+    private IHomeRepository HomeRepository { get; }
 
     public PagedData<Device> GetDevices(GetDevicesArgs parameters)
     {
@@ -75,9 +78,24 @@ public class DeviceService : IDeviceService
         OwnedDeviceRepository.UpdateSensorState(Guid.Parse(hardwareId), state);
     }
 
-    public void MoveDevice(string requestSourceRoomId, string requestTargetRoomId, string deviceId)
+    public void MoveDevice(string sourceRoomId, string targetRoomId, string ownedDeviceId)
     {
-        throw new NotImplementedException();
+        var sourceRoom = HomeRepository.GetRoomById(Guid.Parse(sourceRoomId));
+        var targetRoom = HomeRepository.GetRoomById(Guid.Parse(targetRoomId));
+
+        var ownedDevice = sourceRoom.OwnedDevices.FirstOrDefault(d => d.HardwareId == Guid.Parse(ownedDeviceId));
+        if (ownedDevice == null)
+        {
+            throw new ArgumentException("Device not found in source room.");
+        }
+
+        sourceRoom.OwnedDevices.Remove(ownedDevice);
+        targetRoom.OwnedDevices.Add(ownedDevice);
+        ownedDevice.Room = targetRoom;
+
+        HomeRepository.UpdateRoom(sourceRoom);
+        HomeRepository.UpdateRoom(targetRoom);
+        DeviceRepository.UpdateDevice(ownedDevice);
     }
 
     private void SendSensorNotification(string hardwareId, bool state, NotificationArgs args)

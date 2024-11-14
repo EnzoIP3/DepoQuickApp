@@ -1,4 +1,4 @@
-namespace HomeConnect.WebApi.Controllers.Lamps;
+namespace HomeConnect.WebApi.Controllers.Lamps.Models;
 
 public class CreateLampResponse
 {

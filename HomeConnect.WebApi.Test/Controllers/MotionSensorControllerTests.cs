@@ -18,6 +18,8 @@ namespace HomeConnect.WebApi.Test.Controllers;
 [TestClass]
 public class MotionSensorControllerTests
 {
+    private readonly string _modelNumber = "123";
+
     private Mock<IBusinessOwnerService> _businessOwnerServiceMock = null!;
     private Mock<IDeviceService> _deviceServiceMock = null!;
     private Mock<HttpContext> _httpContextMock = null!;
@@ -42,7 +44,7 @@ public class MotionSensorControllerTests
     {
         // Arrange
         var user = new User();
-        var motionSensor = new Device("name", 123, "description", "http://example.com/photo.png", [],
+        var motionSensor = new Device("name", _modelNumber, "description", "http://example.com/photo.png", [],
             DeviceType.MotionSensor.ToString(),
             new Business());
         var motionSensorArgs = new CreateDeviceArgs

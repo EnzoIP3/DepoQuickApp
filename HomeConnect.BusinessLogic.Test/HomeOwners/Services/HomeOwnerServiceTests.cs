@@ -19,6 +19,7 @@ public class HomeOwnerServiceTests
     private readonly User _user =
         new("John", "Doe", "test@example.com", "12345678@My",
             new Role());
+    private readonly string _modelNumber = "123";
 
     private Mock<IDeviceRepository> _deviceRepositoryMock = null!;
     private HomeOwnerService _homeOwnerService = null!;
@@ -318,9 +319,9 @@ public class HomeOwnerServiceTests
     {
         // Arrange
         var home = new Home(_user, "Main St 123", 1.0, 2.0, 5);
-        var device = new Device("Sensor", 1, "A sensor",
+        var device = new Device("Sensor", "1", "A sensor",
             "https://example.com/image.png", [], "Sensor", new Business());
-        var camera = new Camera("Camera", 2, "A camera", "https://example.com/image.png", [], new Business(), true,
+        var camera = new Camera("Camera", "2", "A camera", "https://example.com/image.png", [], new Business(), true,
             true, true, true);
         var addDeviceModel = new AddDevicesArgs
         {
@@ -346,7 +347,7 @@ public class HomeOwnerServiceTests
     {
         // Arrange
         var home = new Home(_user, "Main St 123", 1.0, 2.0, 5);
-        var device = new Device("Lamp", 1, "A sensor",
+        var device = new Device("Lamp", _modelNumber, "A sensor",
             "https://example.com/image.png", [], "Lamp", new Business());
         var addDeviceModel = new AddDevicesArgs
         {
@@ -371,7 +372,7 @@ public class HomeOwnerServiceTests
     {
         // Arrange
         var home = new Home(_user, "Main St 123", 1.0, 2.0, 5);
-        var device = new Device("Sensor", 1, "A sensor",
+        var device = new Device("Sensor", _modelNumber, "A sensor",
             "https://example.com/image.png", [], "Sensor", new Business());
         var addDeviceModel = new AddDevicesArgs
         {
@@ -498,9 +499,9 @@ public class HomeOwnerServiceTests
     {
         // Arrange
         var home = new Home(_user, "Main St 123", 1.0, 2.0, 5);
-        var sensor = new Device("Sensor", 1, "A sensor",
+        var sensor = new Device("Sensor", "1", "A sensor",
             "https://example.com/image.png", [], "Sensor", new Business());
-        var camera = new Camera("Camera", 2, "A camera", "https://example.com/image.png", [], new Business(), true,
+        var camera = new Camera("Camera", "2", "A camera", "https://example.com/image.png", [], new Business(), true,
             true, true, true);
         var ownedDevices =
             new List<OwnedDevice> { new(home, sensor), new(home, camera) };

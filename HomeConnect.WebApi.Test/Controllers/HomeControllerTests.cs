@@ -28,6 +28,8 @@ public class HomeControllerTests
     private readonly User _otherUser = new("Jane", "Doe", "email2@email.com", "Password@100",
         new Role { Name = "HomeOwner", Permissions = [] });
 
+    private readonly string _modelNumber = "123";
+
     private AuthorizationFilterContext _context = null!;
     private HomeController _controller = null!;
     private Mock<IHomeOwnerService> _homeOwnerService = null!;
@@ -133,9 +135,9 @@ public class HomeControllerTests
         var businessOwner = new User("Business", "Owner", "bo@email.com", "Password@100",
             new Role { Name = "BusinessOwner", Permissions = [] });
         var business = new Business("123456789123", "business", "https://example.com/image.png", businessOwner);
-        var sensor = new Device("sensor", 123, "a camera", "https://www.example.com/photo1.jpg", [],
+        var sensor = new Device("sensor", "123", "a camera", "https://www.example.com/photo1.jpg", [],
             "sensor", business);
-        var camera = new Camera("camera", 123, "a camera", "https://www.example.com/photo1.jpg", [],
+        var camera = new Camera("camera", "123", "a camera", "https://www.example.com/photo1.jpg", [],
             business, true, true, false, true);
 
         var request = new AddDevicesRequest { DeviceIds = [sensor.Id.ToString(), camera.Id.ToString()] };
@@ -167,7 +169,7 @@ public class HomeControllerTests
             {
                 Name = "Device1",
                 Type = DeviceType.Sensor,
-                ModelNumber = 1,
+                ModelNumber = "1",
                 MainPhoto = "https://www.example.com/photo1.jpg",
                 Business = new Business { Name = "Name1" }
             });
@@ -176,7 +178,7 @@ public class HomeControllerTests
             {
                 Name = "Device2",
                 Type = DeviceType.Camera,
-                ModelNumber = 2,
+                ModelNumber = "2",
                 MainPhoto = "https://www.example.com/photo2.jpg",
                 Business = new Business { Name = "Name2" }
             });
@@ -231,7 +233,7 @@ public class HomeControllerTests
             {
                 Name = "Device1",
                 Type = DeviceType.Lamp,
-                ModelNumber = 1,
+                ModelNumber = _modelNumber,
                 MainPhoto = "https://www.example.com/photo1.jpg",
                 Business = new Business { Name = "Name1" }
             });
@@ -240,7 +242,7 @@ public class HomeControllerTests
             {
                 Name = "Device2",
                 Type = DeviceType.Lamp,
-                ModelNumber = 2,
+                ModelNumber = "456",
                 MainPhoto = "https://www.example.com/photo2.jpg",
                 Business = new Business { Name = "Name2" }
             });
@@ -297,7 +299,7 @@ public class HomeControllerTests
             {
                 Name = "Device1",
                 Type = DeviceType.Sensor,
-                ModelNumber = 1,
+                ModelNumber = _modelNumber,
                 MainPhoto = "https://www.example.com/photo1.jpg",
                 Business = new Business { Name = "Name1" }
             });
@@ -306,7 +308,7 @@ public class HomeControllerTests
             {
                 Name = "Device2",
                 Type = DeviceType.Sensor,
-                ModelNumber = 2,
+                ModelNumber = "456",
                 MainPhoto = "https://www.example.com/photo2.jpg",
                 Business = new Business { Name = "Name2" }
             });

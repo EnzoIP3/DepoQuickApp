@@ -7,4 +7,10 @@
         <RootNamespace>BusinessLogic</RootNamespace>
     </PropertyGroup>
 
+    <ItemGroup>
+      <Reference Include="ModeloValidador.Abstracciones">
+        <HintPath>..\ModelValidator\ModeloValidador.Abstracciones.dll</HintPath>
+      </Reference>
+    </ItemGroup>
+
 </Project>

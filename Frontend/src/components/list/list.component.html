@@ -21,7 +21,7 @@
 </ng-container>
 <ng-container *ngIf="loading">
     <ng-container *ngFor="let _ of loadingArray; let i = index">
-        <p-skeleton />
+        <p-skeleton styleClass="p-2 m-2" />
         <p-divider *ngIf="i + 1 < items.length" />
     </ng-container>
 </ng-container>

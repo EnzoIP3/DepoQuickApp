@@ -4,5 +4,6 @@ export default interface Device {
     businessName: string;
     type: string;
     modelNumber: number;
-    photo: string;
+    mainPhoto: string;
+    secondaryPhotos: string[];
 }

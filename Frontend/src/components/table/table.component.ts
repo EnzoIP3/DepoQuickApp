@@ -1,4 +1,10 @@
-import { Component, Input, Output, EventEmitter, TemplateRef } from "@angular/core";
+import {
+    Component,
+    Input,
+    Output,
+    EventEmitter,
+    TemplateRef
+} from "@angular/core";
 import { TableModule } from "primeng/table";
 import { CommonModule } from "@angular/common";
 import { SkeletonModule } from "primeng/skeleton";
@@ -51,6 +57,10 @@ export class TableComponent {
     handleFilterChange(event: any, field: string) {
         const value = event.target.value;
         this.filterValues[field] = value;
+
+        if (value === "") {
+            this.filter.emit(this.filterValues);
+        }
     }
 
     handleFilterSubmit() {

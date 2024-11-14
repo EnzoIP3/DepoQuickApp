@@ -17,6 +17,16 @@
             </th>
         </tr>
     </ng-template>
+    <ng-template pTemplate="emptymessage">
+        <tr>
+            <td [attr.colspan]="columns.length">
+                <div class="flex align-items-center justify-content-center gap-2">
+                    <div class="pi pi-info-circle"></div>
+                    <p>There is no data available.</p>
+                </div>
+            </td>
+        </tr>
+    </ng-template>
     <ng-template pTemplate="body" let-rowData let-columns="columns">
         <tr [pSelectableRow]="rowData" *ngIf="!loading">
             <td *ngFor="let col of columns">

@@ -66,22 +66,23 @@ export class MembersTableComponent {
 
     ngOnInit() {
         this.customTemplates = {};
-        this._homesServiceSubscription = this._homesService
-            .getMembers(this.homeId)
-            .subscribe({
-                next: (response: GetMembersResponse) => {
+        this._homesService.getMembers(this.homeId).subscribe();
+        this._homesServiceSubscription = this._homesService.members.subscribe({
+            next: (response: GetMembersResponse | null) => {
+                if (response) {
                     this.members = response.members;
-                    this.loading = false;
-                },
-                error: (error) => {
-                    this.loading = false;
-                    this._messageService.add({
-                        severity: "error",
-                        summary: "Error",
-                        detail: error.message
-                    });
                 }
-            });
+                this.loading = false;
+            },
+            error: (error) => {
+                this.loading = false;
+                this._messageService.add({
+                    severity: "error",
+                    summary: "Error",
+                    detail: error.message
+                });
+            }
+        });
     }
 
     ngAfterViewInit() {

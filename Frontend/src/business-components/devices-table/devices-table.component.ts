@@ -10,15 +10,25 @@ import { MessageService } from "primeng/api";
 import Pagination from "../../backend/services/pagination";
 import { PaginatorComponent } from "../../components/paginator/paginator.component";
 import FilterValues from "../../components/table/models/filter-values";
+import { AvatarComponent } from "../../components/avatar/avatar.component";
+import { ImageGalleryComponent } from "../../components/image-gallery/image-gallery.component";
 
 @Component({
     selector: "app-devices-table",
     standalone: true,
-    imports: [TableComponent, PaginatorComponent],
+    imports: [TableComponent, PaginatorComponent, AvatarComponent, ImageGalleryComponent],
     templateUrl: "./devices-table.component.html"
 })
 export class DevicesTableComponent {
     columns: TableColumn[] = [
+        {
+            field: "mainPhoto",
+            header: "Photo"
+        },
+        {
+            field: "secondaryPhotos",
+            header: "Other Photos"
+        },
         {
             field: "name",
             header: "Name"
@@ -37,7 +47,12 @@ export class DevicesTableComponent {
         }
     ];
 
-    filterableColumns: string[] = ["name", "type", "modelNumber", "businessName"];
+    filterableColumns: string[] = [
+        "name",
+        "type",
+        "modelNumber",
+        "businessName"
+    ];
 
     private _devicesSubscription: Subscription | null = null;
 
@@ -62,7 +77,7 @@ export class DevicesTableComponent {
 
     onFilterChange(filters: FilterValues) {
         this.filters = filters;
-        this._subscribeToDevices({ ...this.pagination, ...filters })
+        this._subscribeToDevices({ ...this.pagination, ...filters });
     }
 
     ngOnDestroy() {

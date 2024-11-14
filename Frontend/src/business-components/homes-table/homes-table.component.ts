@@ -7,11 +7,12 @@ import Home from "../../backend/services/homes/models/home";
 import { TableComponent } from "../../components/table/table.component";
 import GetHomesResponse from "../../backend/services/homes/models/get-homes-response";
 import { Router } from "@angular/router";
+import { CommonModule } from "@angular/common";
 
 @Component({
     selector: "app-homes-table",
     standalone: true,
-    imports: [TableComponent],
+    imports: [CommonModule, TableComponent],
     templateUrl: "./homes-table.component.html"
 })
 export class HomesTableComponent {

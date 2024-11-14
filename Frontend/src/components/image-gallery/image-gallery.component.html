@@ -1,0 +1,5 @@
+<p-galleria [value]="images" [showIndicators]="true" [showThumbnails]="false" class="m-0 p-0">
+    <ng-template pTemplate="item" let-item>
+        <ng-container *ngTemplateOutlet="imageTemplate; context: { $implicit: item }"></ng-container>
+    </ng-template>
+</p-galleria>

@@ -3,15 +3,20 @@
         <app-home-list [id]="id" (onHomeNameChange)="title = $event" />
     </app-panel>
 </div>
-<div class="mt-2 w-fit">
-    <app-panel title="Add Members" icon="pi-user-plus" [toggleable]="true">
-        <div class="w-fit">
-            <app-add-member-form [homeId]="id" />
-        </div>
-    </app-panel>
+<div class="mt-2 flex w-full gap-2 align-items-stretch">
+    <div class="w-fit">
+        <app-panel title="Add Members" icon="pi-user-plus" [toggleable]="true">
+            <div class="w-fit">
+                <app-add-member-form [homeId]="id" />
+            </div>
+        </app-panel>
+    </div>
+    <div class="w-full">
+        <app-panel title="Members" icon="pi-users" [toggleable]="true">
+            <app-members-table [homeId]="id" />
+        </app-panel>
+    </div>
 </div>
 <div class="mt-2">
-    <app-panel title="Members" icon="pi-users" [toggleable]="true">
-        <app-members-table [homeId]="id" />
-    </app-panel>
+
 </div>

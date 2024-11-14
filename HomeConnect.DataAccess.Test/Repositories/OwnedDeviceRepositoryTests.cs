@@ -33,17 +33,21 @@ public class OwnedDeviceRepositoryTests
 
         _home = new Home(_homeOwner, "Main St 123", 12.5, 12.5, 5);
         _business = new Business("123456789123", "Business Name", "https://example.com/image.png", _businessOwner);
-        _device = new Device("Sensor", 12345, "A sensor", "https://sensor.com/image.png", [], "Sensor", _business);
+        _device = new Device("Sensor", 12345, "A sensor", "https://sensor.com/image.png", new List<string>(), "Sensor", _business);
 
-        _ownedDevice = new OwnedDevice(_home, _device) { Connected = false };
+        var room = new Room { Id = Guid.NewGuid(), Name = "Living Room" };
 
         _context.Users.Add(_homeOwner);
         _context.Users.Add(_businessOwner);
         _context.Homes.Add(_home);
         _context.Businesses.Add(_business);
         _context.Devices.Add(_device);
-        _context.OwnedDevices.Add(_ownedDevice);
+        _context.Rooms.Add(room);
+        _context.SaveChanges();
 
+        _ownedDevice = new OwnedDevice(_home, _device) { Connected = false, Room = room };
+
+        _context.OwnedDevices.Add(_ownedDevice);
         _context.SaveChanges();
 
         _ownedDeviceRepository = new OwnedDeviceRepository(_context);

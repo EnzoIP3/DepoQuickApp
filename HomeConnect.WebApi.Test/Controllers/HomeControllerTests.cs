@@ -182,7 +182,7 @@ public class HomeControllerTests
             });
         var items = new Dictionary<object, object?> { { Item.UserLogged, _user } };
         _httpContextMock.Setup(h => h.Items).Returns(items);
-        _homeOwnerService.Setup(x => x.GetHomeDevices(_home.Id.ToString()))
+        _homeOwnerService.Setup(x => x.GetHomeDevices(_home.Id.ToString(), null))
             .Returns(new List<OwnedDevice> { device1, device2 });
 
         var expectedResponse = new GetDevicesResponse
@@ -246,7 +246,7 @@ public class HomeControllerTests
             });
         var items = new Dictionary<object, object?> { { Item.UserLogged, _user } };
         _httpContextMock.Setup(h => h.Items).Returns(items);
-        _homeOwnerService.Setup(x => x.GetHomeDevices(_home.Id.ToString()))
+        _homeOwnerService.Setup(x => x.GetHomeDevices(_home.Id.ToString(), null))
             .Returns(new List<OwnedDevice> { lamp1, lamp2 });
 
         var expectedResponse = new GetDevicesResponse
@@ -312,7 +312,7 @@ public class HomeControllerTests
             });
         var items = new Dictionary<object, object?> { { Item.UserLogged, _user } };
         _httpContextMock.Setup(h => h.Items).Returns(items);
-        _homeOwnerService.Setup(x => x.GetHomeDevices(_home.Id.ToString()))
+        _homeOwnerService.Setup(x => x.GetHomeDevices(_home.Id.ToString(), null))
             .Returns(new List<OwnedDevice> { sensor1, sensor2 });
 
         var expectedResponse = new GetDevicesResponse

@@ -116,10 +116,17 @@ public class HomeOwnerService : IHomeOwnerService
         return home.Members;
     }
 
-    public IEnumerable<OwnedDevice> GetHomeDevices(string homeId)
+   public IEnumerable<OwnedDevice> GetHomeDevices(string homeId, string? roomId = null)
     {
-        Home home = GetHome(ValidateAndParseGuid(homeId));
-        return OwnedDeviceRepository.GetOwnedDevicesByHome(home);
+        var home = GetHome(ValidateAndParseGuid(homeId));
+        var devicesQuery = OwnedDeviceRepository.GetOwnedDevicesByHome(home);
+
+        if (!string.IsNullOrEmpty(roomId))
+        {
+            devicesQuery = devicesQuery.Where(od => od.Room.Id.ToString() == roomId);
+        }
+
+        return devicesQuery.ToList();
     }
 
     public void UpdateMemberNotifications(Guid memberId, bool? requestShouldBeNotified)

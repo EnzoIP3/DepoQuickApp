@@ -79,9 +79,9 @@ public class HomeController(IHomeOwnerService homeOwnerService) : ControllerBase
     [HttpGet("{homesId}/devices")]
     [AuthorizationFilter(SystemPermission.GetDevices)]
     [HomeAuthorizationFilter(HomePermission.GetDevices)]
-    public GetDevicesResponse GetDevices([FromRoute] string homesId)
+    public GetDevicesResponse GetDevices([FromRoute] string homesId, [FromQuery] string? roomId = null)
     {
-        IEnumerable<OwnedDevice> devices = homeOwnerService.GetHomeDevices(homesId);
+        IEnumerable<OwnedDevice> devices = homeOwnerService.GetHomeDevices(homesId, roomId);
         var deviceInfos = devices.Select(ListDeviceInfo.FromOwnedDevice).ToList();
         return new GetDevicesResponse { Devices = deviceInfos };
     }

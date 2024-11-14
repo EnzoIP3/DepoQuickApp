@@ -32,26 +32,31 @@ public class NotificationRepositoryTest
         _notificationRepository = new NotificationRepository(_context);
         _context.Roles.Add(_role);
         _context.SaveChanges();
+
         _user = new User("John", "Doe", "email@email.com", "Password#100", _role);
         _context.Users.Add(_user);
         _context.SaveChanges();
+
         _business = new Business("123456789123", "Business", "https://example.com/image.png", _user);
         _context.Businesses.Add(_business);
         _context.SaveChanges();
-        _sensor = new Device("Device", 12345, "Device description", "https://example.com/image.png", [],
-            "Sensor", _business);
-        _camera = new Camera("Device", 12345, "Device description", "https://example.com/image.png", [],
-            _business, true, true, true, true);
+
+        _sensor = new Device("Device", 12345, "Device description", "https://example.com/image.png", new List<string>(), "Sensor", _business);
+        _camera = new Camera("Device", 12345, "Device description", "https://example.com/image.png", new List<string>(), _business, true, true, true, true);
         _context.Devices.AddRange(_sensor, _camera);
+        _context.SaveChanges();
+
         _home = new Home(_user, "Address 3420", 50, 100, 5);
         _context.Homes.Add(_home);
+        _context.SaveChanges();
+
         _ownedDevice = new OwnedDevice(_home, _sensor);
         _otherOwnedDevice = new OwnedDevice(_home, _camera);
         _context.OwnedDevices.AddRange(_ownedDevice, _otherOwnedDevice);
-        _notification =
-            new Notification(Guid.NewGuid(), DateTime.Now, true, "Notification message", _ownedDevice, _user);
-        _otherNotification = new Notification(Guid.NewGuid(), DateTime.Now.AddDays(1), false, "Notification message",
-            _otherOwnedDevice, _user);
+        _context.SaveChanges();
+
+        _notification = new Notification(Guid.NewGuid(), DateTime.Now, true, "Notification message", _ownedDevice, _user);
+        _otherNotification = new Notification(Guid.NewGuid(), DateTime.Now.AddDays(1), false, "Notification message", _otherOwnedDevice, _user);
         _context.Notifications.AddRange(_notification, _otherNotification);
         _context.SaveChanges();
     }

@@ -22,6 +22,7 @@ public class OwnedDevice
     public Home Home { get; init; } = null!;
     public Device Device { get; init; } = null!;
     public bool Connected { get; set; } = true;
+    public Room? Room { get; set; } = null!;
 
     public virtual OwnedDeviceDto ToOwnedDeviceDto()
     {

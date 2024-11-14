@@ -23,6 +23,7 @@ public class Context(DbContextOptions<Context> options) : DbContext(options)
     public DbSet<Token> Tokens { get; set; } = null!;
     public DbSet<Member> Members { get; set; } = null!;
     public DbSet<HomePermission> HomePermissions { get; set; } = null!;
+    public DbSet<Room> Rooms { get; set; } = null!;
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {

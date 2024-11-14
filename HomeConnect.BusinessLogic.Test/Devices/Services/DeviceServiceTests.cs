@@ -5,6 +5,7 @@ using BusinessLogic.Devices.Models;
 using BusinessLogic.Devices.Repositories;
 using BusinessLogic.Devices.Services;
 using BusinessLogic.HomeOwners.Entities;
+using BusinessLogic.HomeOwners.Repositories;
 using BusinessLogic.Notifications.Models;
 using BusinessLogic.Notifications.Services;
 using BusinessLogic.Roles.Entities;
@@ -22,6 +23,7 @@ public class DeviceServiceTests
     private DeviceService _deviceService = null!;
     private Mock<IOwnedDeviceRepository> _ownedDeviceRepository = null!;
     private Mock<INotificationService> _notificationService = null!;
+    private Mock<IHomeRepository> _homeRepository = null!;
     private PagedData<Device> _pagedDeviceList = null!;
     private GetDevicesArgs _parameters = null!;
     private Device otherDevice = null!;
@@ -408,5 +410,36 @@ public class DeviceServiceTests
         _ownedDeviceRepository.VerifyAll();
     }
     #endregion
+    #endregion
+
+    #region MoveDevice
+    [TestMethod]
+    public void MoveDevice_WhenCalled_MovesDeviceSuccessfully()
+    {
+        // Arrange
+        var sourceRoomId = Guid.NewGuid();
+        var targetRoomId = Guid.NewGuid();
+        var ownedDeviceId = Guid.NewGuid();
+        var ownedDevice = new OwnedDevice { HardwareId = ownedDeviceId, Room = new Room { Id = sourceRoomId } };
+        var sourceRoom = new Room { Id = sourceRoomId, OwnedDevices = new List<OwnedDevice> { ownedDevice } };
+        var targetRoom = new Room { Id = targetRoomId, OwnedDevices = new List<OwnedDevice>() };
+
+        _homeRepository.Setup(r => r.ExistsRoom(sourceRoomId)).Returns(true);
+        _homeRepository.Setup(r => r.ExistsRoom(targetRoomId)).Returns(true);
+        _homeRepository.Setup(r => r.GetRoomById(sourceRoomId)).Returns(sourceRoom);
+        _homeRepository.Setup(r => r.GetRoomById(targetRoomId)).Returns(targetRoom);
+        _homeRepository.Setup(r => r.UpdateRoom(It.IsAny<Room>())).Verifiable();
+        _deviceRepository.Setup(r => r.UpdateDevice(It.IsAny<OwnedDevice>())).Verifiable();
+
+        // Act
+        _deviceService.MoveDevice(sourceRoomId.ToString(), targetRoomId.ToString(), ownedDeviceId.ToString());
+
+        // Assert
+        sourceRoom.OwnedDevices.Should().NotContain(ownedDevice);
+        targetRoom.OwnedDevices.Should().Contain(ownedDevice);
+        ownedDevice.Room.Id.Should().Be(targetRoomId);
+        _homeRepository.VerifyAll();
+        _deviceRepository.VerifyAll();
+    }
     #endregion
 }

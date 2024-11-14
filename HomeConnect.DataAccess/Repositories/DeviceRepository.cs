@@ -38,6 +38,11 @@ public class DeviceRepository : PaginatedRepositoryBase<Device>, IDeviceReposito
         return _context.Devices.Any(d => d.ModelNumber == modelNumber);
     }
 
+    public void UpdateDevice(OwnedDevice ownedDevice)
+    {
+        throw new NotImplementedException();
+    }
+
     public PagedData<Device> GetPaged(GetDevicesArgs args)
     {
         var filters = new object[4];

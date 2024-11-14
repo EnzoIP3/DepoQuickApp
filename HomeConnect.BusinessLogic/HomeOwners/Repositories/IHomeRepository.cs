@@ -1,3 +1,4 @@
+using BusinessLogic.Devices.Entities;
 using BusinessLogic.HomeOwners.Entities;
 
 namespace BusinessLogic.HomeOwners.Repositories;
@@ -13,4 +14,7 @@ public interface IHomeRepository
     bool ExistsMember(Guid memberId);
     void Rename(Home home, string newName);
     void AddRoom(Room room);
+    Room GetRoomById(Guid parse);
+    bool ExistsRoom(Guid roomId);
+    void UpdateRoom(Room room);
 }

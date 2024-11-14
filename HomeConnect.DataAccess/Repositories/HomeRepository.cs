@@ -79,6 +79,21 @@ public class HomeRepository : IHomeRepository
         _context.SaveChanges();
     }
 
+    public Room GetRoomById(Guid parse)
+    {
+        throw new NotImplementedException();
+    }
+
+    public bool ExistsRoom(Guid roomId)
+    {
+        throw new NotImplementedException();
+    }
+
+    public void UpdateRoom(Room room)
+    {
+        throw new NotImplementedException();
+    }
+
     private void EnsureHomeDoesNotExist(Home home)
     {
         if (_context.Homes.Any(h => h.Address == home.Address))

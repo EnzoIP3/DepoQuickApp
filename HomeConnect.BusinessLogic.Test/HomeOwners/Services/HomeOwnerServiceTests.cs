@@ -838,5 +838,29 @@ public class HomeOwnerServiceTests
         act.Should().Throw<ArgumentException>().WithMessage("Home does not exist.");
     }
     #endregion
+    #region AddOwnedDeviceToRoom
+    [TestMethod]
+    public void AddOwnedDeviceToRoom_ValidInput_DeviceAssociatedSuccessfully()
+    {
+        // Arrange
+        var roomId = Guid.NewGuid().ToString();
+        var deviceId = Guid.NewGuid().ToString();
+        var home = new Home(Mock.Of<User>(), "Arteaga 1470", 0, 0, 5);
+        var room = new Room(Guid.Parse(roomId), "Living Room", home, new List<OwnedDevice>());
+        var device = new Device();
+        var ownedDevice = new OwnedDevice(home, device);
+
+        _homeRepositoryMock.Setup(repo => repo.GetRoomById(It.IsAny<Guid>())).Returns(room);
+        _ownedDeviceRepositoryMock.Setup(repo => repo.GetOwnedDeviceById(It.IsAny<Guid>())).Returns(ownedDevice);
+        _homeRepositoryMock.Setup(repo => repo.UpdateRoom(It.IsAny<Room>())).Verifiable();
+
+        // Act
+        var result = _homeOwnerService.AddOwnedDeviceToRoom(roomId, deviceId);
+
+        // Assert
+        result.Should().Be(ownedDevice.HardwareId);
+        _homeRepositoryMock.VerifyAll();
+    }
+    #endregion
     #endregion
 }

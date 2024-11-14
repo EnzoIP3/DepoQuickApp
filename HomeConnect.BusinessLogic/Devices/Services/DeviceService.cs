@@ -79,7 +79,16 @@ public class DeviceService : IDeviceService
     {
         EnsureIdFormatIsValid(cameraId);
         EnsureDeviceExists(cameraId);
+        EnsureDeviceIsACamera(cameraId);
         return null;
+    }
+
+    private void EnsureDeviceIsACamera(string cameraId)
+    {
+        if (DeviceRepository.Get(Guid.Parse(cameraId)).Type != DeviceType.Camera)
+        {
+            throw new InvalidOperationException("Device is not a camera.");
+        }
     }
 
     private void EnsureDeviceExists(string cameraId)

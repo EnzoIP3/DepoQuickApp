@@ -440,6 +440,22 @@ public class DeviceServiceTests
         act.Should().Throw<InvalidOperationException>().WithMessage("Device not found.");
         _deviceRepository.VerifyAll();
     }
+
+    [TestMethod]
+    public void GetCameraById_WhenDeviceIsNotACamera_ThrowsInvalidOperationException()
+    {
+        // Arrange
+        var cameraId = Guid.NewGuid().ToString();
+        _deviceRepository.Setup(x => x.Exists(Guid.Parse(cameraId))).Returns(true);
+        _deviceRepository.Setup(x => x.Get(Guid.Parse(cameraId))).Returns(new Device("Name", "123", "Description", "https://example.com/photo.png", [], "Sensor", new Business()));
+
+        // Act
+        Action act = () => _deviceService.GetCameraById(cameraId);
+
+        // Assert
+        act.Should().Throw<InvalidOperationException>().WithMessage("Device is not a camera.");
+        _deviceRepository.VerifyAll();
+    }
     #endregion
     #endregion
 }

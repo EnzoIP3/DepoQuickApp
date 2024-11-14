@@ -84,15 +84,7 @@ public class HomeOwnerService : IHomeOwnerService
 
     public Room CreateRoom(string homeId, string name)
     {
-        if (string.IsNullOrWhiteSpace(homeId))
-        {
-            throw new ArgumentException("Home ID cannot be null or empty.");
-        }
-
-        if (string.IsNullOrWhiteSpace(name))
-        {
-            throw new ArgumentException("Room name cannot be null or empty.");
-        }
+        ValidateRoomParameters(homeId, name);
 
         var home = HomeRepository.Get(Guid.Parse(homeId));
         if (home == null)
@@ -105,6 +97,19 @@ public class HomeOwnerService : IHomeOwnerService
         HomeRepository.AddRoom(room, home);
 
         return room;
+    }
+
+    private void ValidateRoomParameters(string homeId, string name)
+    {
+        if (string.IsNullOrWhiteSpace(homeId))
+        {
+            throw new ArgumentException("Home ID cannot be null or empty.");
+        }
+
+        if (string.IsNullOrWhiteSpace(name))
+        {
+            throw new ArgumentException("Room name cannot be null or empty.");
+        }
     }
 
     public Guid AddOwnedDeviceToRoom(string roomId, string requestDeviceId)

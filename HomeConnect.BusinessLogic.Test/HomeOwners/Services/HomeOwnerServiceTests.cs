@@ -782,18 +782,22 @@ public class HomeOwnerServiceTests
     {
         // Arrange
         var homeId = Guid.NewGuid().ToString();
-        var name = "Living Room";
-        var home = new Home();
+        var home = new Home { Id = Guid.Parse(homeId), Address = "Arteaga 1470", NickName = "My Home", Rooms = new List<Room>() };
+        var roomName = "Living Room";
+        var room = new Room { Id = Guid.NewGuid(), Name = roomName, Home = home };
+
         _homeRepositoryMock.Setup(repo => repo.Get(It.IsAny<Guid>())).Returns(home);
-        _homeRepositoryMock.Setup(repo => repo.AddRoom(It.IsAny<Room>())).Verifiable();
+        _homeRepositoryMock.Setup(repo => repo.Update(It.IsAny<Home>())).Verifiable();
 
         // Act
-        var room = _homeOwnerService.CreateRoom(homeId, name);
+        var createdRoom = _homeOwnerService.CreateRoom(homeId, roomName);
 
         // Assert
-        room.Should().NotBeNull();
-        room.Name.Should().Be(name);
-        _homeRepositoryMock.VerifyAll();
+        _homeRepositoryMock.Verify(repo => repo.Get(It.IsAny<Guid>()), Times.Once);
+        _homeRepositoryMock.Verify(repo => repo.Update(It.IsAny<Home>()), Times.Once);
+        createdRoom.Should().NotBeNull();
+        createdRoom.Name.Should().Be(roomName);
+        home.Rooms.Should().ContainSingle(r => r.Id == createdRoom.Id && r.Name == roomName);
     }
     #endregion
     #region Error

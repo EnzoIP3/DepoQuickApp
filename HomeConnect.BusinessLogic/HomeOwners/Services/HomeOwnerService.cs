@@ -112,9 +112,17 @@ public class HomeOwnerService : IHomeOwnerService
         }
     }
 
-    public Guid AddOwnedDeviceToRoom(string roomId, string requestDeviceId)
+    public Guid AddOwnedDeviceToRoom(string roomId, string ownedDeviceId)
     {
-        throw new NotImplementedException();
+        var roomGuid = Guid.Parse(roomId);
+        var ownedDeviceGuid = Guid.Parse(ownedDeviceId);
+
+        var room = HomeRepository.GetRoomById(roomGuid);
+        var ownedDevice = OwnedDeviceRepository.GetOwnedDeviceById(ownedDeviceGuid);
+
+        room.OwnedDevices.Add(ownedDevice);
+        HomeRepository.UpdateRoom(room);
+        return ownedDevice.HardwareId;
     }
 
     private void ValidateNameHomeParameters(Guid ownerId, Guid homeId, string newName)

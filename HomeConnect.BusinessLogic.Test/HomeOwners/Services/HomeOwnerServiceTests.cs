@@ -833,36 +833,56 @@ public class HomeOwnerServiceTests
     #region Error
 
     [TestMethod]
-    [ExpectedException(typeof(ArgumentException))]
-    public void NameDevice_ShouldThrowArgumentException_WhenOwnerIdIsEmpty()
+    public void NameDevice_ThrowsArgumentException_WhenOwnerIdIsEmpty()
     {
+        // Arrange
         var args = new NameDeviceArgs { OwnerId = Guid.Empty, HardwareId = Guid.NewGuid(), NewName = "NewName" };
-        _homeOwnerService.NameDevice(args);
+
+        // Act
+        var act = () => _homeOwnerService.NameDevice(args);
+
+        // Assert
+        act.Should().Throw<ArgumentException>();
     }
 
     [TestMethod]
-    [ExpectedException(typeof(ArgumentException))]
-    public void NameDevice_ShouldThrowArgumentException_WhenDeviceIdIsEmpty()
+    public void NameDevice_ThrowsArgumentException_WhenDeviceIdIsEmpty()
     {
+        // Arrange
         var args = new NameDeviceArgs { OwnerId = Guid.NewGuid(), HardwareId = Guid.Empty, NewName = "NewName" };
-        _homeOwnerService.NameDevice(args);
+
+        // Act
+        var act = () => _homeOwnerService.NameDevice(args);
+
+        // Assert
+        act.Should().Throw<ArgumentException>();
     }
 
     [TestMethod]
-    [ExpectedException(typeof(ArgumentException))]
-    public void NameDevice_ShouldThrowArgumentException_WhenNewNameIsEmpty()
+    public void NameDevice_ThrowsArgumentException_WhenNewNameIsEmpty()
     {
+        // Arrange
         var args = new NameDeviceArgs { OwnerId = Guid.NewGuid(), HardwareId = Guid.NewGuid(), NewName = string.Empty };
-        _homeOwnerService.NameDevice(args);
+
+        // Act
+        var act = () => _homeOwnerService.NameDevice(args);
+
+        // Assert
+        act.Should().Throw<ArgumentException>();
     }
 
     [TestMethod]
-    [ExpectedException(typeof(ArgumentException))]
-    public void NameDevice_ShouldThrowArgumentException_WhenDeviceDoesNotExist()
+    public void NameDevice_ThrowsArgumentException_WhenDeviceDoesNotExist()
     {
+        // Arrange
         var args = new NameDeviceArgs { OwnerId = Guid.NewGuid(), HardwareId = Guid.NewGuid(), NewName = "NewName" };
         _ownedDeviceRepositoryMock.Setup(repo => repo.GetByHardwareId(It.IsAny<Guid>())).Returns((OwnedDevice)null);
-        _homeOwnerService.NameDevice(args);
+
+        // Act
+        var act = () => _homeOwnerService.NameDevice(args);
+
+        // Assert
+        act.Should().Throw<ArgumentException>();
     }
 
     #endregion

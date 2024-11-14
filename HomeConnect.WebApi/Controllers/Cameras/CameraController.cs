@@ -50,6 +50,7 @@ public class CameraController(
 
     [HttpGet("{cameraId}")]
     [AuthenticationFilter]
+    [AuthorizationFilter(SystemPermission.GetCamera)]
     public GetCameraResponse GetCamera([FromRoute] string cameraId)
     {
         Camera camera = deviceService.GetCameraById(cameraId);

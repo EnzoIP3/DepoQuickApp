@@ -80,6 +80,7 @@ public class Context(DbContextOptions<Context> options) : DbContext(options)
             new SystemPermission { Value = SystemPermission.GetDeviceImportFiles },
             new SystemPermission { Value = SystemPermission.GetBusinesses },
             new SystemPermission { Value = SystemPermission.GetBusinessDevices },
+            new SystemPermission { Value = SystemPermission.GetCamera },
             new SystemPermission { Value = SystemPermission.GetDeviceImporters });
     }
 
@@ -112,6 +113,7 @@ public class Context(DbContextOptions<Context> options) : DbContext(options)
                 new { RolesName = Role.BusinessOwner, PermissionsValue = SystemPermission.GetDeviceImportFiles },
                 new { RolesName = Role.BusinessOwner, PermissionsValue = SystemPermission.GetBusinesses },
                 new { RolesName = Role.BusinessOwner, PermissionsValue = SystemPermission.GetBusinessDevices },
+                new { RolesName = Role.BusinessOwner, PermissionsValue = SystemPermission.GetCamera },
                 new { RolesName = Role.BusinessOwner, PermissionsValue = SystemPermission.GetDeviceImporters }));
     }
 

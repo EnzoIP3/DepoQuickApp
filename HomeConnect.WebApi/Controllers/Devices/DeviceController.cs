@@ -41,7 +41,7 @@ public class DeviceController : ControllerBase
             Page = parameters.Page,
             PageSize = parameters.PageSize,
             DeviceNameFilter = parameters.Name,
-            ModelNumberFilter = parameters.Model
+            ModelNumberFilter = parameters.ModelNumber
         };
         PagedData<Device> devices = _deviceService.GetDevices(args);
         GetDevicesResponse response = ResponseFromDevices(devices);
@@ -54,12 +54,13 @@ public class DeviceController : ControllerBase
         {
             Devices = devices.Data.Select(d => new ListDeviceInfo
             {
-                HardwareId = d.Id.ToString(),
+                Id = d.Id.ToString(),
                 Name = d.Name,
                 BusinessName = d.Business.Name,
                 Type = d.Type.ToString(),
                 ModelNumber = d.ModelNumber,
-                Photo = d.MainPhoto
+                MainPhoto = d.MainPhoto,
+                SecondaryPhotos = d.SecondaryPhotos
             }).ToList(),
             Pagination = new Pagination
             {

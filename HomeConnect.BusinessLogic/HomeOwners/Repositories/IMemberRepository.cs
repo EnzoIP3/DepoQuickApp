@@ -5,5 +5,7 @@ namespace BusinessLogic.HomeOwners.Repositories;
 public interface IMemberRepository
 {
     void Add(Member member);
-    List<Member> GetMembersByUserId(Guid userId);
+    Member Get(Guid memberId);
+    void Update(Member member);
+    bool Exists(Guid memberId);
 }

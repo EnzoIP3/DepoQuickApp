@@ -43,7 +43,7 @@ public class HomeOwnerService : IHomeOwnerService
     public Guid AddMemberToHome(AddMemberArgs args)
     {
         ValidateAddMemberArgs(args);
-        User user = GetUserById(args.UserId);
+        User user = GetUserByEmail(args.UserEmail);
         Home home = GetHome(Guid.Parse(args.HomeId));
         Member member = CreateMember(user, args);
         home.AddMember(member);
@@ -66,20 +66,17 @@ public class HomeOwnerService : IHomeOwnerService
         return HomeRepository.Get(homeId);
     }
 
-    public List<Home> GetHomesByOwnerId(Guid ownerId)
+    public List<Home> GetHomesByOwnerId(Guid userId)
     {
-        User user = UserRepository.Get(ownerId);
-        List<Member> members = MemberRepository.GetMembersByUserId(ownerId);
-        var homes = members.Select(m => m.Home).ToList();
+        var homes = HomeRepository.GetHomesByUserId(userId);
         return homes;
     }
 
-    public void NameHome(Guid ownerId, Guid homeId, string newName)
+    public void NameHome(NameHomeArgs args)
     {
-        ValidateNameHomeParameters(ownerId, homeId, newName);
-
-        Home home = GetHome(homeId);
-        HomeRepository.Rename(home, newName);
+        ValidateNameHomeParameters(args.OwnerId, args.HomeId, args.NewName);
+        Home home = GetHome(args.HomeId);
+        HomeRepository.Rename(home, args.NewName);
     }
 
     private void ValidateNameHomeParameters(Guid ownerId, Guid homeId, string newName)
@@ -121,12 +118,12 @@ public class HomeOwnerService : IHomeOwnerService
 
     public Member GetMemberById(Guid memberId)
     {
-        if (!HomeRepository.ExistsMember(memberId))
+        if (!MemberRepository.Exists(memberId))
         {
             throw new ArgumentException("Member does not exist.");
         }
 
-        return HomeRepository.GetMemberById(memberId);
+        return MemberRepository.Get(memberId);
     }
 
     private static void EnsureDevicesAreNotEmpty(AddDevicesArgs addDevicesArgs)
@@ -147,25 +144,33 @@ public class HomeOwnerService : IHomeOwnerService
 
     private void ValidateCreateHomeArgs(CreateHomeArgs args)
     {
+        EnsureNoArgumentsAreEmpty(args);
+        EnsureGuidIsValid(args.HomeOwnerId, "Home Owner ID");
+        EnsureUserExistsById(args.HomeOwnerId);
+    }
+
+    private static void EnsureNoArgumentsAreEmpty(CreateHomeArgs args)
+    {
         if (string.IsNullOrWhiteSpace(args.HomeOwnerId) || string.IsNullOrWhiteSpace(args.Address))
         {
             throw new ArgumentException("All arguments are required.");
         }
-
-        EnsureUserExists(args.HomeOwnerId);
     }
 
     private void ValidateAddMemberArgs(AddMemberArgs args)
     {
-        if (string.IsNullOrWhiteSpace(args.HomeId) || string.IsNullOrWhiteSpace(args.UserId))
+        EnsureNoArgumentsAreMissing(args);
+        EnsureGuidIsValid(args.HomeId, "Home ID");
+        EnsureMemberIsNotAlreadyAdded(args);
+        EnsureUserExistsByEmail(args.UserEmail);
+    }
+
+    private static void EnsureNoArgumentsAreMissing(AddMemberArgs args)
+    {
+        if (string.IsNullOrWhiteSpace(args.HomeId) || string.IsNullOrWhiteSpace(args.UserEmail))
         {
             throw new ArgumentException("All arguments are required.");
         }
-
-        EnsureGuidIsValid(args.HomeId, "Home ID");
-        EnsureGuidIsValid(args.UserId, "Member ID");
-        EnsureMemberIsNotAlreadyAdded(args);
-        EnsureUserExists(args.UserId);
     }
 
     private void EnsureAddressIsUnique(string address)
@@ -176,10 +181,15 @@ public class HomeOwnerService : IHomeOwnerService
         }
     }
 
+    private User GetUserByEmail(string userEmail)
+    {
+        EnsureUserExistsByEmail(userEmail);
+        return UserRepository.GetByEmail(userEmail);
+    }
+
     private User GetUserById(string userId)
     {
-        Guid guid = ValidateAndParseGuid(userId);
-        EnsureUserExists(userId);
+        var guid = ValidateAndParseGuid(userId);
         return UserRepository.Get(guid);
     }
 
@@ -225,13 +235,22 @@ public class HomeOwnerService : IHomeOwnerService
     {
         if (!HomeRepository.Exists(homeId))
         {
-            throw new ArgumentException("Home does not exist.");
+            throw new KeyNotFoundException("Home does not exist.");
         }
     }
 
-    private void EnsureUserExists(string userId)
+    private void EnsureUserExistsByEmail(string userEmail)
     {
-        if (!UserRepository.Exists(Guid.Parse(userId)))
+        if (!UserRepository.ExistsByEmail(userEmail))
+        {
+            throw new ArgumentException("User does not exist.");
+        }
+    }
+
+    private void EnsureUserExistsById(string userId)
+    {
+        var guid = ValidateAndParseGuid(userId);
+        if (!UserRepository.Exists(guid))
         {
             throw new ArgumentException("User does not exist.");
         }
@@ -240,7 +259,7 @@ public class HomeOwnerService : IHomeOwnerService
     private void EnsureMemberIsNotAlreadyAdded(AddMemberArgs args)
     {
         Home home = GetHome(Guid.Parse(args.HomeId));
-        if (home.Members.Any(m => m.User.Id.ToString() == args.UserId))
+        if (home.Members.Any(m => m.User.Id.ToString() == args.UserEmail))
         {
             throw new InvalidOperationException("The member is already added to the home.");
         }
@@ -248,16 +267,17 @@ public class HomeOwnerService : IHomeOwnerService
 
     private void ChangeMemberPermissions(bool requestShouldBeNotified, Member member)
     {
-        var hasPermission = member.HasPermission(new HomePermission(HomePermission.GetNotifications));
+        var permission = new HomePermission(HomePermission.GetNotifications);
+        var hasPermission = member.HasPermission(permission);
         if (requestShouldBeNotified && !hasPermission)
         {
-            member.AddPermission(new HomePermission(HomePermission.GetNotifications));
-            HomeRepository.UpdateMember(member);
+            member.AddPermission(permission);
+            MemberRepository.Update(member);
         }
         else if (!requestShouldBeNotified && hasPermission)
         {
-            member.DeletePermission(new HomePermission(HomePermission.GetNotifications));
-            HomeRepository.UpdateMember(member);
+            member.DeletePermission(permission);
+            MemberRepository.Update(member);
         }
     }
 
@@ -277,5 +297,31 @@ public class HomeOwnerService : IHomeOwnerService
         }
 
         return parsedGuid;
+    }
+
+    public List<HomePermission> GetHomePermissions(Guid homeId, Guid userId)
+    {
+        var home = GetHome(homeId);
+        var member = GetMemberFromHome(home, userId);
+        EnsureUserBelongsToHome(member, home, userId);
+        return member == null ? HomePermission.AllPermissions : GetPermissionsForMember(member);
+    }
+
+    private void EnsureUserBelongsToHome(Member? member, Home home, Guid userId)
+    {
+        if (member == null && home.Owner.Id != userId)
+        {
+            throw new ArgumentException("You do not belong to this home.");
+        }
+    }
+
+    private Member? GetMemberFromHome(Home home, Guid userId)
+    {
+        return home.Members.FirstOrDefault(m => m.User.Id == userId);
+    }
+
+    private List<HomePermission> GetPermissionsForMember(Member member)
+    {
+        return member.HomePermissions;
     }
 }

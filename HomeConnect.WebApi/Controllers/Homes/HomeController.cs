@@ -4,6 +4,7 @@ using BusinessLogic.HomeOwners.Models;
 using BusinessLogic.HomeOwners.Services;
 using BusinessLogic.Roles.Entities;
 using BusinessLogic.Users.Entities;
+using HomeConnect.WebApi.Controllers.HomeOwners.Models;
 using HomeConnect.WebApi.Controllers.Homes.Models;
 using HomeConnect.WebApi.Filters;
 using Microsoft.AspNetCore.Mvc;
@@ -15,6 +16,89 @@ namespace HomeConnect.WebApi.Controllers.Homes;
 [AuthenticationFilter]
 public class HomeController(IHomeOwnerService homeOwnerService) : ControllerBase
 {
+    [HttpGet]
+    [AuthorizationFilter(SystemPermission.GetHomes)]
+    public GetHomesResponse GetHomes()
+    {
+        var userLoggedIn = HttpContext.Items[Item.UserLogged] as User;
+        List<Home> homes = homeOwnerService.GetHomesByOwnerId(userLoggedIn!.Id);
+        var homeInfos = homes.Select(h => new ListHomeInfo
+        {
+            Id = h.Id.ToString(),
+            Name = h.NickName,
+            Address = h.Address,
+            Latitude = h.Latitude,
+            Longitude = h.Longitude,
+            MaxMembers = h.MaxMembers
+        }).ToList();
+        return new GetHomesResponse { Homes = homeInfos };
+    }
+
+    [HttpGet("{homesId}/permissions")]
+    [HomeAuthorizationFilter]
+    [AuthorizationFilter(SystemPermission.GetHomes)]
+    public GetHomePermissionsResponse GetHomePermissions([FromRoute] string homesId)
+    {
+        var userLoggedIn = HttpContext.Items[Item.UserLogged] as User;
+        var permissions = homeOwnerService.GetHomePermissions(Guid.Parse(homesId), userLoggedIn!.Id);
+        return new GetHomePermissionsResponse
+        {
+            HomeId = homesId,
+            HomePermissions = permissions.Select(p => p.Value).ToList()
+        };
+    }
+
+    [HttpPatch("{homesId}/name")]
+    [HomeAuthorizationFilter(HomePermission.NameHome)]
+    [AuthorizationFilter(SystemPermission.NameHome)]
+    public NameHomeResponse NameHome([FromRoute] string homesId, [FromBody] NameHomeRequest request)
+    {
+        var userLoggedIn = HttpContext.Items[Item.UserLogged] as User;
+        var nameHomeArgs = NameHomeArgsFromRequest(request, homesId);
+        nameHomeArgs.OwnerId = userLoggedIn!.Id;
+        homeOwnerService.NameHome(nameHomeArgs);
+        return new NameHomeResponse { HomeId = homesId };
+    }
+
+    [HttpGet("{homesId}")]
+    [HomeAuthorizationFilter(HomePermission.GetHome)]
+    [AuthorizationFilter(SystemPermission.GetHomes)]
+    public GetHomeResponse GetHome([FromRoute] string homesId)
+    {
+        var home = homeOwnerService.GetHome(Guid.Parse(homesId));
+        return new GetHomeResponse
+        {
+            Id = home.Id.ToString(),
+            Name = home.NickName,
+            Address = home.Address,
+            Latitude = home.Latitude,
+            Longitude = home.Longitude,
+            MaxMembers = home.MaxMembers,
+            Owner = new OwnerInfo
+            {
+                Id = home.Owner.Id.ToString(),
+                Name = home.Owner.Name,
+                Surname = home.Owner.Surname,
+                ProfilePicture = home.Owner.ProfilePicture
+            }
+        };
+    }
+
+    private static NameHomeArgs NameHomeArgsFromRequest(NameHomeRequest request, string homesId)
+    {
+        if (string.IsNullOrEmpty(homesId))
+        {
+            throw new ArgumentException("HomeId cannot be null or empty");
+        }
+
+        if (string.IsNullOrEmpty(request.NewName))
+        {
+            throw new ArgumentException("NewName cannot be null or empty");
+        }
+
+        return new NameHomeArgs { HomeId = Guid.Parse(homesId), NewName = request.NewName };
+    }
+
     [HttpPost]
     [AuthorizationFilter(SystemPermission.CreateHome)]
     public CreateHomeResponse CreateHome([FromBody] CreateHomeRequest request)
@@ -33,7 +117,7 @@ public class HomeController(IHomeOwnerService homeOwnerService) : ControllerBase
         var addMemberArgs = new AddMemberArgs
         {
             HomeId = homesId,
-            UserId = request.MemberId ?? string.Empty,
+            UserEmail = request.Email ?? string.Empty,
             CanAddDevices = request.CanAddDevices,
             CanListDevices = request.CanListDevices
         };
@@ -63,7 +147,7 @@ public class HomeController(IHomeOwnerService homeOwnerService) : ControllerBase
         List<Member> members = homeOwnerService.GetHomeMembers(homesId);
         var memberInfos = members.Select(m => new ListMemberInfo
         {
-            Id = m.User.Id.ToString(),
+            Id = m.Id.ToString(),
             Name = m.User.Name,
             Surname = m.User.Surname,
             Photo = m.User.ProfilePicture ?? string.Empty,

@@ -15,6 +15,7 @@ public class HomeRepositoryTests
     private HomeRepository _homeRepository = null!;
     private Member _member = null!;
     private User _otherOwner = null!;
+    private Room _room = null!;
 
     [TestInitialize]
     public void Initialize()
@@ -27,8 +28,10 @@ public class HomeRepositoryTests
         _home = new Home(_homeOwner, "Main St 123", 12.5, 12.5, 5);
         _member = new Member(_otherOwner);
         _home.AddMember(_member);
+        _room = new Room { Id = Guid.NewGuid(), Name = "Living Room", Home = _home };
         _context.Users.Add(_homeOwner);
         _context.Homes.Add(_home);
+        _context.Rooms.Add(_room);
 
         _context.SaveChanges();
 
@@ -242,5 +245,19 @@ public class HomeRepositoryTests
         retrievedHome.Rooms.Should().HaveCount(1);
         retrievedHome.Rooms[0].Name.Should().Be("Living Room");
     }
+    #endregion
+
+    #region ExistsRoom
+
+    [TestMethod]
+    public void ExistsRoom_WhenRoomExists_ReturnsTrue()
+    {
+        // Act
+        var result = _homeRepository.ExistsRoom(_room.Id);
+
+        // Assert
+        result.Should().BeTrue();
+    }
+
     #endregion
 }

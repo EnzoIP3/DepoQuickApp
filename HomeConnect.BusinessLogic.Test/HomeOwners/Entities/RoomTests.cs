@@ -6,6 +6,7 @@ using FluentAssertions;
 [TestClass]
 public class RoomTests
 {
+    #region Success
     [TestMethod]
     public void Room_WhenInitializedWithValidParameters_ShouldSetProperties()
     {
@@ -27,6 +28,9 @@ public class RoomTests
         room.Home.Should().Be(home);
         room.OwnedDevices.Should().BeEquivalentTo(devices);
     }
+    #endregion
+
+    #region Error
 
     [TestMethod]
     public void Room_WhenNameIsEmpty_ShouldThrowArgumentException()
@@ -61,4 +65,5 @@ public class RoomTests
         // Assert
         room.OwnedDevices.Should().Contain(device);
     }
+    #endregion
 }

@@ -822,6 +822,21 @@ public class HomeOwnerServiceTests
         // Assert
         act.Should().Throw<ArgumentException>().WithMessage("Room name cannot be null or empty.");
     }
+
+    [TestMethod]
+    public void CreateRoom_ShouldThrowArgumentException_WhenHomeDoesNotExist()
+    {
+        // Arrange
+        var homeId = Guid.NewGuid().ToString();
+        var name = "Living Room";
+        _homeRepositoryMock.Setup(repo => repo.Get(It.IsAny<Guid>())).Returns((Home)null);
+
+        // Act
+        Action act = () => _homeOwnerService.CreateRoom(homeId, name);
+
+        // Assert
+        act.Should().Throw<ArgumentException>().WithMessage("Home does not exist.");
+    }
     #endregion
     #endregion
 }

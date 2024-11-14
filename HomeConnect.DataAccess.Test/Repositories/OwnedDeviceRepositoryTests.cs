@@ -35,7 +35,7 @@ public class OwnedDeviceRepositoryTests
         _business = new Business("123456789123", "Business Name", "https://example.com/image.png", _businessOwner);
         _device = new Device("Sensor", 12345, "A sensor", "https://sensor.com/image.png", new List<string>(), "Sensor", _business);
 
-        var room = new Room { Id = Guid.NewGuid(), Name = "Living Room" };
+        var room = new Room { Id = Guid.NewGuid(), Name = "Living Room", Home = _home };
 
         _context.Users.Add(_homeOwner);
         _context.Users.Add(_businessOwner);

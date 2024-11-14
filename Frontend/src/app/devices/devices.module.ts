@@ -1,20 +1,20 @@
 import { NgModule } from "@angular/core";
 import { CommonModule } from "@angular/common";
 
-import { HomeRoutingModule } from "./home-routing.module";
-import { HomePageComponent } from "./home-page/home-page.component";
+import { HomeRoutingModule as DevicesRoutingModule } from "./devices-routing.module";
+import { DevicesPageComponent } from "./devices-page/devices-page.component";
 import { DevicesTableComponent } from "../../business-components/devices-table/devices-table.component";
 import { DeviceTypesTableComponent } from "../../business-components/device-types-table/device-types-table.component";
 import { PanelComponent } from "../../components/panel/panel.component";
 
 @NgModule({
-    declarations: [HomePageComponent],
+    declarations: [DevicesPageComponent],
     imports: [
-    CommonModule,
-    HomeRoutingModule,
-    DevicesTableComponent,
-    DeviceTypesTableComponent,
-    PanelComponent
-]
+        CommonModule,
+        DevicesRoutingModule,
+        DevicesTableComponent,
+        DeviceTypesTableComponent,
+        PanelComponent
+    ]
 })
-export class HomeModule {}
+export class DevicesModule {}

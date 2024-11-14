@@ -2,6 +2,7 @@ import { Component } from "@angular/core";
 import { FormGroup, FormBuilder, Validators } from "@angular/forms";
 import { AuthService } from "../../../backend/services/auth/auth.service";
 import { Router } from "@angular/router";
+import { Subscription } from "rxjs";
 
 @Component({
     selector: "app-login-form",
@@ -29,6 +30,7 @@ export class LoginFormComponent {
 
     loginForm!: FormGroup;
     loginStatus = { loading: false, error: null };
+    private _loginSubscription: Subscription | null = null;
 
     constructor(
         private _formBuilder: FormBuilder,
@@ -47,16 +49,24 @@ export class LoginFormComponent {
         this.loginStatus.loading = true;
         this.loginStatus.error = null;
 
-        this._authService.login(this.loginForm.value).subscribe({
-            next: () => {
-                this.loginStatus.loading = false;
-                this.loginForm.reset();
-                this._router.navigate(["/home"]);
-            },
-            error: (error) => {
-                this.loginStatus.loading = false;
-                this.loginStatus.error = error.message;
-            }
-        });
+        this._loginSubscription = this._authService
+            .login(this.loginForm.value)
+            .subscribe({
+                next: () => {
+                    this.loginStatus.loading = false;
+                    this.loginForm.reset();
+                    this._router.navigate(["/devices"]);
+                },
+                error: (error) => {
+                    this.loginStatus.loading = false;
+                    this.loginStatus.error = error.message;
+                }
+            });
+    }
+
+    ngOnDestroy() {
+        if (this._loginSubscription) {
+            this._loginSubscription.unsubscribe();
+        }
     }
 }

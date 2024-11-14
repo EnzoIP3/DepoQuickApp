@@ -1,9 +1,16 @@
-import { Component, EventEmitter, Input, Output } from "@angular/core";
-import { SidebarComponent } from "../../components/sidebar/sidebar.component";
-import { AuthService } from "../../backend/services/auth/auth.service";
-import { Subscription } from "rxjs";
-import UserLogged from "../../backend/services/auth/models/user-logged";
+import {
+    Component,
+    OnInit,
+    OnDestroy,
+    Input,
+    Output,
+    EventEmitter
+} from "@angular/core";
 import { Router } from "@angular/router";
+import { Subscription } from "rxjs";
+import { AuthService } from "../../backend/services/auth/auth.service";
+import { RouteService } from "../../backend/services/routes/routes.service";
+import { SidebarComponent } from "../../components/sidebar/sidebar.component";
 import Route from "../../components/sidebar/models/route";
 
 @Component({
@@ -12,66 +19,44 @@ import Route from "../../components/sidebar/models/route";
     imports: [SidebarComponent],
     templateUrl: "./permission-sidebar.component.html"
 })
-export class PermissionSidebarComponent {
+export class PermissionSidebarComponent implements OnInit, OnDestroy {
     @Input() sidebarVisible = false;
     @Output() sidebarVisibleChange = new EventEmitter<boolean>();
 
     routes: Route[] = [];
-
     private _routesSubscription: Subscription | null = null;
-
-    private readonly authenticatedRoutes: Route[] = [
-        {
-            label: "Home",
-            icon: "pi pi-home",
-            routerLink: ["/home"]
-        },
-        {
-            label: "Logout",
-            icon: "pi pi-sign-out",
-            command: () => this.handleLogout()
-        }
-    ];
-
-    private readonly unauthenticatedRoutes: Route[] = [
-        {
-            label: "Login",
-            icon: "pi pi-sign-in",
-            routerLink: ["/login"]
-        },
-        {
-            label: "Register",
-            icon: "pi pi-user-plus",
-            routerLink: ["/register"]
-        }
-    ];
 
     constructor(
         private readonly _authService: AuthService,
-        private readonly _router: Router
+        private readonly _router: Router,
+        private readonly _routeService: RouteService
     ) {}
 
     ngOnInit() {
         this._routesSubscription = this._authService.userLogged.subscribe(
             (user) => {
-                this.routes = this.filterRoutes(user);
+                this.routes = this._routeService.getRoutes(user);
+                if (user) {
+                    this._addLogoutRoute();
+                }
             }
         );
     }
 
-    private filterRoutes(user: UserLogged | null): Route[] {
-        if (user) {
-            return this.authenticatedRoutes.filter(
-                (route) =>
-                    !route.permission ||
-                    user.permissions.includes(route.permission)
-            );
-        } else {
-            return this.unauthenticatedRoutes;
-        }
+    private _addLogoutRoute() {
+        this.routes.push({
+            label: "Session",
+            items: [
+                {
+                    label: "Logout",
+                    icon: "pi pi-sign-out",
+                    command: () => this._handleLogout()
+                }
+            ]
+        });
     }
 
-    private handleLogout() {
+    private _handleLogout() {
         this._authService.logout();
         this._router.navigate(["/login"]);
     }

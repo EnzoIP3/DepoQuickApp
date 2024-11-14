@@ -86,6 +86,11 @@ public class HomeRepository : IHomeRepository
 
     public Room GetRoomById(Guid roomId)
     {
+        if(!ExistsRoom(roomId))
+        {
+            throw new ArgumentException("Room does not exist");
+        }
+
         return _context.Rooms.FirstOrDefault(r => r.Id == roomId);
     }
 

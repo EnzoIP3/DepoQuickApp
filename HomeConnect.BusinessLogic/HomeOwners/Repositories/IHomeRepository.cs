@@ -14,7 +14,7 @@ public interface IHomeRepository
     bool ExistsMember(Guid memberId);
     void Rename(Home home, string newName);
     void AddRoom(Room room);
-    Room GetRoomById(Guid parse);
+    Room GetRoomById(Guid roomId);
     bool ExistsRoom(Guid roomId);
     void UpdateRoom(Room room);
 }

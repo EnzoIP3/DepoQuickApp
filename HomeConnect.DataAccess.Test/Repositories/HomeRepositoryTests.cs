@@ -225,4 +225,22 @@ public class HomeRepositoryTests
         Assert.AreEqual(newName, updatedHome.NickName);
     }
     #endregion
+
+    #region AddRoom
+    [TestMethod]
+    public void AddRoom_WhenRoomIsValid_AddsRoom()
+    {
+        // Arrange
+        var room = new Room(Guid.NewGuid(), "Living Room", _home, null);
+
+        // Act
+        _homeRepository.AddRoom(room);
+
+        // Assert
+        var retrievedHome = _homeRepository.Get(_home.Id);
+        retrievedHome.Should().NotBeNull();
+        retrievedHome.Rooms.Should().HaveCount(1);
+        retrievedHome.Rooms[0].Name.Should().Be("Living Room");
+    }
+    #endregion
 }

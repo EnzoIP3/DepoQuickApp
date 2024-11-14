@@ -75,7 +75,8 @@ public class HomeRepository : IHomeRepository
 
     public void AddRoom(Room room)
     {
-        throw new NotImplementedException();
+        _context.Rooms.Add(room);
+        _context.SaveChanges();
     }
 
     private void EnsureHomeDoesNotExist(Home home)

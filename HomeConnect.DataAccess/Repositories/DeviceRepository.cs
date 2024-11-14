@@ -33,7 +33,7 @@ public class DeviceRepository : PaginatedRepositoryBase<Device>, IDeviceReposito
         _context.SaveChanges();
     }
 
-    public bool ExistsByModelNumber(int modelNumber)
+    public bool ExistsByModelNumber(string modelNumber)
     {
         return _context.Devices.Any(d => d.ModelNumber == modelNumber);
     }
@@ -56,7 +56,7 @@ public class DeviceRepository : PaginatedRepositoryBase<Device>, IDeviceReposito
     protected override IQueryable<Device> ApplyFilters(IQueryable<Device> query, params object[] filters)
     {
         var deviceNameFilter = filters.Length > 0 ? filters[0] as string : null;
-        var modelNumberFilter = filters.Length > 1 ? filters[1] as int? : null;
+        var modelNumberFilter = filters.Length > 1 ? filters[1] as string : null;
         var businessNameFilter = filters.Length > 2 ? filters[2] as string : null;
         var deviceTypeFilter = filters.Length > 3 ? filters[3] as string : null;
 
@@ -78,11 +78,11 @@ public class DeviceRepository : PaginatedRepositoryBase<Device>, IDeviceReposito
         return query;
     }
 
-    private static IQueryable<Device> FilterByModelNumber(int? modelNumberFilter, IQueryable<Device> query)
+    private static IQueryable<Device> FilterByModelNumber(string? modelNumberFilter, IQueryable<Device> query)
     {
-        if (modelNumberFilter.HasValue)
+        if (modelNumberFilter != null)
         {
-            query = query.Where(d => d.ModelNumber == modelNumberFilter.Value);
+            query = query.Where(d => d.ModelNumber == modelNumberFilter);
         }
 
         return query;

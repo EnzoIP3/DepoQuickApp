@@ -40,7 +40,7 @@ public class SensorControllerTests
     {
         // Arrange
         var user = new User();
-        var sensor = new Device("name", 123, "description", "http://example.com/photo.png", [],
+        var sensor = new Device("name", "123", "description", "http://example.com/photo.png", [],
             DeviceType.Sensor.ToString(),
             new Business());
         var sensorArgs = new CreateDeviceArgs
@@ -51,7 +51,7 @@ public class SensorControllerTests
             ModelNumber = sensor.ModelNumber,
             Name = sensor.Name,
             SecondaryPhotos = sensor.SecondaryPhotos,
-            Type = sensor.Type.ToString()
+            Type = sensor.Type.ToString(),
         };
         var sensorRequest = new CreateSensorRequest
         {
@@ -59,7 +59,7 @@ public class SensorControllerTests
             MainPhoto = sensor.MainPhoto,
             ModelNumber = sensor.ModelNumber,
             Name = sensor.Name,
-            SecondaryPhotos = sensor.SecondaryPhotos
+            SecondaryPhotos = sensor.SecondaryPhotos,
         };
         _businessOwnerServiceMock.Setup(x => x.CreateDevice(sensorArgs)).Returns(sensor);
         var items = new Dictionary<object, object?> { { Item.UserLogged, user } };

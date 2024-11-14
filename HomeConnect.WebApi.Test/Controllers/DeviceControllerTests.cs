@@ -1,13 +1,18 @@
 using BusinessLogic;
 using BusinessLogic.BusinessOwners.Entities;
+using BusinessLogic.BusinessOwners.Models;
+using BusinessLogic.BusinessOwners.Services;
 using BusinessLogic.Devices.Entities;
 using BusinessLogic.Devices.Models;
 using BusinessLogic.Devices.Services;
+using BusinessLogic.Roles.Entities;
 using BusinessLogic.Users.Entities;
 using FluentAssertions;
 using HomeConnect.WebApi.Controllers.Devices;
 using HomeConnect.WebApi.Controllers.Devices.Models;
 using HomeConnect.WebApi.Controllers.Homes.Models;
+using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Mvc;
 using Moq;
 using GetDevicesResponse = HomeConnect.WebApi.Controllers.Devices.Models.GetDevicesResponse;
 
@@ -19,6 +24,9 @@ public class DeviceControllerTests
     private DeviceController _controller = null!;
     private Device _device = null!;
     private Mock<IDeviceService> _deviceService = null!;
+    private Mock<IValidatorService> _validatorService = null!;
+    private Mock<IImporterService> _importerService = null!;
+    private Mock<HttpContext> _httpContextMock = null!;
     private List<Device> _expectedDevices = null!;
     private Pagination _expectedPagination = null!;
     private Device _otherDevice = null!;
@@ -28,12 +36,18 @@ public class DeviceControllerTests
     public void Initialize()
     {
         _deviceService = new Mock<IDeviceService>();
-        _controller = new DeviceController(_deviceService.Object);
+        _validatorService = new Mock<IValidatorService>();
+        _importerService = new Mock<IImporterService>();
+        _httpContextMock = new Mock<HttpContext>(MockBehavior.Strict);
+        _controller = new DeviceController(_deviceService.Object, _validatorService.Object, _importerService.Object)
+        {
+            ControllerContext = new ControllerContext { HttpContext = _httpContextMock.Object }
+        };
 
         var business = new Business("Business", "123456789", "https://www.example.com/logo.jpg", new User());
-        _device = new Device("example1", 123, "example description 1", "https://www.example.com/photo1.jpg", [],
+        _device = new Device("example1", "123", "example description 1", "https://www.example.com/photo1.jpg", [],
             "Sensor", business);
-        _otherDevice = new Device("example1", 1234, "example description 2", "https://www.example.com/photo2.jpg", [],
+        _otherDevice = new Device("example1", "1234", "example description 2", "https://www.example.com/photo2.jpg", [],
             "Camera", business);
         _expectedDevices = [_device, _otherDevice];
         _expectedPagination = new Pagination { Page = 1, PageSize = 10, TotalPages = 1 };
@@ -73,6 +87,37 @@ public class DeviceControllerTests
         response.Should().BeEquivalentTo(expectedResponse);
     }
 
+    #region ImportDevices
+    [TestMethod]
+    public void ImportDevices_WhenCalledWithValidImporterNameAndRoute_ReturnsImportDevicesResponse()
+    {
+        // Arrange
+        var importerName = "Importer1";
+        var route = "C:/Users/username/Documents/file.csv";
+        var expectedDevices = new List<string> { Guid.NewGuid().ToString(), Guid.NewGuid().ToString() };
+        var expectedResponse = new ImportDevicesResponse
+        {
+            ImportedDevices = expectedDevices
+        };
+        var request = new ImportDevicesRequest { ImporterName = importerName, Route = route };
+        var userLoggedIn = new User("John", "Doe", "email@email.com", "Password@100",
+            new Role { Name = "BusinessOwner", Permissions = [] });
+        var items = new Dictionary<object, object?> { { Item.UserLogged, userLoggedIn } };
+        _httpContextMock.Setup(h => h.Items).Returns(items);
+        var args = new ImportDevicesArgs { ImporterName = importerName, FileName = route, User = userLoggedIn };
+        _importerService.Setup(x => x.ImportDevices(args)).Returns(expectedDevices);
+
+        // Act
+        var response = _controller.ImportDevices(request);
+
+        // Assert
+        _importerService.Verify(x => x.ImportDevices(args), Times.Once);
+        response.Should().BeEquivalentTo(expectedResponse, options => options
+            .ComparingByMembers<ImportDevicesResponse>());
+    }
+    #endregion
+
+    #region Turning
     [TestMethod]
     public void TurnOn_WithHardwareId_ReturnsConnectionResponse()
     {
@@ -104,4 +149,5 @@ public class DeviceControllerTests
         result.HardwareId.Should().Be(hardwareId);
         result.Connected.Should().BeFalse();
     }
+    #endregion
 }

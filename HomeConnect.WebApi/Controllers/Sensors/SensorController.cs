@@ -33,7 +33,7 @@ public class SensorController(
             ModelNumber = request.ModelNumber,
             Name = request.Name ?? string.Empty,
             SecondaryPhotos = request.SecondaryPhotos,
-            Type = "Sensor"
+            Type = "Sensor",
         };
 
         Device createdSensor = businessOwnerService.CreateDevice(args);

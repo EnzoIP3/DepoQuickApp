@@ -57,6 +57,9 @@ namespace HomeConnect.DataAccess.Migrations
                     b.Property<Guid>("OwnerId")
                         .HasColumnType("uniqueidentifier");
 
+                    b.Property<Guid?>("Validator")
+                        .HasColumnType("uniqueidentifier");
+
                     b.HasKey("Rut");
 
                     b.HasIndex("OwnerId");
@@ -86,8 +89,9 @@ namespace HomeConnect.DataAccess.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<int>("ModelNumber")
-                        .HasColumnType("int");
+                    b.Property<string>("ModelNumber")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("Name")
                         .IsRequired()
@@ -344,6 +348,26 @@ namespace HomeConnect.DataAccess.Migrations
                         new
                         {
                             Value = "create-lamp"
+                        },
+                        new
+                        {
+                            Value = "update-business-validator"
+                        },
+                        new
+                        {
+                            Value = "get-device-validators"
+                        },
+                        new
+                        {
+                            Value = "import-devices"
+                        },
+                        new
+                        {
+                            Value = "get-device-import-files"
+                        },
+                        new
+                        {
+                            Value = "get-device-importers"
                         });
                 });
 
@@ -504,6 +528,31 @@ namespace HomeConnect.DataAccess.Migrations
                         new
                         {
                             PermissionsValue = "create-lamp",
+                            RolesName = "BusinessOwner"
+                        },
+                        new
+                        {
+                            PermissionsValue = "update-business-validator",
+                            RolesName = "BusinessOwner"
+                        },
+                        new
+                        {
+                            PermissionsValue = "get-device-validators",
+                            RolesName = "BusinessOwner"
+                        },
+                        new
+                        {
+                            PermissionsValue = "import-devices",
+                            RolesName = "BusinessOwner"
+                        },
+                        new
+                        {
+                            PermissionsValue = "get-device-import-files",
+                            RolesName = "BusinessOwner"
+                        },
+                        new
+                        {
+                            PermissionsValue = "get-device-importers",
                             RolesName = "BusinessOwner"
                         });
                 });

@@ -861,6 +861,22 @@ public class HomeOwnerServiceTests
         result.Should().Be(ownedDevice.HardwareId);
         _homeRepositoryMock.VerifyAll();
     }
+    #region Error
+    [TestMethod]
+    public void AddOwnedDeviceToRoom_WhenRoomDoesNotExist_ThrowsArgumentException()
+    {
+        // Arrange
+        var roomId = Guid.NewGuid().ToString();
+        var deviceId = Guid.NewGuid().ToString();
+        _homeRepositoryMock.Setup(repo => repo.ExistsRoom(It.IsAny<Guid>())).Returns(false);
+
+        // Act
+        Action act = () => _homeOwnerService.AddOwnedDeviceToRoom(roomId, deviceId);
+
+        // Assert
+        act.Should().Throw<ArgumentException>().WithMessage("Invalid room ID.");
+    }
+    #endregion
     #endregion
     #endregion
 }

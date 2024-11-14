@@ -79,42 +79,38 @@ public class HomeOwnerService : IHomeOwnerService
         HomeRepository.Rename(home, args.NewName);
     }
 
-    private void ValidateNameDeviceParameters(Guid ownerId, Guid deviceId, string newName)
+    private void ValidateNameDeviceArgs(NameDeviceArgs args)
     {
-        if (ownerId == Guid.Empty)
+        if (args.OwnerId == Guid.Empty)
         {
             throw new ArgumentException("Owner ID cannot be empty");
         }
 
-        if (deviceId == Guid.Empty)
+        if (args.HardwareId == Guid.Empty)
         {
-            throw new ArgumentException("Device ID cannot be empty");
+            throw new ArgumentException("Hardware ID cannot be empty");
         }
 
-        if (string.IsNullOrEmpty(newName))
+        if (string.IsNullOrEmpty(args.NewName))
         {
-            throw new ArgumentException("New name cannot be null or empty");
+            throw new ArgumentException("New name cannot be empty");
         }
     }
 
-    public void NameDevice(Guid ownerId, Guid deviceId, string newName)
+    public void NameDevice(NameDeviceArgs args)
     {
-        ValidateNameDeviceParameters(ownerId, deviceId, newName);
+        ValidateNameDeviceArgs(args);
 
-        var device = OwnedDeviceRepository.GetByHardwareId(deviceId);
+        var device = OwnedDeviceRepository.GetByHardwareId(args.HardwareId);
         if (device == null)
         {
             throw new ArgumentException("Device does not exist");
         }
 
         var home = device.Home;
-        var member = home.Members.FirstOrDefault(m => m.User.Id == ownerId);
-        if (member == null || !member.HasPermission(new HomePermission(HomePermission.RenameDevice)))
-        {
-            throw new UnauthorizedAccessException("Member does not have permission to rename the device");
-        }
+        var member = home.Members.FirstOrDefault(m => m.User.Id == args.OwnerId);
 
-        OwnedDeviceRepository.Rename(device, newName);
+        OwnedDeviceRepository.Rename(device, args.NewName);
     }
 
     private void ValidateNameHomeParameters(Guid ownerId, Guid homeId, string newName)

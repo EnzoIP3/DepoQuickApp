@@ -1,4 +1,5 @@
 using BusinessLogic.HomeOwners.Entities;
+using BusinessLogic.HomeOwners.Models;
 using BusinessLogic.HomeOwners.Services;
 using BusinessLogic.Roles.Entities;
 using BusinessLogic.Users.Entities;
@@ -35,10 +36,7 @@ public class HomeOwnerControllerTests
 
         var items = new Dictionary<object, object?> { { Item.UserLogged, _user } };
         _httpContextMock.Setup(h => h.Items).Returns(items);
-        _controller.ControllerContext = new ControllerContext
-        {
-            HttpContext = _httpContextMock.Object
-        };
+        _controller.ControllerContext = new ControllerContext { HttpContext = _httpContextMock.Object };
     }
 
     [TestMethod]
@@ -75,39 +73,41 @@ public class HomeOwnerControllerTests
     }
 
     #region NameDevice
+
     #region Success
+
     [TestMethod]
     public void NameDevice_WithValidRequest_ReturnsDeviceId()
     {
         // Arrange
-        var request = new NameDeviceRequest
-        {
-            DeviceId = Guid.NewGuid().ToString(),
-            NewName = "New Device Name"
-        };
+        var request = new NameDeviceRequest { HardwareId = Guid.NewGuid().ToString(), NewName = "New Device Name" };
         var items = new Dictionary<object, object?> { { Item.UserLogged, _user } };
+        var args = new NameDeviceArgs
+        {
+            HardwareId = Guid.Parse(request.HardwareId), NewName = request.NewName, OwnerId = _user.Id
+        };
         _httpContextMock.Setup(h => h.Items).Returns(items);
-        _homeOwnerService.Setup(x => x.NameDevice(_user.Id, Guid.Parse(request.DeviceId), request.NewName));
+        _homeOwnerService.Setup(x => x.NameDevice(args));
 
         // Act
         NameDeviceResponse response = _controller.NameDevice(request);
 
         // Assert
-        _homeOwnerService.Verify(x => x.NameDevice(_user.Id, Guid.Parse(request.DeviceId), request.NewName), Times.Once);
+        _homeOwnerService.Verify(x => x.NameDevice(args),
+            Times.Once);
         response.Should().NotBeNull();
-        response.DeviceId.Should().Be(request.DeviceId);
+        response.DeviceId.Should().Be(request.HardwareId);
     }
+
     #endregion
+
     #region Error
+
     [TestMethod]
     public void NameDevice_WithInvalidNewName_ThrowsArgumentException()
     {
         // Arrange
-        var request = new NameDeviceRequest
-        {
-            DeviceId = Guid.NewGuid().ToString(),
-            NewName = string.Empty
-        };
+        var request = new NameDeviceRequest { HardwareId = Guid.NewGuid().ToString(), NewName = string.Empty };
         var items = new Dictionary<object, object?> { { Item.UserLogged, _user } };
         _httpContextMock.Setup(h => h.Items).Returns(items);
 
@@ -120,11 +120,7 @@ public class HomeOwnerControllerTests
     public void NameDevice_WithInvalidDeviceId_ThrowsArgumentException()
     {
         // Arrange
-        var request = new NameDeviceRequest
-        {
-            DeviceId = string.Empty,
-            NewName = "New Device Name"
-        };
+        var request = new NameDeviceRequest { HardwareId = string.Empty, NewName = "New Device Name" };
         var items = new Dictionary<object, object?> { { Item.UserLogged, _user } };
         _httpContextMock.Setup(h => h.Items).Returns(items);
 
@@ -132,6 +128,8 @@ public class HomeOwnerControllerTests
         var ex = Assert.ThrowsException<ArgumentException>(() => _controller.NameDevice(request));
         Assert.AreEqual("DeviceId cannot be null or empty", ex.Message);
     }
+
     #endregion
+
     #endregion
 }

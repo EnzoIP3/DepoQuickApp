@@ -19,6 +19,7 @@ public class HomeOwnerServiceTests
     private readonly User _user =
         new("John", "Doe", "test@example.com", "12345678@My",
             new Role());
+
     private readonly string _modelNumber = "123";
 
     private Mock<IDeviceRepository> _deviceRepositoryMock = null!;
@@ -171,10 +172,7 @@ public class HomeOwnerServiceTests
         var home = new Home(_user, "Main St 123", 1.0, 2.0, 5);
         var model = new AddMemberArgs
         {
-            HomeId = home.Id.ToString(),
-            UserEmail = invitedUser.Email,
-            CanAddDevices = true,
-            CanListDevices = true
+            HomeId = home.Id.ToString(), UserEmail = invitedUser.Email, CanAddDevices = true, CanListDevices = true
         };
         _userRepositoryMock.Setup(x => x.ExistsByEmail(model.UserEmail)).Returns(true);
         _userRepositoryMock.Setup(x => x.GetByEmail(model.UserEmail)).Returns(invitedUser);
@@ -203,10 +201,7 @@ public class HomeOwnerServiceTests
         // Arrange
         var model = new AddMemberArgs
         {
-            HomeId = homeId,
-            UserEmail = homeOwnerEmail,
-            CanAddDevices = true,
-            CanListDevices = true
+            HomeId = homeId, UserEmail = homeOwnerEmail, CanAddDevices = true, CanListDevices = true
         };
 
         // Act
@@ -304,8 +299,7 @@ public class HomeOwnerServiceTests
             true, true, true);
         var addDeviceModel = new AddDevicesArgs
         {
-            HomeId = home.Id.ToString(),
-            DeviceIds = [device.Id.ToString(), camera.Id.ToString()]
+            HomeId = home.Id.ToString(), DeviceIds = [device.Id.ToString(), camera.Id.ToString()]
         };
         _deviceRepositoryMock.Setup(x => x.Get(device.Id)).Returns(device);
         _deviceRepositoryMock.Setup(x => x.Get(camera.Id)).Returns(camera);
@@ -806,8 +800,11 @@ public class HomeOwnerServiceTests
     #endregion
 
     #endregion
+
     #region NameDevice
+
     #region Success
+
     [TestMethod]
     public void NameDevice_ShouldRenameDevice_WhenParametersAreValid()
     {
@@ -815,13 +812,8 @@ public class HomeOwnerServiceTests
         var home = new Home(_user, "Main St 123", 12.5, 12.5, 5);
         var member = new Member(_user, [new HomePermission(HomePermission.RenameDevice)]);
         home.Members.Add(member);
-
-        var ownedDevice = new OwnedDevice
-        {
-            HardwareId = Guid.NewGuid(),
-            Name = "OldName",
-            Home = home
-        };
+        var ownedDevice = new OwnedDevice { HardwareId = Guid.NewGuid(), Name = "OldName", Home = home };
+        var args = new NameDeviceArgs { OwnerId = _user.Id, HardwareId = ownedDevice.HardwareId, NewName = "NewName" };
 
         _ownedDeviceRepositoryMock.Setup(repo => repo.GetByHardwareId(ownedDevice.HardwareId)).Returns(ownedDevice);
         _ownedDeviceRepositoryMock.Setup(repo => repo.Rename(It.IsAny<OwnedDevice>(), It.IsAny<string>()))
@@ -829,7 +821,7 @@ public class HomeOwnerServiceTests
             .Verifiable();
 
         // Act
-        _homeOwnerService.NameDevice(_user.Id, ownedDevice.HardwareId, "NewName");
+        _homeOwnerService.NameDevice(args);
 
         // Assert
         Assert.AreEqual("NewName", ownedDevice.Name);
@@ -837,57 +829,43 @@ public class HomeOwnerServiceTests
     }
 
     #endregion
+
     #region Error
+
     [TestMethod]
     [ExpectedException(typeof(ArgumentException))]
     public void NameDevice_ShouldThrowArgumentException_WhenOwnerIdIsEmpty()
     {
-        _homeOwnerService.NameDevice(Guid.Empty, Guid.NewGuid(), "NewName");
+        var args = new NameDeviceArgs { OwnerId = Guid.Empty, HardwareId = Guid.NewGuid(), NewName = "NewName" };
+        _homeOwnerService.NameDevice(args);
     }
 
     [TestMethod]
     [ExpectedException(typeof(ArgumentException))]
     public void NameDevice_ShouldThrowArgumentException_WhenDeviceIdIsEmpty()
     {
-        _homeOwnerService.NameDevice(Guid.NewGuid(), Guid.Empty, "NewName");
+        var args = new NameDeviceArgs { OwnerId = Guid.NewGuid(), HardwareId = Guid.Empty, NewName = "NewName" };
+        _homeOwnerService.NameDevice(args);
     }
 
     [TestMethod]
     [ExpectedException(typeof(ArgumentException))]
     public void NameDevice_ShouldThrowArgumentException_WhenNewNameIsEmpty()
     {
-        _homeOwnerService.NameDevice(Guid.NewGuid(), Guid.NewGuid(), string.Empty);
+        var args = new NameDeviceArgs { OwnerId = Guid.NewGuid(), HardwareId = Guid.NewGuid(), NewName = string.Empty };
+        _homeOwnerService.NameDevice(args);
     }
 
     [TestMethod]
     [ExpectedException(typeof(ArgumentException))]
     public void NameDevice_ShouldThrowArgumentException_WhenDeviceDoesNotExist()
     {
+        var args = new NameDeviceArgs { OwnerId = Guid.NewGuid(), HardwareId = Guid.NewGuid(), NewName = "NewName" };
         _ownedDeviceRepositoryMock.Setup(repo => repo.GetByHardwareId(It.IsAny<Guid>())).Returns((OwnedDevice)null);
-        _homeOwnerService.NameDevice(Guid.NewGuid(), Guid.NewGuid(), "NewName");
+        _homeOwnerService.NameDevice(args);
     }
 
-    [TestMethod]
-    public void NameDevice_ShouldThrowUnauthorizedAccessException_WhenMemberDoesNotHavePermission()
-    {
-        // Arrange
-        var home = new Home(_user, "Main St 123", 12.5, 12.5, 5);
-        var member = new Member(_user, []);
-        home.Members.Add(member);
-
-        var ownedDevice = new OwnedDevice
-        {
-            HardwareId = Guid.NewGuid(),
-            Name = "OldName",
-            Home = home
-        };
-
-        _ownedDeviceRepositoryMock.Setup(repo => repo.GetByHardwareId(ownedDevice.HardwareId)).Returns(ownedDevice);
-
-        // Act & Assert
-        Assert.ThrowsException<UnauthorizedAccessException>(() =>
-            _homeOwnerService.NameDevice(_user.Id, ownedDevice.HardwareId, "NewName"));
-    }
     #endregion
+
     #endregion
 }

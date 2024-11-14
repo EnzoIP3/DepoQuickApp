@@ -1,3 +1,4 @@
+using BusinessLogic.HomeOwners.Models;
 using BusinessLogic.HomeOwners.Services;
 using BusinessLogic.Roles.Entities;
 using BusinessLogic.Users.Entities;
@@ -33,14 +34,14 @@ public class HomeOwnerController(IUserService userService, IHomeOwnerService hom
     public NameDeviceResponse NameDevice([FromBody] NameDeviceRequest request)
     {
         var userLoggedIn = HttpContext.Items[Item.UserLogged] as User;
-        var nameDeviceArgs = NameDeviceArgsFromRequest(request);
-        homeOwnerService.NameDevice(userLoggedIn.Id, nameDeviceArgs.DeviceId, nameDeviceArgs.NewName);
-        return new NameDeviceResponse { DeviceId = request.DeviceId };
+        var nameDeviceArgs = NameDeviceArgsFromRequest(request, userLoggedIn.Id);
+        homeOwnerService.NameDevice(nameDeviceArgs);
+        return new NameDeviceResponse { DeviceId = request.HardwareId };
     }
 
-    private static (Guid DeviceId, string NewName) NameDeviceArgsFromRequest(NameDeviceRequest request)
+    private static NameDeviceArgs NameDeviceArgsFromRequest(NameDeviceRequest request, Guid userId)
     {
-        if (string.IsNullOrEmpty(request.DeviceId))
+        if (string.IsNullOrEmpty(request.HardwareId))
         {
             throw new ArgumentException("DeviceId cannot be null or empty");
         }
@@ -50,6 +51,9 @@ public class HomeOwnerController(IUserService userService, IHomeOwnerService hom
             throw new ArgumentException("NewName cannot be null or empty");
         }
 
-        return (Guid.Parse(request.DeviceId), request.NewName);
+        return new NameDeviceArgs()
+        {
+            HardwareId = Guid.Parse(request.HardwareId), NewName = request.NewName, OwnerId = userId
+        };
     }
 }

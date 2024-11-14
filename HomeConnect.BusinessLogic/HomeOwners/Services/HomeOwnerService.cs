@@ -89,8 +89,12 @@ public class HomeOwnerService : IHomeOwnerService
             throw new ArgumentException("Home ID cannot be null or empty.");
         }
 
-        var home = HomeRepository.Get(Guid.Parse(homeId));
+        if (string.IsNullOrWhiteSpace(name))
+        {
+            throw new ArgumentException("Room name cannot be null or empty.");
+        }
 
+        var home = HomeRepository.Get(Guid.Parse(homeId));
         var room = new Room(Guid.NewGuid(), name, home, null);
 
         HomeRepository.AddRoom(room, home);

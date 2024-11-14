@@ -351,6 +351,14 @@ namespace HomeConnect.DataAccess.Migrations
                         },
                         new
                         {
+                            Value = "get-homes"
+                        },
+                        new
+                        {
+                            Value = "name-home"
+                        },
+                        new
+                        {
                             Value = "update-business-validator"
                         },
                         new
@@ -503,6 +511,16 @@ namespace HomeConnect.DataAccess.Migrations
                         new
                         {
                             PermissionsValue = "get-notifications",
+                            RolesName = "HomeOwner"
+                        },
+                        new
+                        {
+                            PermissionsValue = "get-homes",
+                            RolesName = "HomeOwner"
+                        },
+                        new
+                        {
+                            PermissionsValue = "name-home",
                             RolesName = "HomeOwner"
                         },
                         new

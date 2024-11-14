@@ -2,9 +2,9 @@ import { Injectable } from "@angular/core";
 import ApiRepository from "./api-repository";
 import { HttpClient } from "@angular/common/http";
 import { environment } from "../../environments/environment";
-import DevicesResponse from "../services/devices/models/devices-response";
+import GetDevicesResponse from "../services/devices/models/get-devices-response";
 import { Observable } from "rxjs";
-import DevicesRequest from "../services/devices/models/devices-request";
+import GetDevicesRequest from "../services/devices/models/get-devices-request";
 
 @Injectable({
     providedIn: "root"
@@ -14,7 +14,7 @@ export class DevicesApiRepositoryService extends ApiRepository {
         super(environment.apiUrl, "devices", http);
     }
 
-    public getDevices(request?: DevicesRequest): Observable<DevicesResponse> {
-        return this.get<DevicesResponse>({ queries: request });
+    public getDevices(request?: GetDevicesRequest): Observable<GetDevicesResponse> {
+        return this.get<GetDevicesResponse>({ queries: request });
     }
 }

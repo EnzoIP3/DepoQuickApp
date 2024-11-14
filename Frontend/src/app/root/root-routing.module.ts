@@ -13,16 +13,18 @@ const routes: Routes = [
             import("../auth/auth.module").then((m) => m.AuthModule)
     },
     {
-        path: "home",
+        path: "devices",
         component: RootPageComponent,
         canActivate: [authGuard],
-        children: [
-            {
-                path: "",
-                loadChildren: () =>
-                    import("../home/home.module").then((m) => m.HomeModule)
-            }
-        ]
+        loadChildren: () =>
+            import("../devices/devices.module").then((m) => m.DevicesModule)
+    },
+    {
+        path: "homes",
+        component: RootPageComponent,
+        canActivate: [authGuard],
+        loadChildren: () =>
+            import("../homes/homes.module").then((m) => m.HomesModule)
     }
 ];
 

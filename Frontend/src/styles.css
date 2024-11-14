@@ -33,3 +33,13 @@ body {
         justify-content: start;
     }
 }
+
+.p-galleria .p-galleria-indicators {
+    justify-content: left;
+    margin: 0;
+    padding: 0;
+}
+
+.p-galleria-item {
+    justify-content: left;
+}

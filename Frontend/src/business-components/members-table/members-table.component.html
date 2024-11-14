@@ -1,0 +1,15 @@
+<app-table [columns]="columns" [data]="members" [loading]="loading" [customTemplates]="customTemplates" />
+
+<ng-template #photoTemplate let-value="value">
+    <app-avatar [image]="value" />
+</ng-template>
+<ng-template #boolTemplate let-value="value" let-row="row">
+    <div class="pi pi-check" *ngIf="value"></div>
+    <div class="pi pi-times" *ngIf="!value"></div>
+</ng-template>
+<ng-template #nameTemplate let-row="row">
+    {{ row.name }} {{ row.surname }}
+</ng-template>
+<ng-template #notificationTemplate let-row="row">
+    <app-set-notifications-button [member]="row" />
+</ng-template>

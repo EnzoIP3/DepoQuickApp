@@ -84,7 +84,12 @@ public class HomeOwnerService : IHomeOwnerService
 
     public Room CreateRoom(string homeId, string name)
     {
-        throw new NotImplementedException();
+        var home = HomeRepository.Get(Guid.Parse(homeId));
+        var room = new Room(Guid.NewGuid(), name, home, null);
+
+        HomeRepository.AddRoom(room, home);
+
+        return room;
     }
 
     public Guid AddOwnedDeviceToRoom(string roomId, string requestDeviceId)

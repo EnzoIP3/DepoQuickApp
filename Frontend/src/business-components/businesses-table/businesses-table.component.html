@@ -1,0 +1,37 @@
+<div class="mt-2">
+    <app-table
+        [columns]="columns"
+        [data]="businesses"
+        [loading]="loading"
+        [clickableRows]="true"
+        (rowClick)="onRowClick($event)"
+        [customTemplates]="{
+            name: nameTemplate,
+            ownerName: ownerNameTemplate,
+            ownerSurname: ownerSurnameTemplate,
+            ownerEmail: ownerEmailTemplate,
+            rut: rutTemplate
+        }"
+    >
+    </app-table>
+</div>
+
+<ng-template #nameTemplate let-value="value">
+    {{ value || "-" }}
+</ng-template>
+
+<ng-template #ownerNameTemplate let-value="value">
+    {{ value || "-" }}
+</ng-template>
+
+<ng-template #ownerSurnameTemplate let-value="value">
+    {{ value || "-" }}
+</ng-template>
+
+<ng-template #ownerEmailTemplate let-value="value">
+    {{ value || "-" }}
+</ng-template>
+
+<ng-template #rutTemplate let-value="value">
+    {{ value || "-" }}
+</ng-template>

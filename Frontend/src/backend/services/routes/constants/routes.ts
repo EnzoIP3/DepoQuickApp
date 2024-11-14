@@ -22,6 +22,16 @@ export const AuthenticatedRoutes: Route[] = [
                 routerLink: ["/homes"]
             }
         ]
+    },
+    {
+        label: "Businesses",
+        items: [
+            {
+                label: "My businesses",
+                icon: "pi pi-building",
+                routerLink: ["/businesses"]
+            }
+        ]
     }
 ];
 

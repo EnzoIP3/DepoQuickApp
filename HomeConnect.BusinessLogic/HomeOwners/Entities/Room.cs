@@ -1,10 +1,12 @@
+using BusinessLogic.Devices.Entities;
+
 namespace BusinessLogic.HomeOwners.Entities;
 
 public class Room
 {
     private string _name = string.Empty;
-    private Home _home = null;
-    public Guid Id { get; set; } = Guid.NewGuid();
+    private Home _home = null!;
+    public Guid Id { get; set; }
     public string Name
     {
         get => _name;
@@ -32,4 +34,6 @@ public class Room
             _home = value;
         }
     }
+
+    public ICollection<OwnedDevice> OwnedDevices { get; set; } = new List<OwnedDevice>();
 }

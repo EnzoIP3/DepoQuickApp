@@ -316,6 +316,7 @@ public class HomeRepositoryTests
     #endregion
     #endregion
 
+    #region UpdateRoom
     [TestMethod]
     public void UpdateRoom_WhenOwnedDevicesAreUpdated_UpdatesOwnedDevicesList()
     {
@@ -339,6 +340,7 @@ public class HomeRepositoryTests
         updatedRoom.Should().NotBeNull();
         updatedRoom.OwnedDevices.Should().ContainSingle(d => d.HardwareId == ownedDevice.HardwareId);
     }
+    #endregion
 
     #region UpdateHome
     [TestMethod]

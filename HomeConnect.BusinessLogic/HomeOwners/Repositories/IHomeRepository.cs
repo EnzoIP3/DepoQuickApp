@@ -1,4 +1,3 @@
-using BusinessLogic.Devices.Entities;
 using BusinessLogic.HomeOwners.Entities;
 
 namespace BusinessLogic.HomeOwners.Repositories;

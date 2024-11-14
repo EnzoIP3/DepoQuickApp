@@ -1,4 +1,3 @@
-using System;
 using BusinessLogic.Devices.Entities;
 using BusinessLogic.HomeOwners.Entities;
 using FluentAssertions;

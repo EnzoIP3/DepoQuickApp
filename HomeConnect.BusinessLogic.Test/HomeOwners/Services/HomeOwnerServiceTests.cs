@@ -521,8 +521,8 @@ public class HomeOwnerServiceTests
         // Arrange
         var home = new Home(_user, "Main St 123", 1.0, 2.0, 5);
         var room = new Room { Id = Guid.NewGuid(), Name = "Living Room" };
-        var sensor = new Device("Sensor", 1, "A sensor", "https://example.com/image.png", new List<string>(), "Sensor", new Business());
-        var camera = new Camera("Camera", 2, "A camera", "https://example.com/image.png", new List<string>(), new Business(), true, true, true, true);
+        var sensor = new Device("Sensor", 1, "A sensor", "https://example.com/image.png", [], "Sensor", new Business());
+        var camera = new Camera("Camera", 2, "A camera", "https://example.com/image.png", [], new Business(), true, true, true, true);
         var ownedDeviceInRoom = new OwnedDevice(home, sensor) { Room = room };
         var ownedDeviceNotInRoom = new OwnedDevice(home, camera);
         var ownedDevices = new List<OwnedDevice> { ownedDeviceInRoom, ownedDeviceNotInRoom };
@@ -782,7 +782,7 @@ public class HomeOwnerServiceTests
     {
         // Arrange
         var homeId = Guid.NewGuid().ToString();
-        var home = new Home { Id = Guid.Parse(homeId), Address = "Arteaga 1470", NickName = "My Home", Rooms = new List<Room>() };
+        var home = new Home { Id = Guid.Parse(homeId), Address = "Arteaga 1470", NickName = "My Home", Rooms = [] };
         var roomName = "Living Room";
         var room = new Room { Id = Guid.NewGuid(), Name = roomName, Home = home };
 

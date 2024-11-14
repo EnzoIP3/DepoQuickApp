@@ -81,35 +81,35 @@ public class Context(DbContextOptions<Context> options) : DbContext(options)
     }
 
     private void ConfigureRolePermissions(ModelBuilder modelBuilder)
-{
-    modelBuilder.Entity<Role>()
-        .HasMany(r => r.Permissions)
-        .WithMany(p => p.Roles)
-        .UsingEntity(j => j.HasData(
-            new { RolesName = Role.Admin, PermissionsValue = SystemPermission.CreateAdministrator },
-            new { RolesName = Role.Admin, PermissionsValue = SystemPermission.DeleteAdministrator },
-            new { RolesName = Role.Admin, PermissionsValue = SystemPermission.CreateBusinessOwner },
-            new { RolesName = Role.Admin, PermissionsValue = SystemPermission.GetAllUsers },
-            new { RolesName = Role.Admin, PermissionsValue = SystemPermission.GetAllBusinesses },
-            new { RolesName = Role.Admin, PermissionsValue = SystemPermission.AddDeviceToRoom },
-            new { RolesName = Role.Admin, PermissionsValue = SystemPermission.CreateRoom },
-            new { RolesName = Role.Admin, PermissionsValue = SystemPermission.MoveDevice },
-            new { RolesName = Role.HomeOwner, PermissionsValue = SystemPermission.CreateHome },
-            new { RolesName = Role.HomeOwner, PermissionsValue = SystemPermission.AddMember },
-            new { RolesName = Role.HomeOwner, PermissionsValue = SystemPermission.AddDevice },
-            new { RolesName = Role.HomeOwner, PermissionsValue = SystemPermission.GetDevices },
-            new { RolesName = Role.HomeOwner, PermissionsValue = SystemPermission.GetMembers },
-            new { RolesName = Role.HomeOwner, PermissionsValue = SystemPermission.UpdateMember },
-            new { RolesName = Role.HomeOwner, PermissionsValue = SystemPermission.GetNotifications },
-            new { RolesName = Role.HomeOwner, PermissionsValue = SystemPermission.AddDeviceToRoom },
-            new { RolesName = Role.HomeOwner, PermissionsValue = SystemPermission.CreateRoom },
-            new { RolesName = Role.HomeOwner, PermissionsValue = SystemPermission.MoveDevice },
-            new { RolesName = Role.BusinessOwner, PermissionsValue = SystemPermission.CreateBusiness },
-            new { RolesName = Role.BusinessOwner, PermissionsValue = SystemPermission.CreateCamera },
-            new { RolesName = Role.BusinessOwner, PermissionsValue = SystemPermission.CreateSensor },
-            new { RolesName = Role.BusinessOwner, PermissionsValue = SystemPermission.CreateMotionSensor },
-            new { RolesName = Role.BusinessOwner, PermissionsValue = SystemPermission.CreateLamp }));
-}
+    {
+        modelBuilder.Entity<Role>()
+            .HasMany(r => r.Permissions)
+            .WithMany(p => p.Roles)
+            .UsingEntity(j => j.HasData(
+                new { RolesName = Role.Admin, PermissionsValue = SystemPermission.CreateAdministrator },
+                new { RolesName = Role.Admin, PermissionsValue = SystemPermission.DeleteAdministrator },
+                new { RolesName = Role.Admin, PermissionsValue = SystemPermission.CreateBusinessOwner },
+                new { RolesName = Role.Admin, PermissionsValue = SystemPermission.GetAllUsers },
+                new { RolesName = Role.Admin, PermissionsValue = SystemPermission.GetAllBusinesses },
+                new { RolesName = Role.Admin, PermissionsValue = SystemPermission.AddDeviceToRoom },
+                new { RolesName = Role.Admin, PermissionsValue = SystemPermission.CreateRoom },
+                new { RolesName = Role.Admin, PermissionsValue = SystemPermission.MoveDevice },
+                new { RolesName = Role.HomeOwner, PermissionsValue = SystemPermission.CreateHome },
+                new { RolesName = Role.HomeOwner, PermissionsValue = SystemPermission.AddMember },
+                new { RolesName = Role.HomeOwner, PermissionsValue = SystemPermission.AddDevice },
+                new { RolesName = Role.HomeOwner, PermissionsValue = SystemPermission.GetDevices },
+                new { RolesName = Role.HomeOwner, PermissionsValue = SystemPermission.GetMembers },
+                new { RolesName = Role.HomeOwner, PermissionsValue = SystemPermission.UpdateMember },
+                new { RolesName = Role.HomeOwner, PermissionsValue = SystemPermission.GetNotifications },
+                new { RolesName = Role.HomeOwner, PermissionsValue = SystemPermission.AddDeviceToRoom },
+                new { RolesName = Role.HomeOwner, PermissionsValue = SystemPermission.CreateRoom },
+                new { RolesName = Role.HomeOwner, PermissionsValue = SystemPermission.MoveDevice },
+                new { RolesName = Role.BusinessOwner, PermissionsValue = SystemPermission.CreateBusiness },
+                new { RolesName = Role.BusinessOwner, PermissionsValue = SystemPermission.CreateCamera },
+                new { RolesName = Role.BusinessOwner, PermissionsValue = SystemPermission.CreateSensor },
+                new { RolesName = Role.BusinessOwner, PermissionsValue = SystemPermission.CreateMotionSensor },
+                new { RolesName = Role.BusinessOwner, PermissionsValue = SystemPermission.CreateLamp }));
+    }
 
     private void ConfigureUserRole(ModelBuilder modelBuilder)
     {

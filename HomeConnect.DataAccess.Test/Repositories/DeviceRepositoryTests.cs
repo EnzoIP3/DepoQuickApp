@@ -2,12 +2,10 @@ using BusinessLogic;
 using BusinessLogic.BusinessOwners.Entities;
 using BusinessLogic.Devices.Entities;
 using BusinessLogic.Devices.Models;
-using BusinessLogic.HomeOwners.Entities;
 using BusinessLogic.Roles.Entities;
 using BusinessLogic.Users.Entities;
 using FluentAssertions;
 using HomeConnect.DataAccess.Repositories;
-using Microsoft.EntityFrameworkCore;
 
 namespace HomeConnect.DataAccess.Test.Repositories;
 

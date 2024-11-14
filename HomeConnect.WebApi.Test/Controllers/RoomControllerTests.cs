@@ -1,8 +1,6 @@
 using BusinessLogic.HomeOwners.Entities;
 using BusinessLogic.HomeOwners.Services;
-using BusinessLogic.Users.Services;
 using FluentAssertions;
-using HomeConnect.WebApi.Controllers.Rooms;
 using HomeConnect.WebApi.Controllers.Rooms.Models;
 using Moq;
 

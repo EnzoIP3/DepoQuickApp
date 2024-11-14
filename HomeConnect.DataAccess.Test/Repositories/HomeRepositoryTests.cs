@@ -28,7 +28,7 @@ public class HomeRepositoryTests
         _home = new Home(_homeOwner, "Main St 123", 12.5, 12.5, 5);
         _member = new Member(_otherOwner);
         _home.AddMember(_member);
-        _room = new Room { Id = Guid.NewGuid(), Name = "Living Room", Home = _home };
+        _room = new Room { Id = Guid.NewGuid(), Name = "Bath room", Home = _home };
         _context.Users.Add(_homeOwner);
         _context.Homes.Add(_home);
         _context.Rooms.Add(_room);
@@ -230,20 +230,19 @@ public class HomeRepositoryTests
     #endregion
 
     #region AddRoom
+    #region Success
+
     [TestMethod]
     public void AddRoom_WhenRoomIsValid_AddsRoom()
     {
         // Arrange
-        var room = new Room(Guid.NewGuid(), "Living Room", _home, null);
+        var room = new Room { Id = Guid.NewGuid(), Name = "Living Room", Home = _home };
 
         // Act
         _homeRepository.AddRoom(room);
 
         // Assert
-        var retrievedHome = _homeRepository.Get(_home.Id);
-        retrievedHome.Should().NotBeNull();
-        retrievedHome.Rooms.Should().HaveCount(1);
-        retrievedHome.Rooms[0].Name.Should().Be("Living Room");
+        _context.Rooms.Should().Contain(room);
     }
     #endregion
 

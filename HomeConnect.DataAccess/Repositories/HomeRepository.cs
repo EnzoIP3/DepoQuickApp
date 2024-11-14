@@ -84,9 +84,9 @@ public class HomeRepository : IHomeRepository
         _context.SaveChanges();
     }
 
-    public Room GetRoomById(Guid parse)
+    public Room GetRoomById(Guid roomId)
     {
-        throw new NotImplementedException();
+        return _context.Rooms.FirstOrDefault(r => r.Id == roomId);
     }
 
     public bool ExistsRoom(Guid roomId)

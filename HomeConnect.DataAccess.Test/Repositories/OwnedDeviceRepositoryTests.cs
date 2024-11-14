@@ -303,6 +303,19 @@ public class OwnedDeviceRepositoryTests
         result.Should().NotBeNull();
         result.HardwareId.Should().Be(_ownedDevice.HardwareId);
     }
+
+    [TestMethod]
+    public void GetOwnedDeviceById_WhenDeviceDoesNotExist_ThrowsException()
+    {
+        // Arrange
+        var nonExistentDeviceId = Guid.NewGuid();
+
+        // Act
+        Action act = () => _ownedDeviceRepository.GetOwnedDeviceById(nonExistentDeviceId);
+
+        // Assert
+        act.Should().Throw<ArgumentException>().WithMessage("Owned device does not exist");
+    }
     #endregion
 
 }

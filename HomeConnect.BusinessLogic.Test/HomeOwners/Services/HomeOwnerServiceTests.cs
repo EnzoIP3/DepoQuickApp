@@ -850,6 +850,7 @@ public class HomeOwnerServiceTests
         var device = new Device();
         var ownedDevice = new OwnedDevice(home, device);
 
+        _homeRepositoryMock.Setup(repo => repo.ExistsRoom(It.IsAny<Guid>())).Returns(true);
         _homeRepositoryMock.Setup(repo => repo.GetRoomById(It.IsAny<Guid>())).Returns(room);
         _ownedDeviceRepositoryMock.Setup(repo => repo.GetOwnedDeviceById(It.IsAny<Guid>())).Returns(ownedDevice);
         _homeRepositoryMock.Setup(repo => repo.UpdateRoom(It.IsAny<Room>())).Verifiable();

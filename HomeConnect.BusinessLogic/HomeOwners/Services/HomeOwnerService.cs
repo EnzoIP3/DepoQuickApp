@@ -117,6 +117,11 @@ public class HomeOwnerService : IHomeOwnerService
         var roomGuid = Guid.Parse(roomId);
         var ownedDeviceGuid = Guid.Parse(ownedDeviceId);
 
+        if (!HomeRepository.ExistsRoom(roomGuid))
+        {
+            throw new ArgumentException("Invalid room ID.");
+        }
+
         var room = HomeRepository.GetRoomById(roomGuid);
         var ownedDevice = OwnedDeviceRepository.GetOwnedDeviceById(ownedDeviceGuid);
 

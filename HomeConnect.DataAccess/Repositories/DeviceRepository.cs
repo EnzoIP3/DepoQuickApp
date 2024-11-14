@@ -40,7 +40,7 @@ public class DeviceRepository : PaginatedRepositoryBase<Device>, IDeviceReposito
 
     public bool Exists(Guid id)
     {
-        throw new NotImplementedException();
+        return _context.Devices.Any(d => d.Id == id);
     }
 
     public PagedData<Device> GetPaged(GetDevicesArgs args)

@@ -232,4 +232,21 @@ public class DeviceRepositoryTests
     #endregion
 
     #endregion
+
+    #region Exists
+    [TestMethod]
+    public void Exists_WhenDeviceExists_ReturnsTrue()
+    {
+        // Arrange
+        var device = new Device("Device", "12345", "Device description", "https://example.com/image.png",
+            [], "Sensor", new Business("12345", "Business", "https://example.com/image.png", _validUser));
+        _deviceRepository.Add(device);
+
+        // Act
+        var result = _deviceRepository.Exists(device.Id);
+
+        // Assert
+        result.Should().BeTrue();
+    }
+    #endregion
 }

@@ -48,8 +48,15 @@ public class AdminService : IAdminService
     public PagedData<Business> GetBusinesses(int? currentPage = null, int? pageSize = null, string? nameFilter = null,
         string? fullNameFilter = null)
     {
+        var filterArgs = new FilterArgs
+        {
+            CurrentPage = currentPage ?? 1,
+            PageSize = pageSize ?? 10,
+            NameFilter = nameFilter,
+            FullNameFilter = fullNameFilter
+        };
         PagedData<Business> businesses =
-            BusinessRepository.GetPaged(currentPage ?? 1, pageSize ?? 10, fullNameFilter, nameFilter);
+            BusinessRepository.GetPaged(filterArgs);
         return businesses;
     }
 

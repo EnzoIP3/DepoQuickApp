@@ -3,6 +3,7 @@ using BusinessLogic.Admins.Services;
 using BusinessLogic.BusinessOwners.Entities;
 using BusinessLogic.BusinessOwners.Models;
 using BusinessLogic.BusinessOwners.Services;
+using BusinessLogic.Devices.Entities;
 using BusinessLogic.Roles.Entities;
 using BusinessLogic.Users.Entities;
 using FluentAssertions;
@@ -213,5 +214,68 @@ public class BusinessControllerTests
         response.Should().NotBeNull();
         response.Should().BeEquivalentTo(expectedResponse);
     }
+    #endregion
+
+    #region GetDevices
+
+    [TestMethod]
+    public void GetDevices_WhenCalledWithValidBusinessId_ReturnsExpectedResponse()
+    {
+        // Arrange
+        var deviceList = new List<Device>
+        {
+            new Device
+            {
+                Id = Guid.NewGuid(),
+                Business = _businesses[0],
+                Name = "Device 1",
+                ModelNumber = "Model 1",
+                Description = "Description 1",
+                MainPhoto = "https://example.com/image.png",
+                SecondaryPhotos =
+                    ["https://example.com/image1.png", "https://example.com/image2.png"],
+                Type = DeviceType.Sensor
+            }
+        };
+        var expectedResponse = new GetDevicesResponse
+        {
+            Devices =
+            [
+                new DeviceInfo
+                {
+                    Name = deviceList[0].Name,
+                    Id = deviceList[0].Id.ToString(),
+                    ModelNumber = deviceList[0].ModelNumber,
+                    Description = deviceList[0].Description,
+                    MainPhoto = deviceList[0].MainPhoto,
+                    SecondaryPhotos = deviceList[0].SecondaryPhotos,
+                    Type = deviceList[0].Type.ToString()
+                }
+
+            ],
+            Pagination = new Pagination { Page = 1, PageSize = 10, TotalPages = 1 }
+        };
+        var user = new User("Name", "Surname", "email@email.com", "Password@1", new Role("BusinessOwner", []));
+        _httpContextMock.Setup(x => x.Items).Returns(new Dictionary<object, object?> { { Item.UserLogged, user } });
+        _businessOwnerService.Setup(x => x.GetDevices(_businesses[0].Rut, user)).Returns(new PagedData<Device>
+        {
+            Data = deviceList,
+            Page = 1,
+            PageSize = 10,
+            TotalPages = 1
+        });
+
+        // Act
+        GetDevicesResponse response = _controller.GetDevices(_businesses[0].Rut);
+
+        // Assert
+        _businessOwnerService.VerifyAll();
+        _httpContextMock.VerifyAll();
+        response.Should().NotBeNull();
+        response.Devices.Should().NotBeNullOrEmpty();
+        response.Devices.Should().BeEquivalentTo(expectedResponse.Devices);
+        response.Pagination.Should().BeEquivalentTo(expectedResponse.Pagination);
+    }
+
     #endregion
 }

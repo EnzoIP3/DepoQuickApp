@@ -1,10 +1,13 @@
 using BusinessLogic;
 using BusinessLogic.Admins.Services;
+using BusinessLogic.BusinessOwners.Entities;
+using BusinessLogic.BusinessOwners.Services;
 using BusinessLogic.Roles.Entities;
 using BusinessLogic.Users.Entities;
 using BusinessLogic.Users.Models;
 using BusinessLogic.Users.Services;
 using FluentAssertions;
+using HomeConnect.WebApi.Controllers.Businesses.Models;
 using HomeConnect.WebApi.Controllers.Users;
 using HomeConnect.WebApi.Controllers.Users.Models;
 using Microsoft.AspNetCore.Http;
@@ -19,12 +22,14 @@ public class UserControllerTests
     private Mock<HttpContext> _httpContext = null!;
     private Mock<IAdminService> _adminService = null!;
     private Mock<IUserService> _userService = null!;
+    private Mock<IBusinessOwnerService> _businessOwnerService = null!;
     private UserController _controller = null!;
     private Pagination _expectedPagination = null!;
     private List<User> _expectedUsers = null!;
     private User _otherUser = null!;
     private PagedData<User> _pagedList = null!;
     private User _user = null!;
+    private readonly string _imageUrl = "https://www.image.jpg";
 
     [TestInitialize]
     public void Initialize()
@@ -32,7 +37,8 @@ public class UserControllerTests
         _httpContext = new Mock<HttpContext>(MockBehavior.Strict);
         _adminService = new Mock<IAdminService>(MockBehavior.Strict);
         _userService = new Mock<IUserService>(MockBehavior.Strict);
-        _controller = new UserController(_adminService.Object, _userService.Object)
+        _businessOwnerService = new Mock<IBusinessOwnerService>(MockBehavior.Strict);
+        _controller = new UserController(_adminService.Object, _userService.Object, _businessOwnerService.Object)
         {
             ControllerContext = new ControllerContext { HttpContext = _httpContext.Object }
         };
@@ -185,5 +191,48 @@ public class UserControllerTests
         response.Should().BeEquivalentTo(new AddHomeOwnerRoleResponse { Id = args.UserId });
     }
 
+    #endregion
+
+    #region GetBusinesses
+    [TestMethod]
+    public void GetBusinesses_WhenCalledWithValidRequest_ReturnsExpectedResponse()
+    {
+        // Arrange
+        var businesses = new PagedData<Business>
+        {
+            Data =
+            [
+                new Business(Guid.NewGuid().ToString(), "Name", _imageUrl, _user)
+            ],
+            Page = 1,
+            PageSize = 10,
+            TotalPages = 1
+        };
+        var expectedResponse = new GetBusinessesResponse
+        {
+            Businesses = businesses.Data.Select(b => new ListBusinessInfo
+            {
+                Name = b.Name,
+                OwnerEmail = b.Owner.Email,
+                OwnerName = b.Owner.Name,
+                OwnerSurname = b.Owner.Surname,
+                Rut = b.Rut
+            }).ToList(),
+            Pagination = new Pagination
+            {
+                Page = businesses.Page,
+                PageSize = businesses.PageSize,
+                TotalPages = businesses.TotalPages
+            }
+        };
+        _businessOwnerService.Setup(x => x.GetBusinesses(_user.Id.ToString())).Returns(businesses);
+
+        // Act
+        GetBusinessesResponse response = _controller.GetBusinesses(_user.Id.ToString());
+
+        // Assert
+        _businessOwnerService.VerifyAll();
+        response.Should().BeEquivalentTo(expectedResponse);
+    }
     #endregion
 }

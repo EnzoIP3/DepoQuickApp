@@ -8,4 +8,5 @@ public class GetDevicesArgs
     public string? ModelNumberFilter { get; init; }
     public string? BusinessNameFilter { get; init; }
     public string? DeviceTypeFilter { get; init; }
+    public string? RutFilter { get; init; }
 }

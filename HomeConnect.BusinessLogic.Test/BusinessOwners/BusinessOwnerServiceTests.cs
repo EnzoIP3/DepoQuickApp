@@ -5,6 +5,7 @@ using BusinessLogic.BusinessOwners.Models;
 using BusinessLogic.BusinessOwners.Repositories;
 using BusinessLogic.BusinessOwners.Services;
 using BusinessLogic.Devices.Entities;
+using BusinessLogic.Devices.Models;
 using BusinessLogic.Devices.Repositories;
 using BusinessLogic.Roles.Entities;
 using BusinessLogic.Users.Entities;
@@ -704,6 +705,38 @@ public class BusinessOwnerServiceTests
         // Assert
         act.Should().Throw<InvalidOperationException>().WithMessage("The business does not belong to the specified owner.");
         _businessRepository.Verify(x => x.Get(business.Rut), Times.Once);
+    }
+    #endregion
+
+    #region Success
+    [TestMethod]
+    public void GetDevices_WhenCalledWithValidRequest_ReturnsDevices()
+    {
+        // Arrange
+        var business = new Business("RUTexample", "Business Name", "https://example.com/image.png", _owner);
+        var user = _owner;
+        var devices = new PagedData<Device>
+        {
+            Data =
+            [
+                new Device("Device Name", "123", "Device Description", "https://www.example.com/photo1.jpg",
+                    new List<string> { "https://www.example.com/photo2.jpg", "https://www.example.com/photo3.jpg" },
+                    DeviceType.Sensor.ToString(), business)
+            ],
+            Page = 1,
+            PageSize = 10,
+            TotalPages = 1
+        };
+        _businessRepository.Setup(x => x.Get(business.Rut)).Returns(business);
+        _deviceRepository.Setup(x => x.GetPaged(It.IsAny<GetDevicesArgs>())).Returns(devices);
+
+        // Act
+        PagedData<Device> returnedDevices = _businessOwnerService.GetDevices(business.Rut, user);
+
+        // Assert
+        returnedDevices.Should().BeEquivalentTo(devices);
+        _businessRepository.Verify(x => x.Get(business.Rut), Times.Once);
+        _deviceRepository.Verify(x => x.GetPaged(It.Is<GetDevicesArgs>(a => a.RutFilter == business.Rut)), Times.Once);
     }
     #endregion
     #endregion

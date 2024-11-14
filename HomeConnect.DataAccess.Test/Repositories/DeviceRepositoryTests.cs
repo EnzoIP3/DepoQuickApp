@@ -250,7 +250,6 @@ public class DeviceRepositoryTests
         _context.SaveChanges();
 
         // Act
-        // Associate the device with the room by setting the Room property
         ownedDevice.Room = room;
         _deviceRepository.UpdateOwnedDevice(ownedDevice);
 

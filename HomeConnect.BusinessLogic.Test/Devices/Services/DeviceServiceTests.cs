@@ -462,6 +462,23 @@ public class DeviceServiceTests
         act.Should().Throw<ArgumentException>().WithMessage("Invalid source room ID.");
     }
 
+    [TestMethod]
+    public void MoveDevice_WhenTargetRoomIdIsInvalid_ThrowsArgumentException()
+    {
+        // Arrange
+        var sourceRoomId = Guid.NewGuid();
+        var targetRoomId = Guid.NewGuid();
+        var ownedDeviceId = Guid.NewGuid();
+
+        _homeRepository.Setup(r => r.ExistsRoom(sourceRoomId)).Returns(true);
+        _homeRepository.Setup(r => r.ExistsRoom(targetRoomId)).Returns(false);
+
+        // Act
+        Action act = () => _deviceService.MoveDevice(sourceRoomId.ToString(), targetRoomId.ToString(), ownedDeviceId.ToString());
+
+        // Assert
+        act.Should().Throw<ArgumentException>().WithMessage("Invalid target room ID.");
+    }
     #endregion
     #endregion
 }

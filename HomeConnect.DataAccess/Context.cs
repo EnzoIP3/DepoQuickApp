@@ -76,6 +76,7 @@ public class Context(DbContextOptions<Context> options) : DbContext(options)
             new SystemPermission { Value = SystemPermission.CreateMotionSensor },
             new SystemPermission { Value = SystemPermission.CreateLamp },
             new SystemPermission { Value = SystemPermission.AddDeviceToRoom },
+            new SystemPermission { Value = SystemPermission.MoveDevice },
             new SystemPermission { Value = SystemPermission.CreateRoom });
     }
 
@@ -92,6 +93,7 @@ public class Context(DbContextOptions<Context> options) : DbContext(options)
             new { RolesName = Role.Admin, PermissionsValue = SystemPermission.GetAllBusinesses },
             new { RolesName = Role.Admin, PermissionsValue = SystemPermission.AddDeviceToRoom },
             new { RolesName = Role.Admin, PermissionsValue = SystemPermission.CreateRoom },
+            new { RolesName = Role.Admin, PermissionsValue = SystemPermission.MoveDevice },
             new { RolesName = Role.HomeOwner, PermissionsValue = SystemPermission.CreateHome },
             new { RolesName = Role.HomeOwner, PermissionsValue = SystemPermission.AddMember },
             new { RolesName = Role.HomeOwner, PermissionsValue = SystemPermission.AddDevice },
@@ -101,6 +103,7 @@ public class Context(DbContextOptions<Context> options) : DbContext(options)
             new { RolesName = Role.HomeOwner, PermissionsValue = SystemPermission.GetNotifications },
             new { RolesName = Role.HomeOwner, PermissionsValue = SystemPermission.AddDeviceToRoom },
             new { RolesName = Role.HomeOwner, PermissionsValue = SystemPermission.CreateRoom },
+            new { RolesName = Role.HomeOwner, PermissionsValue = SystemPermission.MoveDevice },
             new { RolesName = Role.BusinessOwner, PermissionsValue = SystemPermission.CreateBusiness },
             new { RolesName = Role.BusinessOwner, PermissionsValue = SystemPermission.CreateCamera },
             new { RolesName = Role.BusinessOwner, PermissionsValue = SystemPermission.CreateSensor },

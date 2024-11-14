@@ -8,6 +8,7 @@ public class HomePermission
     public const string GetNotifications = "get-notifications";
     public const string GetMembers = "get-members";
     public const string UpdateNotifications = "update-notifications";
+    public const string MoveDevice = "move-device";
 
     public HomePermission(string value)
     {

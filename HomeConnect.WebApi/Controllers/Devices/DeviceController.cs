@@ -2,6 +2,8 @@ using BusinessLogic;
 using BusinessLogic.Devices.Entities;
 using BusinessLogic.Devices.Models;
 using BusinessLogic.Devices.Services;
+using BusinessLogic.HomeOwners.Entities;
+using BusinessLogic.Roles.Entities;
 using HomeConnect.WebApi.Controllers.Devices.Models;
 using HomeConnect.WebApi.Controllers.Homes.Models;
 using HomeConnect.WebApi.Controllers.Rooms.Models;
@@ -77,6 +79,8 @@ public class DeviceController : ControllerBase
     }
 
     [HttpPatch("devices/{deviceId}/room")]
+    [AuthorizationFilter(SystemPermission.MoveDevice)]
+    [HomeAuthorizationFilter(HomePermission.MoveDevice)]
     public MoveDeviceResponse MoveDevice([FromRoute] string deviceId, [FromBody] MoveDeviceRequest request)
     {
         _deviceService.MoveDevice(request.SourceRoomId, request.TargetRoomId, deviceId);

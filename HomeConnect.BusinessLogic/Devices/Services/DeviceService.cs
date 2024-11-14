@@ -80,7 +80,7 @@ public class DeviceService : IDeviceService
         EnsureIdFormatIsValid(cameraId);
         EnsureDeviceExists(cameraId);
         EnsureDeviceIsACamera(cameraId);
-        return null;
+        return DeviceRepository.Get(Guid.Parse(cameraId)!) as Camera;
     }
 
     private void EnsureDeviceIsACamera(string cameraId)

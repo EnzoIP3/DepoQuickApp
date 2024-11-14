@@ -457,5 +457,25 @@ public class DeviceServiceTests
         _deviceRepository.VerifyAll();
     }
     #endregion
+
+    #region Success
+    [TestMethod]
+    public void GetCameraById_WhenCalledWithValidId_ReturnsCamera()
+    {
+        // Arrange
+        var camera = new Camera("Name", "123", "Description", "https://example.com/photo.png", [], new Business(), true,
+            true, true, true);
+        var cameraId = camera.Id.ToString();
+        _deviceRepository.Setup(x => x.Exists(Guid.Parse(cameraId))).Returns(true);
+        _deviceRepository.Setup(x => x.Get(Guid.Parse(cameraId))).Returns(camera);
+
+        // Act
+        var result = _deviceService.GetCameraById(cameraId);
+
+        // Assert
+        result.Should().BeOfType<Camera>();
+        _deviceRepository.VerifyAll();
+    }
+    #endregion
     #endregion
 }

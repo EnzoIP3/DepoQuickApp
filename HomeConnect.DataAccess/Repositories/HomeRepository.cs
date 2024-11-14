@@ -107,7 +107,8 @@ public class HomeRepository : IHomeRepository
 
     public void Update(Home home)
     {
-        throw new NotImplementedException();
+        _context.Homes.Update(home);
+        _context.SaveChanges();
     }
 
     private void EnsureHomeDoesNotExist(Home home)

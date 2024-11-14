@@ -68,12 +68,13 @@ public class DeviceControllerTests
         {
             Devices = _expectedDevices.Select(d => new ListDeviceInfo
             {
-                HardwareId = d.Id.ToString(),
+                Id = d.Id.ToString(),
                 Name = d.Name,
                 BusinessName = d.Business.Name,
                 Type = d.Type.ToString(),
                 ModelNumber = d.ModelNumber,
-                Photo = d.MainPhoto
+                MainPhoto = d.MainPhoto,
+                SecondaryPhotos = d.SecondaryPhotos
             }).ToList(),
             Pagination = _expectedPagination
         };

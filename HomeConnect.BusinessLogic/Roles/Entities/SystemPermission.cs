@@ -23,6 +23,8 @@ public record SystemPermission
     public const string GetNotifications = "get-notifications";
     public const string GetHomes = "get-homes";
     public const string NameHome = "name-home";
+    public const string AddDeviceToRoom = "add-device-to-room";
+    public const string CreateRoom = "create-room";
 
     public SystemPermission()
     {

@@ -8,6 +8,14 @@ public class Room
     {
     }
 
+    public Room(Guid id, string name, Home home, ICollection<OwnedDevice>? ownedDevices)
+    {
+        Id = id;
+        Name = name;
+        Home = home;
+        OwnedDevices = ownedDevices ?? new List<OwnedDevice>();
+    }
+
     private string _name = string.Empty;
     private Home _home = null!;
     public Guid Id { get; set; }

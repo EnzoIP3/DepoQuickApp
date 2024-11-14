@@ -1,4 +1,5 @@
-﻿using BusinessLogic.BusinessOwners.Entities;
+﻿using BusinessLogic.Admins.Services;
+using BusinessLogic.BusinessOwners.Entities;
 using BusinessLogic.BusinessOwners.Models;
 using BusinessLogic.BusinessOwners.Repositories;
 using BusinessLogic.Devices.Entities;
@@ -86,8 +87,9 @@ public class BusinessOwnerService : IBusinessOwnerService
     public PagedData<Business> GetBusinesses(string ownerIdFilter)
     {
         Guid ownerId = ParseAndValidateOwnerId(ownerIdFilter);
+        var filterArgs = new FilterArgs { OwnerIdFilter = ownerId };
         PagedData<Business> businesses =
-            BusinessRepository.GetPaged(1, 10, ownerIdFilter: ownerId);
+            BusinessRepository.GetPaged(filterArgs);
         return businesses;
     }
 

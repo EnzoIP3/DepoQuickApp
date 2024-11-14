@@ -1,4 +1,5 @@
 using BusinessLogic;
+using BusinessLogic.Admins.Services;
 using BusinessLogic.BusinessOwners.Entities;
 using BusinessLogic.BusinessOwners.Repositories;
 using Microsoft.EntityFrameworkCore;
@@ -12,14 +13,13 @@ public class BusinessRepository : PaginatedRepositoryBase<Business>, IBusinessRe
     {
     }
 
-    public PagedData<Business> GetPaged(int currentPage, int pageSize, string? fullNameFilter = null,
-        string? nameFilter = null, Guid? ownerIdFilter = null)
+    public PagedData<Business> GetPaged(FilterArgs args)
     {
         var filters = new object[3];
-        filters[0] = fullNameFilter ?? string.Empty;
-        filters[1] = nameFilter ?? string.Empty;
-        filters[2] = ownerIdFilter ?? Guid.Empty;
-        return GetAllPaged(currentPage, pageSize, filters);
+        filters[0] = args.FullNameFilter ?? string.Empty;
+        filters[1] = args.NameFilter ?? string.Empty;
+        filters[2] = args.OwnerIdFilter ?? Guid.Empty;
+        return GetAllPaged(args.CurrentPage, args.PageSize, filters);
     }
 
     public void UpdateValidator(string argsBusinessRut, Guid? validatorId = null)

@@ -1,4 +1,5 @@
 ﻿using BusinessLogic;
+using BusinessLogic.Admins.Services;
 using BusinessLogic.BusinessOwners.Entities;
 using BusinessLogic.BusinessOwners.Models;
 using BusinessLogic.BusinessOwners.Repositories;
@@ -672,13 +673,16 @@ public class BusinessOwnerServiceTests
             PageSize = 10,
             TotalPages = 1
         };
-        _businessRepository.Setup(x => x.GetPaged(1, 10, null, null, _owner.Id)).Returns(businesses);
+        var filterArgs = new FilterArgs { OwnerIdFilter = _owner.Id };
+        _businessRepository.Setup(x => x.GetPaged(filterArgs)).Returns(businesses);
 
         // Act
         PagedData<Business> returnedBusinesses = _businessOwnerService.GetBusinesses(_owner.Id.ToString());
 
         // Assert
         returnedBusinesses.Should().BeEquivalentTo(businesses);
+        _businessRepository.Verify(x => x.GetPaged(
+            It.Is<FilterArgs>(a => a.OwnerIdFilter == _owner.Id)), Times.Once);
     }
     #endregion
 }

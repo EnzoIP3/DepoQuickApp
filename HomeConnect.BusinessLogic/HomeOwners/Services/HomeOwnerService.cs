@@ -116,14 +116,14 @@ public class HomeOwnerService : IHomeOwnerService
         return home.Members;
     }
 
-   public IEnumerable<OwnedDevice> GetHomeDevices(string homeId, string? roomId = null)
+    public IEnumerable<OwnedDevice> GetHomeDevices(string homeId, string? roomId = null)
     {
         var home = GetHome(ValidateAndParseGuid(homeId));
         var devicesQuery = OwnedDeviceRepository.GetOwnedDevicesByHome(home);
 
         if (!string.IsNullOrEmpty(roomId))
         {
-            devicesQuery = devicesQuery.Where(od => od.Room.Id.ToString() == roomId);
+            devicesQuery = devicesQuery.Where(od => od.Room != null && od.Room.Id.ToString() == roomId);
         }
 
         return devicesQuery.ToList();

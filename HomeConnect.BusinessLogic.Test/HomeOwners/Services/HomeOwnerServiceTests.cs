@@ -785,7 +785,7 @@ public class HomeOwnerServiceTests
         var name = "Living Room";
         var home = new Home();
         _homeRepositoryMock.Setup(repo => repo.Get(It.IsAny<Guid>())).Returns(home);
-        _homeRepositoryMock.Setup(repo => repo.AddRoom(It.IsAny<Room>(), home)).Verifiable();
+        _homeRepositoryMock.Setup(repo => repo.AddRoom(It.IsAny<Room>())).Verifiable();
 
         // Act
         var room = _homeOwnerService.CreateRoom(homeId, name);

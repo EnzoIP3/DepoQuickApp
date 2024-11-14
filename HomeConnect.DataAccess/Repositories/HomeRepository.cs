@@ -73,7 +73,7 @@ public class HomeRepository : IHomeRepository
         _context.SaveChanges();
     }
 
-    public void AddRoom(Room room, Home home)
+    public void AddRoom(Room room)
     {
         throw new NotImplementedException();
     }

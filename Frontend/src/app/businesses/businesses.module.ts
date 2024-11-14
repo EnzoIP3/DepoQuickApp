@@ -5,6 +5,7 @@ import { BusinessesRoutingModule } from './businesses-routing.module';
 import { BusinessesPageComponent } from './businesses-page/businesses-page.component';
 import { PanelComponent } from "../../components/panel/panel.component";
 import { BusinessesTableComponent } from "../../business-components/businesses-table/businesses-table.component";
+import { ButtonComponent } from '../../components/button/button.component';
 
 
 @NgModule({
@@ -15,7 +16,8 @@ import { BusinessesTableComponent } from "../../business-components/businesses-t
     CommonModule,
     BusinessesRoutingModule,
     PanelComponent,
-    BusinessesTableComponent
+    BusinessesTableComponent,
+    ButtonComponent
 ]
 })
 export class BusinessesModule { }

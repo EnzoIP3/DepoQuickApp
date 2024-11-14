@@ -40,11 +40,12 @@ public class DeviceRepository : PaginatedRepositoryBase<Device>, IDeviceReposito
 
     public PagedData<Device> GetPaged(GetDevicesArgs args)
     {
-        var filters = new object[4];
+        var filters = new object[5];
         filters[0] = args.DeviceNameFilter ?? string.Empty;
         filters[1] = args.ModelNumberFilter!;
         filters[2] = args.BusinessNameFilter ?? string.Empty;
         filters[3] = args.DeviceTypeFilter ?? string.Empty;
+        filters[4] = args.RutFilter ?? string.Empty;
         return GetAllPaged(args.Page ?? 1, args.PageSize ?? 10, filters);
     }
 
@@ -59,11 +60,23 @@ public class DeviceRepository : PaginatedRepositoryBase<Device>, IDeviceReposito
         var modelNumberFilter = filters.Length > 1 ? filters[1] as string : null;
         var businessNameFilter = filters.Length > 2 ? filters[2] as string : null;
         var deviceTypeFilter = filters.Length > 3 ? filters[3] as string : null;
+        var rutFilter = filters.Length > 4 ? filters[4] as string : null;
 
         query = FilterByDeviceName(deviceNameFilter, query);
         query = FilterByModelNumber(modelNumberFilter, query);
         query = FilterByBusinessName(businessNameFilter, query);
         query = FilterByDeviceType(deviceTypeFilter, query);
+        query = FilterByRut(rutFilter, query);
+
+        return query;
+    }
+
+    private IQueryable<Device> FilterByRut(string? rutFilter, IQueryable<Device> query)
+    {
+        if (!string.IsNullOrEmpty(rutFilter))
+        {
+            query = query.Where(d => d.Business.Rut == rutFilter);
+        }
 
         return query;
     }

@@ -33,7 +33,8 @@ public class OwnedDeviceRepositoryTests
 
         _home = new Home(_homeOwner, "Main St 123", 12.5, 12.5, 5);
         _business = new Business("123456789123", "Business Name", "https://example.com/image.png", _businessOwner);
-        _device = new Device("Sensor", 12345, "A sensor", "https://sensor.com/image.png", new List<string>(), "Sensor", _business);
+        _device = new Device("Sensor", 12345, "A sensor", "https://sensor.com/image.png", new List<string>(), "Sensor",
+            _business);
 
         var room = new Room { Id = Guid.NewGuid(), Name = "Living Room", Home = _home };
 
@@ -135,7 +136,9 @@ public class OwnedDeviceRepositoryTests
     #endregion
 
     #region UpdateLampState
+
     #region Error
+
     [TestMethod]
     public void UpdateLampState_WhenOwnedDeviceIsNotALamp_ThrowsInvalidOperationException()
     {
@@ -153,9 +156,11 @@ public class OwnedDeviceRepositoryTests
         // Assert
         act.Should().Throw<InvalidOperationException>().WithMessage("The device is not a lamp.");
     }
+
     #endregion
 
     #region Success
+
     [TestMethod]
     public void UpdateLampState_WhenOwnedDeviceIsALamp_UpdatesLampState()
     {
@@ -175,12 +180,15 @@ public class OwnedDeviceRepositoryTests
         var lamp = (LampOwnedDevice)result;
         lamp.State.Should().BeTrue();
     }
+
     #endregion
+
     #endregion
 
     #region UpdateSensorState
 
     #region Error
+
     [TestMethod]
     public void UpdateSensorState_WhenDeviceIsNotASensor_ThrowsInvalidOperationException()
     {
@@ -198,10 +206,13 @@ public class OwnedDeviceRepositoryTests
         // Assert
         act.Should().Throw<InvalidOperationException>().WithMessage("The device is not a sensor.");
     }
+
     #endregion
+
     #endregion
 
     #region GetLampState
+
     [TestMethod]
     public void GetLampState_IfDeviceIsNotALamp_ThrowsInvalidOperationException()
     {
@@ -237,8 +248,11 @@ public class OwnedDeviceRepositoryTests
         // Assert
         result.Should().BeFalse();
     }
+
     #endregion
+
     #region GetSensorState
+
     [TestMethod]
     public void GetSensorState_IfDeviceIsNotASensor_ThrowsInvalidOperationException()
     {
@@ -274,5 +288,21 @@ public class OwnedDeviceRepositoryTests
         // Assert
         result.Should().BeFalse();
     }
+
     #endregion
+
+    #region GetOwnedDeviceById
+
+    [TestMethod]
+    public void GetOwnedDeviceById_WhenDeviceExists_ReturnsDevice()
+    {
+        // Act
+        var result = _ownedDeviceRepository.GetOwnedDeviceById(_ownedDevice.HardwareId);
+
+        // Assert
+        result.Should().NotBeNull();
+        result.HardwareId.Should().Be(_ownedDevice.HardwareId);
+    }
+    #endregion
+
 }

@@ -12,7 +12,7 @@ namespace HomeConnect.WebApi.Controllers.HomeOwners;
 
 [ApiController]
 [Route("home_owners")]
-public class HomeOwnerController(IUserService userService, IHomeOwnerService homeOwnerService) : ControllerBase
+public class HomeOwnerController(IUserService userService) : ControllerBase
 {
     [HttpPost]
     public CreateHomeOwnerResponse CreateHomeOwner([FromBody] CreateHomeOwnerRequest args)
@@ -27,33 +27,5 @@ public class HomeOwnerController(IUserService userService, IHomeOwnerService hom
             ProfilePicture = args.ProfilePicture
         });
         return new CreateHomeOwnerResponse { Id = user.Id.ToString() };
-    }
-
-    [HttpPost("name_device")]
-    [AuthorizationFilter(SystemPermission.NameDevice)]
-    public NameDeviceResponse NameDevice([FromBody] NameDeviceRequest request)
-    {
-        var userLoggedIn = HttpContext.Items[Item.UserLogged] as User;
-        var nameDeviceArgs = NameDeviceArgsFromRequest(request, userLoggedIn.Id);
-        homeOwnerService.NameDevice(nameDeviceArgs);
-        return new NameDeviceResponse { DeviceId = request.HardwareId };
-    }
-
-    private static NameDeviceArgs NameDeviceArgsFromRequest(NameDeviceRequest request, Guid userId)
-    {
-        if (string.IsNullOrEmpty(request.HardwareId))
-        {
-            throw new ArgumentException("DeviceId cannot be null or empty");
-        }
-
-        if (string.IsNullOrEmpty(request.NewName))
-        {
-            throw new ArgumentException("NewName cannot be null or empty");
-        }
-
-        return new NameDeviceArgs()
-        {
-            HardwareId = Guid.Parse(request.HardwareId), NewName = request.NewName, OwnerId = userId
-        };
     }
 }

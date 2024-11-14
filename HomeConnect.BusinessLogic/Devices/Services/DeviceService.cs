@@ -77,7 +77,25 @@ public class DeviceService : IDeviceService
 
     public Camera GetCameraById(string cameraId)
     {
-        throw new NotImplementedException();
+        EnsureIdFormatIsValid(cameraId);
+        EnsureDeviceExists(cameraId);
+        return null;
+    }
+
+    private void EnsureDeviceExists(string cameraId)
+    {
+        if (!DeviceRepository.Exists(Guid.Parse(cameraId)))
+        {
+            throw new InvalidOperationException("Device not found.");
+        }
+    }
+
+    private void EnsureIdFormatIsValid(string cameraId)
+    {
+        if (string.IsNullOrWhiteSpace(cameraId) || !Guid.TryParse(cameraId, out _))
+        {
+            throw new ArgumentException("Camera ID format is invalid.");
+        }
     }
 
     private void SendSensorNotification(string hardwareId, bool state, NotificationArgs args)

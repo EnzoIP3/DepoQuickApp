@@ -409,4 +409,37 @@ public class DeviceServiceTests
     }
     #endregion
     #endregion
+
+    #region GetCameraById
+
+    #region Error
+    [TestMethod]
+    public void GetCameraById_WhenIdFormatIsInvalid_ThrowsArgumentException()
+    {
+        // Arrange
+        var cameraId = "cameraId";
+
+        // Act
+        Action act = () => _deviceService.GetCameraById(cameraId);
+
+        // Assert
+        act.Should().Throw<ArgumentException>().WithMessage("Camera ID format is invalid.");
+    }
+
+    [TestMethod]
+    public void GetCameraById_WhenCameraDoesNotExist_ThrowsInvalidOperationException()
+    {
+        // Arrange
+        var cameraId = Guid.NewGuid().ToString();
+        _deviceRepository.Setup(x => x.Exists(Guid.Parse(cameraId))).Returns(false);
+
+        // Act
+        Action act = () => _deviceService.GetCameraById(cameraId);
+
+        // Assert
+        act.Should().Throw<InvalidOperationException>().WithMessage("Device not found.");
+        _deviceRepository.VerifyAll();
+    }
+    #endregion
+    #endregion
 }

@@ -409,4 +409,73 @@ public class DeviceServiceTests
     }
     #endregion
     #endregion
+
+    #region GetCameraById
+
+    #region Error
+    [TestMethod]
+    public void GetCameraById_WhenIdFormatIsInvalid_ThrowsArgumentException()
+    {
+        // Arrange
+        var cameraId = "cameraId";
+
+        // Act
+        Action act = () => _deviceService.GetCameraById(cameraId);
+
+        // Assert
+        act.Should().Throw<ArgumentException>().WithMessage("Camera ID format is invalid.");
+    }
+
+    [TestMethod]
+    public void GetCameraById_WhenCameraDoesNotExist_ThrowsInvalidOperationException()
+    {
+        // Arrange
+        var cameraId = Guid.NewGuid().ToString();
+        _deviceRepository.Setup(x => x.Exists(Guid.Parse(cameraId))).Returns(false);
+
+        // Act
+        Action act = () => _deviceService.GetCameraById(cameraId);
+
+        // Assert
+        act.Should().Throw<InvalidOperationException>().WithMessage("Device not found.");
+        _deviceRepository.VerifyAll();
+    }
+
+    [TestMethod]
+    public void GetCameraById_WhenDeviceIsNotACamera_ThrowsInvalidOperationException()
+    {
+        // Arrange
+        var cameraId = Guid.NewGuid().ToString();
+        _deviceRepository.Setup(x => x.Exists(Guid.Parse(cameraId))).Returns(true);
+        _deviceRepository.Setup(x => x.Get(Guid.Parse(cameraId))).Returns(new Device("Name", "123", "Description", "https://example.com/photo.png", [], "Sensor", new Business()));
+
+        // Act
+        Action act = () => _deviceService.GetCameraById(cameraId);
+
+        // Assert
+        act.Should().Throw<InvalidOperationException>().WithMessage("Device is not a camera.");
+        _deviceRepository.VerifyAll();
+    }
+    #endregion
+
+    #region Success
+    [TestMethod]
+    public void GetCameraById_WhenCalledWithValidId_ReturnsCamera()
+    {
+        // Arrange
+        var camera = new Camera("Name", "123", "Description", "https://example.com/photo.png", [], new Business(), true,
+            true, true, true);
+        var cameraId = camera.Id.ToString();
+        _deviceRepository.Setup(x => x.Exists(Guid.Parse(cameraId))).Returns(true);
+        _deviceRepository.Setup(x => x.Get(Guid.Parse(cameraId))).Returns(camera);
+
+        // Act
+        var result = _deviceService.GetCameraById(cameraId);
+
+        // Assert
+        result.Should().BeOfType<Camera>();
+        _deviceRepository.VerifyAll();
+    }
+    #endregion
+    #endregion
 }

@@ -9,4 +9,5 @@ public interface IDeviceRepository
     Device Get(Guid deviceId);
     void Add(Device device);
     bool ExistsByModelNumber(string modelNumber);
+    bool Exists(Guid id);
 }

@@ -1,8 +1,11 @@
-﻿using BusinessLogic.BusinessOwners.Entities;
+﻿using BusinessLogic;
+using BusinessLogic.Admins.Services;
+using BusinessLogic.BusinessOwners.Entities;
 using BusinessLogic.BusinessOwners.Models;
 using BusinessLogic.BusinessOwners.Repositories;
 using BusinessLogic.BusinessOwners.Services;
 using BusinessLogic.Devices.Entities;
+using BusinessLogic.Devices.Models;
 using BusinessLogic.Devices.Repositories;
 using BusinessLogic.Roles.Entities;
 using BusinessLogic.Users.Entities;
@@ -639,6 +642,101 @@ public class BusinessOwnerServiceTests
         _businessRepository.Verify(x => x.Exists(business.Rut), Times.Once);
         _businessRepository.Verify(x => x.Get(business.Rut), Times.Once);
         _businessRepository.Verify(x => x.UpdateValidator(business.Rut, null), Times.Once);
+    }
+    #endregion
+    #endregion
+
+    #region GetBusinesses
+    [TestMethod]
+    public void GetBusinesses_WhenCalledWithInvalidOwnerId_ThrowsArgumentException()
+    {
+        // Arrange
+        var ownerFilter = "not-a-guid";
+
+        // Act
+        Action act = () => _businessOwnerService.GetBusinesses(ownerFilter);
+
+        // Assert
+        act.Should().Throw<ArgumentException>().WithMessage("The business owner ID is not a valid GUID.");
+    }
+
+    [TestMethod]
+    public void GetBusinesses_WhenCalled_ReturnsBusinesses()
+    {
+        // Arrange
+        var businesses = new PagedData<Business>
+        {
+            Data =
+            [
+                new Business("RUTexample", "Business Name", "https://example.com/image.png", _owner)
+            ],
+            Page = 1,
+            PageSize = 10,
+            TotalPages = 1
+        };
+        var filterArgs = new FilterArgs { OwnerIdFilter = _owner.Id };
+        _businessRepository.Setup(x => x.GetPaged(filterArgs)).Returns(businesses);
+
+        // Act
+        PagedData<Business> returnedBusinesses = _businessOwnerService.GetBusinesses(_owner.Id.ToString());
+
+        // Assert
+        returnedBusinesses.Should().BeEquivalentTo(businesses);
+        _businessRepository.Verify(x => x.GetPaged(
+            It.Is<FilterArgs>(a => a.OwnerIdFilter == _owner.Id)), Times.Once);
+    }
+    #endregion
+
+    #region GetDevices
+
+    #region Error
+
+    [TestMethod]
+    public void GetDevices_WhenBusinessDoesNotBelongToUser_ThrowsInvalidOperationException()
+    {
+        // Arrange
+        var business = new Business("RUTexample", "Business Name", "https://example.com/image.png", _owner);
+        var user = new User("John", "Doe", "email@email.com", "Password@1", new Role());
+        _businessRepository.Setup(x => x.Get(business.Rut)).Returns(business);
+
+        // Act
+        Action act = () => _businessOwnerService.GetDevices(business.Rut, user);
+
+        // Assert
+        act.Should().Throw<InvalidOperationException>().WithMessage("The business does not belong to the specified owner.");
+        _businessRepository.Verify(x => x.Get(business.Rut), Times.Once);
+    }
+    #endregion
+
+    #region Success
+    [TestMethod]
+    public void GetDevices_WhenCalledWithValidRequest_ReturnsDevices()
+    {
+        // Arrange
+        var business = new Business("RUTexample", "Business Name", "https://example.com/image.png", _owner);
+        var user = _owner;
+        var devices = new PagedData<Device>
+        {
+            Data =
+            [
+                new Device("Device Name", "123", "Device Description", "https://www.example.com/photo1.jpg",
+                    ["https://www.example.com/photo2.jpg", "https://www.example.com/photo3.jpg"],
+                    DeviceType.Sensor.ToString(), business)
+            ],
+            Page = 1,
+            PageSize = 10,
+            TotalPages = 1
+        };
+        _businessRepository.Setup(x => x.Get(business.Rut)).Returns(business);
+        _deviceRepository.Setup(x => x.GetPaged(It.IsAny<GetDevicesArgs>())).Returns(devices);
+
+        // Act
+        PagedData<Device> returnedDevices = _businessOwnerService.GetDevices(business.Rut, user);
+
+        // Assert
+        returnedDevices.Should().BeEquivalentTo(devices);
+        _businessRepository.Verify(x => x.Get(business.Rut), Times.Once);
+        _deviceRepository.Verify(x => x.GetPaged(It.Is<GetDevicesArgs>(a => a.RutFilter == business.Rut)), Times.Once);
     }
     #endregion
     #endregion

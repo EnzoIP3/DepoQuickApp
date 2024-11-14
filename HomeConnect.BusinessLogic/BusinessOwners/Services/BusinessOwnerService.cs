@@ -1,7 +1,9 @@
-﻿using BusinessLogic.BusinessOwners.Entities;
+﻿using BusinessLogic.Admins.Services;
+using BusinessLogic.BusinessOwners.Entities;
 using BusinessLogic.BusinessOwners.Models;
 using BusinessLogic.BusinessOwners.Repositories;
 using BusinessLogic.Devices.Entities;
+using BusinessLogic.Devices.Models;
 using BusinessLogic.Devices.Repositories;
 using BusinessLogic.Users.Entities;
 using BusinessLogic.Users.Repositories;
@@ -81,6 +83,21 @@ public class BusinessOwnerService : IBusinessOwnerService
         EnsureValidatorExists(args.Validator);
         Guid? validatorId = GetValidatorId(args.Validator);
         BusinessRepository.UpdateValidator(args.BusinessRut, validatorId);
+    }
+
+    public PagedData<Business> GetBusinesses(string ownerIdFilter)
+    {
+        Guid ownerId = ParseAndValidateOwnerId(ownerIdFilter);
+        var filterArgs = new FilterArgs { OwnerIdFilter = ownerId };
+        PagedData<Business> businesses =
+            BusinessRepository.GetPaged(filterArgs);
+        return businesses;
+    }
+
+    public PagedData<Device> GetDevices(string businessId, User user)
+    {
+        EnsureBusinessIsFromOwner(businessId, user.Id.ToString());
+        return DeviceRepository.GetPaged(new GetDevicesArgs { RutFilter = businessId });
     }
 
     private void EnsureBusinessExistsFromRut(string argsBusinessRut)

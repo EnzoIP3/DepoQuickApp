@@ -29,7 +29,7 @@ public class UserControllerTests
     private User _otherUser = null!;
     private PagedData<User> _pagedList = null!;
     private User _user = null!;
-    private string _imageUrl = "https://www.image.jpg";
+    private readonly string _imageUrl = "https://www.image.jpg";
 
     [TestInitialize]
     public void Initialize()
@@ -220,7 +220,9 @@ public class UserControllerTests
             }).ToList(),
             Pagination = new Pagination
             {
-                Page = businesses.Page, PageSize = businesses.PageSize, TotalPages = businesses.TotalPages
+                Page = businesses.Page,
+                PageSize = businesses.PageSize,
+                TotalPages = businesses.TotalPages
             }
         };
         _businessOwnerService.Setup(x => x.GetBusinesses(_user.Id.ToString())).Returns(businesses);

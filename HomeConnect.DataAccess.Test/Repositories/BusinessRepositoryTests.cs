@@ -125,7 +125,7 @@ public class BusinessRepositoryTests
             TotalPages = 1
         };
         var filterArgs = new FilterArgs
-            { CurrentPage = 1, PageSize = 2 };
+        { CurrentPage = 1, PageSize = 2 };
 
         // Act
         PagedData<Business> result = _businessRepository.GetPaged(filterArgs);
@@ -140,7 +140,7 @@ public class BusinessRepositoryTests
         // Arrange
         var expected = new List<Business> { _validBusiness };
         var filterArgs = new FilterArgs
-            { CurrentPage = 1, PageSize = 1 };
+        { CurrentPage = 1, PageSize = 1 };
 
         // Act
         PagedData<Business> result = _businessRepository.GetPaged(filterArgs);
@@ -155,7 +155,7 @@ public class BusinessRepositoryTests
         // Arrange
         var expected = new PagedData<Business> { Data = [_validBusiness], Page = 1, PageSize = 2, TotalPages = 1 };
         var filterArgs = new FilterArgs
-            { CurrentPage = 1, PageSize = 2, FullNameFilter = "John Doe" };
+        { CurrentPage = 1, PageSize = 2, FullNameFilter = "John Doe" };
 
         // Act
         PagedData<Business> result = _businessRepository.GetPaged(filterArgs);
@@ -170,7 +170,7 @@ public class BusinessRepositoryTests
         // Arrange
         var expected = new PagedData<Business> { Data = [_otherBusiness], Page = 1, PageSize = 2, TotalPages = 1 };
         var filterArgs = new FilterArgs
-            { CurrentPage = 1, PageSize = 2, NameFilter = "Other" };
+        { CurrentPage = 1, PageSize = 2, NameFilter = "Other" };
 
         // Act
         PagedData<Business> result = _businessRepository.GetPaged(filterArgs);
@@ -185,7 +185,7 @@ public class BusinessRepositoryTests
         // Arrange
         var expected = new PagedData<Business> { Data = [_otherBusiness], Page = 1, PageSize = 2, TotalPages = 1 };
         var filterArgs = new FilterArgs
-            { CurrentPage = 1, PageSize = 2, FullNameFilter = "Jane Doe", NameFilter = "Other" };
+        { CurrentPage = 1, PageSize = 2, FullNameFilter = "Jane Doe", NameFilter = "Other" };
 
         // Act
         PagedData<Business> result = _businessRepository.GetPaged(filterArgs);
@@ -200,7 +200,7 @@ public class BusinessRepositoryTests
         // Arrange
         var expected = new PagedData<Business> { Data = [_validBusiness], Page = 1, PageSize = 2, TotalPages = 1 };
         var filterArgs = new FilterArgs
-            { CurrentPage = 1, PageSize = 2, OwnerIdFilter = _validUser.Id };
+        { CurrentPage = 1, PageSize = 2, OwnerIdFilter = _validUser.Id };
 
         // Act
         PagedData<Business> result = _businessRepository.GetPaged(filterArgs);

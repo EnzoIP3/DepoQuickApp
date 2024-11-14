@@ -85,7 +85,9 @@ public class UserController(IAdminService adminService, IUserService userService
             }).ToList(),
             Pagination = new Pagination
             {
-                Page = businesses.Page, PageSize = businesses.PageSize, TotalPages = businesses.TotalPages
+                Page = businesses.Page,
+                PageSize = businesses.PageSize,
+                TotalPages = businesses.TotalPages
             }
         };
     }

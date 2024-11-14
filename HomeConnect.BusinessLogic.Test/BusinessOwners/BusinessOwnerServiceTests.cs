@@ -666,10 +666,10 @@ public class BusinessOwnerServiceTests
         // Arrange
         var businesses = new PagedData<Business>
         {
-            Data = new List<Business>
-            {
+            Data =
+            [
                 new Business("RUTexample", "Business Name", "https://example.com/image.png", _owner)
-            },
+            ],
             Page = 1,
             PageSize = 10,
             TotalPages = 1
@@ -720,7 +720,7 @@ public class BusinessOwnerServiceTests
             Data =
             [
                 new Device("Device Name", "123", "Device Description", "https://www.example.com/photo1.jpg",
-                    new List<string> { "https://www.example.com/photo2.jpg", "https://www.example.com/photo3.jpg" },
+                    ["https://www.example.com/photo2.jpg", "https://www.example.com/photo3.jpg"],
                     DeviceType.Sensor.ToString(), business)
             ],
             Page = 1,

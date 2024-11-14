@@ -11,7 +11,6 @@ using HomeConnect.WebApi.Controllers.Businesses;
 using HomeConnect.WebApi.Controllers.Businesses.Models;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.ResponseCompression;
 using Moq;
 
 namespace HomeConnect.WebApi.Test.Controllers;
@@ -234,14 +233,14 @@ public class BusinessControllerTests
                 Description = "Description 1",
                 MainPhoto = "https://example.com/image.png",
                 SecondaryPhotos =
-                    new List<string> { "https://example.com/image1.png", "https://example.com/image2.png" },
+                    ["https://example.com/image1.png", "https://example.com/image2.png"],
                 Type = DeviceType.Sensor
             }
         };
         var expectedResponse = new GetDevicesResponse
         {
-            Devices = new List<DeviceInfo>
-            {
+            Devices =
+            [
                 new DeviceInfo
                 {
                     Name = deviceList[0].Name,
@@ -252,14 +251,18 @@ public class BusinessControllerTests
                     SecondaryPhotos = deviceList[0].SecondaryPhotos,
                     Type = deviceList[0].Type.ToString()
                 }
-            },
+
+            ],
             Pagination = new Pagination { Page = 1, PageSize = 10, TotalPages = 1 }
         };
         var user = new User("Name", "Surname", "email@email.com", "Password@1", new Role("BusinessOwner", []));
         _httpContextMock.Setup(x => x.Items).Returns(new Dictionary<object, object?> { { Item.UserLogged, user } });
         _businessOwnerService.Setup(x => x.GetDevices(_businesses[0].Rut, user)).Returns(new PagedData<Device>
         {
-            Data = deviceList, Page = 1, PageSize = 10, TotalPages = 1
+            Data = deviceList,
+            Page = 1,
+            PageSize = 10,
+            TotalPages = 1
         });
 
         // Act

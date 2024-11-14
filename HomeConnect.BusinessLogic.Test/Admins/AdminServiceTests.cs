@@ -306,7 +306,7 @@ public sealed class AdminServiceTests
             TotalPages = 1
         };
         var filterArgs = new FilterArgs
-            { CurrentPage = _defaultCurrentPage, PageSize = _defaultPageSize };
+        { CurrentPage = _defaultCurrentPage, PageSize = _defaultPageSize };
         _businessRepository.Setup(x => x.GetPaged(filterArgs))
             .Returns(pagedList);
 
@@ -337,7 +337,7 @@ public sealed class AdminServiceTests
             TotalPages = 1
         };
         var filterArgs = new FilterArgs
-            { CurrentPage = _defaultCurrentPage, PageSize = _defaultPageSize, FullNameFilter = filter };
+        { CurrentPage = _defaultCurrentPage, PageSize = _defaultPageSize, FullNameFilter = filter };
         _businessRepository.Setup(x => x.GetPaged(filterArgs))
             .Returns(pagedList);
 
@@ -368,7 +368,7 @@ public sealed class AdminServiceTests
             TotalPages = 1
         };
         var filterArgs = new FilterArgs
-            { CurrentPage = _defaultCurrentPage, PageSize = _defaultPageSize, NameFilter = filter };
+        { CurrentPage = _defaultCurrentPage, PageSize = _defaultPageSize, NameFilter = filter };
         _businessRepository.Setup(x => x.GetPaged(filterArgs))
             .Returns(pagedList);
 

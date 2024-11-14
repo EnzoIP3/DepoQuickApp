@@ -5,6 +5,7 @@ using BusinessLogic.Roles.Entities;
 using BusinessLogic.Users.Entities;
 using FluentAssertions;
 using HomeConnect.DataAccess.Repositories;
+using Microsoft.EntityFrameworkCore;
 
 namespace HomeConnect.DataAccess.Test.Repositories;
 
@@ -318,4 +319,31 @@ public class OwnedDeviceRepositoryTests
     }
     #endregion
 
+    #region UpdateOwnedDevice
+    [TestMethod]
+    public void UpdateOwnedDevice_UpdatesRoom()
+    {
+        // Arrange
+        var home = new Home(new User(), "Main St 123", 12.5, 12.5, 5);
+        var room = new Room { Id = Guid.NewGuid(), Name = "Living Room", Home = home, OwnedDevices = new List<OwnedDevice>() };
+        var device = new Device();
+        var ownedDevice = new OwnedDevice { HardwareId = Guid.NewGuid(), Device = device, Home = home };
+
+        _context.Homes.Add(home);
+        _context.Rooms.Add(room);
+        _context.OwnedDevices.Add(ownedDevice);
+        _context.SaveChanges();
+
+        // Act
+        ownedDevice.Room = room;
+        _ownedDeviceRepository.UpdateOwnedDevice(ownedDevice);
+
+        // Assert
+        var updatedDevice = _context.OwnedDevices.Include(d => d.Room).FirstOrDefault(d => d.HardwareId == ownedDevice.HardwareId);
+        updatedDevice.Should().NotBeNull();
+        updatedDevice.Room.Should().NotBeNull();
+        updatedDevice.Room.Id.Should().Be(room.Id);
+    }
+
+    #endregion
 }

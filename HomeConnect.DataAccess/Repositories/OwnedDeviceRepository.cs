@@ -80,6 +80,12 @@ public class OwnedDeviceRepository : IOwnedDeviceRepository
         return ownedDevice;
     }
 
+    public void UpdateOwnedDevice(OwnedDevice ownedDevice)
+    {
+        _context.OwnedDevices.Update(ownedDevice);
+        _context.SaveChanges();
+    }
+
     private void EnsureDeviceIsSensor(Guid hardwareId)
     {
         OwnedDevice ownedDevice = GetByHardwareId(hardwareId);

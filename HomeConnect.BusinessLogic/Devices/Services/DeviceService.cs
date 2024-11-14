@@ -105,7 +105,7 @@ public class DeviceService : IDeviceService
 
         HomeRepository.UpdateRoom(sourceRoom);
         HomeRepository.UpdateRoom(targetRoom);
-        DeviceRepository.UpdateOwnedDevice(ownedDevice);
+        OwnedDeviceRepository.UpdateOwnedDevice(ownedDevice);
     }
 
     private void SendSensorNotification(string hardwareId, bool state, NotificationArgs args)

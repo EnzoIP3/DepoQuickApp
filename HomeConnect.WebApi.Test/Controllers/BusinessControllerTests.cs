@@ -245,6 +245,7 @@ public class BusinessControllerTests
                 new DeviceInfo
                 {
                     Name = deviceList[0].Name,
+                    Id = deviceList[0].Id.ToString(),
                     ModelNumber = deviceList[0].ModelNumber,
                     Description = deviceList[0].Description,
                     MainPhoto = deviceList[0].MainPhoto,

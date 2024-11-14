@@ -12,6 +12,7 @@ import { FormMultiSelectComponent } from "../../../components/form/form-multi-se
 import { FormButtonComponent } from "../../../components/form/form-button/form-button.component";
 import { DevicesService } from "../../../backend/services/devices/devices.service";
 import Device from "../../../backend/services/devices/models/device";
+import { Subscription } from "rxjs";
 
 @Component({
     standalone: true,
@@ -31,6 +32,8 @@ export class AddDeviceFormComponent {
     devicesLoading = true;
     devicesFormLoading = false;
     availableDevices: Device[] = [];
+    private _devicesSubscription: Subscription | null = null;
+    private _addDevicesSubscription: Subscription | null = null;
 
     constructor(
         private _formBuilder: FormBuilder,
@@ -44,24 +47,26 @@ export class AddDeviceFormComponent {
             devices: [[], [Validators.required]]
         });
 
-        this._devicesService.getDevices().subscribe({
-            next: (response) => {
-                this.availableDevices = response.devices;
-                this.devicesLoading = false;
-            },
-            error: (error) => {
-                this._messageService.add({
-                    severity: "error",
-                    summary: "Error",
-                    detail: error.message
-                });
-            }
-        });
+        this._devicesSubscription = this._devicesService
+            .getDevices()
+            .subscribe({
+                next: (response) => {
+                    this.availableDevices = response.devices;
+                    this.devicesLoading = false;
+                },
+                error: (error) => {
+                    this._messageService.add({
+                        severity: "error",
+                        summary: "Error",
+                        detail: error.message
+                    });
+                }
+            });
     }
 
     onSubmit() {
         this.devicesFormLoading = true;
-        this._homesService
+        this._addDevicesSubscription = this._homesService
             .addDevicesToHome(this.homeId, {
                 deviceIds: this.deviceForm.value.devices
             })
@@ -84,5 +89,15 @@ export class AddDeviceFormComponent {
                     });
                 }
             });
+    }
+
+    ngOnDestroy() {
+        if (this._devicesSubscription) {
+            this._devicesSubscription.unsubscribe();
+        }
+
+        if (this._addDevicesSubscription) {
+            this._addDevicesSubscription.unsubscribe();
+        }
     }
 }

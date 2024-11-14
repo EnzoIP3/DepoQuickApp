@@ -2,6 +2,7 @@ import { Component, Input } from "@angular/core";
 import { FormBuilder, FormGroup, Validators } from "@angular/forms";
 import { HomesService } from "../../../backend/services/homes/homes.service";
 import { MessageService } from "primeng/api";
+import { Subscription } from "rxjs";
 
 @Component({
     selector: "app-add-member-form",
@@ -10,18 +11,15 @@ import { MessageService } from "primeng/api";
 export class AddMemberFormComponent {
     readonly formFields = {
         email: {
-            required: {
-                message: "Email is required"
-            },
-            email: {
-                message: "Email format is invalid"
-            }
+            required: { message: "Email is required" },
+            email: { message: "Email format is invalid" }
         }
     };
 
     @Input() homeId!: string;
     memberForm!: FormGroup;
     memberStatus = { loading: false };
+    private _addMemberSubscription: Subscription | null = null;
 
     constructor(
         private _formBuilder: FormBuilder,
@@ -32,18 +30,18 @@ export class AddMemberFormComponent {
     ngOnInit() {
         this.memberForm = this._formBuilder.group({
             email: ["", [Validators.required, Validators.email]],
-            canAddDevices: [false, []],
-            canListDevices: [false, []]
+            canAddDevices: [false],
+            canListDevices: [false]
         });
     }
 
     onSubmit() {
         this.memberStatus.loading = true;
 
-        this._homesService
+        this._addMemberSubscription = this._homesService
             .addMember(this.homeId, this.memberForm.value)
             .subscribe({
-                next: (_) => {
+                next: () => {
                     this.memberStatus.loading = false;
                     this.memberForm.reset({
                         email: "",
@@ -65,5 +63,11 @@ export class AddMemberFormComponent {
                     });
                 }
             });
+    }
+
+    ngOnDestroy() {
+        if (this._addMemberSubscription) {
+            this._addMemberSubscription.unsubscribe();
+        }
     }
 }

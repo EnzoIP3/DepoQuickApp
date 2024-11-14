@@ -3,6 +3,7 @@ import { FormBuilder, FormGroup, Validators } from "@angular/forms";
 import { HomesService } from "../../../backend/services/homes/homes.service";
 import { Router } from "@angular/router";
 import { MessageService } from "primeng/api";
+import { Subscription } from "rxjs";
 
 @Component({
     selector: "app-add-home-form",
@@ -35,6 +36,7 @@ export class AddHomeFormComponent {
 
     homeForm!: FormGroup;
     homeStatus = { loading: false, error: null };
+    private _addHomeSubscription: Subscription | null = null;
 
     constructor(
         private _formBuilder: FormBuilder,
@@ -65,25 +67,33 @@ export class AddHomeFormComponent {
         this.homeStatus.loading = true;
         this.homeStatus.error = null;
 
-        this._homesService.addHome(this.homeForm.value).subscribe({
-            next: (response) => {
-                this.homeStatus.loading = false;
-                this.homeForm.reset();
-                this._messageService.add({
-                    severity: "success",
-                    summary: "Success",
-                    detail: "Home registered successfully"
-                });
-                this._router.navigate(["/homes"]);
-            },
-            error: (error) => {
-                this.homeStatus.loading = false;
-                this._messageService.add({
-                    severity: "error",
-                    summary: "Error",
-                    detail: error.message
-                });
-            }
-        });
+        this._addHomeSubscription = this._homesService
+            .addHome(this.homeForm.value)
+            .subscribe({
+                next: (response) => {
+                    this.homeStatus.loading = false;
+                    this.homeForm.reset();
+                    this._messageService.add({
+                        severity: "success",
+                        summary: "Success",
+                        detail: "Home registered successfully"
+                    });
+                    this._router.navigate(["/homes"]);
+                },
+                error: (error) => {
+                    this.homeStatus.loading = false;
+                    this._messageService.add({
+                        severity: "error",
+                        summary: "Error",
+                        detail: error.message
+                    });
+                }
+            });
+    }
+
+    ngOnDestroy() {
+        if (this._addHomeSubscription) {
+            this._addHomeSubscription.unsubscribe();
+        }
     }
 }

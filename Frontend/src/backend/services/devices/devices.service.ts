@@ -1,7 +1,7 @@
 import { Injectable } from "@angular/core";
 import { DevicesApiRepositoryService } from "../../repositories/devices-api-repository.service";
-import DevicesResponse from "./models/devices-response";
-import DevicesRequest from "./models/devices-request";
+import GetDevicesResponse from "./models/get-devices-response";
+import GetDevicesRequest from "./models/get-devices-request";
 import { Observable } from "rxjs";
 
 @Injectable({
@@ -10,7 +10,7 @@ import { Observable } from "rxjs";
 export class DevicesService {
     constructor(private readonly _repository: DevicesApiRepositoryService) {}
 
-    public getDevices(request?: DevicesRequest): Observable<DevicesResponse> {
+    public getDevices(request?: GetDevicesRequest): Observable<GetDevicesResponse> {
         return this._repository.getDevices(request);
     }
 }

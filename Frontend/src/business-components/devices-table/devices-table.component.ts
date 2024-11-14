@@ -1,7 +1,7 @@
 import { Component } from "@angular/core";
 import { TableComponent } from "../../components/table/table.component";
 import { DevicesService } from "../../backend/services/devices/devices.service";
-import DevicesResponse from "../../backend/services/devices/models/devices-response";
+import GetDevicesResponse from "../../backend/services/devices/models/get-devices-response";
 import PaginationResponse from "../../backend/services/pagination";
 import Device from "../../backend/services/devices/models/device";
 import TableColumn from "../../components/table/models/table-column";
@@ -88,7 +88,7 @@ export class DevicesTableComponent {
         this._devicesSubscription = this._devicesService
             .getDevices(queries ? { ...queries } : {})
             .subscribe({
-                next: (response: DevicesResponse) => {
+                next: (response: GetDevicesResponse) => {
                     this.devices = response.devices;
                     this.pagination = response.pagination;
                     this.loading = false;

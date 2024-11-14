@@ -22,7 +22,6 @@ export class AvatarComponent {
     }
 
     handleImageError() {
-        console.log("error");
         this.icon = this.defaultIcon;
         this.image = undefined;
     }

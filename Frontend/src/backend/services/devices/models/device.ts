@@ -1,5 +1,5 @@
 export default interface Device {
-    id: number;
+    id: string;
     name: string;
     businessName: string;
     type: string;

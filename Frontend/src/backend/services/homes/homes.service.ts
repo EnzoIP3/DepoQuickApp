@@ -8,6 +8,8 @@ import AddHomeResponse from "./models/add-home-response";
 import AddMemberRequest from "./models/add-member-request";
 import AddMemberResponse from "./models/add-member-response";
 import GetMembersResponse from "./models/get-members-response";
+import AddDevicesRequest from "./models/add-devices-request";
+import AddDevicesResponse from "./models/add-devices-response";
 
 @Injectable({
     providedIn: "root"
@@ -48,6 +50,13 @@ export class HomesService {
                 this._members$.next(members);
             })
         );
+    }
+
+    public addDevicesToHome(
+        homeId: string,
+        addDevicesRequest: AddDevicesRequest
+    ): Observable<AddDevicesResponse> {
+        return this._repository.addDevicesToHome(homeId, addDevicesRequest);
     }
 
     get members(): Observable<GetMembersResponse | null> {

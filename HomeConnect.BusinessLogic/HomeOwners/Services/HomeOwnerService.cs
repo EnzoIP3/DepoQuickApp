@@ -95,6 +95,11 @@ public class HomeOwnerService : IHomeOwnerService
         }
 
         var home = HomeRepository.Get(Guid.Parse(homeId));
+        if (home == null)
+        {
+            throw new ArgumentException("Home does not exist.");
+        }
+
         var room = new Room(Guid.NewGuid(), name, home, null);
 
         HomeRepository.AddRoom(room, home);

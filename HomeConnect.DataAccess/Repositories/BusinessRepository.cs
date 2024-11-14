@@ -13,7 +13,7 @@ public class BusinessRepository : PaginatedRepositoryBase<Business>, IBusinessRe
     }
 
     public PagedData<Business> GetPaged(int currentPage, int pageSize, string? fullNameFilter = null,
-        string? nameFilter = null)
+        string? nameFilter = null, Guid? ownerIdFilter = null)
     {
         var filters = new object[2];
         filters[0] = fullNameFilter ?? string.Empty;

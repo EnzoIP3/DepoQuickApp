@@ -1,4 +1,5 @@
-﻿using BusinessLogic.BusinessOwners.Entities;
+﻿using BusinessLogic;
+using BusinessLogic.BusinessOwners.Entities;
 using BusinessLogic.BusinessOwners.Models;
 using BusinessLogic.BusinessOwners.Repositories;
 using BusinessLogic.BusinessOwners.Services;
@@ -655,6 +656,29 @@ public class BusinessOwnerServiceTests
 
         // Assert
         act.Should().Throw<ArgumentException>().WithMessage("The business owner ID is not a valid GUID.");
+    }
+
+    [TestMethod]
+    public void GetBusinesses_WhenCalled_ReturnsBusinesses()
+    {
+        // Arrange
+        var businesses = new PagedData<Business>
+        {
+            Data = new List<Business>
+            {
+                new Business("RUTexample", "Business Name", "https://example.com/image.png", _owner)
+            },
+            Page = 1,
+            PageSize = 10,
+            TotalPages = 1
+        };
+        _businessRepository.Setup(x => x.GetPaged(1, 10, null, null, _owner.Id)).Returns(businesses);
+
+        // Act
+        PagedData<Business> returnedBusinesses = _businessOwnerService.GetBusinesses(_owner.Id.ToString());
+
+        // Assert
+        returnedBusinesses.Should().BeEquivalentTo(businesses);
     }
     #endregion
 }

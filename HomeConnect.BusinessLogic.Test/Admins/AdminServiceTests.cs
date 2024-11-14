@@ -272,7 +272,7 @@ public sealed class AdminServiceTests
             PageSize = _defaultPageSize,
             TotalPages = 1
         };
-        _businessRepository.Setup(x => x.GetPaged(_defaultCurrentPage, _defaultPageSize, null, null))
+        _businessRepository.Setup(x => x.GetPaged(_defaultCurrentPage, _defaultPageSize, null, null, null))
             .Returns(pagedList);
 
         // Act
@@ -284,7 +284,8 @@ public sealed class AdminServiceTests
             It.Is<int>(a => a == _defaultCurrentPage),
             It.Is<int>(a => a == _defaultPageSize),
             It.Is<string>(a => true),
-            It.Is<string>(a => true)));
+            It.Is<string>(a => true),
+            It.Is<Guid>(a => true)));
     }
 
     [TestMethod]
@@ -303,7 +304,7 @@ public sealed class AdminServiceTests
             PageSize = _defaultPageSize,
             TotalPages = 1
         };
-        _businessRepository.Setup(x => x.GetPaged(_defaultCurrentPage, _defaultPageSize, null, null))
+        _businessRepository.Setup(x => x.GetPaged(_defaultCurrentPage, _defaultPageSize, null, null, null))
             .Returns(pagedList);
 
         // Act
@@ -315,7 +316,8 @@ public sealed class AdminServiceTests
             It.Is<int>(a => a == _defaultCurrentPage),
             It.Is<int>(a => a == _defaultPageSize),
             It.Is<string>(a => true),
-            It.Is<string>(a => true)));
+            It.Is<string>(a => true),
+            It.Is<Guid>(a => true)));
     }
 
     [TestMethod]
@@ -335,7 +337,7 @@ public sealed class AdminServiceTests
             PageSize = _defaultPageSize,
             TotalPages = 1
         };
-        _businessRepository.Setup(x => x.GetPaged(_defaultCurrentPage, _defaultPageSize, filter, null))
+        _businessRepository.Setup(x => x.GetPaged(_defaultCurrentPage, _defaultPageSize, filter, null, null))
             .Returns(pagedList);
 
         // Act
@@ -347,7 +349,8 @@ public sealed class AdminServiceTests
             It.Is<int>(a => a == _defaultCurrentPage),
             It.Is<int>(a => a == _defaultPageSize),
             It.Is<string>(a => a == filter),
-            It.Is<string>(a => true)));
+            It.Is<string>(a => true),
+            It.Is<Guid>(a => true)));
     }
 
     [TestMethod]
@@ -367,7 +370,7 @@ public sealed class AdminServiceTests
             PageSize = _defaultPageSize,
             TotalPages = 1
         };
-        _businessRepository.Setup(x => x.GetPaged(_defaultCurrentPage, _defaultPageSize, null, filter))
+        _businessRepository.Setup(x => x.GetPaged(_defaultCurrentPage, _defaultPageSize, null, filter, null))
             .Returns(pagedList);
 
         // Act
@@ -379,7 +382,8 @@ public sealed class AdminServiceTests
             It.Is<int>(a => a == _defaultCurrentPage),
             It.Is<int>(a => a == _defaultPageSize),
             It.Is<string>(a => true),
-            It.Is<string>(a => a == filter)));
+            It.Is<string>(a => a == filter),
+            It.Is<Guid>(a => true)));
     }
 
     #endregion

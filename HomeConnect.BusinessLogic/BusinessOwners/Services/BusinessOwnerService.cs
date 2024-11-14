@@ -83,10 +83,12 @@ public class BusinessOwnerService : IBusinessOwnerService
         BusinessRepository.UpdateValidator(args.BusinessRut, validatorId);
     }
 
-    public PagedData<Business> GetBusinesses(string ownerFilter)
+    public PagedData<Business> GetBusinesses(string ownerIdFilter)
     {
-        Guid ownerId = ParseAndValidateOwnerId(ownerFilter);
-        return null;
+        Guid ownerId = ParseAndValidateOwnerId(ownerIdFilter);
+        PagedData<Business> businesses =
+            BusinessRepository.GetPaged(1, 10, ownerIdFilter: ownerId);
+        return businesses;
     }
 
     private void EnsureBusinessExistsFromRut(string argsBusinessRut)

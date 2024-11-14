@@ -797,6 +797,18 @@ public class HomeOwnerServiceTests
     }
     #endregion
     #region Error
+    [TestMethod]
+    public void CreateRoom_ShouldThrowArgumentException_WhenHomeIdIsNullOrEmpty()
+    {
+        // Arrange
+        var name = "Living Room";
+
+        // Act
+        Action act = () => _homeOwnerService.CreateRoom(null, name);
+
+        // Assert
+        act.Should().Throw<ArgumentException>().WithMessage("Home ID cannot be null or empty.");
+    }
     #endregion
     #endregion
 }

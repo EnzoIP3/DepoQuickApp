@@ -4,7 +4,7 @@ public class Room
 {
     private string _name = string.Empty;
     private Home _home = null;
-    public Guid Id { get; set; }
+    public Guid Id { get; set; } = Guid.NewGuid();
     public string Name
     {
         get => _name;
@@ -24,7 +24,7 @@ public class Room
         get => _home;
         set
         {
-            if(_home == null)
+            if (value == null)
             {
                 throw new ArgumentException("Room must have a home assigned.");
             }

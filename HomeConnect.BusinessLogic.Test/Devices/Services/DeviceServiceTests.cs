@@ -414,6 +414,7 @@ public class DeviceServiceTests
     #endregion
 
     #region MoveDevice
+    #region Success
     [TestMethod]
     public void MoveDevice_WhenCalled_MovesDeviceSuccessfully()
     {
@@ -442,5 +443,25 @@ public class DeviceServiceTests
         _homeRepository.VerifyAll();
         _deviceRepository.VerifyAll();
     }
+    #endregion
+    #region Error
+    [TestMethod]
+    public void MoveDevice_WhenSourceRoomIdIsInvalid_ThrowsArgumentException()
+    {
+        // Arrange
+        var sourceRoomId = Guid.NewGuid();
+        var targetRoomId = Guid.NewGuid();
+        var ownedDeviceId = Guid.NewGuid();
+
+        _homeRepository.Setup(r => r.ExistsRoom(sourceRoomId)).Returns(false);
+
+        // Act
+        Action act = () => _deviceService.MoveDevice(sourceRoomId.ToString(), targetRoomId.ToString(), ownedDeviceId.ToString());
+
+        // Assert
+        act.Should().Throw<ArgumentException>().WithMessage("Invalid source room ID.");
+    }
+
+    #endregion
     #endregion
 }

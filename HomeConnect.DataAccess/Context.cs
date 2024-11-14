@@ -76,7 +76,6 @@ public class Context(DbContextOptions<Context> options) : DbContext(options)
             new SystemPermission { Value = SystemPermission.CreateLamp },
             new SystemPermission { Value = SystemPermission.GetHomes },
             new SystemPermission { Value = SystemPermission.NameHome },
-            new SystemPermission { Value = SystemPermission.CreateLamp },
             new SystemPermission { Value = SystemPermission.UpdateBusinessValidator },
             new SystemPermission { Value = SystemPermission.GetDeviceValidators },
             new SystemPermission { Value = SystemPermission.ImportDevices },

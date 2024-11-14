@@ -93,8 +93,9 @@ public class HomeOwnerService : IHomeOwnerService
         }
 
         var room = new Room(Guid.NewGuid(), name, home, null);
+        home.Rooms.Add(room);
 
-        HomeRepository.AddRoom(room);
+        HomeRepository.Update(home);
 
         return room;
     }

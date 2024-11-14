@@ -17,4 +17,5 @@ public interface IHomeRepository
     Room GetRoomById(Guid roomId);
     bool ExistsRoom(Guid roomId);
     void UpdateRoom(Room room);
+    void Update(Home home);
 }

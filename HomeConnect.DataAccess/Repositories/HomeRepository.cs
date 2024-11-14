@@ -86,7 +86,7 @@ public class HomeRepository : IHomeRepository
 
     public bool ExistsRoom(Guid roomId)
     {
-        throw new NotImplementedException();
+        return _context.Rooms.Any(r => r.Id == roomId);
     }
 
     public void UpdateRoom(Room room)

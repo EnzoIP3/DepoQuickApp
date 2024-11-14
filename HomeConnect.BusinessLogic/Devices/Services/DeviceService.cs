@@ -85,6 +85,11 @@ public class DeviceService : IDeviceService
             throw new ArgumentException("Invalid source room ID.");
         }
 
+        if (!HomeRepository.ExistsRoom(Guid.Parse(targetRoomId)))
+        {
+            throw new ArgumentException("Invalid target room ID.");
+        }
+
         var sourceRoom = HomeRepository.GetRoomById(Guid.Parse(sourceRoomId));
         var targetRoom = HomeRepository.GetRoomById(Guid.Parse(targetRoomId));
 

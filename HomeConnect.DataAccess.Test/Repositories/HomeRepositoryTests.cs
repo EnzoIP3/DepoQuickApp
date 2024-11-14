@@ -301,5 +301,16 @@ public class HomeRepositoryTests
         result.Should().BeEquivalentTo(_room);
     }
     #endregion
+    #region Error
+    [TestMethod]
+    public void GetRoomById_WhenRoomDoesNotExist_ThrowsException()
+    {
+        // Act
+        Action action = () => _homeRepository.GetRoomById(Guid.NewGuid());
+
+        // Assert
+        action.Should().Throw<ArgumentException>().WithMessage("Room does not exist");
+    }
+    #endregion
     #endregion
 }

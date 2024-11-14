@@ -45,6 +45,7 @@ public class Home
     public string? NickName { get; set; }
 
     public List<Member> Members { get; set; } = [];
+    public List<Room> Rooms { get; set; } = [];
 
     public string Address
     {

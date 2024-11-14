@@ -75,6 +75,11 @@ public class HomeRepository : IHomeRepository
 
     public void AddRoom(Room room)
     {
+        if (ExistsRoom(room.Id))
+        {
+            throw new ArgumentException("Room already exists");
+        }
+
         _context.Rooms.Add(room);
         _context.SaveChanges();
     }

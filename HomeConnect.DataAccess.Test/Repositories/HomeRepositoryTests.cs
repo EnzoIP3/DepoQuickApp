@@ -259,5 +259,18 @@ public class HomeRepositoryTests
         result.Should().BeTrue();
     }
 
+    [TestMethod]
+    public void ExistsRoom_WhenRoomDoesNotExist_ReturnsFalse()
+    {
+        // Arrange
+        var roomId = Guid.NewGuid();
+
+        // Act
+        var result = _homeRepository.ExistsRoom(roomId);
+
+        // Assert
+        result.Should().BeFalse();
+    }
+
     #endregion
 }

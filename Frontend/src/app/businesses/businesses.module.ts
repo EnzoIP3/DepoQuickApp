@@ -12,12 +12,14 @@ import { FormComponent } from '../../components/form/form/form.component';
 import { FormInputComponent } from '../../components/form/form-input/form-input.component';
 import { FormButtonComponent } from '../../components/form/form-button/form-button.component';
 import { FormDropdownComponent } from '../../components/form/form-dropdown/form-dropdown.component';
+import { BusinessPageComponent } from './business-page/business-page.component';
 
 
 @NgModule({
   declarations: [
     BusinessesPageComponent,
-    AddBusinessFormComponent
+    AddBusinessFormComponent,
+    BusinessPageComponent
   ],
   imports: [
     CommonModule,

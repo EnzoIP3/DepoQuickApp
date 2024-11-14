@@ -41,7 +41,7 @@ public class DeviceController : ControllerBase
             Page = parameters.Page,
             PageSize = parameters.PageSize,
             DeviceNameFilter = parameters.Name,
-            ModelNumberFilter = parameters.Model
+            ModelNumberFilter = parameters.ModelNumber
         };
         PagedData<Device> devices = _deviceService.GetDevices(args);
         GetDevicesResponse response = ResponseFromDevices(devices);

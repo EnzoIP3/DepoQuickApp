@@ -245,6 +245,22 @@ public class HomeRepositoryTests
         _context.Rooms.Should().Contain(room);
     }
     #endregion
+    #region Error
+    [TestMethod]
+    public void AddRoom_WhenRoomExists_ThrowsException()
+    {
+        // Arrange
+        var room = new Room { Id = Guid.NewGuid(), Name = "Living Room", Home = _home };
+        _homeRepository.AddRoom(room);
+
+        // Act
+        Action action = () => _homeRepository.AddRoom(room);
+
+        // Assert
+        action.Should().Throw<ArgumentException>().WithMessage("Room already exists");
+    }
+    #endregion
+    #endregion
 
     #region ExistsRoom
 

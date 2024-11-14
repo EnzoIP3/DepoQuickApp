@@ -515,6 +515,30 @@ public class HomeOwnerServiceTests
         result.Should().BeEquivalentTo(ownedDevices);
     }
 
+    [TestMethod]
+    public void GetHomeDevices_WhenRoomIdIsProvided_ReturnsDevicesInThatRoom()
+    {
+        // Arrange
+        var home = new Home(_user, "Main St 123", 1.0, 2.0, 5);
+        var room = new Room { Id = Guid.NewGuid(), Name = "Living Room" };
+        var sensor = new Device("Sensor", 1, "A sensor", "https://example.com/image.png", new List<string>(), "Sensor", new Business());
+        var camera = new Camera("Camera", 2, "A camera", "https://example.com/image.png", new List<string>(), new Business(), true, true, true, true);
+        var ownedDeviceInRoom = new OwnedDevice(home, sensor) { Room = room };
+        var ownedDeviceNotInRoom = new OwnedDevice(home, camera);
+        var ownedDevices = new List<OwnedDevice> { ownedDeviceInRoom, ownedDeviceNotInRoom };
+
+        _homeRepositoryMock.Setup(x => x.Exists(home.Id)).Returns(true);
+        _homeRepositoryMock.Setup(x => x.Get(home.Id)).Returns(home);
+        _ownedDeviceRepositoryMock.Setup(x => x.GetOwnedDevicesByHome(home)).Returns(ownedDevices);
+
+        // Act
+        IEnumerable<OwnedDevice> result = _homeOwnerService.GetHomeDevices(home.Id.ToString(), room.Id.ToString());
+
+        // Assert
+        result.Should().ContainSingle(x => x.Room == room);
+        result.Should().NotContain(x => x.Room == null);
+    }
+
     #endregion
 
     #region Error

@@ -48,6 +48,26 @@ public class CameraController(
         return new CreateCameraResponse { Id = createdCamera.Id };
     }
 
+    [HttpGet("{cameraId}")]
+    [AuthenticationFilter]
+    public GetCameraResponse GetCamera([FromRoute] string cameraId)
+    {
+        Camera camera = deviceService.GetCameraById(cameraId);
+        return new GetCameraResponse
+        {
+            Id = camera.Id.ToString(),
+            Name = camera.Name,
+            Description = camera.Description,
+            Exterior = camera.IsExterior,
+            Interior = camera.IsInterior,
+            MainPhoto = camera.MainPhoto,
+            ModelNumber = camera.ModelNumber,
+            MotionDetection = camera.MotionDetection,
+            PersonDetection = camera.PersonDetection,
+            SecondaryPhotos = camera.SecondaryPhotos,
+        };
+    }
+
     [HttpPost("{hardwareId}/movement-detected")]
     public NotifyResponse MovementDetected([FromRoute] string hardwareId)
     {

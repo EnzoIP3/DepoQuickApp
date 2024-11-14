@@ -163,4 +163,34 @@ public class CameraControllerTests
     }
 
     #endregion
+
+    #region GetCamera
+    [TestMethod]
+    public void GetCamera_WithCameraId_ReturnsGetCameraResponse()
+    {
+        // Arrange
+        var cameraId = "cameraId";
+        var camera = new Camera("Name", "123", "Description", "https://example.com/photo.png", [],
+            new Business(), true, true,
+            true,
+            true);
+        _deviceServiceMock.Setup(x => x.GetCameraById(cameraId)).Returns(camera);
+
+        // Act
+        GetCameraResponse result = _cameraController.GetCamera(cameraId);
+
+        // Assert
+        result.Should().NotBeNull();
+        result.Id.Should().Be(camera.Id.ToString());
+        result.Name.Should().Be(camera.Name);
+        result.Description.Should().Be(camera.Description);
+        result.Exterior.Should().Be(camera.IsExterior);
+        result.Interior.Should().Be(camera.IsInterior);
+        result.MainPhoto.Should().Be(camera.MainPhoto);
+        result.ModelNumber.Should().Be(camera.ModelNumber);
+        result.MotionDetection.Should().Be(camera.MotionDetection);
+        result.PersonDetection.Should().Be(camera.PersonDetection);
+        result.SecondaryPhotos.Should().BeEquivalentTo(camera.SecondaryPhotos);
+    }
+    #endregion
 }

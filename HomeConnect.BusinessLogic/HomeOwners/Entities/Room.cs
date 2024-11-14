@@ -17,4 +17,6 @@ public class Room
             _name = value;
         }
     }
+
+    public Home Home { get; set; } = null!;
 }

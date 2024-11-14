@@ -9,7 +9,6 @@ using BusinessLogic.Users.Entities;
 using HomeConnect.WebApi.Controllers.Businesses.Models;
 using HomeConnect.WebApi.Filters;
 using Microsoft.AspNetCore.Mvc;
-using GetDevicesResponse = HomeConnect.WebApi.Controllers.Businesses.Models.GetDevicesResponse;
 
 namespace HomeConnect.WebApi.Controllers.Businesses;
 
@@ -97,6 +96,7 @@ public class BusinessController(IAdminService adminService, IBusinessOwnerServic
         {
             Devices = devices.Data.Select(d => new DeviceInfo
             {
+                Id = d.Id.ToString(),
                 Name = d.Name,
                 ModelNumber = d.ModelNumber,
                 Description = d.Description,
@@ -116,6 +116,7 @@ public class BusinessController(IAdminService adminService, IBusinessOwnerServic
 
 public struct DeviceInfo
 {
+    public string Id { get; set; }
     public string Name { get; set; }
     public string ModelNumber { get; set; }
     public string Description { get; set; }

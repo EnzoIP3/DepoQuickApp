@@ -479,6 +479,28 @@ public class DeviceServiceTests
         // Assert
         act.Should().Throw<ArgumentException>().WithMessage("Invalid target room ID.");
     }
+
+    [TestMethod]
+    public void MoveDevice_WhenDeviceNotFoundInSourceRoom_ThrowsArgumentException()
+    {
+        // Arrange
+        var sourceRoomId = Guid.NewGuid();
+        var targetRoomId = Guid.NewGuid();
+        var ownedDeviceId = Guid.NewGuid();
+        var sourceRoom = new Room { Id = sourceRoomId, OwnedDevices = new List<OwnedDevice>() };
+        var targetRoom = new Room { Id = targetRoomId, OwnedDevices = new List<OwnedDevice>() };
+
+        _homeRepository.Setup(r => r.ExistsRoom(sourceRoomId)).Returns(true);
+        _homeRepository.Setup(r => r.ExistsRoom(targetRoomId)).Returns(true);
+        _homeRepository.Setup(r => r.GetRoomById(sourceRoomId)).Returns(sourceRoom);
+        _homeRepository.Setup(r => r.GetRoomById(targetRoomId)).Returns(targetRoom);
+
+        // Act
+        Action act = () => _deviceService.MoveDevice(sourceRoomId.ToString(), targetRoomId.ToString(), ownedDeviceId.ToString());
+
+        // Assert
+        act.Should().Throw<ArgumentException>().WithMessage("Device not found in source room.");
+    }
     #endregion
     #endregion
 }

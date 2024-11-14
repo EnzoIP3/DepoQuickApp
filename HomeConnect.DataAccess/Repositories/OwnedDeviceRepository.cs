@@ -71,7 +71,8 @@ public class OwnedDeviceRepository : IOwnedDeviceRepository
 
     public OwnedDevice GetOwnedDeviceById(Guid ownedDeviceId)
     {
-        throw new NotImplementedException();
+        var ownedDevice = _context.OwnedDevices.FirstOrDefault(d => d.HardwareId == ownedDeviceId);
+        return ownedDevice;
     }
 
     private void EnsureDeviceIsSensor(Guid hardwareId)

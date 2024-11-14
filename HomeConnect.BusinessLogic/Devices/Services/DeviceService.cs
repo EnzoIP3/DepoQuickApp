@@ -80,6 +80,11 @@ public class DeviceService : IDeviceService
 
     public void MoveDevice(string sourceRoomId, string targetRoomId, string ownedDeviceId)
     {
+        if (!HomeRepository.ExistsRoom(Guid.Parse(sourceRoomId)))
+        {
+            throw new ArgumentException("Invalid source room ID.");
+        }
+
         var sourceRoom = HomeRepository.GetRoomById(Guid.Parse(sourceRoomId));
         var targetRoom = HomeRepository.GetRoomById(Guid.Parse(targetRoomId));
 

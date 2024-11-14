@@ -775,4 +775,28 @@ public class HomeOwnerServiceTests
     }
     #endregion
     #endregion
+    #region CreateRoom
+    #region Success
+    [TestMethod]
+    public void CreateRoom_ShouldCreateRoomAndAddToRepository_WhenParametersAreValid()
+    {
+        // Arrange
+        var homeId = Guid.NewGuid().ToString();
+        var name = "Living Room";
+        var home = new Home();
+        _homeRepositoryMock.Setup(repo => repo.Get(It.IsAny<Guid>())).Returns(home);
+        _homeRepositoryMock.Setup(repo => repo.AddRoom(It.IsAny<Room>(), home)).Verifiable();
+
+        // Act
+        var room = _homeOwnerService.CreateRoom(homeId, name);
+
+        // Assert
+        room.Should().NotBeNull();
+        room.Name.Should().Be(name);
+        _homeRepositoryMock.VerifyAll();
+    }
+    #endregion
+    #region Error
+    #endregion
+    #endregion
 }

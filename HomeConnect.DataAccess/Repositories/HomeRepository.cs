@@ -73,6 +73,11 @@ public class HomeRepository : IHomeRepository
         _context.SaveChanges();
     }
 
+    public void AddRoom(Room room, Home home)
+    {
+        throw new NotImplementedException();
+    }
+
     private void EnsureHomeDoesNotExist(Home home)
     {
         if (_context.Homes.Any(h => h.Address == home.Address))

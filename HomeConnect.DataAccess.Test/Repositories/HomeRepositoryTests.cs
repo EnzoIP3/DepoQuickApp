@@ -288,4 +288,18 @@ public class HomeRepositoryTests
     }
 
     #endregion
+
+    #region GetRoomById
+    #region Success
+    [TestMethod]
+    public void GetRoomById_WhenRoomExists_ReturnsRoom()
+    {
+        // Act
+        var result = _homeRepository.GetRoomById(_room.Id);
+
+        // Assert
+        result.Should().BeEquivalentTo(_room);
+    }
+    #endregion
+    #endregion
 }

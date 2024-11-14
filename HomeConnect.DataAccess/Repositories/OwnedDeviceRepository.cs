@@ -69,11 +69,6 @@ public class OwnedDeviceRepository : IOwnedDeviceRepository
         return ((SensorOwnedDevice)GetByHardwareId(hardwareId)).IsOpen;
     }
 
-    public OwnedDevice GetByDeviceId(Guid deviceId)
-    {
-        throw new NotImplementedException();
-    }
-
     public OwnedDevice GetOwnedDeviceById(Guid ownedDeviceId)
     {
         throw new NotImplementedException();

@@ -4,6 +4,10 @@ namespace BusinessLogic.HomeOwners.Entities;
 
 public class Room
 {
+    public Room()
+    {
+    }
+
     private string _name = string.Empty;
     private Home _home = null!;
     public Guid Id { get; set; }

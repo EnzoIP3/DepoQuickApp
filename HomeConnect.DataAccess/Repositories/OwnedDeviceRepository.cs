@@ -72,6 +72,11 @@ public class OwnedDeviceRepository : IOwnedDeviceRepository
     public OwnedDevice GetOwnedDeviceById(Guid ownedDeviceId)
     {
         var ownedDevice = _context.OwnedDevices.FirstOrDefault(d => d.HardwareId == ownedDeviceId);
+        if (ownedDevice == null)
+        {
+            throw new ArgumentException("Owned device does not exist");
+        }
+
         return ownedDevice;
     }
 

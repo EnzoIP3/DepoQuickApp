@@ -33,24 +33,6 @@ public class HomeRepository : IHomeRepository
         return home;
     }
 
-    public Member GetMemberById(Guid memberId)
-    {
-        Home home = _context.Homes.Include(home => home.Members).ThenInclude(member => member.User)
-            .Include(home => home.Owner)
-            .First(m => m.Members.Any(h => h.Id == memberId));
-        Member member = home.Members.First(m => m.Id == memberId);
-        return member;
-    }
-
-    public void UpdateMember(Member member)
-    {
-        Home home = _context.Homes.Include(home => home.Members)
-            .First(m => m.Members.Any(h => h.Id == member.Id));
-        Member memberToUpdate = home.Members.First(m => m.Id == member.Id);
-        memberToUpdate.HomePermissions = member.HomePermissions;
-        _context.SaveChanges();
-    }
-
     public Home? GetByAddress(string argsAddress)
     {
         return _context.Homes.FirstOrDefault(h => h.Address == argsAddress);
@@ -59,11 +41,6 @@ public class HomeRepository : IHomeRepository
     public bool Exists(Guid homeId)
     {
         return _context.Homes.Any(h => h.Id == homeId);
-    }
-
-    public bool ExistsMember(Guid memberId)
-    {
-        return _context.Homes.Include(h => h.Members).Any(h => h.Members.Any(m => m.Id == memberId));
     }
 
     public void Rename(Home home, string newName)

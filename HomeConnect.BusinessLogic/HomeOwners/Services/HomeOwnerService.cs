@@ -118,12 +118,12 @@ public class HomeOwnerService : IHomeOwnerService
 
     public Member GetMemberById(Guid memberId)
     {
-        if (!HomeRepository.ExistsMember(memberId))
+        if (!MemberRepository.Exists(memberId))
         {
             throw new ArgumentException("Member does not exist.");
         }
 
-        return HomeRepository.GetMemberById(memberId);
+        return MemberRepository.Get(memberId);
     }
 
     private static void EnsureDevicesAreNotEmpty(AddDevicesArgs addDevicesArgs)
@@ -267,16 +267,17 @@ public class HomeOwnerService : IHomeOwnerService
 
     private void ChangeMemberPermissions(bool requestShouldBeNotified, Member member)
     {
-        var hasPermission = member.HasPermission(new HomePermission(HomePermission.GetNotifications));
+        var permission = new HomePermission(HomePermission.GetNotifications);
+        var hasPermission = member.HasPermission(permission);
         if (requestShouldBeNotified && !hasPermission)
         {
-            member.AddPermission(new HomePermission(HomePermission.GetNotifications));
-            HomeRepository.UpdateMember(member);
+            member.AddPermission(permission);
+            MemberRepository.Update(member);
         }
         else if (!requestShouldBeNotified && hasPermission)
         {
-            member.DeletePermission(new HomePermission(HomePermission.GetNotifications));
-            HomeRepository.UpdateMember(member);
+            member.DeletePermission(permission);
+            MemberRepository.Update(member);
         }
     }
 

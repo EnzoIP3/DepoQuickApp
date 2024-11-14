@@ -41,47 +41,6 @@ public class HomeRepositoryTests
         _context.Database.EnsureDeleted();
     }
 
-    #region GetMemberById
-
-    #region Success
-
-    [TestMethod]
-    public void GetMemberById_WhenMemberExists_ReturnsMember()
-    {
-        // Act
-        Member result = _homeRepository.GetMemberById(_member.Id);
-
-        // Assert
-        result.Should().BeEquivalentTo(_member);
-    }
-
-    #endregion
-
-    #endregion
-
-    #region UpdateMember
-
-    #region Success
-
-    [TestMethod]
-    public void UpdateMember_WhenMemberExists_UpdatesMember()
-    {
-        // Arrange
-        Member member = _home.Members.First();
-        member.HomePermissions = [new HomePermission("ExamplePermission")];
-
-        // Act
-        _homeRepository.UpdateMember(member);
-
-        // Assert
-        _context.Homes.Should().Contain(h =>
-            h.Members.Any(m => m.Id == member.Id && m.HomePermissions.Any(hp => hp.Value == "ExamplePermission")));
-    }
-
-    #endregion
-
-    #endregion
-
     #region Exists
 
     [TestMethod]
@@ -89,20 +48,6 @@ public class HomeRepositoryTests
     {
         // Act
         var result = _homeRepository.Exists(_home.Id);
-
-        // Assert
-        result.Should().BeTrue();
-    }
-
-    #endregion
-
-    #region ExistsMember
-
-    [TestMethod]
-    public void ExistsMember_WhenMemberExists_ReturnsTrue()
-    {
-        // Act
-        var result = _homeRepository.ExistsMember(_member.Id);
 
         // Assert
         result.Should().BeTrue();

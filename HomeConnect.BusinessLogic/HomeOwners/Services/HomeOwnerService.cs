@@ -122,7 +122,7 @@ public class HomeOwnerService : IHomeOwnerService
     {
         if (!OwnedDeviceRepository.Exists(hardwareId))
         {
-            throw new ArgumentException("Device does not exist in this home.");
+            throw new KeyNotFoundException("Device does not exist in this home.");
         }
     }
 

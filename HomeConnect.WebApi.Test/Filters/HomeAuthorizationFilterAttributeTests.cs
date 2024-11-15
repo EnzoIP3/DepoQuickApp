@@ -281,7 +281,7 @@ public class HomeAuthorizationFilterAttributeTests
         _context.RouteData.Values.Add("hardwareId", hardwareId);
 
         _homeOwnerServiceMock.Setup(h => h.GetOwnedDeviceByHardwareId(hardwareId))
-            .Throws<ArgumentException>();
+            .Throws<KeyNotFoundException>();
         _httpContextMock.Setup(h => h.RequestServices.GetService(typeof(IHomeOwnerService)))
             .Returns(_homeOwnerServiceMock.Object);
 

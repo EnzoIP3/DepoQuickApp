@@ -941,7 +941,7 @@ public class HomeOwnerServiceTests
         var act = () => _homeOwnerService.GetOwnedDeviceByHardwareId(hardwareId.ToString());
 
         // Assert
-        act.Should().Throw<ArgumentException>();
+        act.Should().Throw<KeyNotFoundException>();
     }
 
     #endregion

@@ -16,6 +16,7 @@ import { BusinessPageComponent } from './business-page/business-page.component';
 import { AddDeviceFormComponent } from './add-device-form/add-device-form.component';
 import { FormCheckboxComponent } from '../../components/form/form-checkbox/form-checkbox.component';
 import { ImportDevicesFormComponent } from './import-devices-form/import-devices-form.component';
+import { BusinessDevicesTableComponent } from "../../business-components/business-devices-table/business-devices-table.component";
 
 
 @NgModule({
@@ -37,7 +38,8 @@ import { ImportDevicesFormComponent } from './import-devices-form/import-devices
     FormInputComponent,
     FormButtonComponent,
     FormDropdownComponent,
-    FormCheckboxComponent
+    FormCheckboxComponent,
+    BusinessDevicesTableComponent
 ]
 })
 export class BusinessesModule { }

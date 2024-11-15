@@ -1,0 +1,55 @@
+<div class="mt-2">
+    <app-table
+      [columns]="columns"
+      [data]="devices"
+      [loading]="loading"
+      [clickableRows]="true"
+      (rowClick)="onRowClick($event)"
+      [customTemplates]="{
+        id: idTemplate,
+        name: nameTemplate,
+        modelNumber: modelNumberTemplate,
+        description: descriptionTemplate,
+        mainPhoto: mainPhotoTemplate,
+        secondaryPhotos: secondaryPhotosTemplate,
+        type: typeTemplate
+      }"
+    >
+    </app-table>
+  </div>
+  
+  <!-- Plantillas personalizadas -->
+  <ng-template #idTemplate let-value="value">
+    {{ value || "-" }}
+  </ng-template>
+  
+  <ng-template #nameTemplate let-value="value">
+    {{ value || "-" }}
+  </ng-template>
+  
+  <ng-template #modelNumberTemplate let-value="value">
+    {{ value || "-" }}
+  </ng-template>
+  
+  <ng-template #descriptionTemplate let-value="value">
+    {{ value || "-" }}
+  </ng-template>
+  
+  <ng-template #mainPhotoTemplate let-value="value">
+    <img *ngIf="value" [src]="value" alt="Main Photo" width="50" />
+    <span *ngIf="!value">-</span>
+  </ng-template>
+  
+  <ng-template #secondaryPhotosTemplate let-value="value">
+    <ul *ngIf="value?.length">
+      <li *ngFor="let photo of value">
+        <img [src]="photo" alt="Secondary Photo" width="50" />
+      </li>
+    </ul>
+    <span *ngIf="!value?.length">-</span>
+  </ng-template>
+  
+  <ng-template #typeTemplate let-value="value">
+    {{ value || "-" }}
+  </ng-template>
+  

@@ -13,6 +13,7 @@ public class RoomRepository
 
     public void Add(Room room)
     {
-        throw new NotImplementedException();
+        _context.Rooms.Add(room);
+        _context.SaveChanges();
     }
 }

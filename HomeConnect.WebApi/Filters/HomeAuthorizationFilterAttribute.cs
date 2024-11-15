@@ -29,74 +29,89 @@ public class HomeAuthorizationFilterAttribute(string? permission = null) : Attri
 
         if (homeId != null)
         {
-            if (!IsValidGuid(homeId, out Guid homeIdParsed))
-            {
-                SetBadRequestResult(context, "The home ID is invalid");
-                return;
-            }
-
-            Home? home = GetHomeById(context, homeIdParsed);
-            if (home == null)
-            {
-                SetNotFoundResult(context, "The home does not exist");
-                return;
-            }
-
-            if (!UserHasRequiredPermission(user, home, permission))
-            {
-                SetForbiddenResult(context, permission);
-            }
-
+            HandleHomeId(context, homeId, user);
             return;
         }
 
         if (memberId != null)
         {
-            if (!IsValidGuid(memberId, out Guid memberIdParsed))
-            {
-                SetBadRequestResult(context, "The member ID is invalid");
-                return;
-            }
-
-            Home? home = GetHomeFromMember(context, memberIdParsed);
-            if (home == null)
-            {
-                SetNotFoundResult(context, "The member does not exist");
-                return;
-            }
-
-            if (!UserHasRequiredPermission(user, home, permission))
-            {
-                SetForbiddenResult(context, permission);
-            }
-
+            HandleMemberId(context, memberId, user);
             return;
         }
 
         if (hardwareId != null)
         {
-            if (!IsValidGuid(hardwareId, out Guid _))
-            {
-                SetBadRequestResult(context, "The hardware ID is invalid");
-                return;
-            }
+            HandleHardwareId(context, hardwareId, user);
+        }
+    }
 
-            IHomeOwnerService homeOwnerService = GetHomeOwnerService(context);
-            try
-            {
-                var device = homeOwnerService.GetOwnedDeviceByHardwareId(hardwareId);
-                var home = device.Home;
+    private void HandleHardwareId(AuthorizationFilterContext context, string hardwareId, User user)
+    {
+        if (!IsValidGuid(hardwareId, out Guid _))
+        {
+            SetBadRequestResult(context, "The hardware ID is invalid");
+            return;
+        }
 
-                if (!UserHasRequiredPermission(user, home, permission))
-                {
-                    SetForbiddenResult(context, permission);
-                }
-            }
-            catch (KeyNotFoundException)
+        IHomeOwnerService homeOwnerService = GetHomeOwnerService(context);
+        try
+        {
+            var device = homeOwnerService.GetOwnedDeviceByHardwareId(hardwareId);
+            var home = device.Home;
+
+            if (!UserHasRequiredPermission(user, home, permission))
             {
-                SetNotFoundResult(context, "The device does not exist");
+                SetForbiddenResult(context, permission);
             }
         }
+        catch (KeyNotFoundException)
+        {
+            SetNotFoundResult(context, "The device does not exist");
+        }
+    }
+
+    private void HandleMemberId(AuthorizationFilterContext context, string memberId, User user)
+    {
+        if (!IsValidGuid(memberId, out Guid memberIdParsed))
+        {
+            SetBadRequestResult(context, "The member ID is invalid");
+            return;
+        }
+
+        Home? home = GetHomeFromMember(context, memberIdParsed);
+        if (home == null)
+        {
+            SetNotFoundResult(context, "The member does not exist");
+            return;
+        }
+
+        if (!UserHasRequiredPermission(user, home, permission))
+        {
+            SetForbiddenResult(context, permission);
+        }
+    }
+
+    private void HandleHomeId(AuthorizationFilterContext context, string homeId, User user)
+    {
+        if (!IsValidGuid(homeId, out Guid homeIdParsed))
+        {
+            SetBadRequestResult(context, "The home ID is invalid");
+            return;
+        }
+
+        Home? home = GetHomeById(context, homeIdParsed);
+        if (home == null)
+        {
+            SetNotFoundResult(context, "The home does not exist");
+            return;
+        }
+
+        if (!UserHasRequiredPermission(user, home, permission))
+        {
+            SetForbiddenResult(context, permission);
+        }
+
+        return;
     }
 
     private static User? GetAuthenticatedUser(AuthorizationFilterContext context)

@@ -113,7 +113,7 @@ public class HomeOwnerService : IHomeOwnerService
 
     public OwnedDevice GetOwnedDeviceByHardwareId(string hardwareId)
     {
-        throw new NotImplementedException();
+        return OwnedDeviceRepository.GetByHardwareId(Guid.Parse(hardwareId));
     }
 
     private void ValidateNameHomeParameters(Guid ownerId, Guid homeId, string newName)

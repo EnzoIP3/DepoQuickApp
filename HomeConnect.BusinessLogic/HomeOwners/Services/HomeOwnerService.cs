@@ -233,6 +233,7 @@ public class HomeOwnerService : IHomeOwnerService
         if (args.CanAddDevices)
         {
             permissions.Add(new HomePermission(HomePermission.AddDevice));
+            permissions.Add(new HomePermission(HomePermission.NameDevice));
         }
 
         if (args.CanListDevices)

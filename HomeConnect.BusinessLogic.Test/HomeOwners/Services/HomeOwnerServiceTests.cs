@@ -810,7 +810,7 @@ public class HomeOwnerServiceTests
     {
         // Arrange
         var home = new Home(_user, "Main St 123", 12.5, 12.5, 5);
-        var member = new Member(_user, [new HomePermission(HomePermission.RenameDevice)]);
+        var member = new Member(_user, [new HomePermission(HomePermission.NameDevice)]);
         home.Members.Add(member);
         var ownedDevice = new OwnedDevice { HardwareId = Guid.NewGuid(), Name = "OldName", Home = home };
         var args = new NameDeviceArgs { OwnerId = _user.Id, HardwareId = ownedDevice.HardwareId, NewName = "NewName" };

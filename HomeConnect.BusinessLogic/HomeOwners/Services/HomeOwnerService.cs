@@ -114,6 +114,12 @@ public class HomeOwnerService : IHomeOwnerService
     public OwnedDevice GetOwnedDeviceByHardwareId(string hardwareId)
     {
         var guid = ValidateAndParseGuid(hardwareId);
+
+        if (!OwnedDeviceRepository.Exists(guid))
+        {
+            throw new ArgumentException("Device does not exist.");
+        }
+
         return OwnedDeviceRepository.GetByHardwareId(guid);
     }
 

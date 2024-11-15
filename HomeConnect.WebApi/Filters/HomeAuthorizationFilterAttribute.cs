@@ -75,9 +75,19 @@ public class HomeAuthorizationFilterAttribute(string? permission = null) : Attri
 
         if (hardwareId != null)
         {
-            if (!IsValidGuid(hardwareId, out Guid hardwareIdParsed))
+            if (!IsValidGuid(hardwareId, out Guid _))
             {
                 SetBadRequestResult(context, "The hardware ID is invalid");
+            }
+
+            IHomeOwnerService homeOwnerService = GetHomeOwnerService(context);
+            try
+            {
+                homeOwnerService.GetOwnedDeviceByHardwareId(hardwareId);
+            }
+            catch (ArgumentException)
+            {
+                SetNotFoundResult(context, "The device does not exist");
             }
         }
     }

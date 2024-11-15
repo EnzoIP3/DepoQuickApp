@@ -270,4 +270,32 @@ public class HomeAuthorizationFilterAttributeTests
         FilterTestsUtils.GetInnerCode(concreteResponse.Value).Should().Be("BadRequest");
         FilterTestsUtils.GetMessage(concreteResponse.Value).Should().Be("The hardware ID is invalid");
     }
+
+    [TestMethod]
+    public void OnAuthorization_WhenDeviceDoesNotExist_ReturnsNotFoundResult()
+    {
+        // Arrange
+        var items = new Dictionary<object, object?> { { Item.UserLogged, _user } };
+        var hardwareId = Guid.NewGuid().ToString();
+        _httpContextMock.Setup(h => h.Items).Returns(items);
+        _context.RouteData.Values.Add("hardwareId", hardwareId);
+
+        _homeOwnerServiceMock.Setup(h => h.GetOwnedDeviceByHardwareId(hardwareId))
+            .Throws<ArgumentException>();
+        _httpContextMock.Setup(h => h.RequestServices.GetService(typeof(IHomeOwnerService)))
+            .Returns(_homeOwnerServiceMock.Object);
+
+        // Act
+        _attribute.OnAuthorization(_context);
+
+        // Assert
+        IActionResult? response = _context.Result;
+        _httpContextMock.VerifyAll();
+        response.Should().NotBeNull();
+        var concreteResponse = response as ObjectResult;
+        concreteResponse.Should().NotBeNull();
+        concreteResponse!.StatusCode.Should().Be((int)HttpStatusCode.NotFound);
+        FilterTestsUtils.GetInnerCode(concreteResponse.Value).Should().Be("NotFound");
+        FilterTestsUtils.GetMessage(concreteResponse.Value).Should().Be("The device does not exist");
+    }
 }

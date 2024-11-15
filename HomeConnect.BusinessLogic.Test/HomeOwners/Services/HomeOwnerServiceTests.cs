@@ -172,7 +172,11 @@ public class HomeOwnerServiceTests
         var home = new Home(_user, "Main St 123", 1.0, 2.0, 5);
         var model = new AddMemberArgs
         {
-            HomeId = home.Id.ToString(), UserEmail = invitedUser.Email, CanAddDevices = true, CanListDevices = true
+            HomeId = home.Id.ToString(),
+            UserEmail = invitedUser.Email,
+            CanAddDevices = true,
+            CanListDevices = true,
+            CanNameDevices = true
         };
         _userRepositoryMock.Setup(x => x.ExistsByEmail(model.UserEmail)).Returns(true);
         _userRepositoryMock.Setup(x => x.GetByEmail(model.UserEmail)).Returns(invitedUser);
@@ -186,6 +190,9 @@ public class HomeOwnerServiceTests
         // Assert
         home.Members.Should().ContainSingle(x => x.User == invitedUser);
         result.Should().Be(home.Members.First().Id);
+        home.Members.First().HomePermissions.Any(p => p.Value == HomePermission.GetDevices).Should().BeTrue();
+        home.Members.First().HomePermissions.Any(p => p.Value == HomePermission.AddDevice).Should().BeTrue();
+        home.Members.First().HomePermissions.Any(p => p.Value == HomePermission.NameDevice).Should().BeTrue();
         _memberRepositoryMock.Verify(x => x.Add(It.IsAny<Member>()), Times.Once);
     }
 

@@ -242,19 +242,27 @@ public class HomeOwnerService : IHomeOwnerService
 
     private Member CreateMember(User user, AddMemberArgs args)
     {
-        var permissions = new List<HomePermission>();
+        var member = new Member(user);
+        AddPermissionsToMember(member, args);
+        return member;
+    }
+
+    private static void AddPermissionsToMember(Member member, AddMemberArgs args)
+    {
         if (args.CanAddDevices)
         {
-            permissions.Add(new HomePermission(HomePermission.AddDevice));
-            permissions.Add(new HomePermission(HomePermission.NameDevice));
+            member.AddPermission(new HomePermission(HomePermission.AddDevice));
+        }
+
+        if (args.CanNameDevices)
+        {
+            member.AddPermission(new HomePermission(HomePermission.NameDevice));
         }
 
         if (args.CanListDevices)
         {
-            permissions.Add(new HomePermission(HomePermission.GetDevices));
+            member.AddPermission(new HomePermission(HomePermission.GetDevices));
         }
-
-        return new Member(user, permissions);
     }
 
     private void ValidateAddDeviceModel(AddDevicesArgs addDevicesArgs)

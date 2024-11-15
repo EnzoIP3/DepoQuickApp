@@ -29,6 +29,7 @@ public class RoomRepository
 
     public void Update(Room updatedRoom)
     {
-        throw new NotImplementedException();
+        _context.Rooms.Update(updatedRoom);
+        _context.SaveChanges();
     }
 }

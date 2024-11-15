@@ -3,6 +3,8 @@ import { FormBuilder, FormGroup, Validators } from "@angular/forms";
 import { Router } from '@angular/router';
 import { MessageService } from 'primeng/api';
 import { Subscription } from 'rxjs';
+import { BusinessesService } from '../../../backend/services/businesses/businesses.service';
+import CreateBusinessResponse from '../../../backend/services/businesses/models/create-business-response';
 
 @Component({
   selector: 'app-add-business-form',
@@ -27,9 +29,9 @@ export class AddBusinessFormComponent {
     }
   };
 
+  private _businessesSubscription: Subscription | null = null;
   businessForm!: FormGroup;
   status = { loading: false, error: null };
-  private _addHomeSubscription: Subscription | null = null;
   
   // Dropdown options for the validator field
   validatorOptions = [
@@ -40,7 +42,8 @@ export class AddBusinessFormComponent {
   constructor(
     private _formBuilder: FormBuilder,
     private _router: Router,
-    private _messageService: MessageService
+    private _messageService: MessageService,
+    private _businessesService: BusinessesService
   ) {}
 
   ngOnInit() {
@@ -48,32 +51,40 @@ export class AddBusinessFormComponent {
       name: ["", [Validators.required]],
       logo: ["", [Validators.required, Validators.pattern(/^(https?:\/\/.*\.(?:png|jpg|jpeg|gif|bmp))$/)]], // Logo should be a valid image URL
       rut: ["", [Validators.required, Validators.pattern(/^\d{1,2}\.\d{3}\.\d{3}-[\dKk]{1}$/)]], // Example Rut pattern
-      validator: ["", [Validators.required]],
-      address: ["", [Validators.required, Validators.pattern(/^[A-Za-z\s]+ \d+$/)]],
-      latitude: ["", [Validators.required, Validators.min(-90), Validators.max(90)]],
-      longitude: ["", [Validators.required, Validators.min(-90), Validators.max(90)]],
-      maxMembers: ["", [Validators.required, Validators.min(1)]]
+      validator: ["", [Validators.required]]
     });
   }
 
-  onSubmit() {
-    this.status.loading = true;
-    this.status.error = null;
-    // Logic to submit the form goes here
-    if (this.businessForm.valid) {
-      // Submit data to the backend or do something with the data
-    } else {
-      this.status.loading = false;
-      this._messageService.add({
-        severity: "error",
-        summary: "Form Error",
-        detail: "Please fill in all the required fields correctly."
-      });
+    onSubmit() {
+      this.status.loading = true;
+      this.status.error = null;
+      console.log(this.businessForm.value);
+      if (this.businessForm.valid) {
+        this._businessesSubscription = this._businessesService.postBusiness(this.businessForm.value).subscribe({
+          next: (response: CreateBusinessResponse) => {
+            this.status.loading = false;
+            this._messageService.add({
+              severity: "success",
+              summary: "Business Added",
+              detail: `The business ${response.rut} has been added successfully.`
+            });
+            this._router.navigate(["/businesses"]);
+          },
+          error: (error: any) => {
+            this.status.loading = false;
+            this.status.error = error;
+            this._messageService.add({
+              severity: "error",
+              summary: "Error",
+              detail: error.message
+            });
+          }
+        });
+      }
     }
-  }
 
   ngOnDestroy() {
     // Clean up if necessary
-    this._addHomeSubscription?.unsubscribe();
+    this._businessesSubscription?.unsubscribe();
   }
 }

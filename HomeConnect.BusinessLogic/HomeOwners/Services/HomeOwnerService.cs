@@ -113,7 +113,8 @@ public class HomeOwnerService : IHomeOwnerService
 
     public OwnedDevice GetOwnedDeviceByHardwareId(string hardwareId)
     {
-        return OwnedDeviceRepository.GetByHardwareId(Guid.Parse(hardwareId));
+        var guid = ValidateAndParseGuid(hardwareId);
+        return OwnedDeviceRepository.GetByHardwareId(guid);
     }
 
     private void ValidateNameHomeParameters(Guid ownerId, Guid homeId, string newName)

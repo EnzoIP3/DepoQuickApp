@@ -14,6 +14,14 @@
         }"
     >
     </app-table>
+
+    <app-paginator
+        [currentPage]="pagination?.page"
+        [totalPages]="pagination?.totalPages"
+        [pageSize]="pagination?.pageSize"
+        (pageChange)="onPageChange($event)"
+    >
+    </app-paginator>
 </div>
 
 <ng-template #nameTemplate let-value="value">

@@ -31,7 +31,8 @@ export class AddMemberFormComponent {
         this.memberForm = this._formBuilder.group({
             email: ["", [Validators.required, Validators.email]],
             canAddDevices: [false],
-            canListDevices: [false]
+            canListDevices: [false],
+            canNameDevices: [false]
         });
     }
 
@@ -46,7 +47,8 @@ export class AddMemberFormComponent {
                     this.memberForm.reset({
                         email: "",
                         canAddDevices: false,
-                        canListDevices: false
+                        canListDevices: false,
+                        canNameDevices: false
                     });
                     this._messageService.add({
                         severity: "success",

@@ -3,14 +3,19 @@
         iconClass="pi pi-envelope" [formField]="formFields.email"></app-form-input>
 
     <div class="flex gap-3">
-        <app-form-toggle-button [form]="memberForm" name="canAddDevices" onLabel="Can Add Devices"
-            offLabel="Cannot Add Devices" onIcon="pi pi-check" offIcon="pi pi-times"></app-form-toggle-button>
+        <app-form-toggle-button [form]="memberForm" name="canAddDevices" [onLabel]="'Can Add Devices'"
+            [offLabel]="'Cannot Add Devices'" [onIcon]="'pi pi-check'"
+            [offIcon]="'pi pi-times'"></app-form-toggle-button>
 
-        <app-form-toggle-button [form]="memberForm" name="canListDevices" onLabel="Can List Devices"
-            offLabel="Cannot List Devices" onIcon="pi pi-check" offIcon="pi pi-times"></app-form-toggle-button>
+        <app-form-toggle-button [form]="memberForm" name="canListDevices" [onLabel]="'Can List Devices'"
+            [offLabel]="'Cannot List Devices'" [onIcon]="'pi pi-check'"
+            [offIcon]="'pi pi-times'"></app-form-toggle-button>
+
+        <app-form-toggle-button [form]="memberForm" name="canNameDevices" [onLabel]="'Can Name Devices'"
+            [offLabel]="'Cannot Name Devices'" [onIcon]="'pi pi-check'"
+            [offIcon]="'pi pi-times'"></app-form-toggle-button>
     </div>
 
     <app-form-button title="Add Member" color="primary" [loading]="memberStatus.loading"
         [disabled]="!memberForm.valid"></app-form-button>
-
 </app-form>

@@ -15,6 +15,7 @@ import { FormDropdownComponent } from '../../components/form/form-dropdown/form-
 import { BusinessPageComponent } from './business-page/business-page.component';
 import { AddDeviceFormComponent } from './add-device-form/add-device-form.component';
 import { FormCheckboxComponent } from '../../components/form/form-checkbox/form-checkbox.component';
+import { ImportDevicesFormComponent } from './import-devices-form/import-devices-form.component';
 
 
 @NgModule({
@@ -22,7 +23,8 @@ import { FormCheckboxComponent } from '../../components/form/form-checkbox/form-
     BusinessesPageComponent,
     AddBusinessFormComponent,
     BusinessPageComponent,
-    AddDeviceFormComponent
+    AddDeviceFormComponent,
+    ImportDevicesFormComponent
   ],
   imports: [
     CommonModule,

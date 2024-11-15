@@ -176,7 +176,9 @@ public class DeviceControllerTests
         var items = new Dictionary<object, object?> { { Item.UserLogged, _user } };
         var args = new NameDeviceArgs
         {
-            HardwareId = Guid.Parse(hardwareId), NewName = request.NewName, OwnerId = _user.Id
+            HardwareId = Guid.Parse(hardwareId),
+            NewName = request.NewName,
+            OwnerId = _user.Id
         };
         _httpContextMock.Setup(h => h.Items).Returns(items);
         _homeOwnerService.Setup(x => x.NameDevice(args));

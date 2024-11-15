@@ -1,6 +1,3 @@
-using BusinessLogic.HomeOwners.Entities;
-using BusinessLogic.HomeOwners.Models;
-using BusinessLogic.HomeOwners.Services;
 using BusinessLogic.Roles.Entities;
 using BusinessLogic.Users.Entities;
 using BusinessLogic.Users.Models;
@@ -20,7 +17,7 @@ public class HomeOwnerControllerTests
     private Mock<HttpContext> _httpContextMock = null!;
     private Mock<IUserService> _userService = null!;
     private HomeOwnerController _controller = null!;
-    private User _user = null!;
+    private readonly User _user = null!;
 
     [TestInitialize]
     public void Initialize()

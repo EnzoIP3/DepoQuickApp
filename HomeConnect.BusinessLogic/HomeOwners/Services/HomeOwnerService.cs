@@ -107,7 +107,7 @@ public class HomeOwnerService : IHomeOwnerService
             throw new ArgumentException("Device does not exist");
         }
 
-        var home = device.Home;
+        _ = device.Home;
         OwnedDeviceRepository.Rename(device, args.NewName);
     }
 

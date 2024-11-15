@@ -108,8 +108,6 @@ public class HomeOwnerService : IHomeOwnerService
         }
 
         var home = device.Home;
-        var member = home.Members.FirstOrDefault(m => m.User.Id == args.OwnerId);
-
         OwnedDeviceRepository.Rename(device, args.NewName);
     }
 

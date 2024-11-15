@@ -4,6 +4,7 @@ using BusinessLogic.BusinessOwners.Services;
 using BusinessLogic.Devices.Entities;
 using BusinessLogic.Devices.Models;
 using BusinessLogic.Devices.Services;
+using BusinessLogic.HomeOwners.Entities;
 using BusinessLogic.HomeOwners.Models;
 using BusinessLogic.HomeOwners.Services;
 using BusinessLogic.Roles.Entities;
@@ -101,8 +102,9 @@ public class DeviceController : ControllerBase
         return new ConnectionResponse { Connected = connectionState, HardwareId = hardwareId };
     }
 
-    [HttpPost("{hardwareId}/name")]
+    [HttpPatch("{hardwareId}/name")]
     [AuthorizationFilter(SystemPermission.NameDevice)]
+    [HomeAuthorizationFilter(HomePermission.NameDevice)]
     public NameDeviceResponse NameDevice([FromRoute] string hardwareId, [FromBody] NameDeviceRequest request)
     {
         var userLoggedIn = HttpContext.Items[Item.UserLogged] as User;

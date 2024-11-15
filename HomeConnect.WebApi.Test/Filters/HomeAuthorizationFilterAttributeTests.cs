@@ -1,4 +1,5 @@
 using System.Net;
+using BusinessLogic.Devices.Entities;
 using BusinessLogic.HomeOwners.Entities;
 using BusinessLogic.HomeOwners.Services;
 using BusinessLogic.Roles.Entities;
@@ -297,5 +298,37 @@ public class HomeAuthorizationFilterAttributeTests
         concreteResponse!.StatusCode.Should().Be((int)HttpStatusCode.NotFound);
         FilterTestsUtils.GetInnerCode(concreteResponse.Value).Should().Be("NotFound");
         FilterTestsUtils.GetMessage(concreteResponse.Value).Should().Be("The device does not exist");
+    }
+
+    [TestMethod]
+    public void OnAuthorization_WhenDeviceExistsButUserDoesNotHavePermission_ReturnsForbiddenResult()
+    {
+        // Arrange
+        var otherUser = new User("Name2", "Surname2", "email2@email.com", "Password@100",
+            new Role { Name = "HomeOwner", Permissions = [] });
+        var home = new Home(otherUser, "street 123", 50.456, 123.456, 2);
+        home.AddMember(new Member(_user));
+        var items = new Dictionary<object, object?> { { Item.UserLogged, _user } };
+        var hardwareId = Guid.NewGuid().ToString();
+        _httpContextMock.Setup(h => h.Items).Returns(items);
+        _context.RouteData.Values.Add("hardwareId", hardwareId);
+
+        _homeOwnerServiceMock.Setup(h => h.GetOwnedDeviceByHardwareId(hardwareId))
+            .Returns(new OwnedDevice { Home = home });
+        _httpContextMock.Setup(h => h.RequestServices.GetService(typeof(IHomeOwnerService)))
+            .Returns(_homeOwnerServiceMock.Object);
+
+        // Act
+        _attribute.OnAuthorization(_context);
+
+        // Assert
+        IActionResult? response = _context.Result;
+        _httpContextMock.VerifyAll();
+        response.Should().NotBeNull();
+        var concreteResponse = response as ObjectResult;
+        concreteResponse.Should().NotBeNull();
+        concreteResponse!.StatusCode.Should().Be((int)HttpStatusCode.Forbidden);
+        FilterTestsUtils.GetInnerCode(concreteResponse.Value).Should().Be("Forbidden");
+        FilterTestsUtils.GetMessage(concreteResponse.Value).Should().Be("Missing home permission: some-permission");
     }
 }

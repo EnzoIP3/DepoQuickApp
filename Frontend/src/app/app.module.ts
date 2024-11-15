@@ -9,6 +9,7 @@ import { PageNotFoundComponent } from "./page-not-found/page-not-found.component
 import { provideHttpClient } from "@angular/common/http";
 import { PermissionSidebarComponent } from "../business-components/permission-sidebar/permission-sidebar.component";
 import { MessageService } from "primeng/api";
+import { DialogTestComponent } from "../business-components/dialog-test/dialog-test.component";
 
 @NgModule({
     declarations: [AppComponent, PageNotFoundComponent],
@@ -18,7 +19,8 @@ import { MessageService } from "primeng/api";
         AppRoutingModule,
         ToolbarComponent,
         SidebarComponent,
-        PermissionSidebarComponent
+        PermissionSidebarComponent,
+        DialogTestComponent
     ],
     providers: [provideHttpClient(), MessageService],
     bootstrap: [AppComponent]

@@ -21,4 +21,9 @@ public class RoomRepository
     {
         return _context.Rooms.First(r => r.Id == roomId);
     }
+
+    public bool Exists(Guid roomId)
+    {
+        throw new NotImplementedException();
+    }
 }

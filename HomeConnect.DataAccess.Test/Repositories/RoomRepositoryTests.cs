@@ -53,4 +53,19 @@ public class RoomRepositoryTests
         // Assert
         result.Should().Be(room);
     }
+
+    [TestMethod]
+    public void Exists_WhenRoomExists_ReturnsTrue()
+    {
+        // Arrange
+        var room = new Room(Guid.NewGuid(), "Room", _home, null);
+        _context.Rooms.Add(room);
+        _context.SaveChanges();
+
+        // Act
+        var result = _roomRepository.Exists(room.Id);
+
+        // Assert
+        result.Should().BeTrue();
+    }
 }

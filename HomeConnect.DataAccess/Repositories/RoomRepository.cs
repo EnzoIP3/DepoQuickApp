@@ -24,6 +24,6 @@ public class RoomRepository
 
     public bool Exists(Guid roomId)
     {
-        throw new NotImplementedException();
+        return _context.Rooms.Any(r => r.Id == roomId);
     }
 }

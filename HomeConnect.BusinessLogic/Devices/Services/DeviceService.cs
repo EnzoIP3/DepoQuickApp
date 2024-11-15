@@ -78,6 +78,38 @@ public class DeviceService : IDeviceService
         OwnedDeviceRepository.UpdateSensorState(Guid.Parse(hardwareId), state);
     }
 
+    public Camera GetCameraById(string cameraId)
+    {
+        EnsureIdFormatIsValid(cameraId);
+        EnsureDeviceExists(cameraId);
+        EnsureDeviceIsACamera(cameraId);
+        return DeviceRepository.Get(Guid.Parse(cameraId)!) as Camera;
+    }
+
+    private void EnsureDeviceIsACamera(string cameraId)
+    {
+        if (DeviceRepository.Get(Guid.Parse(cameraId)).Type != DeviceType.Camera)
+        {
+            throw new InvalidOperationException("Device is not a camera.");
+        }
+    }
+
+    private void EnsureDeviceExists(string cameraId)
+    {
+        if (!DeviceRepository.Exists(Guid.Parse(cameraId)))
+        {
+            throw new InvalidOperationException("Device not found.");
+        }
+    }
+
+    private void EnsureIdFormatIsValid(string cameraId)
+    {
+        if (string.IsNullOrWhiteSpace(cameraId) || !Guid.TryParse(cameraId, out _))
+        {
+            throw new ArgumentException("Camera ID format is invalid.");
+        }
+    }
+
     public void MoveDevice(string sourceRoomId, string targetRoomId, string ownedDeviceId)
     {
         if (!HomeRepository.ExistsRoom(Guid.Parse(sourceRoomId)))

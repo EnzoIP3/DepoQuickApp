@@ -272,7 +272,12 @@ public sealed class AdminServiceTests
             PageSize = _defaultPageSize,
             TotalPages = 1
         };
-        _businessRepository.Setup(x => x.GetPaged(_defaultCurrentPage, _defaultPageSize, null, null))
+        var filterArgs = new FilterArgs
+        {
+            CurrentPage = _defaultCurrentPage,
+            PageSize = _defaultPageSize
+        };
+        _businessRepository.Setup(x => x.GetPaged(filterArgs))
             .Returns(pagedList);
 
         // Act
@@ -281,10 +286,7 @@ public sealed class AdminServiceTests
         // Assert
         result.Should().BeEquivalentTo(pagedList, options => options.ComparingByMembers<PagedData<Business>>());
         _businessRepository.Verify(x => x.GetPaged(
-            It.Is<int>(a => a == _defaultCurrentPage),
-            It.Is<int>(a => a == _defaultPageSize),
-            It.Is<string>(a => true),
-            It.Is<string>(a => true)));
+            It.Is<FilterArgs>(a => a.FullNameFilter == null && a.NameFilter == null)));
     }
 
     [TestMethod]
@@ -303,7 +305,9 @@ public sealed class AdminServiceTests
             PageSize = _defaultPageSize,
             TotalPages = 1
         };
-        _businessRepository.Setup(x => x.GetPaged(_defaultCurrentPage, _defaultPageSize, null, null))
+        var filterArgs = new FilterArgs
+        { CurrentPage = _defaultCurrentPage, PageSize = _defaultPageSize };
+        _businessRepository.Setup(x => x.GetPaged(filterArgs))
             .Returns(pagedList);
 
         // Act
@@ -312,10 +316,7 @@ public sealed class AdminServiceTests
         // Assert
         result.Should().BeEquivalentTo(pagedList, options => options.ComparingByMembers<PagedData<Business>>());
         _businessRepository.Verify(x => x.GetPaged(
-            It.Is<int>(a => a == _defaultCurrentPage),
-            It.Is<int>(a => a == _defaultPageSize),
-            It.Is<string>(a => true),
-            It.Is<string>(a => true)));
+            It.Is<FilterArgs>(a => a.FullNameFilter == null && a.NameFilter == null)));
     }
 
     [TestMethod]
@@ -335,7 +336,9 @@ public sealed class AdminServiceTests
             PageSize = _defaultPageSize,
             TotalPages = 1
         };
-        _businessRepository.Setup(x => x.GetPaged(_defaultCurrentPage, _defaultPageSize, filter, null))
+        var filterArgs = new FilterArgs
+        { CurrentPage = _defaultCurrentPage, PageSize = _defaultPageSize, FullNameFilter = filter };
+        _businessRepository.Setup(x => x.GetPaged(filterArgs))
             .Returns(pagedList);
 
         // Act
@@ -344,10 +347,7 @@ public sealed class AdminServiceTests
         // Assert
         result.Should().BeEquivalentTo(pagedList, options => options.ComparingByMembers<PagedData<Business>>());
         _businessRepository.Verify(x => x.GetPaged(
-            It.Is<int>(a => a == _defaultCurrentPage),
-            It.Is<int>(a => a == _defaultPageSize),
-            It.Is<string>(a => a == filter),
-            It.Is<string>(a => true)));
+            It.Is<FilterArgs>(a => a.FullNameFilter == filter && a.NameFilter == null)));
     }
 
     [TestMethod]
@@ -367,7 +367,9 @@ public sealed class AdminServiceTests
             PageSize = _defaultPageSize,
             TotalPages = 1
         };
-        _businessRepository.Setup(x => x.GetPaged(_defaultCurrentPage, _defaultPageSize, null, filter))
+        var filterArgs = new FilterArgs
+        { CurrentPage = _defaultCurrentPage, PageSize = _defaultPageSize, NameFilter = filter };
+        _businessRepository.Setup(x => x.GetPaged(filterArgs))
             .Returns(pagedList);
 
         // Act
@@ -376,10 +378,7 @@ public sealed class AdminServiceTests
         // Assert
         result.Should().BeEquivalentTo(pagedList, options => options.ComparingByMembers<PagedData<Business>>());
         _businessRepository.Verify(x => x.GetPaged(
-            It.Is<int>(a => a == _defaultCurrentPage),
-            It.Is<int>(a => a == _defaultPageSize),
-            It.Is<string>(a => true),
-            It.Is<string>(a => a == filter)));
+            It.Is<FilterArgs>(a => a.FullNameFilter == null && a.NameFilter == filter)));
     }
 
     #endregion

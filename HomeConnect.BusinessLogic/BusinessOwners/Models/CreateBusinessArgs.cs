@@ -6,4 +6,5 @@ public record CreateBusinessArgs
     public string Logo { get; init; } = null!;
     public string Rut { get; init; } = null!;
     public string OwnerId { get; init; } = null!;
+    public string? Validator { get; init; } = null;
 }

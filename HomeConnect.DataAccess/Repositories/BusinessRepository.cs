@@ -1,4 +1,5 @@
 using BusinessLogic;
+using BusinessLogic.Admins.Services;
 using BusinessLogic.BusinessOwners.Entities;
 using BusinessLogic.BusinessOwners.Repositories;
 using Microsoft.EntityFrameworkCore;
@@ -12,18 +13,25 @@ public class BusinessRepository : PaginatedRepositoryBase<Business>, IBusinessRe
     {
     }
 
-    public PagedData<Business> GetPaged(int currentPage, int pageSize, string? fullNameFilter = null,
-        string? nameFilter = null)
+    public PagedData<Business> GetPaged(FilterArgs args)
     {
-        var filters = new object[2];
-        filters[0] = fullNameFilter ?? string.Empty;
-        filters[1] = nameFilter ?? string.Empty;
-        return GetAllPaged(currentPage, pageSize, filters);
+        var filters = new object[3];
+        filters[0] = args.FullNameFilter ?? string.Empty;
+        filters[1] = args.NameFilter ?? string.Empty;
+        filters[2] = args.OwnerIdFilter ?? Guid.Empty;
+        return GetAllPaged(args.CurrentPage, args.PageSize, filters);
+    }
+
+    public void UpdateValidator(string argsBusinessRut, Guid? validatorId = null)
+    {
+        var business = Get(argsBusinessRut);
+        business.Validator = validatorId;
+        Context.SaveChanges();
     }
 
     public Business Get(string rut)
     {
-        return Context.Businesses.First(b => b.Rut == rut);
+        return Context.Businesses.Include(b => b.Owner).First(b => b.Rut == rut);
     }
 
     public bool Exists(string rut)
@@ -62,9 +70,21 @@ public class BusinessRepository : PaginatedRepositoryBase<Business>, IBusinessRe
     {
         var fullNameFilter = filters.Length > 0 ? filters[0] as string : null;
         var nameFilter = filters.Length > 1 ? filters[1] as string : null;
+        var ownerIdFilter = filters.Length > 2 ? filters[2] as Guid? : null;
 
         query = FilterByOwnerFullName(fullNameFilter, query);
         query = FilterByBusinessName(nameFilter, query);
+        query = FilterByOwnerId(ownerIdFilter, query);
+
+        return query;
+    }
+
+    private IQueryable<Business> FilterByOwnerId(Guid? ownerIdFilter, IQueryable<Business> query)
+    {
+        if (ownerIdFilter != Guid.Empty)
+        {
+            query = query.Where(b => b.Owner.Id == ownerIdFilter);
+        }
 
         return query;
     }

@@ -23,6 +23,7 @@ public class OwnedDevice
     public Device Device { get; init; } = null!;
     public bool Connected { get; set; } = true;
     public Room? Room { get; set; } = null!;
+    public string? Name { get; set; } = null!;
 
     public virtual OwnedDeviceDto ToOwnedDeviceDto()
     {
@@ -33,7 +34,8 @@ public class OwnedDevice
             BusinessName = Device.Business.Name,
             Type = Device.Type.ToString(),
             ModelNumber = Device.ModelNumber,
-            Photo = Device.MainPhoto
+            Photo = Device.MainPhoto,
+            SecondaryPhotos = Device.SecondaryPhotos
         };
     }
 }

@@ -6,7 +6,7 @@ public record CreateCameraArgs
 {
     public string Name { get; set; } = null!;
     public User Owner { get; set; } = null!;
-    public int? ModelNumber { get; set; }
+    public string? ModelNumber { get; set; }
     public string Description { get; set; } = null!;
     public string MainPhoto { get; set; } = null!;
     public List<string>? SecondaryPhotos { get; set; }

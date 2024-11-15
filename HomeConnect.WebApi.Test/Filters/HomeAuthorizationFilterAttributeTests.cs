@@ -1,4 +1,5 @@
 using System.Net;
+using BusinessLogic.Devices.Entities;
 using BusinessLogic.HomeOwners.Entities;
 using BusinessLogic.HomeOwners.Services;
 using BusinessLogic.Roles.Entities;
@@ -120,7 +121,7 @@ public class HomeAuthorizationFilterAttributeTests
         var items = new Dictionary<object, object?> { { Item.UserLogged, _user } };
         _httpContextMock.Setup(h => h.Items).Returns(items);
         _context.RouteData.Values.Add(_homeIdRoute, homeId.ToString());
-        _homeOwnerServiceMock.Setup(h => h.GetHome(homeId)).Throws<ArgumentException>();
+        _homeOwnerServiceMock.Setup(h => h.GetHome(homeId)).Throws<KeyNotFoundException>();
         _httpContextMock.Setup(h => h.RequestServices.GetService(typeof(IHomeOwnerService)))
             .Returns(_homeOwnerServiceMock.Object);
 
@@ -201,6 +202,119 @@ public class HomeAuthorizationFilterAttributeTests
         _context.RouteData.Values.Add("membersId", member.Id.ToString());
 
         _homeOwnerServiceMock.Setup(h => h.GetMemberById(member.Id)).Returns(member);
+        _httpContextMock.Setup(h => h.RequestServices.GetService(typeof(IHomeOwnerService)))
+            .Returns(_homeOwnerServiceMock.Object);
+
+        // Act
+        _attribute.OnAuthorization(_context);
+
+        // Assert
+        IActionResult? response = _context.Result;
+        _httpContextMock.VerifyAll();
+        response.Should().NotBeNull();
+        var concreteResponse = response as ObjectResult;
+        concreteResponse.Should().NotBeNull();
+        concreteResponse!.StatusCode.Should().Be((int)HttpStatusCode.Forbidden);
+        FilterTestsUtils.GetInnerCode(concreteResponse.Value).Should().Be("Forbidden");
+        FilterTestsUtils.GetMessage(concreteResponse.Value).Should().Be("Missing home permission: some-permission");
+    }
+
+    [TestMethod]
+    public void OnAuthorization_WhenUserIsNotMemberAndPermissionIsEmpty_ReturnsForbiddenResult()
+    {
+        // Arrange
+        var owner = new User();
+        var home = new Home(owner, "street 123", 50.456, 123.456, 2);
+        var member = new Member(_user) { Home = home };
+
+        var items = new Dictionary<object, object?> { { Item.UserLogged, _user } };
+        _httpContextMock.Setup(h => h.Items).Returns(items);
+        _context.RouteData.Values.Add("membersId", member.Id.ToString());
+
+        _homeOwnerServiceMock.Setup(h => h.GetMemberById(member.Id)).Returns(member);
+        _httpContextMock.Setup(h => h.RequestServices.GetService(typeof(IHomeOwnerService)))
+            .Returns(_homeOwnerServiceMock.Object);
+
+        // Act
+        _attribute = new HomeAuthorizationFilterAttribute();
+        _attribute.OnAuthorization(_context);
+
+        // Assert
+        var response = _context.Result;
+        _httpContextMock.VerifyAll();
+        response.Should().NotBeNull();
+        var concreteResponse = response as ObjectResult;
+        concreteResponse.Should().NotBeNull();
+        concreteResponse!.StatusCode.Should().Be((int)HttpStatusCode.Forbidden);
+        FilterTestsUtils.GetInnerCode(concreteResponse.Value).Should().Be("Forbidden");
+        FilterTestsUtils.GetMessage(concreteResponse.Value).Should().Be("You do not belong to this home");
+    }
+
+    [TestMethod]
+    public void OnAuthorization_WhenHardwareIdIsInvalid_ReturnsBadRequestResult()
+    {
+        // Arrange
+        var items = new Dictionary<object, object?> { { Item.UserLogged, _user } };
+        _httpContextMock.Setup(h => h.Items).Returns(items);
+        _context.RouteData.Values.Add("hardwareId", " ");
+
+        // Act
+        _attribute.OnAuthorization(_context);
+
+        // Assert
+        IActionResult? response = _context.Result;
+        _httpContextMock.VerifyAll();
+        response.Should().NotBeNull();
+        var concreteResponse = response as ObjectResult;
+        concreteResponse.Should().NotBeNull();
+        concreteResponse!.StatusCode.Should().Be((int)HttpStatusCode.BadRequest);
+        FilterTestsUtils.GetInnerCode(concreteResponse.Value).Should().Be("BadRequest");
+        FilterTestsUtils.GetMessage(concreteResponse.Value).Should().Be("The hardware ID is invalid");
+    }
+
+    [TestMethod]
+    public void OnAuthorization_WhenDeviceDoesNotExist_ReturnsNotFoundResult()
+    {
+        // Arrange
+        var items = new Dictionary<object, object?> { { Item.UserLogged, _user } };
+        var hardwareId = Guid.NewGuid().ToString();
+        _httpContextMock.Setup(h => h.Items).Returns(items);
+        _context.RouteData.Values.Add("hardwareId", hardwareId);
+
+        _homeOwnerServiceMock.Setup(h => h.GetOwnedDeviceByHardwareId(hardwareId))
+            .Throws<KeyNotFoundException>();
+        _httpContextMock.Setup(h => h.RequestServices.GetService(typeof(IHomeOwnerService)))
+            .Returns(_homeOwnerServiceMock.Object);
+
+        // Act
+        _attribute.OnAuthorization(_context);
+
+        // Assert
+        IActionResult? response = _context.Result;
+        _httpContextMock.VerifyAll();
+        response.Should().NotBeNull();
+        var concreteResponse = response as ObjectResult;
+        concreteResponse.Should().NotBeNull();
+        concreteResponse!.StatusCode.Should().Be((int)HttpStatusCode.NotFound);
+        FilterTestsUtils.GetInnerCode(concreteResponse.Value).Should().Be("NotFound");
+        FilterTestsUtils.GetMessage(concreteResponse.Value).Should().Be("The device does not exist");
+    }
+
+    [TestMethod]
+    public void OnAuthorization_WhenDeviceExistsButUserDoesNotHavePermission_ReturnsForbiddenResult()
+    {
+        // Arrange
+        var otherUser = new User("Name2", "Surname2", "email2@email.com", "Password@100",
+            new Role { Name = "HomeOwner", Permissions = [] });
+        var home = new Home(otherUser, "street 123", 50.456, 123.456, 2);
+        home.AddMember(new Member(_user));
+        var items = new Dictionary<object, object?> { { Item.UserLogged, _user } };
+        var hardwareId = Guid.NewGuid().ToString();
+        _httpContextMock.Setup(h => h.Items).Returns(items);
+        _context.RouteData.Values.Add("hardwareId", hardwareId);
+
+        _homeOwnerServiceMock.Setup(h => h.GetOwnedDeviceByHardwareId(hardwareId))
+            .Returns(new OwnedDevice { Home = home });
         _httpContextMock.Setup(h => h.RequestServices.GetService(typeof(IHomeOwnerService)))
             .Returns(_homeOwnerServiceMock.Object);
 

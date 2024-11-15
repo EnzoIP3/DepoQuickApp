@@ -1,5 +1,6 @@
 using BusinessLogic.HomeOwners.Entities;
 using BusinessLogic.HomeOwners.Repositories;
+using Microsoft.EntityFrameworkCore;
 
 namespace HomeConnect.DataAccess.Repositories;
 
@@ -18,8 +19,22 @@ public class MemberRepository : IMemberRepository
         _context.SaveChanges();
     }
 
-    public List<Member> GetMembersByUserId(Guid userId)
+    public Member Get(Guid memberId)
     {
-        return _context.Members.Where(m => m.User.Id == userId).ToList();
+        return _context.Members.Include(m => m.HomePermissions)
+            .First(m => m.Id == memberId);
+    }
+
+    public void Update(Member member)
+    {
+        _context.Members.Update(member);
+        _context.SaveChanges();
+    }
+
+    public bool Exists(Guid memberId)
+    {
+        Console.WriteLine(_context.Members.Include(m => m.User).Include(m => m.Home).ToList()
+            .Select(m => $"{m.Id} {m.User.Id} {m.Home.Id}"));
+        return _context.Members.Any(m => m.Id == memberId);
     }
 }

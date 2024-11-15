@@ -46,47 +46,6 @@ public class HomeRepositoryTests
         _context.Database.EnsureDeleted();
     }
 
-    #region GetMemberById
-
-    #region Success
-
-    [TestMethod]
-    public void GetMemberById_WhenMemberExists_ReturnsMember()
-    {
-        // Act
-        Member result = _homeRepository.GetMemberById(_member.Id);
-
-        // Assert
-        result.Should().BeEquivalentTo(_member);
-    }
-
-    #endregion
-
-    #endregion
-
-    #region UpdateMember
-
-    #region Success
-
-    [TestMethod]
-    public void UpdateMember_WhenMemberExists_UpdatesMember()
-    {
-        // Arrange
-        Member member = _home.Members.First();
-        member.HomePermissions = [new HomePermission("ExamplePermission")];
-
-        // Act
-        _homeRepository.UpdateMember(member);
-
-        // Assert
-        _context.Homes.Should().Contain(h =>
-            h.Members.Any(m => m.Id == member.Id && m.HomePermissions.Any(hp => hp.Value == "ExamplePermission")));
-    }
-
-    #endregion
-
-    #endregion
-
     #region Exists
 
     [TestMethod]
@@ -94,20 +53,6 @@ public class HomeRepositoryTests
     {
         // Act
         var result = _homeRepository.Exists(_home.Id);
-
-        // Assert
-        result.Should().BeTrue();
-    }
-
-    #endregion
-
-    #region ExistsMember
-
-    [TestMethod]
-    public void ExistsMember_WhenMemberExists_ReturnsTrue()
-    {
-        // Act
-        var result = _homeRepository.ExistsMember(_member.Id);
 
         // Assert
         result.Should().BeTrue();
@@ -214,6 +159,7 @@ public class HomeRepositoryTests
     #endregion
 
     #region Rename
+
     [TestMethod]
     public void Rename_RenamesHome()
     {
@@ -229,6 +175,40 @@ public class HomeRepositoryTests
         Assert.IsNotNull(updatedHome);
         Assert.AreEqual(newName, updatedHome.NickName);
     }
+
+    #endregion
+
+    #region GetHomesByUserId
+
+    #region Success
+
+    [TestMethod]
+    public void GetHomesByUserId_WhenUserOwnsHomes_ReturnsHomes()
+    {
+        // Arrange
+        var home2 = new Home(_homeOwner, "Main St 456", 12.5, 12.5, 5);
+        _context.Homes.Add(home2);
+        _context.SaveChanges();
+
+        // Act
+        var result = _homeRepository.GetHomesByUserId(_homeOwner.Id);
+
+        // Assert
+        result.Should().Contain(_home).And.Contain(home2);
+    }
+
+    [TestMethod]
+    public void GetHomesByUserId_WhenUserIsMember_ReturnsHomes()
+    {
+        // Act
+        var result = _homeRepository.GetHomesByUserId(_otherOwner.Id);
+
+        // Assert
+        result.Should().Contain(_home);
+    }
+
+    #endregion
+
     #endregion
 
     #region AddRoom

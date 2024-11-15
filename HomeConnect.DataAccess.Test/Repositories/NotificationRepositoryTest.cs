@@ -40,9 +40,10 @@ public class NotificationRepositoryTest
         _business = new Business("123456789123", "Business", "https://example.com/image.png", _user);
         _context.Businesses.Add(_business);
         _context.SaveChanges();
-
-        _sensor = new Device("Device", 12345, "Device description", "https://example.com/image.png", [], "Sensor", _business);
-        _camera = new Camera("Device", 12345, "Device description", "https://example.com/image.png", [], _business, true, true, true, true);
+        _sensor = new Device("Device", "12345", "Device description", "https://example.com/image.png", [],
+            "Sensor", _business);
+        _camera = new Camera("Device", "12345", "Device description", "https://example.com/image.png", [],
+            _business, true, true, true, true);
         _context.Devices.AddRange(_sensor, _camera);
         _context.SaveChanges();
 
@@ -94,7 +95,7 @@ public class NotificationRepositoryTest
     {
         // Arrange
         var user = new User("name", "surname", "email2@email.com", "Password#100", new Role());
-        var device = new Device("Device", 12345, "Device description", "https://example.com/image.png",
+        var device = new Device("Device", "12345", "Device description", "https://example.com/image.png",
             [], "Sensor", new Business("12345", "Business", "https://example.com/image.png", user));
         var home = new Home(user, "Address 3420", 50, 100, 5);
         var ownedDevice = new OwnedDevice(home, device);

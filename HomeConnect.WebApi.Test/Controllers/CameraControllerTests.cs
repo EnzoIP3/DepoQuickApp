@@ -48,7 +48,7 @@ public class CameraControllerTests
     {
         // Arrange
         var user = new User();
-        var camera = new Camera("Name", 123, "Description", "https://example.com/photo.png", [],
+        var camera = new Camera("Name", "123", "Description", "https://example.com/photo.png", [],
             new Business(), true, true,
             true,
             true);
@@ -60,10 +60,10 @@ public class CameraControllerTests
             Exterior = true,
             Interior = true,
             MainPhoto = "MainPhoto",
-            ModelNumber = 123,
+            ModelNumber = "123",
             MotionDetection = true,
             PersonDetection = true,
-            SecondaryPhotos = []
+            SecondaryPhotos = [],
         };
         var cameraRequest = new CreateCameraRequest
         {
@@ -75,7 +75,7 @@ public class CameraControllerTests
             ModelNumber = cameraArgs.ModelNumber,
             MotionDetection = cameraArgs.MotionDetection,
             PersonDetection = cameraArgs.PersonDetection,
-            SecondaryPhotos = cameraArgs.SecondaryPhotos
+            SecondaryPhotos = cameraArgs.SecondaryPhotos,
         };
         _businessOwnerService.Setup(x => x.CreateCamera(cameraArgs)).Returns(camera);
         var items = new Dictionary<object, object?> { { Item.UserLogged, user } };
@@ -162,5 +162,35 @@ public class CameraControllerTests
         act.Should().Throw<ArgumentException>().WithMessage("User detected by camera is not found");
     }
 
+    #endregion
+
+    #region GetCamera
+    [TestMethod]
+    public void GetCamera_WithCameraId_ReturnsGetCameraResponse()
+    {
+        // Arrange
+        var cameraId = "cameraId";
+        var camera = new Camera("Name", "123", "Description", "https://example.com/photo.png", [],
+            new Business(), true, true,
+            true,
+            true);
+        _deviceServiceMock.Setup(x => x.GetCameraById(cameraId)).Returns(camera);
+
+        // Act
+        GetCameraResponse result = _cameraController.GetCamera(cameraId);
+
+        // Assert
+        result.Should().NotBeNull();
+        result.Id.Should().Be(camera.Id.ToString());
+        result.Name.Should().Be(camera.Name);
+        result.Description.Should().Be(camera.Description);
+        result.Exterior.Should().Be(camera.IsExterior);
+        result.Interior.Should().Be(camera.IsInterior);
+        result.MainPhoto.Should().Be(camera.MainPhoto);
+        result.ModelNumber.Should().Be(camera.ModelNumber);
+        result.MotionDetection.Should().Be(camera.MotionDetection);
+        result.PersonDetection.Should().Be(camera.PersonDetection);
+        result.SecondaryPhotos.Should().BeEquivalentTo(camera.SecondaryPhotos);
+    }
     #endregion
 }

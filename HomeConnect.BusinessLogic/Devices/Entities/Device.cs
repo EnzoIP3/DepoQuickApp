@@ -8,13 +8,13 @@ public class Device
     private string _mainPhoto = string.Empty;
     private string _name = string.Empty;
     private List<string> _secondaryPhotos = [];
+    private string _modelNumber = string.Empty;
 
-    public Device(string name, int? modelNumber, string description, string mainPhoto, List<string>? secondaryPhotos,
+    public Device(string name, string? modelNumber, string description, string mainPhoto, List<string>? secondaryPhotos,
         string type, Business business)
     {
         Name = name;
-        EnsureModelNumberIsNotNull(modelNumber);
-        ModelNumber = modelNumber!.Value;
+        ModelNumber = modelNumber!;
         Description = description;
         MainPhoto = mainPhoto;
         SecondaryPhotos = secondaryPhotos ?? [];
@@ -40,7 +40,15 @@ public class Device
         }
     }
 
-    public int ModelNumber { get; init; }
+    public string ModelNumber
+    {
+        get => _modelNumber;
+        set
+        {
+            EnsureModelNumberIsNotNull(value);
+            _modelNumber = value;
+        }
+    }
 
     public string Description
     {
@@ -91,7 +99,7 @@ public class Device
         }
     }
 
-    private static void EnsureModelNumberIsNotNull(int? modelNumber)
+    private static void EnsureModelNumberIsNotNull(string? modelNumber)
     {
         if (modelNumber == null)
         {

@@ -6,13 +6,11 @@ using BusinessLogic.HomeOwners.Services;
 using BusinessLogic.Roles.Entities;
 using BusinessLogic.Users.Entities;
 using FluentAssertions;
+using HomeConnect.WebApi.Controllers.HomeOwners.Models;
 using HomeConnect.WebApi.Controllers.Homes;
 using HomeConnect.WebApi.Controllers.Homes.Models;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.Abstractions;
-using Microsoft.AspNetCore.Mvc.Filters;
-using Microsoft.AspNetCore.Routing;
 using Moq;
 
 namespace HomeConnect.WebApi.Test.Controllers;
@@ -28,7 +26,6 @@ public class HomeControllerTests
     private readonly User _otherUser = new("Jane", "Doe", "email2@email.com", "Password@100",
         new Role { Name = "HomeOwner", Permissions = [] });
 
-    private AuthorizationFilterContext _context = null!;
     private HomeController _controller = null!;
     private Mock<IHomeOwnerService> _homeOwnerService = null!;
     private Mock<HttpContext> _httpContextMock = null!;
@@ -42,12 +39,6 @@ public class HomeControllerTests
         {
             ControllerContext = new ControllerContext { HttpContext = _httpContextMock.Object }
         };
-        _context = new AuthorizationFilterContext(
-            new ActionContext(
-                _httpContextMock.Object,
-                new RouteData(),
-                new ActionDescriptor()),
-            new List<IFilterMetadata>());
     }
 
     #region CreateHome
@@ -66,7 +57,8 @@ public class HomeControllerTests
         };
         var items = new Dictionary<object, object?> { { Item.UserLogged, _user } };
         _httpContextMock.Setup(h => h.Items).Returns(items);
-        var home = new Home(_user, request.Address, request.Latitude, request.Longitude, request.MaxMembers, request.Name);
+        var home = new Home(_user, request.Address, request.Latitude, request.Longitude, request.MaxMembers,
+            request.Name);
         var args = new CreateHomeArgs
         {
             HomeOwnerId = _user.Id.ToString(),
@@ -97,7 +89,7 @@ public class HomeControllerTests
         // Arrange
         var request = new AddMemberRequest
         {
-            MemberId = _user.Id.ToString(),
+            Email = _user.Email,
             CanAddDevices = true,
             CanListDevices = false
         };
@@ -106,7 +98,7 @@ public class HomeControllerTests
         var args = new AddMemberArgs
         {
             HomeId = _home.Id.ToString(),
-            UserId = _user.Id.ToString(),
+            UserEmail = _user.Email,
             CanAddDevices = request.CanAddDevices,
             CanListDevices = request.CanListDevices
         };
@@ -133,9 +125,9 @@ public class HomeControllerTests
         var businessOwner = new User("Business", "Owner", "bo@email.com", "Password@100",
             new Role { Name = "BusinessOwner", Permissions = [] });
         var business = new Business("123456789123", "business", "https://example.com/image.png", businessOwner);
-        var sensor = new Device("sensor", 123, "a camera", "https://www.example.com/photo1.jpg", [],
+        var sensor = new Device("sensor", "123", "a camera", "https://www.example.com/photo1.jpg", [],
             "sensor", business);
-        var camera = new Camera("camera", 123, "a camera", "https://www.example.com/photo1.jpg", [],
+        var camera = new Camera("camera", "123", "a camera", "https://www.example.com/photo1.jpg", [],
             business, true, true, false, true);
 
         var request = new AddDevicesRequest { DeviceIds = [sensor.Id.ToString(), camera.Id.ToString()] };
@@ -167,7 +159,7 @@ public class HomeControllerTests
             {
                 Name = "Device1",
                 Type = DeviceType.Sensor,
-                ModelNumber = 1,
+                ModelNumber = "1",
                 MainPhoto = "https://www.example.com/photo1.jpg",
                 Business = new Business { Name = "Name1" }
             });
@@ -176,7 +168,7 @@ public class HomeControllerTests
             {
                 Name = "Device2",
                 Type = DeviceType.Camera,
-                ModelNumber = 2,
+                ModelNumber = "2",
                 MainPhoto = "https://www.example.com/photo2.jpg",
                 Business = new Business { Name = "Name2" }
             });
@@ -196,7 +188,8 @@ public class HomeControllerTests
                     BusinessName = device1.Device.Business.Name,
                     Type = device1.Device.Type.ToString(),
                     ModelNumber = device1.Device.ModelNumber,
-                    Photo = device1.Device.MainPhoto
+                    MainPhoto = device1.Device.MainPhoto,
+                    SecondaryPhotos = device1.Device.SecondaryPhotos
                 },
                 new ListDeviceInfo
                 {
@@ -205,7 +198,8 @@ public class HomeControllerTests
                     BusinessName = device2.Device.Business.Name,
                     Type = device2.Device.Type.ToString(),
                     ModelNumber = device2.Device.ModelNumber,
-                    Photo = device2.Device.MainPhoto
+                    MainPhoto = device2.Device.MainPhoto,
+                    SecondaryPhotos = device2.Device.SecondaryPhotos
                 }
 
             ]
@@ -231,7 +225,7 @@ public class HomeControllerTests
             {
                 Name = "Device1",
                 Type = DeviceType.Lamp,
-                ModelNumber = 1,
+                ModelNumber = "1",
                 MainPhoto = "https://www.example.com/photo1.jpg",
                 Business = new Business { Name = "Name1" }
             });
@@ -240,7 +234,7 @@ public class HomeControllerTests
             {
                 Name = "Device2",
                 Type = DeviceType.Lamp,
-                ModelNumber = 2,
+                ModelNumber = "2",
                 MainPhoto = "https://www.example.com/photo2.jpg",
                 Business = new Business { Name = "Name2" }
             });
@@ -260,7 +254,8 @@ public class HomeControllerTests
                     BusinessName = lamp1.Device.Business.Name,
                     Type = lamp1.Device.Type.ToString(),
                     ModelNumber = lamp1.Device.ModelNumber,
-                    Photo = lamp1.Device.MainPhoto,
+                    MainPhoto = lamp1.Device.MainPhoto,
+                    SecondaryPhotos = lamp1.Device.SecondaryPhotos,
                     State = false
                 },
                 new ListDeviceInfo
@@ -270,7 +265,8 @@ public class HomeControllerTests
                     BusinessName = lamp2.Device.Business.Name,
                     Type = lamp2.Device.Type.ToString(),
                     ModelNumber = lamp2.Device.ModelNumber,
-                    Photo = lamp2.Device.MainPhoto,
+                    MainPhoto = lamp2.Device.MainPhoto,
+                    SecondaryPhotos = lamp2.Device.SecondaryPhotos,
                     State = false
                 }
 
@@ -297,7 +293,7 @@ public class HomeControllerTests
             {
                 Name = "Device1",
                 Type = DeviceType.Sensor,
-                ModelNumber = 1,
+                ModelNumber = "1",
                 MainPhoto = "https://www.example.com/photo1.jpg",
                 Business = new Business { Name = "Name1" }
             });
@@ -306,7 +302,7 @@ public class HomeControllerTests
             {
                 Name = "Device2",
                 Type = DeviceType.Sensor,
-                ModelNumber = 2,
+                ModelNumber = "2",
                 MainPhoto = "https://www.example.com/photo2.jpg",
                 Business = new Business { Name = "Name2" }
             });
@@ -326,7 +322,8 @@ public class HomeControllerTests
                     BusinessName = sensor1.Device.Business.Name,
                     Type = sensor1.Device.Type.ToString(),
                     ModelNumber = sensor1.Device.ModelNumber,
-                    Photo = sensor1.Device.MainPhoto,
+                    MainPhoto = sensor1.Device.MainPhoto,
+                    SecondaryPhotos = sensor1.Device.SecondaryPhotos,
                     IsOpen = false
                 },
                 new ListDeviceInfo
@@ -336,7 +333,8 @@ public class HomeControllerTests
                     BusinessName = sensor2.Device.Business.Name,
                     Type = sensor2.Device.Type.ToString(),
                     ModelNumber = sensor2.Device.ModelNumber,
-                    Photo = sensor2.Device.MainPhoto,
+                    MainPhoto = sensor2.Device.MainPhoto,
+                    SecondaryPhotos = sensor2.Device.SecondaryPhotos,
                     IsOpen = false
                 }
 
@@ -400,7 +398,7 @@ public class HomeControllerTests
             [
                 new ListMemberInfo
                 {
-                    Id = member.User.Id.ToString(),
+                    Id = member.Id.ToString(),
                     Name = member.User.Name,
                     Surname = member.User.Surname,
                     Photo = member.User.ProfilePicture ?? string.Empty,
@@ -411,7 +409,7 @@ public class HomeControllerTests
 
                 new ListMemberInfo
                 {
-                    Id = otherMember.User.Id.ToString(),
+                    Id = otherMember.Id.ToString(),
                     Name = otherMember.User.Name,
                     Surname = otherMember.User.Surname,
                     Photo = otherMember.User.ProfilePicture ?? string.Empty,
@@ -424,6 +422,191 @@ public class HomeControllerTests
             ]
         };
     }
+
+    #endregion
+
+    #region GetHomes
+
+    [TestMethod]
+    public void GetHomes_WhenCalledWithValidRequest_ReturnsHomes()
+    {
+        // Arrange
+        var home1 = new Home
+        {
+            Id = Guid.NewGuid(),
+            Address = "Amarales 3420",
+            Latitude = 40.7128,
+            Longitude = -74.0060,
+            MaxMembers = 4
+        };
+        var home2 = new Home
+        {
+            Id = Guid.NewGuid(),
+            Address = "Arteaga 1470",
+            Latitude = 34.0522,
+            Longitude = -118.2437,
+            MaxMembers = 6
+        };
+        var items = new Dictionary<object, object?> { { Item.UserLogged, _user } };
+        _httpContextMock.Setup(h => h.Items).Returns(items);
+        _homeOwnerService.Setup(x => x.GetHomesByOwnerId(_user.Id))
+            .Returns([home1, home2]);
+
+        var expectedResponse = new GetHomesResponse
+        {
+            Homes =
+            [
+                new ListHomeInfo
+                {
+                    Id = home1.Id.ToString(),
+                    Address = home1.Address,
+                    Latitude = home1.Latitude,
+                    Longitude = home1.Longitude,
+                    MaxMembers = home1.MaxMembers
+                },
+                new ListHomeInfo
+                {
+                    Id = home2.Id.ToString(),
+                    Address = home2.Address,
+                    Latitude = home2.Latitude,
+                    Longitude = home2.Longitude,
+                    MaxMembers = home2.MaxMembers
+                }
+
+            ]
+        };
+
+        // Act
+        GetHomesResponse response = _controller.GetHomes();
+
+        // Assert
+        _homeOwnerService.VerifyAll();
+        response.Should().NotBeNull();
+        response.Homes.Should().NotBeNullOrEmpty();
+        response.Homes.Should().HaveCount(2);
+        response.Homes.Should().BeEquivalentTo(expectedResponse.Homes);
+    }
+
+    #endregion
+
+    #region NameHome
+
+    #region Success
+
+    [TestMethod]
+    public void NameHome_WithValidRequest_ReturnsHomeId()
+    {
+        // Arrange
+        var request = new NameHomeRequest { NewName = "New Home Name" };
+        var homeId = Guid.NewGuid();
+        var items = new Dictionary<object, object?> { { Item.UserLogged, _user } };
+        var args = new NameHomeArgs { HomeId = homeId, NewName = request.NewName, OwnerId = _user.Id };
+        _httpContextMock.Setup(h => h.Items).Returns(items);
+        _homeOwnerService.Setup(x => x.NameHome(args));
+
+        // Act
+        NameHomeResponse response = _controller.NameHome(homeId.ToString(), request);
+
+        // Assert
+        _homeOwnerService.Verify(x => x.NameHome(args), Times.Once);
+        response.Should().NotBeNull();
+        response.HomeId.Should().Be(homeId.ToString());
+    }
+
+    #endregion
+
+    #region Error
+
+    [TestMethod]
+    public void NameHome_WithInvalidNewName_ThrowsArgumentException()
+    {
+        // Arrange
+        var request = new NameHomeRequest { NewName = string.Empty };
+        var items = new Dictionary<object, object?> { { Item.UserLogged, _user } };
+        _httpContextMock.Setup(h => h.Items).Returns(items);
+
+        // Act
+        var act = () => _controller.NameHome(Guid.NewGuid().ToString(), request);
+
+        // Assert
+        act.Should().Throw<ArgumentException>();
+    }
+
+    [TestMethod]
+    public void NameHome_WithInvalidHomeId_ThrowsArgumentException()
+    {
+        // Arrange
+        var request = new NameHomeRequest { NewName = "New Home Name" };
+        var items = new Dictionary<object, object?> { { Item.UserLogged, _user } };
+        _httpContextMock.Setup(h => h.Items).Returns(items);
+
+        // Act
+        var act = () => _controller.NameHome(string.Empty, request);
+
+        // Assert
+        act.Should().Throw<ArgumentException>();
+    }
+
+    #endregion
+
+    #endregion
+
+    #region GetHome
+
+    #region Success
+
+    [TestMethod]
+    public void GetHome_WithValidRequest_ReturnsHome()
+    {
+        // Arrange
+        var homeId = _home.Id;
+        var items = new Dictionary<object, object?> { { Item.UserLogged, _user } };
+        _httpContextMock.Setup(h => h.Items).Returns(items);
+        _homeOwnerService.Setup(x => x.GetHome(homeId)).Returns(_home);
+
+        // Act
+        GetHomeResponse response = _controller.GetHome(homeId.ToString());
+
+        // Assert
+        _homeOwnerService.VerifyAll();
+        response.Id.Should().Be(_home.Id.ToString());
+        response.Owner.Id.Should().Be(_home.Owner.Id.ToString());
+        response.Address.Should().Be(_home.Address);
+        response.Latitude.Should().Be(_home.Latitude);
+        response.Longitude.Should().Be(_home.Longitude);
+        response.MaxMembers.Should().Be(_home.MaxMembers);
+    }
+
+    #endregion
+
+    #endregion
+
+    #region GetHomePermissions
+
+    #region Success
+
+    [TestMethod]
+    public void GetHomePermissions_WithValidRequest_ReturnsHomePermissions()
+    {
+        // Arrange
+        var homeId = _home.Id;
+        var items = new Dictionary<object, object?> { { Item.UserLogged, _user } };
+        _httpContextMock.Setup(h => h.Items).Returns(items);
+        _homeOwnerService.Setup(x => x.GetHomePermissions(homeId, _user.Id))
+            .Returns([new HomePermission(HomePermission.AddDevice), new HomePermission(HomePermission.GetDevices)]);
+
+        // Act
+        GetHomePermissionsResponse response = _controller.GetHomePermissions(homeId.ToString());
+
+        // Assert
+        _homeOwnerService.VerifyAll();
+        response.HomeId.Should().Be(homeId.ToString());
+        response.HomePermissions.Should().NotBeNullOrEmpty();
+        response.HomePermissions.Should().HaveCount(2);
+        response.HomePermissions.Should().BeEquivalentTo(new[] { HomePermission.AddDevice, HomePermission.GetDevices });
+    }
+
+    #endregion
 
     #endregion
 }

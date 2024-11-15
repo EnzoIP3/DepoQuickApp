@@ -10,7 +10,7 @@ namespace HomeConnect.BusinessLogic.Test.Devices.Entities;
 public class DeviceTest
 {
     private const string Name = "Name";
-    private const int ModelNumber = 123;
+    private const string ModelNumber = "123";
     private const string Description = "Description";
     private const string MainPhoto = "https://www.example.com/photo1.jpg";
     private const string Type = "Camera";
@@ -42,10 +42,10 @@ public class DeviceTest
     #region Error
 
     [TestMethod]
-    [DataRow("", 123, "Description", "https://www.example.com/photo1.jpg", DeviceType.Camera)]
-    [DataRow("Name", 123, "", "https://www.example.com/photo1.jpg", DeviceType.Camera)]
-    [DataRow("Name", 123, "Description", "", DeviceType.Camera)]
-    public void Constructor_WhenArgumentsAreBlank_ThrowsException(string name, int modelNumber, string description,
+    [DataRow("", "123", "Description", "https://www.example.com/photo1.jpg", DeviceType.Camera)]
+    [DataRow("Name", "123", "", "https://www.example.com/photo1.jpg", DeviceType.Camera)]
+    [DataRow("Name", "123", "Description", "", DeviceType.Camera)]
+    public void Constructor_WhenArgumentsAreBlank_ThrowsException(string name, string modelNumber, string description,
         string mainPhoto, DeviceType type)
     {
         // Act

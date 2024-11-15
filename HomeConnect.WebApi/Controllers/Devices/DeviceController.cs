@@ -1,10 +1,16 @@
 using BusinessLogic;
+using BusinessLogic.BusinessOwners.Models;
+using BusinessLogic.BusinessOwners.Services;
 using BusinessLogic.Devices.Entities;
 using BusinessLogic.Devices.Models;
 using BusinessLogic.Devices.Services;
 using BusinessLogic.HomeOwners.Entities;
+using BusinessLogic.HomeOwners.Models;
+using BusinessLogic.HomeOwners.Services;
 using BusinessLogic.Roles.Entities;
+using BusinessLogic.Users.Entities;
 using HomeConnect.WebApi.Controllers.Devices.Models;
+using HomeConnect.WebApi.Controllers.HomeOwners.Models;
 using HomeConnect.WebApi.Controllers.Homes.Models;
 using HomeConnect.WebApi.Controllers.Rooms.Models;
 using HomeConnect.WebApi.Filters;
@@ -19,10 +25,17 @@ namespace HomeConnect.WebApi.Controllers.Devices;
 public class DeviceController : ControllerBase
 {
     private readonly IDeviceService _deviceService;
+    private readonly IValidatorService _validatorService;
+    private readonly IImporterService _importerService;
+    private readonly IHomeOwnerService _homeOwnerService;
 
-    public DeviceController(IDeviceService deviceService)
+    public DeviceController(IDeviceService deviceService, IValidatorService validatorService,
+        IImporterService importerService, IHomeOwnerService homeOwnerService)
     {
         _deviceService = deviceService;
+        _validatorService = validatorService;
+        _importerService = importerService;
+        _homeOwnerService = homeOwnerService;
     }
 
     [HttpGet]
@@ -35,7 +48,7 @@ public class DeviceController : ControllerBase
             Page = parameters.Page,
             PageSize = parameters.PageSize,
             DeviceNameFilter = parameters.Name,
-            ModelNumberFilter = parameters.Model
+            ModelNumberFilter = parameters.ModelNumber
         };
         PagedData<Device> devices = _deviceService.GetDevices(args);
         GetDevicesResponse response = ResponseFromDevices(devices);
@@ -48,12 +61,13 @@ public class DeviceController : ControllerBase
         {
             Devices = devices.Data.Select(d => new ListDeviceInfo
             {
-                HardwareId = d.Id.ToString(),
+                Id = d.Id.ToString(),
                 Name = d.Name,
                 BusinessName = d.Business.Name,
                 Type = d.Type.ToString(),
                 ModelNumber = d.ModelNumber,
-                Photo = d.MainPhoto
+                MainPhoto = d.MainPhoto,
+                SecondaryPhotos = d.SecondaryPhotos
             }).ToList(),
             Pagination = new Pagination
             {
@@ -62,6 +76,21 @@ public class DeviceController : ControllerBase
                 TotalPages = devices.TotalPages
             }
         };
+    }
+
+    [HttpPost]
+    [AuthorizationFilter(SystemPermission.ImportDevices)]
+    public ImportDevicesResponse ImportDevices([FromBody] ImportDevicesRequest request)
+    {
+        var userLoggedIn = HttpContext.Items[Item.UserLogged] as User;
+        var args = new ImportDevicesArgs
+        {
+            ImporterName = request.ImporterName,
+            FileName = request.Route,
+            User = userLoggedIn!
+        };
+        var addedDevices = _importerService.ImportDevices(args);
+        return new ImportDevicesResponse { ImportedDevices = addedDevices };
     }
 
     [HttpPost("{hardwareId}/turn_on")]
@@ -89,6 +118,37 @@ public class DeviceController : ControllerBase
             SourceRoomId = request.SourceRoomId,
             TargetRoomId = request.TargetRoomId,
             DeviceId = deviceId
+        };
+    }
+
+    [HttpPatch("{hardwareId}/name")]
+    [AuthorizationFilter(SystemPermission.NameDevice)]
+    [HomeAuthorizationFilter(HomePermission.NameDevice)]
+    public NameDeviceResponse NameDevice([FromRoute] string hardwareId, [FromBody] NameDeviceRequest request)
+    {
+        var userLoggedIn = HttpContext.Items[Item.UserLogged] as User;
+        var nameDeviceArgs = NameDeviceArgsFromRequest(request, userLoggedIn.Id, hardwareId);
+        _homeOwnerService.NameDevice(nameDeviceArgs);
+        return new NameDeviceResponse { DeviceId = hardwareId };
+    }
+
+    private static NameDeviceArgs NameDeviceArgsFromRequest(NameDeviceRequest request, Guid userId, string hardwareId)
+    {
+        if (string.IsNullOrEmpty(hardwareId))
+        {
+            throw new ArgumentException("DeviceId cannot be null or empty");
+        }
+
+        if (string.IsNullOrEmpty(request.NewName))
+        {
+            throw new ArgumentException("NewName cannot be null or empty");
+        }
+
+        return new NameDeviceArgs()
+        {
+            HardwareId = Guid.Parse(hardwareId),
+            NewName = request.NewName,
+            OwnerId = userId
         };
     }
 }

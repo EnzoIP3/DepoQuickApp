@@ -3,6 +3,7 @@ using BusinessLogic.Admins.Services;
 using BusinessLogic.BusinessOwners.Entities;
 using BusinessLogic.BusinessOwners.Models;
 using BusinessLogic.BusinessOwners.Services;
+using BusinessLogic.Devices.Entities;
 using BusinessLogic.Roles.Entities;
 using BusinessLogic.Users.Entities;
 using HomeConnect.WebApi.Controllers.Businesses.Models;
@@ -36,7 +37,8 @@ public class BusinessController(IAdminService adminService, IBusinessOwnerServic
             Name = request.Name ?? string.Empty,
             Logo = request.Logo ?? string.Empty,
             OwnerId = userLoggedIn?.Id.ToString() ?? string.Empty,
-            Rut = request.Rut ?? string.Empty
+            Rut = request.Rut ?? string.Empty,
+            Validator = request.Validator ?? string.Empty
         };
         Business business = businessOwnerService.CreateBusiness(args);
         return new CreateBusinessResponse { Rut = business.Rut };
@@ -60,6 +62,54 @@ public class BusinessController(IAdminService adminService, IBusinessOwnerServic
                 Page = businesses.Page,
                 PageSize = businesses.PageSize,
                 TotalPages = businesses.TotalPages
+            }
+        };
+    }
+
+    [HttpPatch("{businessId}/validator")]
+    [AuthorizationFilter(SystemPermission.UpdateBusinessValidator)]
+    public UpdateValidatorResponse UpdateValidator(string businessId, [FromBody] UpdateValidatorRequest request)
+    {
+        var userLoggedIn = HttpContext.Items[Item.UserLogged] as User;
+        var args = new UpdateValidatorArgs
+        {
+            BusinessRut = businessId,
+            Validator = request.Validator ?? string.Empty,
+            OwnerId = userLoggedIn?.Id.ToString() ?? string.Empty
+        };
+        businessOwnerService.UpdateValidator(args);
+        return new UpdateValidatorResponse { BusinessRut = args.BusinessRut, Validator = args.Validator };
+    }
+
+    [HttpGet("{businessId}/devices")]
+    [AuthorizationFilter(SystemPermission.GetBusinessDevices)]
+    public GetDevicesResponse GetDevices(string businessId)
+    {
+        var userLoggedIn = HttpContext.Items[Item.UserLogged] as User;
+        PagedData<Device> devices = businessOwnerService.GetDevices(businessId, userLoggedIn!);
+        GetDevicesResponse response = ResponseFromDevices(devices);
+        return response;
+    }
+
+    private GetDevicesResponse ResponseFromDevices(PagedData<Device> devices)
+    {
+        return new GetDevicesResponse
+        {
+            Devices = devices.Data.Select(d => new DeviceInfo
+            {
+                Id = d.Id.ToString(),
+                Name = d.Name,
+                ModelNumber = d.ModelNumber,
+                Description = d.Description,
+                MainPhoto = d.MainPhoto,
+                SecondaryPhotos = d.SecondaryPhotos,
+                Type = d.Type.ToString()
+            }).ToList(),
+            Pagination = new Pagination
+            {
+                Page = devices.Page,
+                PageSize = devices.PageSize,
+                TotalPages = devices.TotalPages
             }
         };
     }

@@ -14,12 +14,13 @@ public class Business
     {
     }
 
-    public Business(string rut, string name, string logo, User owner)
+    public Business(string rut, string name, string logo, User owner, Guid? validator = null)
     {
         Rut = rut;
         Name = name;
         Logo = logo;
         Owner = owner;
+        Validator = validator;
     }
 
     [Key]
@@ -53,6 +54,8 @@ public class Business
             _name = value;
         }
     }
+
+    public Guid? Validator { get; set; } = null;
 
     public User Owner { get; set; } = null!;
 

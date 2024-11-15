@@ -17,6 +17,8 @@ namespace HomeConnect.WebApi.Test.Controllers;
 [TestClass]
 public class LampControllerTests
 {
+    private readonly string _modelNumber = "123";
+
     private Mock<IBusinessOwnerService> _businessOwnerServiceMock = null!;
     private Mock<IDeviceService> _deviceServiceMock = null!;
     private Mock<HttpContext> _httpContextMock = null!;
@@ -40,7 +42,7 @@ public class LampControllerTests
     {
         // Arrange
         var user = new User();
-        var lamp = new Device("name", 123, "description", "http://example.com/photo.png", [],
+        var lamp = new Device("name", _modelNumber, "description", "http://example.com/photo.png", [],
             DeviceType.Lamp.ToString(),
             new Business());
         var lampArgs = new CreateDeviceArgs

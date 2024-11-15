@@ -43,9 +43,9 @@ public class DeviceServiceTests
 
         user1 = new User("name", "surname", "email1@email.com", "Password#100", new Role());
         user2 = new User("name", "surname", "email2@email.com", "Password#100", new Role());
-        validDevice = new Device("Device1", 12345, "Device description1", "https://example1.com/image.png",
+        validDevice = new Device("Device1", "12345", "Device description1", "https://example1.com/image.png",
             [], "Sensor", new Business("Rut1", "Business", "https://example.com/image.png", user1));
-        otherDevice = new Device("Device2", 12345, "Device description2", "https://example2.com/image.png",
+        otherDevice = new Device("Device2", "12345", "Device description2", "https://example2.com/image.png",
             [], "Sensor", new Business("Rut2", "Business", "https://example.com/image.png", user2));
 
         _devices = [validDevice, otherDevice];
@@ -409,6 +409,75 @@ public class DeviceServiceTests
             y.Date.Minute == date.Minute &&
             y.Event == args.Event), _deviceService), Times.Once);
         _ownedDeviceRepository.VerifyAll();
+    }
+    #endregion
+    #endregion
+
+    #region GetCameraById
+
+    #region Error
+    [TestMethod]
+    public void GetCameraById_WhenIdFormatIsInvalid_ThrowsArgumentException()
+    {
+        // Arrange
+        var cameraId = "cameraId";
+
+        // Act
+        Action act = () => _deviceService.GetCameraById(cameraId);
+
+        // Assert
+        act.Should().Throw<ArgumentException>().WithMessage("Camera ID format is invalid.");
+    }
+
+    [TestMethod]
+    public void GetCameraById_WhenCameraDoesNotExist_ThrowsInvalidOperationException()
+    {
+        // Arrange
+        var cameraId = Guid.NewGuid().ToString();
+        _deviceRepository.Setup(x => x.Exists(Guid.Parse(cameraId))).Returns(false);
+
+        // Act
+        Action act = () => _deviceService.GetCameraById(cameraId);
+
+        // Assert
+        act.Should().Throw<InvalidOperationException>().WithMessage("Device not found.");
+        _deviceRepository.VerifyAll();
+    }
+
+    [TestMethod]
+    public void GetCameraById_WhenDeviceIsNotACamera_ThrowsInvalidOperationException()
+    {
+        // Arrange
+        var cameraId = Guid.NewGuid().ToString();
+        _deviceRepository.Setup(x => x.Exists(Guid.Parse(cameraId))).Returns(true);
+        _deviceRepository.Setup(x => x.Get(Guid.Parse(cameraId))).Returns(new Device("Name", "123", "Description", "https://example.com/photo.png", [], "Sensor", new Business()));
+
+        // Act
+        Action act = () => _deviceService.GetCameraById(cameraId);
+
+        // Assert
+        act.Should().Throw<InvalidOperationException>().WithMessage("Device is not a camera.");
+        _deviceRepository.VerifyAll();
+    }
+    #endregion
+
+    #region Success
+    [TestMethod]
+    public void GetCameraById_WhenCalledWithValidId_ReturnsCamera()
+    {
+        // Arrange
+        var camera = new Camera("Name", "123", "Description", "https://example.com/photo.png", [], new Business(), true,
+            true, true, true);
+        var cameraId = camera.Id.ToString();
+        _deviceRepository.Setup(x => x.Exists(Guid.Parse(cameraId))).Returns(true);
+        _deviceRepository.Setup(x => x.Get(Guid.Parse(cameraId))).Returns(camera);
+
+        // Act
+        var result = _deviceService.GetCameraById(cameraId);
+
+        // Assert
+        result.Should().BeOfType<Camera>();
+        _deviceRepository.VerifyAll();
     }
     #endregion
     #endregion

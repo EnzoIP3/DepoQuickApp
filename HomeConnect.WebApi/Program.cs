@@ -4,8 +4,10 @@ using BusinessLogic.Auth.Repositories;
 using BusinessLogic.Auth.Services;
 using BusinessLogic.BusinessOwners.Repositories;
 using BusinessLogic.BusinessOwners.Services;
+using BusinessLogic.Devices.Importer;
 using BusinessLogic.Devices.Repositories;
 using BusinessLogic.Devices.Services;
+using BusinessLogic.Helpers;
 using BusinessLogic.HomeOwners.Repositories;
 using BusinessLogic.HomeOwners.Services;
 using BusinessLogic.Notifications.Repositories;
@@ -17,6 +19,7 @@ using HomeConnect.DataAccess;
 using HomeConnect.DataAccess.Repositories;
 using HomeConnect.WebApi.Filters;
 using Microsoft.EntityFrameworkCore;
+using ModeloValidador.Abstracciones;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -65,6 +68,10 @@ services.AddScoped<IDeviceService, DeviceService>();
 services.AddScoped<IAdminService, AdminService>();
 services.AddScoped<IBusinessOwnerService, BusinessOwnerService>();
 services.AddScoped<INotificationService, NotificationService>();
+services.AddScoped<IValidatorService, ValidatorService>();
+services.AddScoped<IImporterService, ImporterService>();
+services.AddScoped<IAssemblyInterfaceLoader<IDeviceImporter>, AssemblyInterfaceLoader<IDeviceImporter>>();
+services.AddScoped<IAssemblyInterfaceLoader<IModeloValidador>, AssemblyInterfaceLoader<IModeloValidador>>();
 
 WebApplication app = builder.Build();
 
@@ -80,10 +87,7 @@ app.UseCors();
 
 app.Run();
 
-namespace HomeConnect.WebApi
+[ExcludeFromCodeCoverage]
+public partial class Program
 {
-    [ExcludeFromCodeCoverage]
-    public class Program
-    {
-    }
 }

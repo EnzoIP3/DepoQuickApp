@@ -1,12 +1,13 @@
-import { Component } from "@angular/core";
+import { Component, OnDestroy } from "@angular/core";
 import { FormGroup, FormBuilder, Validators } from "@angular/forms";
 import { HomeOwnersService } from "../../../backend/services/home-owners/home-owners.service";
+import { Subscription } from "rxjs";
 
 @Component({
     selector: "app-register-form",
     templateUrl: "./register-form.component.html"
 })
-export class RegisterFormComponent {
+export class RegisterFormComponent implements OnDestroy {
     readonly formFields = {
         firstName: {
             required: { message: "First name is required" }
@@ -32,6 +33,7 @@ export class RegisterFormComponent {
 
     registerForm!: FormGroup;
     registerStatus = { loading: false, success: false, error: null };
+    private _registerSubscription: Subscription | null = null;
 
     constructor(
         private _formBuilder: FormBuilder,
@@ -59,16 +61,24 @@ export class RegisterFormComponent {
         this.registerStatus.error = null;
         this.registerStatus.success = false;
 
-        this._homeOwnersService.register(this.registerForm.value).subscribe({
-            next: () => {
-                this.registerStatus.loading = false;
-                this.registerStatus.success = true;
-                this.registerForm.reset();
-            },
-            error: (error) => {
-                this.registerStatus.loading = false;
-                this.registerStatus.error = error.message;
-            }
-        });
+        this._registerSubscription = this._homeOwnersService
+            .register(this.registerForm.value)
+            .subscribe({
+                next: () => {
+                    this.registerStatus.loading = false;
+                    this.registerStatus.success = true;
+                    this.registerForm.reset();
+                },
+                error: (error) => {
+                    this.registerStatus.loading = false;
+                    this.registerStatus.error = error.message;
+                }
+            });
+    }
+
+    ngOnDestroy() {
+        if (this._registerSubscription) {
+            this._registerSubscription.unsubscribe();
+        }
     }
 }

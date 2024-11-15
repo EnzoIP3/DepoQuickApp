@@ -8,10 +8,11 @@ using Microsoft.AspNetCore.Mvc.Filters;
 namespace HomeConnect.WebApi.Filters;
 
 [AttributeUsage(AttributeTargets.Class | AttributeTargets.Method)]
-public class HomeAuthorizationFilterAttribute(string permission) : Attribute, IAuthorizationFilter
+public class HomeAuthorizationFilterAttribute(string? permission = null) : Attribute, IAuthorizationFilter
 {
     private const string HomeIdRoute = "homesId";
     private const string MemberIdRoute = "membersId";
+    private const string HardwareIdRoute = "hardwareId";
 
     public void OnAuthorization(AuthorizationFilterContext context)
     {
@@ -24,50 +25,93 @@ public class HomeAuthorizationFilterAttribute(string permission) : Attribute, IA
 
         var homeId = GetRouteValueAsString(context, HomeIdRoute);
         var memberId = GetRouteValueAsString(context, MemberIdRoute);
+        var hardwareId = GetRouteValueAsString(context, HardwareIdRoute);
 
         if (homeId != null)
         {
-            if (!IsValidGuid(homeId, out Guid homeIdParsed))
-            {
-                SetBadRequestResult(context, "The home ID is invalid");
-                return;
-            }
-
-            Home? home = GetHomeById(context, homeIdParsed);
-            if (home == null)
-            {
-                SetNotFoundResult(context, "The home does not exist");
-                return;
-            }
-
-            if (!UserHasRequiredPermission(user, home, permission))
-            {
-                SetForbiddenResult(context, permission);
-            }
-
+            HandleHomeId(context, homeId, user);
             return;
         }
 
         if (memberId != null)
         {
-            if (!IsValidGuid(memberId, out Guid memberIdParsed))
-            {
-                SetBadRequestResult(context, "The member ID is invalid");
-                return;
-            }
+            HandleMemberId(context, memberId, user);
+            return;
+        }
 
-            Home? home = GetHomeFromMember(context, memberIdParsed);
-            if (home == null)
-            {
-                SetNotFoundResult(context, "The member does not exist");
-                return;
-            }
+        if (hardwareId != null)
+        {
+            HandleHardwareId(context, hardwareId, user);
+        }
+    }
+
+    private void HandleHardwareId(AuthorizationFilterContext context, string hardwareId, User user)
+    {
+        if (!IsValidGuid(hardwareId, out Guid _))
+        {
+            SetBadRequestResult(context, "The hardware ID is invalid");
+            return;
+        }
+
+        IHomeOwnerService homeOwnerService = GetHomeOwnerService(context);
+        try
+        {
+            var device = homeOwnerService.GetOwnedDeviceByHardwareId(hardwareId);
+            var home = device.Home;
 
             if (!UserHasRequiredPermission(user, home, permission))
             {
                 SetForbiddenResult(context, permission);
             }
         }
+        catch (KeyNotFoundException)
+        {
+            SetNotFoundResult(context, "The device does not exist");
+        }
+    }
+
+    private void HandleMemberId(AuthorizationFilterContext context, string memberId, User user)
+    {
+        if (!IsValidGuid(memberId, out Guid memberIdParsed))
+        {
+            SetBadRequestResult(context, "The member ID is invalid");
+            return;
+        }
+
+        Home? home = GetHomeFromMember(context, memberIdParsed);
+        if (home == null)
+        {
+            SetNotFoundResult(context, "The member does not exist");
+            return;
+        }
+
+        if (!UserHasRequiredPermission(user, home, permission))
+        {
+            SetForbiddenResult(context, permission);
+        }
+    }
+
+    private void HandleHomeId(AuthorizationFilterContext context, string homeId, User user)
+    {
+        if (!IsValidGuid(homeId, out Guid homeIdParsed))
+        {
+            SetBadRequestResult(context, "The home ID is invalid");
+            return;
+        }
+
+        Home? home = GetHomeById(context, homeIdParsed);
+        if (home == null)
+        {
+            SetNotFoundResult(context, "The home does not exist");
+            return;
+        }
+
+        if (!UserHasRequiredPermission(user, home, permission))
+        {
+            SetForbiddenResult(context, permission);
+        }
+
+        return;
     }
 
     private static User? GetAuthenticatedUser(AuthorizationFilterContext context)
@@ -82,7 +126,7 @@ public class HomeAuthorizationFilterAttribute(string permission) : Attribute, IA
         {
             return homeOwnerService.GetHome(homeIdParsed);
         }
-        catch (ArgumentException)
+        catch (KeyNotFoundException)
         {
             return null;
         }
@@ -102,9 +146,9 @@ public class HomeAuthorizationFilterAttribute(string permission) : Attribute, IA
         }
     }
 
-    private static bool UserHasRequiredPermission(User user, Home home, string permission)
+    private static bool UserHasRequiredPermission(User user, Home home, string? permission)
     {
-        var homePermission = new HomePermission(permission);
+        var homePermission = new HomePermission(permission ?? string.Empty);
         return IsHomeOwner(user, home) || UserIsMemberWithPermission(user, home, homePermission);
     }
 
@@ -116,7 +160,7 @@ public class HomeAuthorizationFilterAttribute(string permission) : Attribute, IA
     private static bool UserIsMemberWithPermission(User user, Home home, HomePermission homePermission)
     {
         Member? member = home.Members.FirstOrDefault(m => m.User.Id == user.Id);
-        return member != null && member.HasPermission(homePermission);
+        return member != null && (member.HasPermission(homePermission) || homePermission.Value == string.Empty);
     }
 
     private static IHomeOwnerService GetHomeOwnerService(AuthorizationFilterContext context)
@@ -149,8 +193,15 @@ public class HomeAuthorizationFilterAttribute(string permission) : Attribute, IA
         SetResult(context, HttpStatusCode.NotFound, "NotFound", message);
     }
 
-    private static void SetForbiddenResult(AuthorizationFilterContext context, string permission)
+    private static void SetForbiddenResult(AuthorizationFilterContext context, string? permission)
     {
+        if (permission == null)
+        {
+            SetResult(context, HttpStatusCode.Forbidden, "Forbidden",
+                "You do not belong to this home");
+            return;
+        }
+
         SetResult(context, HttpStatusCode.Forbidden, "Forbidden", $"Missing home permission: {permission}");
     }
 

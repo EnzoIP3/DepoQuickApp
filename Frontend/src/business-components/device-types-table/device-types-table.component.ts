@@ -1,7 +1,7 @@
 import { Component } from "@angular/core";
 import { MessageService } from "primeng/api";
 import { Subscription } from "rxjs";
-import PaginationResponse from "../../backend/services/pagination-response";
+import PaginationResponse from "../../backend/services/pagination";
 import TableColumn from "../../components/table/models/table-column";
 import { DeviceTypesService } from "../../backend/services/device-types/device-types.service";
 import DeviceTypesResponse from "../../backend/services/device-types/models/device-types-response";
@@ -24,7 +24,6 @@ export class DeviceTypesTableComponent {
     private _deviceTypesSubscription: Subscription | null = null;
 
     deviceTypes: { type: string }[] = [];
-    pagination: PaginationResponse | null = null;
     loading: boolean = true;
 
     constructor(

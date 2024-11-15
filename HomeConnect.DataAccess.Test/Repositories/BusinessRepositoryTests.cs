@@ -1,4 +1,5 @@
 using BusinessLogic;
+using BusinessLogic.Admins.Services;
 using BusinessLogic.BusinessOwners.Entities;
 using BusinessLogic.Roles.Entities;
 using BusinessLogic.Users.Entities;
@@ -123,9 +124,11 @@ public class BusinessRepositoryTests
             PageSize = 2,
             TotalPages = 1
         };
+        var filterArgs = new FilterArgs
+        { CurrentPage = 1, PageSize = 2 };
 
         // Act
-        PagedData<Business> result = _businessRepository.GetPaged(1, 2);
+        PagedData<Business> result = _businessRepository.GetPaged(filterArgs);
 
         // Assert
         result.Data.Should().BeEquivalentTo(expected.Data);
@@ -136,9 +139,11 @@ public class BusinessRepositoryTests
     {
         // Arrange
         var expected = new List<Business> { _validBusiness };
+        var filterArgs = new FilterArgs
+        { CurrentPage = 1, PageSize = 1 };
 
         // Act
-        PagedData<Business> result = _businessRepository.GetPaged(1, 1);
+        PagedData<Business> result = _businessRepository.GetPaged(filterArgs);
 
         // Assert
         result.Data.Should().BeEquivalentTo(expected);
@@ -149,9 +154,11 @@ public class BusinessRepositoryTests
     {
         // Arrange
         var expected = new PagedData<Business> { Data = [_validBusiness], Page = 1, PageSize = 2, TotalPages = 1 };
+        var filterArgs = new FilterArgs
+        { CurrentPage = 1, PageSize = 2, FullNameFilter = "John Doe" };
 
         // Act
-        PagedData<Business> result = _businessRepository.GetPaged(1, 2, "John Doe");
+        PagedData<Business> result = _businessRepository.GetPaged(filterArgs);
 
         // Assert
         result.Data.Should().BeEquivalentTo(expected.Data);
@@ -162,9 +169,11 @@ public class BusinessRepositoryTests
     {
         // Arrange
         var expected = new PagedData<Business> { Data = [_otherBusiness], Page = 1, PageSize = 2, TotalPages = 1 };
+        var filterArgs = new FilterArgs
+        { CurrentPage = 1, PageSize = 2, NameFilter = "Other" };
 
         // Act
-        PagedData<Business> result = _businessRepository.GetPaged(1, 2, null, "Other");
+        PagedData<Business> result = _businessRepository.GetPaged(filterArgs);
 
         // Assert
         result.Data.Should().BeEquivalentTo(expected.Data);
@@ -175,9 +184,26 @@ public class BusinessRepositoryTests
     {
         // Arrange
         var expected = new PagedData<Business> { Data = [_otherBusiness], Page = 1, PageSize = 2, TotalPages = 1 };
+        var filterArgs = new FilterArgs
+        { CurrentPage = 1, PageSize = 2, FullNameFilter = "Jane Doe", NameFilter = "Other" };
 
         // Act
-        PagedData<Business> result = _businessRepository.GetPaged(1, 2, "J", "Other");
+        PagedData<Business> result = _businessRepository.GetPaged(filterArgs);
+
+        // Assert
+        result.Data.Should().BeEquivalentTo(expected.Data);
+    }
+
+    [TestMethod]
+    public void GetBusinesses_WithOwnerIdFilter_ReturnsFilteredBusinesses()
+    {
+        // Arrange
+        var expected = new PagedData<Business> { Data = [_validBusiness], Page = 1, PageSize = 2, TotalPages = 1 };
+        var filterArgs = new FilterArgs
+        { CurrentPage = 1, PageSize = 2, OwnerIdFilter = _validUser.Id };
+
+        // Act
+        PagedData<Business> result = _businessRepository.GetPaged(filterArgs);
 
         // Assert
         result.Data.Should().BeEquivalentTo(expected.Data);
@@ -251,5 +277,21 @@ public class BusinessRepositoryTests
 
     #endregion
 
+    #endregion
+
+    #region UpdateValidator
+    [TestMethod]
+    public void UpdateValidator_WhenBusinessExists_UpdatesValidator()
+    {
+        // Arrange
+        var business = _validBusiness;
+        var validatorId = Guid.NewGuid();
+
+        // Act
+        _businessRepository.UpdateValidator(business.Rut, validatorId);
+
+        // Assert
+        business.Validator.Should().Be(validatorId);
+    }
     #endregion
 }

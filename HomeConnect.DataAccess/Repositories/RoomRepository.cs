@@ -19,6 +19,6 @@ public class RoomRepository
 
     public Room Get(Guid roomId)
     {
-        throw new NotImplementedException();
+        return _context.Rooms.First(r => r.Id == roomId);
     }
 }

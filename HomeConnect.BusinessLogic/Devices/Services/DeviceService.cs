@@ -10,18 +10,20 @@ namespace BusinessLogic.Devices.Services;
 public class DeviceService : IDeviceService
 {
     public DeviceService(IDeviceRepository deviceRepository, IOwnedDeviceRepository ownedDeviceRepository,
-        INotificationService notificationService, IHomeRepository homeRepository)
+        INotificationService notificationService, IHomeRepository homeRepository, IRoomRepository roomRepository)
     {
         HomeRepository = homeRepository;
         DeviceRepository = deviceRepository;
         OwnedDeviceRepository = ownedDeviceRepository;
         NotificationService = notificationService;
+        RoomRepository = roomRepository;
     }
 
     private IDeviceRepository DeviceRepository { get; }
     private IOwnedDeviceRepository OwnedDeviceRepository { get; }
     private INotificationService NotificationService { get; }
     private IHomeRepository HomeRepository { get; }
+    private IRoomRepository RoomRepository { get; }
 
     public PagedData<Device> GetDevices(GetDevicesArgs parameters)
     {
@@ -112,18 +114,18 @@ public class DeviceService : IDeviceService
 
     public void MoveDevice(string sourceRoomId, string targetRoomId, string ownedDeviceId)
     {
-        if (!HomeRepository.ExistsRoom(Guid.Parse(sourceRoomId)))
+        if (!RoomRepository.Exists(Guid.Parse(sourceRoomId)))
         {
             throw new ArgumentException("Invalid source room ID.");
         }
 
-        if (!HomeRepository.ExistsRoom(Guid.Parse(targetRoomId)))
+        if (!RoomRepository.Exists(Guid.Parse(targetRoomId)))
         {
             throw new ArgumentException("Invalid target room ID.");
         }
 
-        var sourceRoom = HomeRepository.GetRoomById(Guid.Parse(sourceRoomId));
-        var targetRoom = HomeRepository.GetRoomById(Guid.Parse(targetRoomId));
+        var sourceRoom = RoomRepository.Get(Guid.Parse(sourceRoomId));
+        var targetRoom = RoomRepository.Get(Guid.Parse(targetRoomId));
 
         var ownedDevice = sourceRoom.OwnedDevices.FirstOrDefault(d => d.HardwareId == Guid.Parse(ownedDeviceId));
         if (ownedDevice == null)
@@ -135,8 +137,8 @@ public class DeviceService : IDeviceService
         targetRoom.OwnedDevices.Add(ownedDevice);
         ownedDevice.Room = targetRoom;
 
-        HomeRepository.UpdateRoom(sourceRoom);
-        HomeRepository.UpdateRoom(targetRoom);
+        RoomRepository.Update(sourceRoom);
+        RoomRepository.Update(targetRoom);
         OwnedDeviceRepository.UpdateOwnedDevice(ownedDevice);
     }
 

@@ -28,6 +28,7 @@ public class HomeOwnerServiceTests
     private Mock<IMemberRepository> _memberRepositoryMock = null!;
     private Mock<IOwnedDeviceRepository> _ownedDeviceRepositoryMock = null!;
     private Mock<IUserRepository> _userRepositoryMock = null!;
+    private Mock<IRoomRepository> _roomRepositoryMock = null!;
     private List<Member> _testMembers = null!;
 
     [TestInitialize]
@@ -38,8 +39,10 @@ public class HomeOwnerServiceTests
         _ownedDeviceRepositoryMock = new Mock<IOwnedDeviceRepository>(MockBehavior.Strict);
         _deviceRepositoryMock = new Mock<IDeviceRepository>(MockBehavior.Strict);
         _memberRepositoryMock = new Mock<IMemberRepository>(MockBehavior.Strict);
+        _roomRepositoryMock = new Mock<IRoomRepository>(MockBehavior.Strict);
         _homeOwnerService = new HomeOwnerService(_homeRepositoryMock.Object, _userRepositoryMock.Object,
-            _deviceRepositoryMock.Object, _ownedDeviceRepositoryMock.Object, _memberRepositoryMock.Object);
+            _deviceRepositoryMock.Object, _ownedDeviceRepositoryMock.Object, _memberRepositoryMock.Object,
+            _roomRepositoryMock.Object);
         var home1 = new Home(_user, "Amarales 3420", 40.7128, -74.0060, 4);
         var home2 = new Home(_user, "Arteaga 1470", 34.0522, -118.2437, 6);
         _testMembers =
@@ -208,10 +211,7 @@ public class HomeOwnerServiceTests
         // Arrange
         var model = new AddMemberArgs
         {
-            HomeId = homeId,
-            UserEmail = homeOwnerEmail,
-            CanAddDevices = true,
-            CanListDevices = true
+            HomeId = homeId, UserEmail = homeOwnerEmail, CanAddDevices = true, CanListDevices = true
         };
 
         // Act
@@ -309,8 +309,7 @@ public class HomeOwnerServiceTests
             true, true, true);
         var addDeviceModel = new AddDevicesArgs
         {
-            HomeId = home.Id.ToString(),
-            DeviceIds = [device.Id.ToString(), camera.Id.ToString()]
+            HomeId = home.Id.ToString(), DeviceIds = [device.Id.ToString(), camera.Id.ToString()]
         };
         _deviceRepositoryMock.Setup(x => x.Get(device.Id)).Returns(device);
         _deviceRepositoryMock.Setup(x => x.Get(camera.Id)).Returns(camera);
@@ -498,8 +497,10 @@ public class HomeOwnerServiceTests
         // Arrange
         var home = new Home(_user, "Main St 123", 1.0, 2.0, 5);
         var room = new Room { Id = Guid.NewGuid(), Name = "Living Room" };
-        var sensor = new Device("Sensor", "1", "A sensor", "https://example.com/image.png", [], "Sensor", new Business());
-        var camera = new Camera("Camera", "2", "A camera", "https://example.com/image.png", [], new Business(), true, true, true, true);
+        var sensor = new Device("Sensor", "1", "A sensor", "https://example.com/image.png", [], "Sensor",
+            new Business());
+        var camera = new Camera("Camera", "2", "A camera", "https://example.com/image.png", [], new Business(), true,
+            true, true, true);
         var ownedDeviceInRoom = new OwnedDevice(home, sensor) { Room = room };
         var ownedDeviceNotInRoom = new OwnedDevice(home, camera);
         var ownedDevices = new List<OwnedDevice> { ownedDeviceInRoom, ownedDeviceNotInRoom };
@@ -982,8 +983,11 @@ public class HomeOwnerServiceTests
     #endregion
 
     #endregion
+
     #region CreateRoom
+
     #region Success
+
     [TestMethod]
     public void CreateRoom_ShouldCreateRoomAndAddToRepository_WhenParametersAreValid()
     {
@@ -1006,8 +1010,11 @@ public class HomeOwnerServiceTests
         createdRoom.Name.Should().Be(roomName);
         home.Rooms.Should().ContainSingle(r => r.Id == createdRoom.Id && r.Name == roomName);
     }
+
     #endregion
+
     #region Error
+
     [TestMethod]
     public void CreateRoom_ShouldThrowArgumentException_WhenHomeIdIsNullOrEmpty()
     {
@@ -1048,8 +1055,11 @@ public class HomeOwnerServiceTests
         // Assert
         act.Should().Throw<ArgumentException>().WithMessage("Home does not exist.");
     }
+
     #endregion
+
     #region AddOwnedDeviceToRoom
+
     [TestMethod]
     public void AddOwnedDeviceToRoom_ValidInput_DeviceAssociatedSuccessfully()
     {
@@ -1061,10 +1071,10 @@ public class HomeOwnerServiceTests
         var device = new Device();
         var ownedDevice = new OwnedDevice(home, device);
 
-        _homeRepositoryMock.Setup(repo => repo.ExistsRoom(It.IsAny<Guid>())).Returns(true);
-        _homeRepositoryMock.Setup(repo => repo.GetRoomById(It.IsAny<Guid>())).Returns(room);
+        _roomRepositoryMock.Setup(repo => repo.Exists(It.IsAny<Guid>())).Returns(true);
+        _roomRepositoryMock.Setup(repo => repo.Get(It.IsAny<Guid>())).Returns(room);
         _ownedDeviceRepositoryMock.Setup(repo => repo.GetOwnedDeviceById(It.IsAny<Guid>())).Returns(ownedDevice);
-        _homeRepositoryMock.Setup(repo => repo.UpdateRoom(It.IsAny<Room>())).Verifiable();
+        _roomRepositoryMock.Setup(repo => repo.Update(It.IsAny<Room>())).Verifiable();
 
         // Act
         var result = _homeOwnerService.AddOwnedDeviceToRoom(roomId, deviceId);
@@ -1073,14 +1083,16 @@ public class HomeOwnerServiceTests
         result.Should().Be(ownedDevice.HardwareId);
         _homeRepositoryMock.VerifyAll();
     }
+
     #region Error
+
     [TestMethod]
     public void AddOwnedDeviceToRoom_WhenRoomDoesNotExist_ThrowsArgumentException()
     {
         // Arrange
         var roomId = Guid.NewGuid().ToString();
         var deviceId = Guid.NewGuid().ToString();
-        _homeRepositoryMock.Setup(repo => repo.ExistsRoom(It.IsAny<Guid>())).Returns(false);
+        _roomRepositoryMock.Setup(repo => repo.Exists(It.IsAny<Guid>())).Returns(false);
 
         // Act
         Action act = () => _homeOwnerService.AddOwnedDeviceToRoom(roomId, deviceId);
@@ -1088,7 +1100,10 @@ public class HomeOwnerServiceTests
         // Assert
         act.Should().Throw<ArgumentException>().WithMessage("Invalid room ID.");
     }
+
     #endregion
+
     #endregion
+
     #endregion
 }

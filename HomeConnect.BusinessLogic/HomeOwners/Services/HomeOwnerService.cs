@@ -15,13 +15,15 @@ public class HomeOwnerService : IHomeOwnerService
         IUserRepository userRepository,
         IDeviceRepository deviceRepository,
         IOwnedDeviceRepository ownedDeviceRepository,
-        IMemberRepository memberRepository)
+        IMemberRepository memberRepository,
+        IRoomRepository roomRepository)
     {
         HomeRepository = homeRepository;
         UserRepository = userRepository;
         DeviceRepository = deviceRepository;
         OwnedDeviceRepository = ownedDeviceRepository;
         MemberRepository = memberRepository;
+        RoomRepository = roomRepository;
     }
 
     private IHomeRepository HomeRepository { get; }
@@ -29,6 +31,7 @@ public class HomeOwnerService : IHomeOwnerService
     private IDeviceRepository DeviceRepository { get; }
     private IOwnedDeviceRepository OwnedDeviceRepository { get; }
     private IMemberRepository MemberRepository { get; }
+    private IRoomRepository RoomRepository { get; }
 
     public Guid CreateHome(CreateHomeArgs args)
     {
@@ -162,16 +165,16 @@ public class HomeOwnerService : IHomeOwnerService
         var roomGuid = Guid.Parse(roomId);
         var ownedDeviceGuid = Guid.Parse(ownedDeviceId);
 
-        if (!HomeRepository.ExistsRoom(roomGuid))
+        if (!RoomRepository.Exists(roomGuid))
         {
             throw new ArgumentException("Invalid room ID.");
         }
 
-        var room = HomeRepository.GetRoomById(roomGuid);
+        var room = RoomRepository.Get(roomGuid);
         var ownedDevice = OwnedDeviceRepository.GetOwnedDeviceById(ownedDeviceGuid);
 
         room.OwnedDevices.Add(ownedDevice);
-        HomeRepository.UpdateRoom(room);
+        RoomRepository.Update(room);
         return ownedDevice.HardwareId;
     }
 

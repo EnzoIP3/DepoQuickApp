@@ -1,8 +1,9 @@
 using BusinessLogic.HomeOwners.Entities;
+using BusinessLogic.HomeOwners.Repositories;
 
 namespace HomeConnect.DataAccess.Repositories;
 
-public class RoomRepository
+public class RoomRepository : IRoomRepository
 {
     private readonly Context _context;
 

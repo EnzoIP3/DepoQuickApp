@@ -24,6 +24,7 @@ public class DeviceServiceTests
     private Mock<IOwnedDeviceRepository> _ownedDeviceRepository = null!;
     private Mock<INotificationService> _notificationService = null!;
     private Mock<IHomeRepository> _homeRepository = null!;
+    private Mock<IRoomRepository> _roomRepository = null!;
     private PagedData<Device> _pagedDeviceList = null!;
     private GetDevicesArgs _parameters = null!;
     private Device otherDevice = null!;
@@ -38,8 +39,9 @@ public class DeviceServiceTests
         _ownedDeviceRepository = new Mock<IOwnedDeviceRepository>(MockBehavior.Strict);
         _notificationService = new Mock<INotificationService>(MockBehavior.Strict);
         _homeRepository = new Mock<IHomeRepository>(MockBehavior.Strict);
+        _roomRepository = new Mock<IRoomRepository>(MockBehavior.Strict);
         _deviceService = new DeviceService(_deviceRepository.Object, _ownedDeviceRepository.Object,
-            _notificationService.Object, _homeRepository.Object);
+            _notificationService.Object, _homeRepository.Object, _roomRepository.Object);
 
         user1 = new User("name", "surname", "email1@email.com", "Password#100", new Role());
         user2 = new User("name", "surname", "email2@email.com", "Password#100", new Role());
@@ -483,6 +485,7 @@ public class DeviceServiceTests
     #endregion
 
     #region MoveDevice
+
     #region Success
     [TestMethod]
     public void MoveDevice_WhenCalled_MovesDeviceSuccessfully()
@@ -495,11 +498,11 @@ public class DeviceServiceTests
         var sourceRoom = new Room { Id = sourceRoomId, OwnedDevices = new List<OwnedDevice> { ownedDevice } };
         var targetRoom = new Room { Id = targetRoomId, OwnedDevices = new List<OwnedDevice>() };
 
-        _homeRepository.Setup(r => r.ExistsRoom(sourceRoomId)).Returns(true);
-        _homeRepository.Setup(r => r.ExistsRoom(targetRoomId)).Returns(true);
-        _homeRepository.Setup(r => r.GetRoomById(sourceRoomId)).Returns(sourceRoom);
-        _homeRepository.Setup(r => r.GetRoomById(targetRoomId)).Returns(targetRoom);
-        _homeRepository.Setup(r => r.UpdateRoom(It.IsAny<Room>())).Verifiable();
+        _roomRepository.Setup(r => r.Exists(sourceRoomId)).Returns(true);
+        _roomRepository.Setup(r => r.Exists(targetRoomId)).Returns(true);
+        _roomRepository.Setup(r => r.Get(sourceRoomId)).Returns(sourceRoom);
+        _roomRepository.Setup(r => r.Get(targetRoomId)).Returns(targetRoom);
+        _roomRepository.Setup(r => r.Update(It.IsAny<Room>())).Verifiable();
         _ownedDeviceRepository.Setup(r => r.UpdateOwnedDevice(It.IsAny<OwnedDevice>())).Verifiable();
 
         // Act
@@ -513,7 +516,9 @@ public class DeviceServiceTests
         _deviceRepository.VerifyAll();
     }
     #endregion
+
     #region Error
+
     [TestMethod]
     public void MoveDevice_WhenSourceRoomIdIsInvalid_ThrowsArgumentException()
     {
@@ -522,7 +527,7 @@ public class DeviceServiceTests
         var targetRoomId = Guid.NewGuid();
         var ownedDeviceId = Guid.NewGuid();
 
-        _homeRepository.Setup(r => r.ExistsRoom(sourceRoomId)).Returns(false);
+        _roomRepository.Setup(r => r.Exists(sourceRoomId)).Returns(false);
 
         // Act
         Action act = () => _deviceService.MoveDevice(sourceRoomId.ToString(), targetRoomId.ToString(), ownedDeviceId.ToString());
@@ -539,8 +544,8 @@ public class DeviceServiceTests
         var targetRoomId = Guid.NewGuid();
         var ownedDeviceId = Guid.NewGuid();
 
-        _homeRepository.Setup(r => r.ExistsRoom(sourceRoomId)).Returns(true);
-        _homeRepository.Setup(r => r.ExistsRoom(targetRoomId)).Returns(false);
+        _roomRepository.Setup(r => r.Exists(sourceRoomId)).Returns(true);
+        _roomRepository.Setup(r => r.Exists(targetRoomId)).Returns(false);
 
         // Act
         Action act = () => _deviceService.MoveDevice(sourceRoomId.ToString(), targetRoomId.ToString(), ownedDeviceId.ToString());
@@ -559,10 +564,10 @@ public class DeviceServiceTests
         var sourceRoom = new Room { Id = sourceRoomId, OwnedDevices = new List<OwnedDevice>() };
         var targetRoom = new Room { Id = targetRoomId, OwnedDevices = new List<OwnedDevice>() };
 
-        _homeRepository.Setup(r => r.ExistsRoom(sourceRoomId)).Returns(true);
-        _homeRepository.Setup(r => r.ExistsRoom(targetRoomId)).Returns(true);
-        _homeRepository.Setup(r => r.GetRoomById(sourceRoomId)).Returns(sourceRoom);
-        _homeRepository.Setup(r => r.GetRoomById(targetRoomId)).Returns(targetRoom);
+        _roomRepository.Setup(r => r.Exists(sourceRoomId)).Returns(true);
+        _roomRepository.Setup(r => r.Exists(targetRoomId)).Returns(true);
+        _roomRepository.Setup(r => r.Get(sourceRoomId)).Returns(sourceRoom);
+        _roomRepository.Setup(r => r.Get(targetRoomId)).Returns(targetRoom);
 
         // Act
         Action act = () => _deviceService.MoveDevice(sourceRoomId.ToString(), targetRoomId.ToString(), ownedDeviceId.ToString());

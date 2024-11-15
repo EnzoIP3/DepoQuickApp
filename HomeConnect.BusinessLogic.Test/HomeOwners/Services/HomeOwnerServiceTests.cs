@@ -927,6 +927,21 @@ public class HomeOwnerServiceTests
         act.Should().Throw<ArgumentException>();
     }
 
+    [TestMethod]
+    public void GetOwnedDeviceByHardwareId_WhenDeviceDoesNotExist_ThrowsException()
+    {
+        // Arrange
+        var hardwareId = Guid.NewGuid();
+        _ownedDeviceRepositoryMock.Setup(repo => repo.Exists(hardwareId))
+            .Returns(false);
+
+        // Act
+        var act = () => _homeOwnerService.GetOwnedDeviceByHardwareId(hardwareId.ToString());
+
+        // Assert
+        act.Should().Throw<ArgumentException>();
+    }
+
     #endregion
 
     #endregion

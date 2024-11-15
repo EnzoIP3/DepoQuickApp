@@ -19,6 +19,7 @@ public class HomeOwnerServiceTests
     private readonly User _user =
         new("John", "Doe", "test@example.com", "12345678@My",
             new Role());
+
     private readonly string _modelNumber = "123";
 
     private Mock<IDeviceRepository> _deviceRepositoryMock = null!;
@@ -174,7 +175,8 @@ public class HomeOwnerServiceTests
             HomeId = home.Id.ToString(),
             UserEmail = invitedUser.Email,
             CanAddDevices = true,
-            CanListDevices = true
+            CanListDevices = true,
+            CanNameDevices = true
         };
         _userRepositoryMock.Setup(x => x.ExistsByEmail(model.UserEmail)).Returns(true);
         _userRepositoryMock.Setup(x => x.GetByEmail(model.UserEmail)).Returns(invitedUser);
@@ -188,6 +190,9 @@ public class HomeOwnerServiceTests
         // Assert
         home.Members.Should().ContainSingle(x => x.User == invitedUser);
         result.Should().Be(home.Members.First().Id);
+        home.Members.First().HomePermissions.Any(p => p.Value == HomePermission.GetDevices).Should().BeTrue();
+        home.Members.First().HomePermissions.Any(p => p.Value == HomePermission.AddDevice).Should().BeTrue();
+        home.Members.First().HomePermissions.Any(p => p.Value == HomePermission.NameDevice).Should().BeTrue();
         _memberRepositoryMock.Verify(x => x.Add(It.IsAny<Member>()), Times.Once);
     }
 
@@ -801,6 +806,153 @@ public class HomeOwnerServiceTests
 
         // Assert
         act.Should().Throw<ArgumentException>().WithMessage("You do not belong to this home.");
+    }
+
+    #endregion
+
+    #endregion
+
+    #region NameDevice
+
+    #region Success
+
+    [TestMethod]
+    public void NameDevice_ShouldRenameDevice_WhenParametersAreValid()
+    {
+        // Arrange
+        var home = new Home(_user, "Main St 123", 12.5, 12.5, 5);
+        var member = new Member(_user, [new HomePermission(HomePermission.NameDevice)]);
+        home.Members.Add(member);
+        var ownedDevice = new OwnedDevice { HardwareId = Guid.NewGuid(), Name = "OldName", Home = home };
+        var args = new NameDeviceArgs { OwnerId = _user.Id, HardwareId = ownedDevice.HardwareId, NewName = "NewName" };
+
+        _ownedDeviceRepositoryMock.Setup(repo => repo.GetByHardwareId(ownedDevice.HardwareId)).Returns(ownedDevice);
+        _ownedDeviceRepositoryMock.Setup(repo => repo.Rename(It.IsAny<OwnedDevice>(), It.IsAny<string>()))
+            .Callback<OwnedDevice, string>((device, newName) => device.Name = newName)
+            .Verifiable();
+
+        // Act
+        _homeOwnerService.NameDevice(args);
+
+        // Assert
+        Assert.AreEqual("NewName", ownedDevice.Name);
+        _ownedDeviceRepositoryMock.Verify(repo => repo.Rename(ownedDevice, "NewName"), Times.Once);
+    }
+
+    #endregion
+
+    #region Error
+
+    [TestMethod]
+    public void NameDevice_ThrowsArgumentException_WhenOwnerIdIsEmpty()
+    {
+        // Arrange
+        var args = new NameDeviceArgs { OwnerId = Guid.Empty, HardwareId = Guid.NewGuid(), NewName = "NewName" };
+
+        // Act
+        var act = () => _homeOwnerService.NameDevice(args);
+
+        // Assert
+        act.Should().Throw<ArgumentException>();
+    }
+
+    [TestMethod]
+    public void NameDevice_ThrowsArgumentException_WhenDeviceIdIsEmpty()
+    {
+        // Arrange
+        var args = new NameDeviceArgs { OwnerId = Guid.NewGuid(), HardwareId = Guid.Empty, NewName = "NewName" };
+
+        // Act
+        var act = () => _homeOwnerService.NameDevice(args);
+
+        // Assert
+        act.Should().Throw<ArgumentException>();
+    }
+
+    [TestMethod]
+    public void NameDevice_ThrowsArgumentException_WhenNewNameIsEmpty()
+    {
+        // Arrange
+        var args = new NameDeviceArgs { OwnerId = Guid.NewGuid(), HardwareId = Guid.NewGuid(), NewName = string.Empty };
+
+        // Act
+        var act = () => _homeOwnerService.NameDevice(args);
+
+        // Assert
+        act.Should().Throw<ArgumentException>();
+    }
+
+    [TestMethod]
+    public void NameDevice_ThrowsArgumentException_WhenDeviceDoesNotExist()
+    {
+        // Arrange
+        var args = new NameDeviceArgs { OwnerId = Guid.NewGuid(), HardwareId = Guid.NewGuid(), NewName = "NewName" };
+        _ownedDeviceRepositoryMock.Setup(repo => repo.GetByHardwareId(It.IsAny<Guid>())).Returns((OwnedDevice)null);
+
+        // Act
+        var act = () => _homeOwnerService.NameDevice(args);
+
+        // Assert
+        act.Should().Throw<ArgumentException>();
+    }
+
+    #endregion
+
+    #endregion
+
+    #region GetOwnedDeviceByHardwareId
+
+    #region Success
+
+    [TestMethod]
+    public void GetOwnedDeviceByHardwareId_WhenCalled_ReturnsCorrectDevice()
+    {
+        // Arrange
+        var hardwareId = Guid.NewGuid();
+        var ownedDevice = new OwnedDevice { HardwareId = hardwareId };
+        _ownedDeviceRepositoryMock.Setup(repo => repo.Exists(hardwareId))
+            .Returns(true);
+        _ownedDeviceRepositoryMock.Setup(repo => repo.GetByHardwareId(hardwareId))
+            .Returns(ownedDevice);
+
+        // Act
+        OwnedDevice result = _homeOwnerService.GetOwnedDeviceByHardwareId(hardwareId.ToString());
+
+        // Assert
+        _ownedDeviceRepositoryMock.Verify(repo => repo.GetByHardwareId(hardwareId), Times.Once);
+        result.Should().Be(ownedDevice);
+    }
+
+    #endregion
+
+    #region Error
+
+    [TestMethod]
+    public void GetOwnedDeviceByHardwareId_WhenHardwareIdIsNotAGuid_ThrowsException()
+    {
+        // Arrange
+        var hardwareId = "invalid-guid";
+
+        // Act
+        var act = () => _homeOwnerService.GetOwnedDeviceByHardwareId(hardwareId);
+
+        // Assert
+        act.Should().Throw<ArgumentException>();
+    }
+
+    [TestMethod]
+    public void GetOwnedDeviceByHardwareId_WhenDeviceDoesNotExist_ThrowsException()
+    {
+        // Arrange
+        var hardwareId = Guid.NewGuid();
+        _ownedDeviceRepositoryMock.Setup(repo => repo.Exists(hardwareId))
+            .Returns(false);
+
+        // Act
+        var act = () => _homeOwnerService.GetOwnedDeviceByHardwareId(hardwareId.ToString());
+
+        // Assert
+        act.Should().Throw<KeyNotFoundException>();
     }
 
     #endregion

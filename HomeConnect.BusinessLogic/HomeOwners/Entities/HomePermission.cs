@@ -11,7 +11,8 @@ public class HomePermission
         new(GetNotifications),
         new(GetMembers),
         new(UpdateNotifications),
-        new(NameHome)
+        new(NameHome),
+        new(NameDevice)
     ];
 
     public const string GetHome = "get-home";
@@ -21,6 +22,7 @@ public class HomePermission
     public const string GetNotifications = "get-notifications";
     public const string GetMembers = "get-members";
     public const string UpdateNotifications = "update-notifications";
+    public const string NameDevice = "name-device";
     public const string NameHome = "name-home";
 
     public HomePermission(string value)

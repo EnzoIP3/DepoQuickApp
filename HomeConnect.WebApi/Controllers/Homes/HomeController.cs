@@ -119,7 +119,8 @@ public class HomeController(IHomeOwnerService homeOwnerService) : ControllerBase
             HomeId = homesId,
             UserEmail = request.Email ?? string.Empty,
             CanAddDevices = request.CanAddDevices,
-            CanListDevices = request.CanListDevices
+            CanListDevices = request.CanListDevices,
+            CanNameDevices = request.CanNameDevices
         };
         Guid addedMemberId = homeOwnerService.AddMemberToHome(addMemberArgs);
         return new AddMemberResponse { HomeId = homesId, MemberId = addedMemberId.ToString() };

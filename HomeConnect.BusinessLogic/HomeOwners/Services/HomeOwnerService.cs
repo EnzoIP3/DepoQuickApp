@@ -79,6 +79,53 @@ public class HomeOwnerService : IHomeOwnerService
         HomeRepository.Rename(home, args.NewName);
     }
 
+    private void ValidateNameDeviceArgs(NameDeviceArgs args)
+    {
+        if (args.OwnerId == Guid.Empty)
+        {
+            throw new ArgumentException("Owner ID cannot be empty");
+        }
+
+        if (args.HardwareId == Guid.Empty)
+        {
+            throw new ArgumentException("Hardware ID cannot be empty");
+        }
+
+        if (string.IsNullOrEmpty(args.NewName))
+        {
+            throw new ArgumentException("New name cannot be empty");
+        }
+    }
+
+    public void NameDevice(NameDeviceArgs args)
+    {
+        ValidateNameDeviceArgs(args);
+
+        var device = OwnedDeviceRepository.GetByHardwareId(args.HardwareId);
+        if (device == null)
+        {
+            throw new ArgumentException("Device does not exist");
+        }
+
+        _ = device.Home;
+        OwnedDeviceRepository.Rename(device, args.NewName);
+    }
+
+    public OwnedDevice GetOwnedDeviceByHardwareId(string hardwareId)
+    {
+        var guid = ValidateAndParseGuid(hardwareId);
+        EnsureOwnedDeviceExists(guid);
+        return OwnedDeviceRepository.GetByHardwareId(guid);
+    }
+
+    private void EnsureOwnedDeviceExists(Guid hardwareId)
+    {
+        if (!OwnedDeviceRepository.Exists(hardwareId))
+        {
+            throw new KeyNotFoundException("Device does not exist in this home.");
+        }
+    }
+
     private void ValidateNameHomeParameters(Guid ownerId, Guid homeId, string newName)
     {
         if (ownerId == Guid.Empty)
@@ -195,18 +242,27 @@ public class HomeOwnerService : IHomeOwnerService
 
     private Member CreateMember(User user, AddMemberArgs args)
     {
-        var permissions = new List<HomePermission>();
+        var member = new Member(user);
+        AddPermissionsToMember(member, args);
+        return member;
+    }
+
+    private static void AddPermissionsToMember(Member member, AddMemberArgs args)
+    {
         if (args.CanAddDevices)
         {
-            permissions.Add(new HomePermission(HomePermission.AddDevice));
+            member.AddPermission(new HomePermission(HomePermission.AddDevice));
+        }
+
+        if (args.CanNameDevices)
+        {
+            member.AddPermission(new HomePermission(HomePermission.NameDevice));
         }
 
         if (args.CanListDevices)
         {
-            permissions.Add(new HomePermission(HomePermission.GetDevices));
+            member.AddPermission(new HomePermission(HomePermission.GetDevices));
         }
-
-        return new Member(user, permissions);
     }
 
     private void ValidateAddDeviceModel(AddDevicesArgs addDevicesArgs)

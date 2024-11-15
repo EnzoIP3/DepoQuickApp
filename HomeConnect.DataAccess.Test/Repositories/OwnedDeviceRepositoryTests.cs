@@ -273,4 +273,21 @@ public class OwnedDeviceRepositoryTests
         result.Should().BeFalse();
     }
     #endregion
+    #region Rename
+    [TestMethod]
+    public void Rename_ShouldUpdateDeviceNameAndSaveChanges()
+    {
+        // Arrange
+        _ownedDevice.Name = "OldName";
+        _context.OwnedDevices.Update(_ownedDevice);
+        _context.SaveChanges();
+
+        // Act
+        _ownedDeviceRepository.Rename(_ownedDevice, "NewName");
+
+        // Assert
+        var updatedDevice = _context.OwnedDevices.First(od => od.HardwareId == _ownedDevice.HardwareId);
+        Assert.AreEqual("NewName", updatedDevice.Name);
+    }
+    #endregion
 }

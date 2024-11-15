@@ -44,6 +44,13 @@ public class OwnedDeviceRepository : IOwnedDeviceRepository
         _context.SaveChanges();
     }
 
+    public void Rename(OwnedDevice ownedDevice, string newName)
+    {
+        ownedDevice.Name = newName;
+        _context.OwnedDevices.Update(ownedDevice);
+        _context.SaveChanges();
+    }
+
     public void UpdateLampState(Guid hardwareId, bool state)
     {
         EnsureDeviceIsLamp(hardwareId);

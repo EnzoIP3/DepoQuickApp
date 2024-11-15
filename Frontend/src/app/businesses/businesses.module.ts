@@ -13,13 +13,16 @@ import { FormInputComponent } from '../../components/form/form-input/form-input.
 import { FormButtonComponent } from '../../components/form/form-button/form-button.component';
 import { FormDropdownComponent } from '../../components/form/form-dropdown/form-dropdown.component';
 import { BusinessPageComponent } from './business-page/business-page.component';
+import { AddDeviceFormComponent } from './add-device-form/add-device-form.component';
+import { FormCheckboxComponent } from '../../components/form/form-checkbox/form-checkbox.component';
 
 
 @NgModule({
   declarations: [
     BusinessesPageComponent,
     AddBusinessFormComponent,
-    BusinessPageComponent
+    BusinessPageComponent,
+    AddDeviceFormComponent
   ],
   imports: [
     CommonModule,
@@ -31,7 +34,8 @@ import { BusinessPageComponent } from './business-page/business-page.component';
     FormComponent,
     FormInputComponent,
     FormButtonComponent,
-    FormDropdownComponent
+    FormDropdownComponent,
+    FormCheckboxComponent
 ]
 })
 export class BusinessesModule { }

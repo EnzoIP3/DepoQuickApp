@@ -4,12 +4,11 @@ import { Router } from "@angular/router";
 import { CommonModule } from "@angular/common";
 import Business from "../../backend/services/businesses/models/business";
 import { TableComponent } from "../../components/table/table.component";
-import { PanelComponent } from "../../components/panel/panel.component";
 
 @Component({
     selector: "app-businesses-table",
     standalone: true,
-    imports: [CommonModule, TableComponent, PanelComponent],
+    imports: [CommonModule, TableComponent],
     templateUrl: "./businesses-table.component.html"
 })
 export class BusinessesTableComponent {

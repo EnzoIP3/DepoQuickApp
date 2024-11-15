@@ -912,5 +912,22 @@ public class HomeOwnerServiceTests
 
     #endregion
 
+    #region Error
+
+    [TestMethod]
+    public void GetOwnedDeviceByHardwareId_WhenHardwareIdIsNotAGuid_ThrowsException()
+    {
+        // Arrange
+        var hardwareId = "invalid-guid";
+
+        // Act
+        var act = () => _homeOwnerService.GetOwnedDeviceByHardwareId(hardwareId);
+
+        // Assert
+        act.Should().Throw<ArgumentException>();
+    }
+
+    #endregion
+
     #endregion
 }

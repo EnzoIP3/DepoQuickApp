@@ -16,4 +16,9 @@ public class RoomRepository
         _context.Rooms.Add(room);
         _context.SaveChanges();
     }
+
+    public Room Get(Guid roomId)
+    {
+        throw new NotImplementedException();
+    }
 }

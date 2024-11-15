@@ -26,4 +26,9 @@ public class RoomRepository
     {
         return _context.Rooms.Any(r => r.Id == roomId);
     }
+
+    public void Update(Room updatedRoom)
+    {
+        throw new NotImplementedException();
+    }
 }

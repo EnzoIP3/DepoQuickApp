@@ -888,4 +888,29 @@ public class HomeOwnerServiceTests
     #endregion
 
     #endregion
+
+    #region GetOwnedDeviceByHardwareId
+
+    #region Success
+
+    [TestMethod]
+    public void GetOwnedDeviceByHardwareId_WhenCalled_ReturnsCorrectDevice()
+    {
+        // Arrange
+        var hardwareId = Guid.NewGuid();
+        var ownedDevice = new OwnedDevice { HardwareId = hardwareId };
+        _ownedDeviceRepositoryMock.Setup(repo => repo.GetByHardwareId(hardwareId))
+            .Returns(ownedDevice);
+
+        // Act
+        OwnedDevice result = _homeOwnerService.GetOwnedDeviceByHardwareId(hardwareId.ToString());
+
+        // Assert
+        _ownedDeviceRepositoryMock.Verify(repo => repo.GetByHardwareId(hardwareId), Times.Once);
+        result.Should().Be(ownedDevice);
+    }
+
+    #endregion
+
+    #endregion
 }

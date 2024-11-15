@@ -111,6 +111,11 @@ public class HomeOwnerService : IHomeOwnerService
         OwnedDeviceRepository.Rename(device, args.NewName);
     }
 
+    public OwnedDevice GetOwnedDeviceByHardwareId(string hardwareId)
+    {
+        throw new NotImplementedException();
+    }
+
     private void ValidateNameHomeParameters(Guid ownerId, Guid homeId, string newName)
     {
         if (ownerId == Guid.Empty)

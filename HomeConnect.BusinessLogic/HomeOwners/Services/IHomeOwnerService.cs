@@ -18,4 +18,5 @@ public interface IHomeOwnerService
     public void NameHome(NameHomeArgs args);
     public List<HomePermission> GetHomePermissions(Guid homeId, Guid userId);
     public void NameDevice(NameDeviceArgs args);
+    public OwnedDevice GetOwnedDeviceByHardwareId(string hardwareId);
 }

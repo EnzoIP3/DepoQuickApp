@@ -1,0 +1,12 @@
+<div *ngIf="device">
+    <h2>{{ device.name }}</h2>
+    <img [src]="device.mainPhoto" alt="Main Photo" />
+    <p><strong>Business Name:</strong> {{ device.businessName }}</p>
+    <p><strong>Type:</strong> {{ device.type }}</p>
+    <p><strong>Model Number:</strong> {{ device.modelNumber }}</p>
+    <h4>Secondary Photos</h4>
+    <div *ngFor="let photo of device.secondaryPhotos">
+      <img [src]="photo" alt="Secondary Photo" />
+    </div>
+  </div>
+  

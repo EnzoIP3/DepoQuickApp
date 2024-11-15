@@ -18,7 +18,6 @@ export class DialogComponent {
   @Output() visibleChange: EventEmitter<boolean> = new EventEmitter<boolean>();
 
   closeDialog() {
-    this.visible = false;
-    this.visibleChange.emit(this.visible);
+    this.visibleChange.emit(false);
   }
 }

@@ -11,11 +11,14 @@ import Pagination from "../../backend/services/pagination";
 import { PaginatorComponent } from "../../components/paginator/paginator.component";
 import { AvatarComponent } from "../../components/avatar/avatar.component";
 import { ImageGalleryComponent } from "../../components/image-gallery/image-gallery.component";
+import { DialogComponent } from "../../components/dialog/dialog.component";
+import { DeviceDetailsComponent } from "../device-details/device-details.component";
+import { CommonModule } from "@angular/common";
 
 @Component({
     selector: "app-business-devices-table",
     standalone: true,
-    imports: [TableComponent, PaginatorComponent, AvatarComponent, ImageGalleryComponent],
+    imports: [CommonModule, TableComponent, PaginatorComponent, AvatarComponent, ImageGalleryComponent, DeviceDetailsComponent, DialogComponent],
     templateUrl: "./business-devices-table.component.html"
 })
 export class BusinessDevicesTableComponent {
@@ -99,6 +102,8 @@ export class BusinessDevicesTableComponent {
     };
 
     loading: boolean = false;
+    dialogVisible: boolean = false;
+    selectedDevice: Device | null = null;
 
     constructor(
         private readonly _devicesService: DevicesService,
@@ -123,9 +128,20 @@ export class BusinessDevicesTableComponent {
 
     private _loadDummyData(pagination: Pagination = { page: 1, pageSize: 10 }): void {
         console.log("Obteniendo dispositivos con paginación: ", pagination);
-        // Aquí simplemente simulamos la carga de los datos de prueba sin hacer peticiones reales
         this.loading = false;
         console.log("Dispositivos simulados: ", this.devices);
         console.log("Paginación simulada: ", this.pagination);
     }
+
+    onRowClick(device: Device): void {
+        this.selectedDevice = device;
+        this.dialogVisible = true;
+        console.log("Dispositivo seleccionado: ", device);
+    }
+
+    closeDialog(): void {
+        this.dialogVisible = false;
+        console.log("Cerrando diálogo");
+    }
+
 }

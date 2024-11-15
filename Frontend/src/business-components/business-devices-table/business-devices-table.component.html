@@ -1,5 +1,6 @@
-<app-table [columns]="columns" [data]="devices" [loading]="loading"
-    [customTemplates]="{ mainPhoto: mainPhotoTemplate, secondaryPhotos: secondaryPhotosTemplate }">
+<app-table [columns]="columns" [data]="devices" [loading]="loading" [clickableRows]="true"
+    [customTemplates]="{ mainPhoto: mainPhotoTemplate, secondaryPhotos: secondaryPhotosTemplate }"
+    (rowClick)="onRowClick($event)">
 </app-table>
 
 <app-paginator [currentPage]="pagination?.page" [totalPages]="pagination?.totalPages" [pageSize]="pagination?.pageSize"
@@ -16,3 +17,9 @@
         <app-avatar defaultIcon="" [image]="image" shape="square" size="xlarge" />
     </ng-template>
 </ng-template>
+
+<app-dialog [(visible)]="dialogVisible" (close)="closeDialog()">
+    <ng-container *ngIf="selectedDevice">
+      <app-device-details [device]="selectedDevice!"></app-device-details>
+    </ng-container>
+  </app-dialog>

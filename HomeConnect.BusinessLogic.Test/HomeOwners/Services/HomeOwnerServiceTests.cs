@@ -899,6 +899,8 @@ public class HomeOwnerServiceTests
         // Arrange
         var hardwareId = Guid.NewGuid();
         var ownedDevice = new OwnedDevice { HardwareId = hardwareId };
+        _ownedDeviceRepositoryMock.Setup(repo => repo.Exists(hardwareId))
+            .Returns(true);
         _ownedDeviceRepositoryMock.Setup(repo => repo.GetByHardwareId(hardwareId))
             .Returns(ownedDevice);
 

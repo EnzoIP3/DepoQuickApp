@@ -3,7 +3,7 @@ export default interface Device {
     name: string;
     businessName: string;
     type: string;
-    modelNumber: number;
+    modelNumber: string;
     mainPhoto: string;
     secondaryPhotos: string[];
 }

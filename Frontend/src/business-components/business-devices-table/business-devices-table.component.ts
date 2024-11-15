@@ -1,72 +1,131 @@
-import { CommonModule } from '@angular/common';
-import { Component } from '@angular/core';
-import { Router } from '@angular/router';
-import { TableComponent } from '../../components/table/table.component';
-
-interface BusinessDevice {
-  id: string;
-  name: string;
-  modelNumber: string;
-  description: string;
-  mainPhoto: string;
-  secondaryPhotos: string[];
-  type: string;
-}
+import { Component } from "@angular/core";
+import { TableComponent } from "../../components/table/table.component";
+import { DevicesService } from "../../backend/services/devices/devices.service";
+import GetDevicesResponse from "../../backend/services/devices/models/get-devices-response";
+import PaginationResponse from "../../backend/services/pagination";
+import Device from "../../backend/services/devices/models/device";
+import TableColumn from "../../components/table/models/table-column";
+import { Subscription } from "rxjs";
+import { MessageService } from "primeng/api";
+import Pagination from "../../backend/services/pagination";
+import { PaginatorComponent } from "../../components/paginator/paginator.component";
+import { AvatarComponent } from "../../components/avatar/avatar.component";
+import { ImageGalleryComponent } from "../../components/image-gallery/image-gallery.component";
 
 @Component({
-  selector: 'app-business-devices-table',
-  standalone: true,
-  imports: [CommonModule, TableComponent],
-  templateUrl: './business-devices-table.component.html',
+    selector: "app-business-devices-table",
+    standalone: true,
+    imports: [TableComponent, PaginatorComponent, AvatarComponent, ImageGalleryComponent],
+    templateUrl: "./business-devices-table.component.html"
 })
-
 export class BusinessDevicesTableComponent {
-  columns = [
-    { field: 'id', header: 'Device Id' },
-    { field: 'name', header: 'Device Name' },
-    { field: 'modelNumber', header: 'Model Number' },
-    { field: 'description', header: 'Description' },
-    { field: 'mainPhoto', header: 'Main Photo' },
-    { field: 'secondaryPhotos', header: 'Secondary Photos' },
-    { field: 'type', header: 'Device Type' }
-  ];
+    columns: TableColumn[] = [
+        { field: "mainPhoto", header: "Photo" },
+        { field: "secondaryPhotos", header: "Other Photos" },
+        { field: "name", header: "Name" },
+        { field: "businessName", header: "Business Name" },
+        { field: "type", header: "Type" },
+        { field: "modelNumber", header: "Model Number" }
+    ];
 
-  // Datos de ejemplo (dummy)
-  devices: BusinessDevice[] = [
-    {
-      id: '1',
-      name: 'Device 1',
-      modelNumber: 'D1-123',
-      description: 'Description of Device 1',
-      mainPhoto: 'https://example.com/photo1.jpg',
-      secondaryPhotos: ['https://example.com/photo2.jpg', 'https://example.com/photo3.jpg'],
-      type: 'Camera'
-    },
-    {
-      id: '2',
-      name: 'Device 2',
-      modelNumber: 'D2-456',
-      description: 'Description of Device 2',
-      mainPhoto: 'https://example.com/photo4.jpg',
-      secondaryPhotos: ['https://example.com/photo5.jpg', 'https://example.com/photo6.jpg'],
-      type: 'Sensor'
-    },
-    {
-      id: '3',
-      name: 'Device 3',
-      modelNumber: 'D3-789',
-      description: 'Description of Device 3',
-      mainPhoto: 'https://example.com/photo7.jpg',
-      secondaryPhotos: ['https://example.com/photo8.jpg', 'https://example.com/photo9.jpg'],
-      type: 'Thermostat'
+    // Datos simulados directamente, sin usar array
+    devices: Device[] = [
+        {
+            id: "1",
+            mainPhoto: "https://picsum.photos/200",
+            secondaryPhotos: [
+                "https://picsum.photos/200",
+                "https://picsum.photos/200"
+            ],
+            name: "Device 1",
+            businessName: "Business 1",
+            type: "Type A",
+            modelNumber: "Model 001"
+        },
+        {
+            id: "2",
+            mainPhoto: "https://picsum.photos/200",
+            secondaryPhotos: [
+                "https://picsum.photos/200",
+                "https://picsum.photos/200"
+            ],
+            name: "Device 2",
+            businessName: "Business 2",
+            type: "Type B",
+            modelNumber: "Model 002"
+        },
+        {
+            id: "3",
+            mainPhoto: "https://picsum.photos/200",
+            secondaryPhotos: [
+                "https://picsum.photos/200",
+                "https://picsum.photos/200"
+            ],
+            name: "Device 3",
+            businessName: "Business 3",
+            type: "Type C",
+            modelNumber: "Model 003"
+        },
+        {
+            id: "4",
+            mainPhoto: "https://picsum.photos/200",
+            secondaryPhotos: [
+                "https://picsum.photos/200",
+                "https://picsum.photos/200"
+            ],
+            name: "Device 4",
+            businessName: "Business 4",
+            type: "Type D",
+            modelNumber: "Model 004"
+        },
+        {
+            id: "5",
+            mainPhoto: "https://picsum.photos/2003",
+            secondaryPhotos: [
+                "https://picsum.photos/2004",
+                "https://picsum.photos/2005"
+            ],
+            name: "Device 5",
+            businessName: "Business 5",
+            type: "Type E",
+            modelNumber: "Model 005"
+        }
+    ];
+
+    pagination: PaginationResponse | null = {
+        page: 1,
+        pageSize: 10,
+        totalPages: 5,
+    };
+
+    loading: boolean = false;
+
+    constructor(
+        private readonly _devicesService: DevicesService,
+        private readonly _messageService: MessageService
+    ) {}
+
+    ngOnInit() {
+        // Cargar datos de prueba cuando la componente se inicialice
+        this._loadDummyData();
     }
-  ];
 
-  loading: boolean = false;  // Aquí podrías usar este estado si necesitas cargar datos
+    // Método de paginación
+    onPageChange(pagination: Pagination): void {
+        console.log("Pagina cambiada: ", pagination);
+        this.loading = true;
+        this._loadDummyData(pagination);
+    }
 
-  constructor(private readonly _router: Router) {}
+    ngOnDestroy() {
+        // Limpiar recursos si es necesario
+    }
 
-  onRowClick(device: BusinessDevice) {
-    this._router.navigate(['/devices', device.id]);  // Ajusta la ruta según tu estructura
-  }
+    private _loadDummyData(pagination: Pagination = { page: 1, pageSize: 10 }): void {
+        console.log("Obteniendo dispositivos con paginación: ", pagination);
+        // Aquí simplemente simulamos la carga de los datos de prueba sin hacer peticiones reales
+        this.loading = false;
+        console.log("Dispositivos simulados: ", this.devices);
+        console.log("Paginación simulada: ", this.pagination);
+    }
 }

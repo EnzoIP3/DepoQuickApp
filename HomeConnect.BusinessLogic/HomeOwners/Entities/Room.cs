@@ -49,6 +49,11 @@ public class Room
 
     public void AddOwnedDevice(OwnedDevice device)
     {
+        if (device.Home.Id != Home.Id)
+        {
+            throw new ArgumentException("Device must belong to the same home as the room.");
+        }
+
         OwnedDevices.Add(device);
     }
 }

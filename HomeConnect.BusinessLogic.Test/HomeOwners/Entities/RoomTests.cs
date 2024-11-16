@@ -27,7 +27,7 @@ public class RoomTests
     {
         // Arrange
         var room = new Room { Id = Guid.NewGuid(), Name = "Living Room", Home = new Home() };
-        var device = new OwnedDevice();
+        var device = new OwnedDevice() { Home = room.Home };
 
         // Act
         room.AddOwnedDevice(device);

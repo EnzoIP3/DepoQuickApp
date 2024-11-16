@@ -86,6 +86,6 @@ public class Room
 
     public OwnedDevice GetOwnedDevice(Guid hardwareId)
     {
-        throw new NotImplementedException();
+        return OwnedDevices.First(od => od.HardwareId == hardwareId);
     }
 }

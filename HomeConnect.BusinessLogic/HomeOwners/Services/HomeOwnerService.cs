@@ -149,7 +149,7 @@ public class HomeOwnerService : IHomeOwnerService
 
     public Room GetRoom(string roomId)
     {
-        throw new NotImplementedException();
+        return RoomRepository.Get(Guid.Parse(roomId));
     }
 
     private void ValidateRoomParameters(string homeId, string name)

@@ -50,12 +50,16 @@ public class Room
     public void AddOwnedDevice(OwnedDevice device)
     {
         EnsureOwnedDeviceBelongsToTheSameHome(device);
+        EnsureOwnedDeviceDoesNotAlreadyBelongToTheRoom(device);
+        OwnedDevices.Add(device);
+    }
+
+    private void EnsureOwnedDeviceDoesNotAlreadyBelongToTheRoom(OwnedDevice device)
+    {
         if (OwnedDevices.Any(od => od.HardwareId == device.HardwareId))
         {
             throw new ArgumentException("Device already belongs to the room.");
         }
-
-        OwnedDevices.Add(device);
     }
 
     private void EnsureOwnedDeviceBelongsToTheSameHome(OwnedDevice device)

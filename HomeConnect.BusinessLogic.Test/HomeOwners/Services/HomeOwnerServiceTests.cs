@@ -1104,4 +1104,28 @@ public class HomeOwnerServiceTests
     #endregion
 
     #endregion
+
+    #region GetRoom
+
+    #region Success
+
+    [TestMethod]
+    public void GetRoom_WhenCalled_ReturnsCorrectRoom()
+    {
+        // Arrange
+        var home = new Home(_user, "Main St 123", 1.0, 2.0, 5);
+        var room = new Room { Id = Guid.NewGuid(), Name = "Living Room", Home = home};
+        _roomRepositoryMock.Setup(repo => repo.Get(room.Id)).Returns(room);
+
+        // Act
+        Room result = _homeOwnerService.GetRoom(room.Id.ToString());
+
+        // Assert
+        _roomRepositoryMock.Verify(repo => repo.Get(room.Id), Times.Once);
+        result.Should().Be(room);
+    }
+
+    #endregion
+
+    #endregion
 }

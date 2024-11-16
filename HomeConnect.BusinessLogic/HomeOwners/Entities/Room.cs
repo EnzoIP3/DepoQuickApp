@@ -45,4 +45,9 @@ public class Room
     }
 
     public List<OwnedDevice> OwnedDevices { get; set; } = [];
+
+    public void AddOwnedDevice(OwnedDevice device)
+    {
+        throw new NotImplementedException();
+    }
 }

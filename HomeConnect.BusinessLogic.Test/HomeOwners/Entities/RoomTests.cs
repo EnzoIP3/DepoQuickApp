@@ -6,8 +6,9 @@ using FluentAssertions;
 public class RoomTests
 {
     #region Success
+
     [TestMethod]
-    public void Room_WhenInitializedWithValidParameters_ShouldSetProperties()
+    public void Constructor_WhenCalledWithValidParameters_InitializesRoom()
     {
         // Arrange
         var name = "Living Room";
@@ -20,42 +21,44 @@ public class RoomTests
         room.Name.Should().Be(name);
         room.Home.Should().Be(home);
     }
-    #endregion
-
-    #region Error
 
     [TestMethod]
-    public void Room_WhenNameIsEmpty_ShouldThrowArgumentException()
-    {
-        // Act
-        Action act = () => { var room = new Room { Id = Guid.NewGuid(), Name = string.Empty }; };
-
-        // Assert
-        act.Should().Throw<ArgumentException>().WithMessage("Room name cannot be null or empty.");
-    }
-
-    [TestMethod]
-    public void Room_WhenHomeIsNull_ShouldThrowArgumentException()
-    {
-        // Act
-        Action act = () => { var room = new Room { Id = Guid.NewGuid(), Name = "Living Room", Home = null }; };
-
-        // Assert
-        act.Should().Throw<ArgumentException>().WithMessage("Room must have a home assigned.");
-    }
-
-    [TestMethod]
-    public void Room_ShouldAllowAddingOwnedDevices()
+    public void AddOwnedDevice_WhenCalled_AddsDeviceToOwnedDevices()
     {
         // Arrange
         var room = new Room { Id = Guid.NewGuid(), Name = "Living Room", Home = new Home() };
         var device = new OwnedDevice();
 
         // Act
-        room.OwnedDevices.Add(device);
+        room.AddOwnedDevice(device);
 
         // Assert
         room.OwnedDevices.Should().Contain(device);
     }
+
+    #endregion
+
+    #region Error
+
+    [TestMethod]
+    public void Constructor_WhenNameIsEmpty_ThrowsArgumentException()
+    {
+        // Act
+        var act = () => new Room { Id = Guid.NewGuid(), Name = string.Empty };
+
+        // Assert
+        act.Should().Throw<ArgumentException>().WithMessage("Room name cannot be null or empty.");
+    }
+
+    [TestMethod]
+    public void Constructor_WhenHomeIsNull_ThrowsArgumentException()
+    {
+        // Act
+        var act = () => new Room { Id = Guid.NewGuid(), Name = "Living Room", Home = null };
+
+        // Assert
+        act.Should().Throw<ArgumentException>().WithMessage("Room must have a home assigned.");
+    }
+
     #endregion
 }

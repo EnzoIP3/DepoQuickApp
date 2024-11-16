@@ -86,11 +86,15 @@ public class Room
 
     public OwnedDevice GetOwnedDevice(Guid hardwareId)
     {
+        EnsureOwnedDeviceBelongsToRoom(hardwareId);
+        return OwnedDevices.First(od => od.HardwareId == hardwareId);
+    }
+
+    private void EnsureOwnedDeviceBelongsToRoom(Guid hardwareId)
+    {
         if (OwnedDevices.All(od => od.HardwareId != hardwareId))
         {
             throw new ArgumentException("Device does not belong to the room.");
         }
-
-        return OwnedDevices.First(od => od.HardwareId == hardwareId);
     }
 }

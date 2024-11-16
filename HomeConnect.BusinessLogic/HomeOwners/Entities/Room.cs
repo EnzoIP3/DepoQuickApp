@@ -72,6 +72,6 @@ public class Room
 
     public void RemoveOwnedDevice(OwnedDevice device)
     {
-        throw new NotImplementedException();
+        OwnedDevices.Remove(device);
     }
 }

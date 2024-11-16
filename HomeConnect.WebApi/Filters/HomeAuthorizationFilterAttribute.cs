@@ -57,7 +57,13 @@ public class HomeAuthorizationFilterAttribute(string? permission = null) : Attri
             IHomeOwnerService homeOwnerService = GetHomeOwnerService(context);
             try
             {
-                homeOwnerService.GetRoom(roomId);
+                var room = homeOwnerService.GetRoom(roomId);
+                var home = room.Home;
+
+                if (!UserHasRequiredPermission(user, home, permission))
+                {
+                    SetForbiddenResult(context, permission);
+                }
             }
             catch (KeyNotFoundException)
             {

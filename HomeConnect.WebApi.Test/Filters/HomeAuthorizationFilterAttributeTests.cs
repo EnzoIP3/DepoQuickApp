@@ -353,4 +353,32 @@ public class HomeAuthorizationFilterAttributeTests
         FilterTestsUtils.GetInnerCode(concreteResponse.Value).Should().Be("BadRequest");
         FilterTestsUtils.GetMessage(concreteResponse.Value).Should().Be("The room ID is invalid");
     }
+
+    [TestMethod]
+    public void OnAuthorization_WhenRoomDoesNotExist_ReturnsNotFoundResult()
+    {
+        // Arrange
+        var items = new Dictionary<object, object?> { { Item.UserLogged, _user } };
+        var roomId = Guid.NewGuid();
+        _httpContextMock.Setup(h => h.Items).Returns(items);
+        _context.RouteData.Values.Add("roomId", roomId.ToString());
+
+        _homeOwnerServiceMock.Setup(h => h.GetRoom(roomId.ToString()))
+            .Throws<KeyNotFoundException>();
+        _httpContextMock.Setup(h => h.RequestServices.GetService(typeof(IHomeOwnerService)))
+            .Returns(_homeOwnerServiceMock.Object);
+
+        // Act
+        _attribute.OnAuthorization(_context);
+
+        // Assert
+        IActionResult? response = _context.Result;
+        _httpContextMock.VerifyAll();
+        response.Should().NotBeNull();
+        var concreteResponse = response as ObjectResult;
+        concreteResponse.Should().NotBeNull();
+        concreteResponse!.StatusCode.Should().Be((int)HttpStatusCode.NotFound);
+        FilterTestsUtils.GetInnerCode(concreteResponse.Value).Should().Be("NotFound");
+        FilterTestsUtils.GetMessage(concreteResponse.Value).Should().Be("The room does not exist");
+    }
 }

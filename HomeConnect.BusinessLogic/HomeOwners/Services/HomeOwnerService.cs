@@ -147,6 +147,11 @@ public class HomeOwnerService : IHomeOwnerService
         return room;
     }
 
+    public Room GetRoom(string roomId)
+    {
+        throw new NotImplementedException();
+    }
+
     private void ValidateRoomParameters(string homeId, string name)
     {
         if (string.IsNullOrWhiteSpace(homeId))

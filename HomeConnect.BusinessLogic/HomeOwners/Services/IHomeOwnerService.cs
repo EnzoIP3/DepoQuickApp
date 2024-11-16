@@ -20,5 +20,6 @@ public interface IHomeOwnerService
     public void NameDevice(NameDeviceArgs args);
     public OwnedDevice GetOwnedDeviceByHardwareId(string hardwareId);
     Room CreateRoom(string homeId, string name);
+    Room GetRoom(string roomId);
     Guid AddOwnedDeviceToRoom(string roomId, string ownedDeviceId);
 }

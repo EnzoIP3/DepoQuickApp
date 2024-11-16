@@ -13,6 +13,7 @@ public class HomeAuthorizationFilterAttribute(string? permission = null) : Attri
     private const string HomeIdRoute = "homesId";
     private const string MemberIdRoute = "membersId";
     private const string HardwareIdRoute = "hardwareId";
+    private const string RoomIdRoute = "roomId";
 
     public void OnAuthorization(AuthorizationFilterContext context)
     {
@@ -26,6 +27,7 @@ public class HomeAuthorizationFilterAttribute(string? permission = null) : Attri
         var homeId = GetRouteValueAsString(context, HomeIdRoute);
         var memberId = GetRouteValueAsString(context, MemberIdRoute);
         var hardwareId = GetRouteValueAsString(context, HardwareIdRoute);
+        var roomId = GetRouteValueAsString(context, RoomIdRoute);
 
         if (homeId != null)
         {
@@ -42,6 +44,15 @@ public class HomeAuthorizationFilterAttribute(string? permission = null) : Attri
         if (hardwareId != null)
         {
             HandleHardwareId(context, hardwareId, user);
+        }
+
+        if (roomId != null)
+        {
+            if (!IsValidGuid(roomId, out Guid roomIdParsed))
+            {
+                SetBadRequestResult(context, "The room ID is invalid");
+                return;
+            }
         }
     }
 

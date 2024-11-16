@@ -1116,11 +1116,13 @@ public class HomeOwnerServiceTests
         var home = new Home(_user, "Main St 123", 1.0, 2.0, 5);
         var room = new Room { Id = Guid.NewGuid(), Name = "Living Room", Home = home };
         _roomRepositoryMock.Setup(repo => repo.Get(room.Id)).Returns(room);
+        _roomRepositoryMock.Setup(repo => repo.Exists(room.Id)).Returns(true);
 
         // Act
         Room result = _homeOwnerService.GetRoom(room.Id.ToString());
 
         // Assert
+        _roomRepositoryMock.Verify(repo => repo.Exists(room.Id), Times.Once);
         _roomRepositoryMock.Verify(repo => repo.Get(room.Id), Times.Once);
         result.Should().Be(room);
     }

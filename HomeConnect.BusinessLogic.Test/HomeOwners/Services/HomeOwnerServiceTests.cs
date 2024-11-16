@@ -1142,6 +1142,20 @@ public class HomeOwnerServiceTests
         act.Should().Throw<ArgumentException>();
     }
 
+    [TestMethod]
+    public void GetRoom_WhenRoomDoesNotExist_ThrowsException()
+    {
+        // Arrange
+        var roomId = Guid.NewGuid();
+        _roomRepositoryMock.Setup(repo => repo.Exists(roomId)).Returns(false);
+
+        // Act
+        var act = () => _homeOwnerService.GetRoom(roomId.ToString());
+
+        // Assert
+        act.Should().Throw<KeyNotFoundException>();
+    }
+
     #endregion
 
     #endregion

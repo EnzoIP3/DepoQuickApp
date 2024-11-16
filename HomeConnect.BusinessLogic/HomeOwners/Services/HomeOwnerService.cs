@@ -150,6 +150,7 @@ public class HomeOwnerService : IHomeOwnerService
     public Room GetRoom(string roomId)
     {
         var guid = ValidateAndParseGuid(roomId);
+
         return RoomRepository.Get(guid);
     }
 

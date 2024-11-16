@@ -1064,20 +1064,18 @@ public class HomeOwnerServiceTests
     public void AddOwnedDeviceToRoom_ValidInput_DeviceAssociatedSuccessfully()
     {
         // Arrange
-        var roomId = Guid.NewGuid().ToString();
-        var deviceId = Guid.NewGuid().ToString();
         var home = new Home(Mock.Of<User>(), "Arteaga 1470", 0, 0, 5);
-        var room = new Room(Guid.Parse(roomId), "Living Room", home, new List<OwnedDevice>());
+        var room = new Room("Living Room", home);
         var device = new Device();
         var ownedDevice = new OwnedDevice(home, device);
 
-        _roomRepositoryMock.Setup(repo => repo.Exists(It.IsAny<Guid>())).Returns(true);
-        _roomRepositoryMock.Setup(repo => repo.Get(It.IsAny<Guid>())).Returns(room);
-        _ownedDeviceRepositoryMock.Setup(repo => repo.GetOwnedDeviceById(It.IsAny<Guid>())).Returns(ownedDevice);
-        _roomRepositoryMock.Setup(repo => repo.Update(It.IsAny<Room>())).Verifiable();
+        _roomRepositoryMock.Setup(repo => repo.Exists(room.Id)).Returns(true);
+        _roomRepositoryMock.Setup(repo => repo.Get(room.Id)).Returns(room);
+        _ownedDeviceRepositoryMock.Setup(repo => repo.GetOwnedDeviceById(device.Id)).Returns(ownedDevice);
+        _roomRepositoryMock.Setup(repo => repo.Update(room)).Verifiable();
 
         // Act
-        var result = _homeOwnerService.AddOwnedDeviceToRoom(roomId, deviceId);
+        var result = _homeOwnerService.AddOwnedDeviceToRoom(room.Id.ToString(), device.Id.ToString());
 
         // Assert
         result.Should().Be(ownedDevice.HardwareId);

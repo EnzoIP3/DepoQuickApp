@@ -10,22 +10,15 @@ public class RoomTests
     public void Room_WhenInitializedWithValidParameters_ShouldSetProperties()
     {
         // Arrange
-        var id = Guid.NewGuid();
         var name = "Living Room";
         var home = new Home();
-        var devices = new List<OwnedDevice>
-        {
-            new OwnedDevice()
-        };
 
         // Act
-        var room = new Room(id, name, home, devices);
+        var room = new Room(name, home);
 
         // Assert
-        room.Id.Should().Be(id);
         room.Name.Should().Be(name);
         room.Home.Should().Be(home);
-        room.OwnedDevices.Should().BeEquivalentTo(devices);
     }
     #endregion
 

@@ -139,7 +139,7 @@ public class HomeOwnerService : IHomeOwnerService
             throw new ArgumentException("Home does not exist.");
         }
 
-        var room = new Room(Guid.NewGuid(), name, home, null);
+        var room = new Room(name, home);
         home.Rooms.Add(room);
 
         HomeRepository.Update(home);

@@ -8,17 +8,15 @@ public class Room
     {
     }
 
-    public Room(Guid id, string name, Home home, ICollection<OwnedDevice>? ownedDevices)
+    public Room(string name, Home home)
     {
-        Id = id;
         Name = name;
         Home = home;
-        OwnedDevices = ownedDevices ?? new List<OwnedDevice>();
     }
 
     private string _name = string.Empty;
     private Home _home = null!;
-    public Guid Id { get; set; }
+    public Guid Id { get; set; } = Guid.NewGuid();
     public string Name
     {
         get => _name;
@@ -38,14 +36,9 @@ public class Room
         get => _home;
         set
         {
-            if (value == null)
-            {
-                throw new ArgumentException("Room must have a home assigned.");
-            }
-
-            _home = value;
+            _home = value ?? throw new ArgumentException("Room must have a home assigned.");
         }
     }
 
-    public ICollection<OwnedDevice> OwnedDevices { get; set; } = new List<OwnedDevice>();
+    public List<OwnedDevice> OwnedDevices { get; set; } = [];
 }

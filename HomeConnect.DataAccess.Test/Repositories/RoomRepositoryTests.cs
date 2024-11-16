@@ -30,7 +30,7 @@ public class RoomRepositoryTests
     public void Add_WhenArgumentsAreValid_AddsRoom()
     {
         // Arrange
-        var room = new Room(Guid.NewGuid(), "Room", _home, null);
+        var room = new Room("Room", _home);
 
         // Act
         _roomRepository.Add(room);
@@ -43,7 +43,7 @@ public class RoomRepositoryTests
     public void Get_WhenRoomExists_ReturnsRoom()
     {
         // Arrange
-        var room = new Room(Guid.NewGuid(), "Room", _home, null);
+        var room = new Room("Room", _home);
         _context.Rooms.Add(room);
         _context.SaveChanges();
 
@@ -58,7 +58,7 @@ public class RoomRepositoryTests
     public void Exists_WhenRoomExists_ReturnsTrue()
     {
         // Arrange
-        var room = new Room(Guid.NewGuid(), "Room", _home, null);
+        var room = new Room("Room", _home);
         _context.Rooms.Add(room);
         _context.SaveChanges();
 
@@ -73,7 +73,7 @@ public class RoomRepositoryTests
     public void Update_WhenRoomExists_UpdatesRoom()
     {
         // Arrange
-        var room = new Room(Guid.NewGuid(), "Room", _home, null);
+        var room = new Room("Room", _home);
         _context.Rooms.Add(room);
         _context.SaveChanges();
         room.Name = "Updated Room";

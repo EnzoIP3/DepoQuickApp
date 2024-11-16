@@ -1114,7 +1114,7 @@ public class HomeOwnerServiceTests
     {
         // Arrange
         var home = new Home(_user, "Main St 123", 1.0, 2.0, 5);
-        var room = new Room { Id = Guid.NewGuid(), Name = "Living Room", Home = home};
+        var room = new Room { Id = Guid.NewGuid(), Name = "Living Room", Home = home };
         _roomRepositoryMock.Setup(repo => repo.Get(room.Id)).Returns(room);
 
         // Act
@@ -1123,6 +1123,23 @@ public class HomeOwnerServiceTests
         // Assert
         _roomRepositoryMock.Verify(repo => repo.Get(room.Id), Times.Once);
         result.Should().Be(room);
+    }
+
+    #endregion
+
+    #region Error
+
+    [TestMethod]
+    public void GetRoom_WhenRoomIdIsNotAGuid_ThrowsException()
+    {
+        // Arrange
+        var roomId = "invalid-guid";
+
+        // Act
+        var act = () => _homeOwnerService.GetRoom(roomId);
+
+        // Assert
+        act.Should().Throw<ArgumentException>();
     }
 
     #endregion

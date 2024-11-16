@@ -149,7 +149,8 @@ public class HomeOwnerService : IHomeOwnerService
 
     public Room GetRoom(string roomId)
     {
-        return RoomRepository.Get(Guid.Parse(roomId));
+        var guid = ValidateAndParseGuid(roomId);
+        return RoomRepository.Get(guid);
     }
 
     private void ValidateRoomParameters(string homeId, string name)

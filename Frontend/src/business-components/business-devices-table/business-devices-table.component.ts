@@ -1,11 +1,9 @@
 import { Component } from "@angular/core";
 import { TableComponent } from "../../components/table/table.component";
 import { DevicesService } from "../../backend/services/devices/devices.service";
-import GetDevicesResponse from "../../backend/services/devices/models/get-devices-response";
 import PaginationResponse from "../../backend/services/pagination";
 import Device from "../../backend/services/devices/models/device";
 import TableColumn from "../../components/table/models/table-column";
-import { Subscription } from "rxjs";
 import { MessageService } from "primeng/api";
 import Pagination from "../../backend/services/pagination";
 import { PaginatorComponent } from "../../components/paginator/paginator.component";

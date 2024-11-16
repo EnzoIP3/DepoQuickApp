@@ -1,3 +1,4 @@
+using BusinessLogic.HomeOwners.Entities;
 using BusinessLogic.HomeOwners.Services;
 using BusinessLogic.Roles.Entities;
 using HomeConnect.WebApi.Controllers.Rooms.Models;
@@ -13,6 +14,7 @@ public class RoomController(IHomeOwnerService homeOwnerService) : ControllerBase
     [HttpPost("{roomId}/devices")]
     [AuthenticationFilter]
     [AuthorizationFilter(SystemPermission.AddDeviceToRoom)]
+    [HomeAuthorizationFilter(HomePermission.AddDevice)]
     public AddOwnedDeviceToRoomResponse AddOwnedDeviceToRoom([FromRoute] string roomId,
         [FromBody] AddOwnedDeviceToRoomRequest request)
     {

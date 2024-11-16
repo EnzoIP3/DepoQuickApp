@@ -190,7 +190,7 @@ public class HomeController(IHomeOwnerService homeOwnerService) : ControllerBase
     [HttpPost("{homesId}/rooms")]
     [AuthenticationFilter]
     [AuthorizationFilter(SystemPermission.CreateRoom)]
-    [HomeAuthorizationFilter]
+    [HomeAuthorizationFilter(HomePermission.MoveDevice)]
     public CreateRoomResponse CreateRoom([FromRoute] string homesId, [FromBody] CreateRoomRequest request)
     {
         var room = homeOwnerService.CreateRoom(homesId, request.Name);

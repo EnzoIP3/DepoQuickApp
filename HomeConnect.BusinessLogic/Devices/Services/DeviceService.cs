@@ -133,7 +133,7 @@ public class DeviceService : IDeviceService
             throw new ArgumentException("Device not found in source room.");
         }
 
-        sourceRoom.OwnedDevices.Remove(ownedDevice);
+        sourceRoom.RemoveOwnedDevice(ownedDevice);
         targetRoom.AddOwnedDevice(ownedDevice);
         ownedDevice.Room = targetRoom;
 

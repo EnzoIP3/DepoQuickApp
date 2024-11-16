@@ -72,11 +72,15 @@ public class Room
 
     public void RemoveOwnedDevice(OwnedDevice device)
     {
+        EnsureOwnedDeviceBelongsToRoom(device);
+        OwnedDevices.Remove(device);
+    }
+
+    private void EnsureOwnedDeviceBelongsToRoom(OwnedDevice device)
+    {
         if (!OwnedDevices.Contains(device))
         {
             throw new ArgumentException("Device does not belong to the room.");
         }
-
-        OwnedDevices.Remove(device);
     }
 }

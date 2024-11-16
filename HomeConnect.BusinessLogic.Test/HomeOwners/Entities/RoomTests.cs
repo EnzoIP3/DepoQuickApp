@@ -171,5 +171,23 @@ public class RoomTests
 
     #endregion
 
+    #region Error
+
+    [TestMethod]
+    public void GetOwnedDevice_WhenDeviceDoesNotBelongToTheRoom_ThrowsArgumentException()
+    {
+        // Arrange
+        var room = new Room { Id = Guid.NewGuid(), Name = "Living Room", Home = new Home() };
+        var device = new OwnedDevice { Home = new Home() };
+
+        // Act
+        var act = () => room.GetOwnedDevice(device.HardwareId);
+
+        // Assert
+        act.Should().Throw<ArgumentException>().WithMessage("Device does not belong to the room.");
+    }
+
+    #endregion
+
     #endregion
 }

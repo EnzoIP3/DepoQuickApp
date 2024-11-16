@@ -199,6 +199,8 @@ public class HomeController(IHomeOwnerService homeOwnerService) : ControllerBase
     [HttpGet("{homesId}/rooms")]
     public GetRoomsResponse GetRooms([FromRoute] string homesId)
     {
-        throw new NotImplementedException();
+        IEnumerable<Room> rooms = homeOwnerService.GetRoomsByHomeId(homesId);
+        var roomInfos = rooms.Select(ListRoomInfo.FromRoom).ToList();
+        return new GetRoomsResponse { Rooms = roomInfos };
     }
 }

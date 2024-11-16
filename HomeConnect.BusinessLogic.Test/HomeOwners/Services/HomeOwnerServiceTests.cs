@@ -995,20 +995,17 @@ public class HomeOwnerServiceTests
         var homeId = Guid.NewGuid().ToString();
         var home = new Home { Id = Guid.Parse(homeId), Address = "Arteaga 1470", NickName = "My Home", Rooms = [] };
         var roomName = "Living Room";
-        var room = new Room { Id = Guid.NewGuid(), Name = roomName, Home = home };
-
+        _homeRepositoryMock.Setup(repo => repo.Exists(home.Id)).Returns(true);
         _homeRepositoryMock.Setup(repo => repo.Get(It.IsAny<Guid>())).Returns(home);
-        _homeRepositoryMock.Setup(repo => repo.Update(It.IsAny<Home>())).Verifiable();
+        _roomRepositoryMock.Setup(repo => repo.Add(It.IsAny<Room>()));
 
         // Act
         var createdRoom = _homeOwnerService.CreateRoom(homeId, roomName);
 
         // Assert
-        _homeRepositoryMock.Verify(repo => repo.Get(It.IsAny<Guid>()), Times.Once);
-        _homeRepositoryMock.Verify(repo => repo.Update(It.IsAny<Home>()), Times.Once);
+        _roomRepositoryMock.Verify(repo => repo.Add(It.Is<Room>(r => r.Name == roomName)), Times.Once);
+        createdRoom.Home.Should().Be(home);
         createdRoom.Should().NotBeNull();
-        createdRoom.Name.Should().Be(roomName);
-        home.Rooms.Should().ContainSingle(r => r.Id == createdRoom.Id && r.Name == roomName);
     }
 
     #endregion
@@ -1045,15 +1042,15 @@ public class HomeOwnerServiceTests
     public void CreateRoom_ShouldThrowArgumentException_WhenHomeDoesNotExist()
     {
         // Arrange
-        var homeId = Guid.NewGuid().ToString();
+        var homeId = Guid.NewGuid();
         var name = "Living Room";
-        _homeRepositoryMock.Setup(repo => repo.Get(It.IsAny<Guid>())).Returns((Home)null);
+        _homeRepositoryMock.Setup(repo => repo.Exists(homeId)).Returns(false);
 
         // Act
-        Action act = () => _homeOwnerService.CreateRoom(homeId, name);
+        Action act = () => _homeOwnerService.CreateRoom(homeId.ToString(), name);
 
         // Assert
-        act.Should().Throw<ArgumentException>().WithMessage("Home does not exist.");
+        act.Should().Throw<KeyNotFoundException>().WithMessage("Home does not exist.");
     }
 
     #endregion

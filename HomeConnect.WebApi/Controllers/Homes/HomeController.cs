@@ -192,7 +192,7 @@ public class HomeController(IHomeOwnerService homeOwnerService) : ControllerBase
     [HomeAuthorizationFilter(HomePermission.CreateRoom)]
     public CreateRoomResponse CreateRoom([FromRoute] string homesId, [FromBody] CreateRoomRequest request)
     {
-        var room = homeOwnerService.CreateRoom(homesId, request.Name);
+        var room = homeOwnerService.CreateRoom(homesId, request.Name ?? string.Empty);
         return new CreateRoomResponse { RoomId = room.Id.ToString() };
     }
 }

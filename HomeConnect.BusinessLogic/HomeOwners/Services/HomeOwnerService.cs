@@ -132,18 +132,14 @@ public class HomeOwnerService : IHomeOwnerService
     public Room CreateRoom(string homeId, string name)
     {
         ValidateRoomParameters(homeId, name);
-
-        var home = HomeRepository.Get(Guid.Parse(homeId));
-        if (home == null)
+        if (!HomeRepository.Exists(Guid.Parse(homeId)))
         {
-            throw new ArgumentException("Home does not exist.");
+            throw new KeyNotFoundException("Home does not exist.");
         }
 
+        var home = HomeRepository.Get(Guid.Parse(homeId));
         var room = new Room(name, home);
-        home.Rooms.Add(room);
-
-        HomeRepository.Update(home);
-
+        RoomRepository.Add(room);
         return room;
     }
 

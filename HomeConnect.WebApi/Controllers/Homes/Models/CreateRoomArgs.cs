@@ -1,6 +1,6 @@
 namespace HomeConnect.WebApi.Controllers.Homes.Models;
 
-public class CreateRoomRequest
+public record CreateRoomRequest
 {
-    public string Name = null!;
+    public string? Name { get; set; }
 }

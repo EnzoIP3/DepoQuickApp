@@ -88,7 +88,7 @@ public class BusinessOwnerService : IBusinessOwnerService
     public PagedData<Business> GetBusinesses(string ownerIdFilter, int currentPage, int pageSize)
     {
         Guid ownerId = ParseAndValidateOwnerId(ownerIdFilter);
-        var filterArgs = new FilterArgs { OwnerIdFilter = ownerId };
+        var filterArgs = new FilterArgs { OwnerIdFilter = ownerId, CurrentPage = currentPage, PageSize = pageSize };
         PagedData<Business> businesses =
             BusinessRepository.GetPaged(filterArgs);
         return businesses;

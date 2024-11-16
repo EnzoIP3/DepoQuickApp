@@ -64,9 +64,9 @@ public class UserController(IAdminService adminService, IUserService userService
 
     [HttpGet("{userId}/businesses")]
     [AuthorizationFilter(SystemPermission.GetBusinesses)]
-    public GetBusinessesResponse GetBusinesses(string userId)
+    public GetBusinessesResponse GetBusinesses(string userId, GetUserBusinessesRequest request)
     {
-        PagedData<Business> businesses = businessOwnerService.GetBusinesses(userId);
+        PagedData<Business> businesses = businessOwnerService.GetBusinesses(userId, request.CurrentPage, request.PageSize);
         GetBusinessesResponse response = ResponseFromBusinesses(businesses);
         return response;
     }

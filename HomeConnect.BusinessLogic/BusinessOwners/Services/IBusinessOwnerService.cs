@@ -11,6 +11,6 @@ public interface IBusinessOwnerService
     public Device CreateDevice(CreateDeviceArgs args);
     public Camera CreateCamera(CreateCameraArgs args);
     public void UpdateValidator(UpdateValidatorArgs args);
-    public PagedData<Business> GetBusinesses(string ownerFilter);
+    public PagedData<Business> GetBusinesses(string ownerFilter, int currentPage, int pageSize);
     public PagedData<Device> GetDevices(string businessId, User user);
 }

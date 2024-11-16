@@ -85,7 +85,7 @@ public class BusinessOwnerService : IBusinessOwnerService
         BusinessRepository.UpdateValidator(args.BusinessRut, validatorId);
     }
 
-    public PagedData<Business> GetBusinesses(string ownerIdFilter)
+    public PagedData<Business> GetBusinesses(string ownerIdFilter, int currentPage, int pageSize)
     {
         Guid ownerId = ParseAndValidateOwnerId(ownerIdFilter);
         var filterArgs = new FilterArgs { OwnerIdFilter = ownerId };

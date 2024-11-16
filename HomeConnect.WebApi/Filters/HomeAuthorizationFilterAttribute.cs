@@ -44,31 +44,37 @@ public class HomeAuthorizationFilterAttribute(string? permission = null) : Attri
         if (hardwareId != null)
         {
             HandleHardwareId(context, hardwareId, user);
+            return;
         }
 
         if (roomId != null)
         {
-            if (!IsValidGuid(roomId, out Guid _))
-            {
-                SetBadRequestResult(context, "The room ID is invalid");
-                return;
-            }
+            HandleRoomId(context, roomId, user);
+        }
+    }
 
-            IHomeOwnerService homeOwnerService = GetHomeOwnerService(context);
-            try
-            {
-                var room = homeOwnerService.GetRoom(roomId);
-                var home = room.Home;
+    private void HandleRoomId(AuthorizationFilterContext context, string roomId, User user)
+    {
+        if (!IsValidGuid(roomId, out Guid _))
+        {
+            SetBadRequestResult(context, "The room ID is invalid");
+            return;
+        }
 
-                if (!UserHasRequiredPermission(user, home, permission))
-                {
-                    SetForbiddenResult(context, permission);
-                }
-            }
-            catch (KeyNotFoundException)
+        IHomeOwnerService homeOwnerService = GetHomeOwnerService(context);
+        try
+        {
+            var room = homeOwnerService.GetRoom(roomId);
+            var home = room.Home;
+
+            if (!UserHasRequiredPermission(user, home, permission))
             {
-                SetNotFoundResult(context, "The room does not exist");
+                SetForbiddenResult(context, permission);
             }
+        }
+        catch (KeyNotFoundException)
+        {
+            SetNotFoundResult(context, "The room does not exist");
         }
     }
 

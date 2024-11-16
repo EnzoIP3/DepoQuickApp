@@ -641,4 +641,67 @@ public class HomeControllerTests
     }
 
     #endregion
+    #region GetRooms
+    [TestMethod]
+    public void GetRooms_WhenCalledWithValidRequest_ReturnsRooms()
+    {
+        // Arrange
+        var room1 = new Room
+        {
+            Id = Guid.NewGuid(),
+            Name = "Living Room",
+            Home = _home,
+            OwnedDevices = new List<OwnedDevice>
+            {
+                new OwnedDevice { HardwareId = Guid.NewGuid() },
+                new OwnedDevice { HardwareId = Guid.NewGuid() }
+            }
+        };
+        var room2 = new Room
+        {
+            Id = Guid.NewGuid(),
+            Name = "Bedroom",
+            Home = _home,
+            OwnedDevices = new List<OwnedDevice>
+            {
+                new OwnedDevice { HardwareId = Guid.NewGuid() }
+            }
+        };
+        var items = new Dictionary<object, object?> { { Item.UserLogged, _user } };
+        _httpContextMock.Setup(h => h.Items).Returns(items);
+        _homeOwnerService.Setup(x => x.GetRoomsByHomeId(_home.Id.ToString()))
+            .Returns(new List<Room> { room1, room2 });
+
+        var expectedResponse = new GetRoomsResponse
+        {
+            Rooms = new List<ListRoomInfo>
+            {
+                new ListRoomInfo
+                {
+                    Id = room1.Id.ToString(),
+                    Name = room1.Name,
+                    HomeId = room1.Home.Id.ToString(),
+                    OwnedDevicesId = room1.OwnedDevices.Select(od => od.HardwareId.ToString()).ToList()
+                },
+                new ListRoomInfo
+                {
+                    Id = room2.Id.ToString(),
+                    Name = room2.Name,
+                    HomeId = room2.Home.Id.ToString(),
+                    OwnedDevicesId = room2.OwnedDevices.Select(od => od.HardwareId.ToString()).ToList()
+                }
+            }
+        };
+
+        // Act
+        GetRoomsResponse response = _controller.GetRooms(_home.Id.ToString());
+
+        // Assert
+        _homeOwnerService.VerifyAll();
+        response.Should().NotBeNull();
+        response.Rooms.Should().NotBeNullOrEmpty();
+        response.Rooms.Should().HaveCount(2);
+        response.Rooms.Should().BeEquivalentTo(expectedResponse.Rooms);
+    }
+    #endregion
 }

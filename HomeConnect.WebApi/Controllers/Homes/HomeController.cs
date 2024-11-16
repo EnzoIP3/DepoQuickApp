@@ -195,4 +195,10 @@ public class HomeController(IHomeOwnerService homeOwnerService) : ControllerBase
         var room = homeOwnerService.CreateRoom(homesId, request.Name ?? string.Empty);
         return new CreateRoomResponse { RoomId = room.Id.ToString() };
     }
+
+    [HttpGet("{homesId}/rooms")]
+    public GetRoomsResponse GetRooms([FromRoute] string homesId)
+    {
+        throw new NotImplementedException();
+    }
 }

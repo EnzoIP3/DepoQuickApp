@@ -22,4 +22,5 @@ public interface IHomeOwnerService
     Room CreateRoom(string homeId, string name);
     Room GetRoom(string roomId);
     Guid AddOwnedDeviceToRoom(string roomId, string ownedDeviceId);
+    public List<Room> GetRoomsByHomeId(string homesId);
 }

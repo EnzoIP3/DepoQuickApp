@@ -211,118 +211,8 @@ public class HomeRepositoryTests
 
     #endregion
 
-    #region AddRoom
-    #region Success
-
-    [TestMethod]
-    public void AddRoom_WhenRoomIsValid_AddsRoom()
-    {
-        // Arrange
-        var room = new Room { Id = Guid.NewGuid(), Name = "Living Room", Home = _home };
-
-        // Act
-        _homeRepository.AddRoom(room);
-
-        // Assert
-        _context.Rooms.Should().Contain(room);
-    }
-    #endregion
-    #region Error
-    [TestMethod]
-    public void AddRoom_WhenRoomExists_ThrowsException()
-    {
-        // Arrange
-        var room = new Room { Id = Guid.NewGuid(), Name = "Living Room", Home = _home };
-        _homeRepository.AddRoom(room);
-
-        // Act
-        Action action = () => _homeRepository.AddRoom(room);
-
-        // Assert
-        action.Should().Throw<ArgumentException>().WithMessage("Room already exists");
-    }
-    #endregion
-    #endregion
-
-    #region ExistsRoom
-
-    [TestMethod]
-    public void ExistsRoom_WhenRoomExists_ReturnsTrue()
-    {
-        // Act
-        var result = _homeRepository.ExistsRoom(_room.Id);
-
-        // Assert
-        result.Should().BeTrue();
-    }
-
-    [TestMethod]
-    public void ExistsRoom_WhenRoomDoesNotExist_ReturnsFalse()
-    {
-        // Arrange
-        var roomId = Guid.NewGuid();
-
-        // Act
-        var result = _homeRepository.ExistsRoom(roomId);
-
-        // Assert
-        result.Should().BeFalse();
-    }
-
-    #endregion
-
-    #region GetRoomById
-    #region Success
-    [TestMethod]
-    public void GetRoomById_WhenRoomExists_ReturnsRoom()
-    {
-        // Act
-        var result = _homeRepository.GetRoomById(_room.Id);
-
-        // Assert
-        result.Should().BeEquivalentTo(_room);
-    }
-    #endregion
-    #region Error
-    [TestMethod]
-    public void GetRoomById_WhenRoomDoesNotExist_ThrowsException()
-    {
-        // Act
-        Action action = () => _homeRepository.GetRoomById(Guid.NewGuid());
-
-        // Assert
-        action.Should().Throw<ArgumentException>().WithMessage("Room does not exist");
-    }
-    #endregion
-    #endregion
-
-    #region UpdateRoom
-    [TestMethod]
-    public void UpdateRoom_WhenOwnedDevicesAreUpdated_UpdatesOwnedDevicesList()
-    {
-        // Arrange
-        var home = new Home(_homeOwner, "Main St 123", 12.5, 12.5, 5);
-        var room = new Room { Id = Guid.NewGuid(), Name = "Living Room", Home = home, OwnedDevices = new List<OwnedDevice>() };
-        var device = new Device();
-        var ownedDevice = new OwnedDevice { HardwareId = Guid.NewGuid(), Device = device, Home = home };
-
-        _context.Homes.Add(home);
-        _context.Rooms.Add(room);
-        _context.OwnedDevices.Add(ownedDevice);
-        _context.SaveChanges();
-
-        // Act
-        room.OwnedDevices.Add(ownedDevice);
-        _homeRepository.UpdateRoom(room);
-
-        // Assert
-        var updatedRoom = _homeRepository.GetRoomById(room.Id);
-        updatedRoom.Should().NotBeNull();
-        updatedRoom.OwnedDevices.Should().ContainSingle(d => d.HardwareId == ownedDevice.HardwareId);
-    }
-    #endregion
-
     #region UpdateHome
+
     [TestMethod]
     public void UpdateHome_WhenRoomsAreUpdated_UpdatesRoomsList()
     {
@@ -347,5 +237,6 @@ public class HomeRepositoryTests
         updatedHome.Should().NotBeNull();
         updatedHome.Rooms.Should().ContainSingle(r => r.Id == room.Id && r.Name == "Living Room");
     }
+
     #endregion
 }

@@ -173,7 +173,7 @@ public class HomeOwnerService : IHomeOwnerService
         var room = RoomRepository.Get(roomGuid);
         var ownedDevice = OwnedDeviceRepository.GetOwnedDeviceById(ownedDeviceGuid);
 
-        room.OwnedDevices.Add(ownedDevice);
+        room.AddOwnedDevice(ownedDevice);
         RoomRepository.Update(room);
         return ownedDevice.HardwareId;
     }

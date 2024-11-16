@@ -494,9 +494,10 @@ public class DeviceServiceTests
         var sourceRoomId = Guid.NewGuid();
         var targetRoomId = Guid.NewGuid();
         var ownedDeviceId = Guid.NewGuid();
-        var ownedDevice = new OwnedDevice { HardwareId = ownedDeviceId, Room = new Room { Id = sourceRoomId } };
-        var sourceRoom = new Room { Id = sourceRoomId, OwnedDevices = new List<OwnedDevice> { ownedDevice } };
-        var targetRoom = new Room { Id = targetRoomId, OwnedDevices = new List<OwnedDevice>() };
+        var home = new Home();
+        var ownedDevice = new OwnedDevice { HardwareId = ownedDeviceId, Room = new Room { Id = sourceRoomId }, Home = home};
+        var sourceRoom = new Room { Id = sourceRoomId, OwnedDevices = new List<OwnedDevice> { ownedDevice }, Home = home };
+        var targetRoom = new Room { Id = targetRoomId, OwnedDevices = new List<OwnedDevice>(), Home = home};
 
         _roomRepository.Setup(r => r.Exists(sourceRoomId)).Returns(true);
         _roomRepository.Setup(r => r.Exists(targetRoomId)).Returns(true);
@@ -561,8 +562,8 @@ public class DeviceServiceTests
         var sourceRoomId = Guid.NewGuid();
         var targetRoomId = Guid.NewGuid();
         var ownedDeviceId = Guid.NewGuid();
-        var sourceRoom = new Room { Id = sourceRoomId, OwnedDevices = new List<OwnedDevice>() };
-        var targetRoom = new Room { Id = targetRoomId, OwnedDevices = new List<OwnedDevice>() };
+        var sourceRoom = new Room { Id = sourceRoomId };
+        var targetRoom = new Room { Id = targetRoomId };
 
         _roomRepository.Setup(r => r.Exists(sourceRoomId)).Returns(true);
         _roomRepository.Setup(r => r.Exists(targetRoomId)).Returns(true);
@@ -576,5 +577,6 @@ public class DeviceServiceTests
         act.Should().Throw<ArgumentException>().WithMessage("Device not found in source room.");
     }
     #endregion
+
     #endregion
 }

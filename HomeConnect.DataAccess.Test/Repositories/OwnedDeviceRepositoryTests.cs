@@ -290,6 +290,7 @@ public class OwnedDeviceRepositoryTests
         result.Should().BeFalse();
     }
     #endregion
+
     #region Rename
     [TestMethod]
     public void Rename_ShouldUpdateDeviceNameAndSaveChanges()
@@ -342,13 +343,13 @@ public class OwnedDeviceRepositoryTests
     {
         // Arrange
         var home = new Home(new User(), "Main St 123", 12.5, 12.5, 5);
-        var room = new Room { Id = Guid.NewGuid(), Name = "Living Room", Home = home, OwnedDevices = new List<OwnedDevice>() };
+        var room = new Room { Id = Guid.NewGuid(), Name = "Living Room", Home = home };
         var device = new Device();
         var ownedDevice = new OwnedDevice { HardwareId = Guid.NewGuid(), Device = device, Home = home };
 
         _context.Homes.Add(home);
         _context.Rooms.Add(room);
-        _context.OwnedDevices.Add(ownedDevice);
+        room.AddOwnedDevice(ownedDevice);
         _context.SaveChanges();
 
         // Act

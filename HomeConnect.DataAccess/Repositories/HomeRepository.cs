@@ -56,38 +56,6 @@ public class HomeRepository : IHomeRepository
             .Where(h => h.Owner.Id == userId || h.Members.Any(m => m.User.Id == userId)).ToList();
     }
 
-    public void AddRoom(Room room)
-    {
-        if (ExistsRoom(room.Id))
-        {
-            throw new ArgumentException("Room already exists");
-        }
-
-        _context.Rooms.Add(room);
-        _context.SaveChanges();
-    }
-
-    public Room GetRoomById(Guid roomId)
-    {
-        if (!ExistsRoom(roomId))
-        {
-            throw new ArgumentException("Room does not exist");
-        }
-
-        return _context.Rooms.FirstOrDefault(r => r.Id == roomId);
-    }
-
-    public bool ExistsRoom(Guid roomId)
-    {
-        return _context.Rooms.Any(r => r.Id == roomId);
-    }
-
-    public void UpdateRoom(Room room)
-    {
-        _context.Rooms.Update(room);
-        _context.SaveChanges();
-    }
-
     public void Update(Home home)
     {
         _context.Homes.Update(home);

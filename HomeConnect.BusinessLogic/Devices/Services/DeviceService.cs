@@ -134,7 +134,7 @@ public class DeviceService : IDeviceService
         }
 
         sourceRoom.OwnedDevices.Remove(ownedDevice);
-        targetRoom.OwnedDevices.Add(ownedDevice);
+        targetRoom.AddOwnedDevice(ownedDevice);
         ownedDevice.Room = targetRoom;
 
         RoomRepository.Update(sourceRoom);

@@ -18,7 +18,7 @@ public class RoomController(IHomeOwnerService homeOwnerService) : ControllerBase
     public AddOwnedDeviceToRoomResponse AddOwnedDeviceToRoom([FromRoute] string roomId,
         [FromBody] AddOwnedDeviceToRoomRequest request)
     {
-        Guid hardwareId = homeOwnerService.AddOwnedDeviceToRoom(roomId, request.DeviceId);
+        Guid hardwareId = homeOwnerService.AddOwnedDeviceToRoom(roomId, request.DeviceId ?? string.Empty);
         return new AddOwnedDeviceToRoomResponse { DeviceId = hardwareId.ToString(), RoomId = roomId };
     }
 }

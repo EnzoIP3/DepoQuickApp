@@ -71,9 +71,7 @@ public class DeviceController : ControllerBase
             }).ToList(),
             Pagination = new Pagination
             {
-                Page = devices.Page,
-                PageSize = devices.PageSize,
-                TotalPages = devices.TotalPages
+                Page = devices.Page, PageSize = devices.PageSize, TotalPages = devices.TotalPages
             }
         };
     }
@@ -85,9 +83,7 @@ public class DeviceController : ControllerBase
         var userLoggedIn = HttpContext.Items[Item.UserLogged] as User;
         var args = new ImportDevicesArgs
         {
-            ImporterName = request.ImporterName,
-            FileName = request.Route,
-            User = userLoggedIn!
+            ImporterName = request.ImporterName, FileName = request.Route, User = userLoggedIn!
         };
         var addedDevices = _importerService.ImportDevices(args);
         return new ImportDevicesResponse { ImportedDevices = addedDevices };
@@ -107,17 +103,16 @@ public class DeviceController : ControllerBase
         return new ConnectionResponse { Connected = connectionState, HardwareId = hardwareId };
     }
 
-    [HttpPatch("devices/{hardwareId}/room")]
+    [HttpPatch("{hardwareId}/room")]
     [AuthorizationFilter(SystemPermission.MoveDevice)]
     [HomeAuthorizationFilter(HomePermission.MoveDevice)]
     public MoveDeviceResponse MoveDevice([FromRoute] string hardwareId, [FromBody] MoveDeviceRequest request)
     {
-        _deviceService.MoveDevice(request.SourceRoomId, request.TargetRoomId, hardwareId);
+        _deviceService.MoveDevice(request.SourceRoomId ?? string.Empty, request.TargetRoomId ?? string.Empty,
+            hardwareId);
         return new MoveDeviceResponse
         {
-            SourceRoomId = request.SourceRoomId,
-            TargetRoomId = request.TargetRoomId,
-            DeviceId = hardwareId
+            SourceRoomId = request.SourceRoomId!, TargetRoomId = request.TargetRoomId!, DeviceId = hardwareId
         };
     }
 
@@ -146,9 +141,7 @@ public class DeviceController : ControllerBase
 
         return new NameDeviceArgs()
         {
-            HardwareId = Guid.Parse(hardwareId),
-            NewName = request.NewName,
-            OwnerId = userId
+            HardwareId = Guid.Parse(hardwareId), NewName = request.NewName, OwnerId = userId
         };
     }
 }

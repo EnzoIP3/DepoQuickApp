@@ -1,5 +1,6 @@
 using BusinessLogic.HomeOwners.Entities;
 using BusinessLogic.HomeOwners.Repositories;
+using Microsoft.EntityFrameworkCore;
 
 namespace HomeConnect.DataAccess.Repositories;
 
@@ -20,7 +21,8 @@ public class RoomRepository : IRoomRepository
 
     public Room Get(Guid roomId)
     {
-        return _context.Rooms.First(r => r.Id == roomId);
+        return _context.Rooms.Include(r => r.OwnedDevices).Include(r => r.Home).ThenInclude(h => h.Owner)
+            .First(r => r.Id == roomId);
     }
 
     public bool Exists(Guid roomId)

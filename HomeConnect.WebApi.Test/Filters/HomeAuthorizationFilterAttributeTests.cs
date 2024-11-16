@@ -331,4 +331,26 @@ public class HomeAuthorizationFilterAttributeTests
         FilterTestsUtils.GetInnerCode(concreteResponse.Value).Should().Be("Forbidden");
         FilterTestsUtils.GetMessage(concreteResponse.Value).Should().Be("Missing home permission: some-permission");
     }
+
+    [TestMethod]
+    public void OnAuthorization_WhenRoomIdIsInvalid_ReturnsBadRequestResult()
+    {
+        // Arrange
+        var items = new Dictionary<object, object?> { { Item.UserLogged, _user } };
+        _httpContextMock.Setup(h => h.Items).Returns(items);
+        _context.RouteData.Values.Add("roomId", " ");
+
+        // Act
+        _attribute.OnAuthorization(_context);
+
+        // Assert
+        IActionResult? response = _context.Result;
+        _httpContextMock.VerifyAll();
+        response.Should().NotBeNull();
+        var concreteResponse = response as ObjectResult;
+        concreteResponse.Should().NotBeNull();
+        concreteResponse!.StatusCode.Should().Be((int)HttpStatusCode.BadRequest);
+        FilterTestsUtils.GetInnerCode(concreteResponse.Value).Should().Be("BadRequest");
+        FilterTestsUtils.GetMessage(concreteResponse.Value).Should().Be("The room ID is invalid");
+    }
 }

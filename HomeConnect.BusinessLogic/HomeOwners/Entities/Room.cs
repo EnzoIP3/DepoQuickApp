@@ -83,4 +83,9 @@ public class Room
             throw new ArgumentException("Device does not belong to the room.");
         }
     }
+
+    public OwnedDevice GetOwnedDevice(Guid hardwareId)
+    {
+        throw new NotImplementedException();
+    }
 }

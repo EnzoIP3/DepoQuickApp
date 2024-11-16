@@ -149,4 +149,27 @@ public class RoomTests
     #endregion
 
     #endregion
+
+    #region GetOwnedDevice
+
+    #region Success
+
+    [TestMethod]
+    public void GetOwnedDevice_WhenDeviceBelongsToTheRoom_ReturnsDevice()
+    {
+        // Arrange
+        var room = new Room { Id = Guid.NewGuid(), Name = "Living Room", Home = new Home() };
+        var device = new OwnedDevice { Home = room.Home };
+        room.AddOwnedDevice(device);
+
+        // Act
+        var result = room.GetOwnedDevice(device.HardwareId);
+
+        // Assert
+        result.Should().Be(device);
+    }
+
+    #endregion
+
+    #endregion
 }

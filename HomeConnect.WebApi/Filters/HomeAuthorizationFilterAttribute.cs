@@ -48,10 +48,20 @@ public class HomeAuthorizationFilterAttribute(string? permission = null) : Attri
 
         if (roomId != null)
         {
-            if (!IsValidGuid(roomId, out Guid roomIdParsed))
+            if (!IsValidGuid(roomId, out Guid _))
             {
                 SetBadRequestResult(context, "The room ID is invalid");
                 return;
+            }
+
+            IHomeOwnerService homeOwnerService = GetHomeOwnerService(context);
+            try
+            {
+                homeOwnerService.GetRoom(roomId);
+            }
+            catch (KeyNotFoundException)
+            {
+                SetNotFoundResult(context, "The room does not exist");
             }
         }
     }

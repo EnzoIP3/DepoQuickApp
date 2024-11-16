@@ -4,4 +4,5 @@ export interface ListBusinessInfo {
     ownerSurname: string;
     ownerEmail: string;
     rut: string;
+    logo: string;
 }

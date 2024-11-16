@@ -7,4 +7,5 @@ public record ListBusinessInfo
     public string OwnerSurname { get; init; } = null!;
     public string OwnerEmail { get; init; } = null!;
     public string Rut { get; init; } = null!;
+    public string Logo { get; init; } = null!;
 }

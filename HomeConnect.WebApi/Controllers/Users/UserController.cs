@@ -81,7 +81,8 @@ public class UserController(IAdminService adminService, IUserService userService
                 OwnerEmail = b.Owner.Email,
                 OwnerName = b.Owner.Name,
                 OwnerSurname = b.Owner.Surname,
-                Rut = b.Rut
+                Rut = b.Rut,
+                Logo = b.Logo
             }).ToList(),
             Pagination = new Pagination
             {

@@ -8,19 +8,20 @@ import Pagination from "../../backend/services/pagination";
 import { PaginatorComponent } from "../../components/paginator/paginator.component";
 import { MessageService } from "primeng/api";
 import { Subscription } from "rxjs";
-import { BusinessesService } from "../../backend/services/businesses/businesses.service";
 import { UsersService } from "../../backend/services/users/users.service";
 import { GetBusinessResponse } from "../../backend/services/users/models/get-business-response";
 import { AuthService } from "../../backend/services/auth/auth.service";
+import { AvatarComponent } from "../../components/avatar/avatar.component";
 
 @Component({
     selector: "app-businesses-table",
     standalone: true,
-    imports: [TableComponent, PaginatorComponent],
+    imports: [TableComponent, PaginatorComponent, AvatarComponent],
     templateUrl: "./businesses-table.component.html"
 })
 export class BusinessesTableComponent {
     columns: TableColumn[] = [
+        { field: "logo", header: "Logo" },
         { field: "name", header: "Business Name" },
         { field: "ownerName", header: "Owner Name" },
         { field: "ownerSurname", header: "Owner Surname" },
@@ -28,12 +29,7 @@ export class BusinessesTableComponent {
         { field: "rut", header: "RUT" }
     ];
 
-    businesses: Business[] = [
-        new Business("Business 1", "John", "Doe", "john.doe@example.com", "12345678"),
-        new Business("Business 2", "Jane", "Smith", "jane.smith@example.com", "87654321"),
-        new Business("Business 3", "Alice", "Johnson", "alice.johnson@example.com", "13579246"),
-        new Business("Business 4", "Bob", "Brown", "bob.brown@example.com", "24681357")
-    ];
+    businesses: Business[] = [];
 
     pagination: PaginationResponse | null = {};
 
@@ -105,7 +101,8 @@ export class BusinessesTableComponent {
                         business.ownerName,
                         business.ownerSurname,
                         business.ownerEmail,
-                        business.rut
+                        business.rut,
+                        business.logo
                     ));
                     this.pagination = response.pagination;
                     this.loading = false;

@@ -6,6 +6,7 @@
         [clickableRows]="true"
         (rowClick)="onRowClick($event)"
         [customTemplates]="{
+            logo: logoTemplate,
             name: nameTemplate,
             ownerName: ownerNameTemplate,
             ownerSurname: ownerSurnameTemplate,
@@ -23,6 +24,15 @@
     >
     </app-paginator>
 </div>
+
+<ng-template #logoTemplate let-row="row">
+    <app-avatar
+        defaultIcon="pi pi-image"
+        [image]="row.logo"
+        shape="square"
+        size="xlarge"
+    ></app-avatar>
+</ng-template>
 
 <ng-template #nameTemplate let-value="value">
     {{ value || "-" }}

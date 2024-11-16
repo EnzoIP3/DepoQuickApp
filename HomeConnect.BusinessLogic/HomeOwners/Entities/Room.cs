@@ -17,6 +17,7 @@ public class Room
     private string _name = string.Empty;
     private Home _home = null!;
     public Guid Id { get; set; } = Guid.NewGuid();
+
     public string Name
     {
         get => _name;
@@ -48,6 +49,6 @@ public class Room
 
     public void AddOwnedDevice(OwnedDevice device)
     {
-        throw new NotImplementedException();
+        OwnedDevices.Add(device);
     }
 }

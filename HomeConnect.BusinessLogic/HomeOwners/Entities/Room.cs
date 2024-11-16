@@ -69,4 +69,9 @@ public class Room
             throw new ArgumentException("Device must belong to the same home as the room.");
         }
     }
+
+    public void RemoveOwnedDevice(OwnedDevice device)
+    {
+        throw new NotImplementedException();
+    }
 }

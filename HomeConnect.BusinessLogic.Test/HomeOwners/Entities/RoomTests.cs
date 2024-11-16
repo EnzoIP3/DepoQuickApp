@@ -108,4 +108,27 @@ public class RoomTests
     #endregion
 
     #endregion
+
+    #region RemoveOwnedDevice
+
+    #region Success
+
+    [TestMethod]
+    public void RemoveOwnedDevice_WhenCalled_RemovesDeviceFromOwnedDevices()
+    {
+        // Arrange
+        var room = new Room { Id = Guid.NewGuid(), Name = "Living Room", Home = new Home() };
+        var device = new OwnedDevice { Home = room.Home };
+        room.AddOwnedDevice(device);
+
+        // Act
+        room.RemoveOwnedDevice(device);
+
+        // Assert
+        room.OwnedDevices.Should().NotContain(device);
+    }
+
+    #endregion
+
+    #endregion
 }

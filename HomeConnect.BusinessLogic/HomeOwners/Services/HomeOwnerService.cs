@@ -150,6 +150,10 @@ public class HomeOwnerService : IHomeOwnerService
     public Room GetRoom(string roomId)
     {
         var guid = ValidateAndParseGuid(roomId);
+        if (!RoomRepository.Exists(guid))
+        {
+            throw new KeyNotFoundException("Room does not exist.");
+        }
 
         return RoomRepository.Get(guid);
     }

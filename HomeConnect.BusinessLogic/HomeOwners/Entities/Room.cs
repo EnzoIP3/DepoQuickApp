@@ -22,12 +22,16 @@ public class Room
         get => _name;
         set
         {
-            if (string.IsNullOrEmpty(value))
-            {
-                throw new ArgumentException("Room name cannot be null or empty.");
-            }
-
+            EnsureNameIsNotNullOrEmpty(value);
             _name = value;
+        }
+    }
+
+    private static void EnsureNameIsNotNullOrEmpty(string value)
+    {
+        if (string.IsNullOrEmpty(value))
+        {
+            throw new ArgumentException("Room name cannot be null or empty.");
         }
     }
 

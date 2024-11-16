@@ -7,6 +7,8 @@ namespace HomeConnect.BusinessLogic.Test.HomeOwners.Entities;
 [TestClass]
 public class RoomTests
 {
+    #region Constructor
+
     #region Success
 
     [TestMethod]
@@ -22,20 +24,6 @@ public class RoomTests
         // Assert
         room.Name.Should().Be(name);
         room.Home.Should().Be(home);
-    }
-
-    [TestMethod]
-    public void AddOwnedDevice_WhenCalled_AddsDeviceToOwnedDevices()
-    {
-        // Arrange
-        var room = new Room { Id = Guid.NewGuid(), Name = "Living Room", Home = new Home() };
-        var device = new OwnedDevice() { Home = room.Home };
-
-        // Act
-        room.AddOwnedDevice(device);
-
-        // Assert
-        room.OwnedDevices.Should().Contain(device);
     }
 
     #endregion
@@ -61,6 +49,32 @@ public class RoomTests
         // Assert
         act.Should().Throw<ArgumentException>().WithMessage("Room must have a home assigned.");
     }
+
+    #endregion
+
+    #endregion
+
+    #region AddOwnedDevice
+
+    #region Success
+
+    [TestMethod]
+    public void AddOwnedDevice_WhenCalled_AddsDeviceToOwnedDevices()
+    {
+        // Arrange
+        var room = new Room { Id = Guid.NewGuid(), Name = "Living Room", Home = new Home() };
+        var device = new OwnedDevice() { Home = room.Home };
+
+        // Act
+        room.AddOwnedDevice(device);
+
+        // Assert
+        room.OwnedDevices.Should().Contain(device);
+    }
+
+    #endregion
+
+    #region Error
 
     [TestMethod]
     public void AddOwnedDevice_WhenDeviceDoesNotBelongToTheSameHome_ThrowsArgumentException()
@@ -90,6 +104,8 @@ public class RoomTests
         // Assert
         act.Should().Throw<ArgumentException>().WithMessage("Device already belongs to the room.");
     }
+
+    #endregion
 
     #endregion
 }

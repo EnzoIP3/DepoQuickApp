@@ -2,6 +2,8 @@ using BusinessLogic.Devices.Entities;
 using BusinessLogic.HomeOwners.Entities;
 using FluentAssertions;
 
+namespace HomeConnect.BusinessLogic.Test.HomeOwners.Entities;
+
 [TestClass]
 public class RoomTests
 {
@@ -72,6 +74,21 @@ public class RoomTests
 
         // Assert
         act.Should().Throw<ArgumentException>().WithMessage("Device must belong to the same home as the room.");
+    }
+
+    [TestMethod]
+    public void AddOwnedDevice_WhenDeviceAlreadyBelongsToTheRoom_ThrowsArgumentException()
+    {
+        // Arrange
+        var room = new Room { Id = Guid.NewGuid(), Name = "Living Room", Home = new Home() };
+        var device = new OwnedDevice { Home = room.Home };
+
+        // Act
+        room.AddOwnedDevice(device);
+        var act = () => room.AddOwnedDevice(device);
+
+        // Assert
+        act.Should().Throw<ArgumentException>().WithMessage("Device already belongs to the room.");
     }
 
     #endregion

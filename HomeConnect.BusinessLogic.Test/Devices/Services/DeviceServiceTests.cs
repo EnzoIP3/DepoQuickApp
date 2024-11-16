@@ -56,10 +56,7 @@ public class DeviceServiceTests
 
         _pagedDeviceList = new PagedData<Device>
         {
-            Data = _devices,
-            Page = _parameters.Page ?? 1,
-            PageSize = _parameters.PageSize ?? 10,
-            TotalPages = 1
+            Data = _devices, Page = _parameters.Page ?? 1, PageSize = _parameters.PageSize ?? 10, TotalPages = 1
         };
     }
 
@@ -127,10 +124,7 @@ public class DeviceServiceTests
         // Assert
         var expectedPagedDeviceList = new PagedData<Device>
         {
-            Data = _devices,
-            Page = _parameters.Page ?? 1,
-            PageSize = _parameters.PageSize ?? 10,
-            TotalPages = 1
+            Data = _devices, Page = _parameters.Page ?? 1, PageSize = _parameters.PageSize ?? 10, TotalPages = 1
         };
 
         result.Should().BeEquivalentTo(expectedPagedDeviceList,
@@ -311,9 +305,11 @@ public class DeviceServiceTests
     }
 
     #endregion
+
     #endregion
 
     #region UpdateSensorState
+
     #region Error
 
     [TestMethod]
@@ -368,7 +364,8 @@ public class DeviceServiceTests
     }
 
     [TestMethod]
-    public void UpdateSensorState_WhenCalledWithValidHardwareIdAndCurrentStateIsEqualToTheNewState_DoesNotCreateANotification()
+    public void
+        UpdateSensorState_WhenCalledWithValidHardwareIdAndCurrentStateIsEqualToTheNewState_DoesNotCreateANotification()
     {
         // Arrange
         var hardwareId = Guid.NewGuid().ToString();
@@ -386,7 +383,8 @@ public class DeviceServiceTests
     }
 
     [TestMethod]
-    public void UpdateSensorState_WhenCalledWithValidHardwareIdAndCurrentStateIsDifferentThanTheNewState_CreatesANotification()
+    public void
+        UpdateSensorState_WhenCalledWithValidHardwareIdAndCurrentStateIsDifferentThanTheNewState_CreatesANotification()
     {
         // Arrange
         var hardwareId = Guid.NewGuid().ToString();
@@ -412,12 +410,15 @@ public class DeviceServiceTests
             y.Event == args.Event), _deviceService), Times.Once);
         _ownedDeviceRepository.VerifyAll();
     }
+
     #endregion
+
     #endregion
 
     #region GetCameraById
 
     #region Error
+
     [TestMethod]
     public void GetCameraById_WhenIdFormatIsInvalid_ThrowsArgumentException()
     {
@@ -452,7 +453,8 @@ public class DeviceServiceTests
         // Arrange
         var cameraId = Guid.NewGuid().ToString();
         _deviceRepository.Setup(x => x.Exists(Guid.Parse(cameraId))).Returns(true);
-        _deviceRepository.Setup(x => x.Get(Guid.Parse(cameraId))).Returns(new Device("Name", "123", "Description", "https://example.com/photo.png", [], "Sensor", new Business()));
+        _deviceRepository.Setup(x => x.Get(Guid.Parse(cameraId))).Returns(new Device("Name", "123", "Description",
+            "https://example.com/photo.png", [], "Sensor", new Business()));
 
         // Act
         Action act = () => _deviceService.GetCameraById(cameraId);
@@ -461,9 +463,11 @@ public class DeviceServiceTests
         act.Should().Throw<InvalidOperationException>().WithMessage("Device is not a camera.");
         _deviceRepository.VerifyAll();
     }
+
     #endregion
 
     #region Success
+
     [TestMethod]
     public void GetCameraById_WhenCalledWithValidId_ReturnsCamera()
     {
@@ -481,12 +485,15 @@ public class DeviceServiceTests
         result.Should().BeOfType<Camera>();
         _deviceRepository.VerifyAll();
     }
+
     #endregion
+
     #endregion
 
     #region MoveDevice
 
     #region Success
+
     [TestMethod]
     public void MoveDevice_WhenCalled_MovesDeviceSuccessfully()
     {
@@ -495,9 +502,13 @@ public class DeviceServiceTests
         var targetRoomId = Guid.NewGuid();
         var ownedDeviceId = Guid.NewGuid();
         var home = new Home();
-        var ownedDevice = new OwnedDevice { HardwareId = ownedDeviceId, Room = new Room { Id = sourceRoomId }, Home = home};
-        var sourceRoom = new Room { Id = sourceRoomId, OwnedDevices = new List<OwnedDevice> { ownedDevice }, Home = home };
-        var targetRoom = new Room { Id = targetRoomId, OwnedDevices = new List<OwnedDevice>(), Home = home};
+        var ownedDevice =
+            new OwnedDevice { HardwareId = ownedDeviceId, Room = new Room { Id = sourceRoomId }, Home = home };
+        var sourceRoom = new Room
+        {
+            Id = sourceRoomId, OwnedDevices = new List<OwnedDevice> { ownedDevice }, Home = home
+        };
+        var targetRoom = new Room { Id = targetRoomId, OwnedDevices = new List<OwnedDevice>(), Home = home };
 
         _roomRepository.Setup(r => r.Exists(sourceRoomId)).Returns(true);
         _roomRepository.Setup(r => r.Exists(targetRoomId)).Returns(true);
@@ -516,6 +527,7 @@ public class DeviceServiceTests
         _homeRepository.VerifyAll();
         _deviceRepository.VerifyAll();
     }
+
     #endregion
 
     #region Error
@@ -531,7 +543,8 @@ public class DeviceServiceTests
         _roomRepository.Setup(r => r.Exists(sourceRoomId)).Returns(false);
 
         // Act
-        Action act = () => _deviceService.MoveDevice(sourceRoomId.ToString(), targetRoomId.ToString(), ownedDeviceId.ToString());
+        Action act = () =>
+            _deviceService.MoveDevice(sourceRoomId.ToString(), targetRoomId.ToString(), ownedDeviceId.ToString());
 
         // Assert
         act.Should().Throw<ArgumentException>().WithMessage("Invalid source room ID.");
@@ -549,33 +562,13 @@ public class DeviceServiceTests
         _roomRepository.Setup(r => r.Exists(targetRoomId)).Returns(false);
 
         // Act
-        Action act = () => _deviceService.MoveDevice(sourceRoomId.ToString(), targetRoomId.ToString(), ownedDeviceId.ToString());
+        Action act = () =>
+            _deviceService.MoveDevice(sourceRoomId.ToString(), targetRoomId.ToString(), ownedDeviceId.ToString());
 
         // Assert
         act.Should().Throw<ArgumentException>().WithMessage("Invalid target room ID.");
     }
 
-    [TestMethod]
-    public void MoveDevice_WhenDeviceNotFoundInSourceRoom_ThrowsArgumentException()
-    {
-        // Arrange
-        var sourceRoomId = Guid.NewGuid();
-        var targetRoomId = Guid.NewGuid();
-        var ownedDeviceId = Guid.NewGuid();
-        var sourceRoom = new Room { Id = sourceRoomId };
-        var targetRoom = new Room { Id = targetRoomId };
-
-        _roomRepository.Setup(r => r.Exists(sourceRoomId)).Returns(true);
-        _roomRepository.Setup(r => r.Exists(targetRoomId)).Returns(true);
-        _roomRepository.Setup(r => r.Get(sourceRoomId)).Returns(sourceRoom);
-        _roomRepository.Setup(r => r.Get(targetRoomId)).Returns(targetRoom);
-
-        // Act
-        Action act = () => _deviceService.MoveDevice(sourceRoomId.ToString(), targetRoomId.ToString(), ownedDeviceId.ToString());
-
-        // Assert
-        act.Should().Throw<ArgumentException>().WithMessage("Device not found in source room.");
-    }
     #endregion
 
     #endregion

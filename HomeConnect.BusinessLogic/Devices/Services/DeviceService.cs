@@ -126,12 +126,7 @@ public class DeviceService : IDeviceService
 
         var sourceRoom = RoomRepository.Get(Guid.Parse(sourceRoomId));
         var targetRoom = RoomRepository.Get(Guid.Parse(targetRoomId));
-
-        var ownedDevice = sourceRoom.OwnedDevices.FirstOrDefault(d => d.HardwareId == Guid.Parse(ownedDeviceId));
-        if (ownedDevice == null)
-        {
-            throw new ArgumentException("Device not found in source room.");
-        }
+        var ownedDevice = sourceRoom.GetOwnedDevice(Guid.Parse(ownedDeviceId));
 
         sourceRoom.RemoveOwnedDevice(ownedDevice);
         targetRoom.AddOwnedDevice(ownedDevice);

@@ -609,4 +609,36 @@ public class HomeControllerTests
     #endregion
 
     #endregion
+
+    #region CreateRoom
+
+    [TestMethod]
+    public void CreateRoom_WhenCalledWithValidRequest_ReturnsCreatedResponse()
+    {
+        // Arrange
+        var homeId = "123e4567-e89b-12d3-a456-426614174000";
+        var name = "Living Room";
+        var room = new Room
+        {
+            Id = Guid.NewGuid(),
+            Name = name
+        };
+
+        _homeOwnerService.Setup(x => x.CreateRoom(It.IsAny<string>(), name)).Returns(room);
+
+        var request = new CreateRoomRequest
+        {
+            Name = name
+        };
+
+        // Act
+        var response = _controller.CreateRoom(homeId, request);
+
+        // Assert
+        _homeOwnerService.VerifyAll();
+        response.Should().NotBeNull();
+        response.RoomId.Should().Be(room.Id.ToString());
+    }
+
+    #endregion
 }

@@ -107,17 +107,17 @@ public class DeviceController : ControllerBase
         return new ConnectionResponse { Connected = connectionState, HardwareId = hardwareId };
     }
 
-    [HttpPatch("devices/{deviceId}/room")]
+    [HttpPatch("devices/{hardwareId}/room")]
     [AuthorizationFilter(SystemPermission.MoveDevice)]
     [HomeAuthorizationFilter(HomePermission.MoveDevice)]
-    public MoveDeviceResponse MoveDevice([FromRoute] string deviceId, [FromBody] MoveDeviceRequest request)
+    public MoveDeviceResponse MoveDevice([FromRoute] string hardwareId, [FromBody] MoveDeviceRequest request)
     {
-        _deviceService.MoveDevice(request.SourceRoomId, request.TargetRoomId, deviceId);
+        _deviceService.MoveDevice(request.SourceRoomId, request.TargetRoomId, hardwareId);
         return new MoveDeviceResponse
         {
             SourceRoomId = request.SourceRoomId,
             TargetRoomId = request.TargetRoomId,
-            DeviceId = deviceId
+            DeviceId = hardwareId
         };
     }
 

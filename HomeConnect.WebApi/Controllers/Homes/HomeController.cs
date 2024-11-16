@@ -6,6 +6,7 @@ using BusinessLogic.Roles.Entities;
 using BusinessLogic.Users.Entities;
 using HomeConnect.WebApi.Controllers.HomeOwners.Models;
 using HomeConnect.WebApi.Controllers.Homes.Models;
+using HomeConnect.WebApi.Controllers.Rooms.Models;
 using HomeConnect.WebApi.Filters;
 using Microsoft.AspNetCore.Mvc;
 
@@ -43,8 +44,7 @@ public class HomeController(IHomeOwnerService homeOwnerService) : ControllerBase
         var permissions = homeOwnerService.GetHomePermissions(Guid.Parse(homesId), userLoggedIn!.Id);
         return new GetHomePermissionsResponse
         {
-            HomeId = homesId,
-            HomePermissions = permissions.Select(p => p.Value).ToList()
+            HomeId = homesId, HomePermissions = permissions.Select(p => p.Value).ToList()
         };
     }
 
@@ -185,5 +185,15 @@ public class HomeController(IHomeOwnerService homeOwnerService) : ControllerBase
     {
         var addDevicesArgs = new AddDevicesArgs { HomeId = homesId, DeviceIds = request.DeviceIds ?? [] };
         return addDevicesArgs;
+    }
+
+    [HttpPost("{homesId}/rooms")]
+    [AuthenticationFilter]
+    [AuthorizationFilter(SystemPermission.CreateRoom)]
+    [HomeAuthorizationFilter]
+    public CreateRoomResponse CreateRoom([FromRoute] string homesId, [FromBody] CreateRoomRequest request)
+    {
+        var room = homeOwnerService.CreateRoom(homesId, request.Name);
+        return new CreateRoomResponse { RoomId = room.Id.ToString() };
     }
 }

@@ -1,6 +1,8 @@
 using BusinessLogic.HomeOwners.Entities;
 using BusinessLogic.HomeOwners.Services;
 using FluentAssertions;
+using HomeConnect.WebApi.Controllers.Homes.Models;
+using HomeConnect.WebApi.Controllers.Rooms;
 using HomeConnect.WebApi.Controllers.Rooms.Models;
 using Moq;
 
@@ -20,35 +22,6 @@ public class RoomControllerTests
     }
 
     [TestMethod]
-    public void CreateRoom_WhenCalledWithValidRequest_ReturnsCreatedResponse()
-    {
-        // Arrange
-        var homeId = "123e4567-e89b-12d3-a456-426614174000";
-        var name = "Living Room";
-        var room = new Room
-        {
-            Id = Guid.NewGuid(),
-            Name = name
-        };
-
-        _homeOwnerService.Setup(x => x.CreateRoom(It.IsAny<string>(), name)).Returns(room);
-
-        var args = new AddRoomArgs
-        {
-            HomeId = homeId,
-            Name = name
-        };
-
-        // Act
-        var response = _controller.CreateRoom(args);
-
-        // Assert
-        _homeOwnerService.VerifyAll();
-        response.Should().NotBeNull();
-        response.RoomId.Should().Be(room.Id.ToString());
-    }
-
-    [TestMethod]
     public void AddOwnedDeviceToRoom_WhenCalledWithValidRequest_ReturnsExpectedResponse()
     {
         // Arrange
@@ -58,10 +31,7 @@ public class RoomControllerTests
 
         _homeOwnerService.Setup(x => x.AddOwnedDeviceToRoom(roomId, deviceId)).Returns(hardwareId);
 
-        var request = new AddOwnedDeviceToRoomRequest
-        {
-            DeviceId = deviceId
-        };
+        var request = new AddOwnedDeviceToRoomRequest { DeviceId = deviceId };
 
         // Act
         var response = _controller.AddOwnedDeviceToRoom(roomId, request);

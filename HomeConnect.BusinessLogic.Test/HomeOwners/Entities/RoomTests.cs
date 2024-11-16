@@ -60,5 +60,19 @@ public class RoomTests
         act.Should().Throw<ArgumentException>().WithMessage("Room must have a home assigned.");
     }
 
+    [TestMethod]
+    public void AddOwnedDevice_WhenDeviceDoesNotBelongToTheSameHome_ThrowsArgumentException()
+    {
+        // Arrange
+        var room = new Room { Id = Guid.NewGuid(), Name = "Living Room", Home = new Home() };
+        var device = new OwnedDevice { Home = new Home() };
+
+        // Act
+        var act = () => room.AddOwnedDevice(device);
+
+        // Assert
+        act.Should().Throw<ArgumentException>().WithMessage("Device must belong to the same home as the room.");
+    }
+
     #endregion
 }

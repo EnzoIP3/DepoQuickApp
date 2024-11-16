@@ -77,7 +77,7 @@ export default abstract class ApiRepository {
                     `${encodeURIComponent(key)}=${encodeURIComponent(value)}`
             )
             .join("&");
-    }
+        }
 
     private getAuthToken(): string {
         const user = JSON.parse(localStorage.getItem("user") || "{}");

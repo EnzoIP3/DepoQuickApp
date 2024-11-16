@@ -17,6 +17,7 @@ public class AuthController(IAuthService authService)
         var user = authService.GetUserFromToken(token);
         return new CreateTokenResponse
         {
+            UserId = user.Id.ToString(),
             Token = token,
             Permissions = user.GetPermissions().Select(p => p.Value).ToList()
         };

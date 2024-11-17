@@ -702,9 +702,10 @@ public class BusinessOwnerServiceTests
         var business = new Business("RUTexample", "Business Name", "https://example.com/image.png", _owner);
         var user = new User("John", "Doe", "email@email.com", "Password@1", new Role());
         _businessRepository.Setup(x => x.Get(business.Rut)).Returns(business);
+        var args = new GetBusinessDevicesArgs { Rut = business.Rut, User = user, CurrentPage = 1, PageSize = 10 };
 
         // Act
-        Action act = () => _businessOwnerService.GetDevices(business.Rut, user);
+        Action act = () => _businessOwnerService.GetDevices(args);
 
         // Assert
         act.Should().Throw<InvalidOperationException>().WithMessage("The business does not belong to the specified owner.");
@@ -733,9 +734,10 @@ public class BusinessOwnerServiceTests
         };
         _businessRepository.Setup(x => x.Get(business.Rut)).Returns(business);
         _deviceRepository.Setup(x => x.GetPaged(It.IsAny<GetDevicesArgs>())).Returns(devices);
+        var args = new GetBusinessDevicesArgs { Rut = business.Rut, User = user, CurrentPage = 1, PageSize = 10 };
 
         // Act
-        PagedData<Device> returnedDevices = _businessOwnerService.GetDevices(business.Rut, user);
+        PagedData<Device> returnedDevices = _businessOwnerService.GetDevices(args);
 
         // Assert
         returnedDevices.Should().BeEquivalentTo(devices);

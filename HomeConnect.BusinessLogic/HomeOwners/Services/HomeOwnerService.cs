@@ -191,7 +191,8 @@ public class HomeOwnerService : IHomeOwnerService
 
     public List<Room> GetRoomsByHomeId(string homesId)
     {
-        throw new NotImplementedException();
+        var rooms = RoomRepository.GetRoomsByHomeId(Guid.Parse(homesId));
+        return rooms;
     }
 
     private void ValidateNameHomeParameters(Guid ownerId, Guid homeId, string newName)

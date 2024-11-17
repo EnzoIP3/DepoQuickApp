@@ -84,4 +84,27 @@ public class RoomRepositoryTests
         // Assert
         _context.Rooms.First(r => r.Id == room.Id).Name.Should().Be("Updated Room");
     }
+
+    #region GetRooms
+    [TestMethod]
+    public void GetRoomsByHomeId_WhenCalled_ReturnsOnlyRoomsAssociatedWithHome()
+    {
+        // Arrange
+        var homeId = Guid.NewGuid();
+        var home = new Home(new User(), "Address 123", 0, 0, 1) { Id = homeId };
+        var room1 = new Room("Room1", home);
+        var room2 = new Room("Room2", new Home(new User(), "Amarales 3420", 0, 0, 1));
+        _context.Homes.Add(home);
+        _context.Rooms.AddRange(room1, room2);
+        _context.SaveChanges();
+
+        // Act
+        var result = _roomRepository.GetRoomsByHomeId(homeId);
+
+        // Assert
+        result.Should().HaveCount(1);
+        result.Should().Contain(r => r.Name == "Room1");
+        result.Should().NotContain(r => r.Name == "Room2");
+    }
+    #endregion
 }

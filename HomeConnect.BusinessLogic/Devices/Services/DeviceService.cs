@@ -112,29 +112,29 @@ public class DeviceService : IDeviceService
         }
     }
 
-    public void MoveDevice(string sourceRoomId, string targetRoomId, string ownedDeviceId)
+    public void MoveDevice(string targetRoomId, string ownedDeviceId)
     {
-        if (!RoomRepository.Exists(Guid.Parse(sourceRoomId)))
-        {
-            throw new ArgumentException("Invalid source room ID.");
-        }
-
         if (!RoomRepository.Exists(Guid.Parse(targetRoomId)))
         {
-            throw new ArgumentException("Invalid target room ID.");
+            throw new ArgumentException("The room where the device should be moved does not exist.");
         }
 
-        var sourceRoom = RoomRepository.Get(Guid.Parse(sourceRoomId));
         var targetRoom = RoomRepository.Get(Guid.Parse(targetRoomId));
-        var ownedDevice = sourceRoom.GetOwnedDevice(Guid.Parse(ownedDeviceId));
+        var ownedDevice = OwnedDeviceRepository.GetByHardwareId(Guid.Parse(ownedDeviceId));
 
-        sourceRoom.RemoveOwnedDevice(ownedDevice);
-        targetRoom.AddOwnedDevice(ownedDevice);
-        ownedDevice.Room = targetRoom;
-
-        RoomRepository.Update(sourceRoom);
-        RoomRepository.Update(targetRoom);
-        OwnedDeviceRepository.UpdateOwnedDevice(ownedDevice);
+        if (ownedDevice.Room != null)
+        {
+            targetRoom.AddOwnedDevice(ownedDevice);
+            var sourceRoom = RoomRepository.Get(ownedDevice.Room.Id);
+            sourceRoom.RemoveOwnedDevice(ownedDevice);
+            RoomRepository.Update(sourceRoom);
+            RoomRepository.Update(targetRoom);
+            OwnedDeviceRepository.Update(ownedDevice);
+        }
+        else
+        {
+            throw new ArgumentException("Device is not in a room.");
+        }
     }
 
     private void SendSensorNotification(string hardwareId, bool state, NotificationArgs args)

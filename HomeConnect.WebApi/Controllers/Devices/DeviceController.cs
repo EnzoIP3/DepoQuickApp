@@ -108,12 +108,9 @@ public class DeviceController : ControllerBase
     [HomeAuthorizationFilter(HomePermission.MoveDevice)]
     public MoveDeviceResponse MoveDevice([FromRoute] string hardwareId, [FromBody] MoveDeviceRequest request)
     {
-        _deviceService.MoveDevice(request.SourceRoomId ?? string.Empty, request.TargetRoomId ?? string.Empty,
+        _deviceService.MoveDevice(request.TargetRoomId ?? string.Empty,
             hardwareId);
-        return new MoveDeviceResponse
-        {
-            SourceRoomId = request.SourceRoomId!, TargetRoomId = request.TargetRoomId!, DeviceId = hardwareId
-        };
+        return new MoveDeviceResponse { TargetRoomId = request.TargetRoomId!, DeviceId = hardwareId };
     }
 
     [HttpPatch("{hardwareId}/name")]

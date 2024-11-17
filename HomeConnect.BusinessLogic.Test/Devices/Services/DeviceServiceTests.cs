@@ -510,22 +510,23 @@ public class DeviceServiceTests
         };
         var targetRoom = new Room { Id = targetRoomId, OwnedDevices = new List<OwnedDevice>(), Home = home };
 
-        _roomRepository.Setup(r => r.Exists(sourceRoomId)).Returns(true);
         _roomRepository.Setup(r => r.Exists(targetRoomId)).Returns(true);
-        _roomRepository.Setup(r => r.Get(sourceRoomId)).Returns(sourceRoom);
         _roomRepository.Setup(r => r.Get(targetRoomId)).Returns(targetRoom);
-        _roomRepository.Setup(r => r.Update(It.IsAny<Room>())).Verifiable();
-        _ownedDeviceRepository.Setup(r => r.UpdateOwnedDevice(It.IsAny<OwnedDevice>())).Verifiable();
+        _ownedDeviceRepository.Setup(r => r.GetByHardwareId(ownedDeviceId)).Returns(ownedDevice);
+        _roomRepository.Setup(r => r.Update(targetRoom)).Verifiable();
+        _roomRepository.Setup(r => r.Get(sourceRoomId)).Returns(sourceRoom);
+        _roomRepository.Setup(r => r.Update(sourceRoom)).Verifiable();
+        _ownedDeviceRepository.Setup(r => r.Update(ownedDevice)).Verifiable();
 
         // Act
-        _deviceService.MoveDevice(sourceRoomId.ToString(), targetRoomId.ToString(), ownedDeviceId.ToString());
+        _deviceService.MoveDevice(targetRoomId.ToString(), ownedDeviceId.ToString());
 
         // Assert
-        sourceRoom.OwnedDevices.Should().NotContain(ownedDevice);
+        _roomRepository.VerifyAll();
+        _ownedDeviceRepository.Verify(r => r.GetByHardwareId(ownedDeviceId), Times.Once);
+        _ownedDeviceRepository.Verify(r => r.Update(ownedDevice), Times.Once);
+        sourceRoom.OwnedDevices.Should().BeEmpty();
         targetRoom.OwnedDevices.Should().Contain(ownedDevice);
-        ownedDevice.Room.Id.Should().Be(targetRoomId);
-        _homeRepository.VerifyAll();
-        _deviceRepository.VerifyAll();
     }
 
     #endregion
@@ -536,37 +537,37 @@ public class DeviceServiceTests
     public void MoveDevice_WhenSourceRoomIdIsInvalid_ThrowsArgumentException()
     {
         // Arrange
-        var sourceRoomId = Guid.NewGuid();
         var targetRoomId = Guid.NewGuid();
         var ownedDeviceId = Guid.NewGuid();
 
-        _roomRepository.Setup(r => r.Exists(sourceRoomId)).Returns(false);
+        _roomRepository.Setup(r => r.Exists(targetRoomId)).Returns(true);
+        _roomRepository.Setup(r => r.Get(targetRoomId)).Returns(new Room());
+        _ownedDeviceRepository.Setup(r => r.GetByHardwareId(ownedDeviceId)).Returns(new OwnedDevice());
 
         // Act
         Action act = () =>
-            _deviceService.MoveDevice(sourceRoomId.ToString(), targetRoomId.ToString(), ownedDeviceId.ToString());
+            _deviceService.MoveDevice(targetRoomId.ToString(), ownedDeviceId.ToString());
 
         // Assert
-        act.Should().Throw<ArgumentException>().WithMessage("Invalid source room ID.");
+        act.Should().Throw<ArgumentException>().WithMessage("Device is not in a room.");
     }
 
     [TestMethod]
     public void MoveDevice_WhenTargetRoomIdIsInvalid_ThrowsArgumentException()
     {
         // Arrange
-        var sourceRoomId = Guid.NewGuid();
         var targetRoomId = Guid.NewGuid();
         var ownedDeviceId = Guid.NewGuid();
 
-        _roomRepository.Setup(r => r.Exists(sourceRoomId)).Returns(true);
         _roomRepository.Setup(r => r.Exists(targetRoomId)).Returns(false);
 
         // Act
         Action act = () =>
-            _deviceService.MoveDevice(sourceRoomId.ToString(), targetRoomId.ToString(), ownedDeviceId.ToString());
+            _deviceService.MoveDevice(targetRoomId.ToString(), ownedDeviceId.ToString());
 
         // Assert
-        act.Should().Throw<ArgumentException>().WithMessage("Invalid target room ID.");
+        act.Should().Throw<ArgumentException>()
+            .WithMessage("The room where the device should be moved does not exist.");
     }
 
     #endregion

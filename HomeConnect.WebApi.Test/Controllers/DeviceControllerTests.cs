@@ -234,15 +234,13 @@ public class DeviceControllerTests
     public void MoveDevice_WhenCalledWithValidRequest_ReturnsExpectedResponse()
     {
         // Arrange
-        var sourceRoomId = "123e4567-e89b-12d3-a456-426614174000";
         var targetRoomId = "123e4567-e89b-12d3-a456-426614174001";
         var deviceId = "123e4567-e89b-12d3-a456-426614174002";
 
-        _deviceService.Setup(x => x.MoveDevice(sourceRoomId, targetRoomId, deviceId)).Verifiable();
+        _deviceService.Setup(x => x.MoveDevice(targetRoomId, deviceId)).Verifiable();
 
         var request = new MoveDeviceRequest
         {
-            SourceRoomId = sourceRoomId,
             TargetRoomId = targetRoomId
         };
 
@@ -252,7 +250,6 @@ public class DeviceControllerTests
         // Assert
         _deviceService.VerifyAll();
         response.Should().NotBeNull();
-        response.SourceRoomId.Should().Be(sourceRoomId);
         response.TargetRoomId.Should().Be(targetRoomId);
         response.DeviceId.Should().Be(deviceId);
     }

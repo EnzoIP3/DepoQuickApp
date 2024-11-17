@@ -27,7 +27,7 @@ public class OwnedDeviceRepository : IOwnedDeviceRepository
 
     public OwnedDevice GetByHardwareId(Guid hardwareId)
     {
-        return _context.OwnedDevices.Include(od => od.Device).Include(od => od.Home).ThenInclude(h => h.Members)
+        return _context.OwnedDevices.Include(od => od.Room).Include(od => od.Device).Include(od => od.Home).ThenInclude(h => h.Members)
             .ThenInclude(m => m.User).Include(od => od.Home).ThenInclude(h => h.Members)
             .ThenInclude(m => m.HomePermissions).Include(od => od.Home).ThenInclude(h => h.Owner)
             .First(od => od.HardwareId == hardwareId);

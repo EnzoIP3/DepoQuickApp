@@ -6,4 +6,5 @@ export default interface Device {
     modelNumber: string;
     mainPhoto: string;
     secondaryPhotos: string[];
+    description: string;
 }

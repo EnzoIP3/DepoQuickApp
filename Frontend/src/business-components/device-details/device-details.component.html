@@ -4,6 +4,8 @@
   <p><strong>Business Name:</strong> {{ device.businessName }}</p>
   <p><strong>Type:</strong> {{ device.type }}</p>
   <p><strong>Model Number:</strong> {{ device.modelNumber }}</p>
+  <p><strong>Description:</strong> {{ device.description }}</p>
+  <p><strong>Id:</strong> {{ device.id }}</p>
   <h4>Secondary Photos</h4>
   <div *ngFor="let photo of device.secondaryPhotos">
     <img [src]="photo" alt="Secondary Photo" [style.width]="imageWidth" />

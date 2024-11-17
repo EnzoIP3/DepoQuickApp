@@ -94,10 +94,11 @@ public class BusinessOwnerService : IBusinessOwnerService
         return businesses;
     }
 
-    public PagedData<Device> GetDevices(string businessId, User user)
+    public PagedData<Device> GetDevices(GetBusinessDevicesArgs args)
     {
-        EnsureBusinessIsFromOwner(businessId, user.Id.ToString());
-        return DeviceRepository.GetPaged(new GetDevicesArgs { RutFilter = businessId });
+        /*EnsureBusinessIsFromOwner(businessId, user.Id.ToString());
+        return DeviceRepository.GetPaged(new GetDevicesArgs { RutFilter = businessId });*/
+        throw new NotImplementedException();
     }
 
     private void EnsureBusinessExistsFromRut(string argsBusinessRut)

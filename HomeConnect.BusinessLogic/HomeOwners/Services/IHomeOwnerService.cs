@@ -9,7 +9,7 @@ public interface IHomeOwnerService
     public Guid CreateHome(CreateHomeArgs createHomeArgs);
     public Guid AddMemberToHome(AddMemberArgs args);
     List<Member> GetHomeMembers(string homeId);
-    public IEnumerable<OwnedDevice> GetHomeDevices(string homeId);
+    public IEnumerable<OwnedDevice> GetHomeDevices(string homeId, string? roomId);
     public Member GetMemberById(Guid memberId);
     void UpdateMemberNotifications(Guid membersId, bool? requestShouldBeNotified);
     public void AddDeviceToHome(AddDevicesArgs addDevicesArgs);
@@ -19,4 +19,8 @@ public interface IHomeOwnerService
     public List<HomePermission> GetHomePermissions(Guid homeId, Guid userId);
     public void NameDevice(NameDeviceArgs args);
     public OwnedDevice GetOwnedDeviceByHardwareId(string hardwareId);
+    Room CreateRoom(string homeId, string name);
+    Room GetRoom(string roomId);
+    Guid AddOwnedDeviceToRoom(string roomId, string ownedDeviceId);
+    public List<Room> GetRoomsByHomeId(string homesId);
 }

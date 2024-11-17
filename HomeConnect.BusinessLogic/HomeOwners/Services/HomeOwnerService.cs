@@ -15,13 +15,15 @@ public class HomeOwnerService : IHomeOwnerService
         IUserRepository userRepository,
         IDeviceRepository deviceRepository,
         IOwnedDeviceRepository ownedDeviceRepository,
-        IMemberRepository memberRepository)
+        IMemberRepository memberRepository,
+        IRoomRepository roomRepository)
     {
         HomeRepository = homeRepository;
         UserRepository = userRepository;
         DeviceRepository = deviceRepository;
         OwnedDeviceRepository = ownedDeviceRepository;
         MemberRepository = memberRepository;
+        RoomRepository = roomRepository;
     }
 
     private IHomeRepository HomeRepository { get; }
@@ -29,6 +31,7 @@ public class HomeOwnerService : IHomeOwnerService
     private IDeviceRepository DeviceRepository { get; }
     private IOwnedDeviceRepository OwnedDeviceRepository { get; }
     private IMemberRepository MemberRepository { get; }
+    private IRoomRepository RoomRepository { get; }
 
     public Guid CreateHome(CreateHomeArgs args)
     {
@@ -126,6 +129,72 @@ public class HomeOwnerService : IHomeOwnerService
         }
     }
 
+    public Room CreateRoom(string homeId, string name)
+    {
+        ValidateRoomParameters(homeId, name);
+        if (!HomeRepository.Exists(Guid.Parse(homeId)))
+        {
+            throw new KeyNotFoundException("Home does not exist.");
+        }
+
+        var home = HomeRepository.Get(Guid.Parse(homeId));
+        var room = new Room(name, home);
+        RoomRepository.Add(room);
+        return room;
+    }
+
+    public Room GetRoom(string roomId)
+    {
+        var guid = ValidateAndParseGuid(roomId);
+        EnsureRoomExists(guid);
+        return RoomRepository.Get(guid);
+    }
+
+    private void EnsureRoomExists(Guid guid)
+    {
+        if (!RoomRepository.Exists(guid))
+        {
+            throw new KeyNotFoundException("Room does not exist.");
+        }
+    }
+
+    private void ValidateRoomParameters(string homeId, string name)
+    {
+        if (string.IsNullOrWhiteSpace(homeId))
+        {
+            throw new ArgumentException("Home ID cannot be null or empty.");
+        }
+
+        if (string.IsNullOrWhiteSpace(name))
+        {
+            throw new ArgumentException("Room name cannot be null or empty.");
+        }
+    }
+
+    public Guid AddOwnedDeviceToRoom(string roomId, string ownedDeviceId)
+    {
+        var roomGuid = Guid.Parse(roomId);
+        var ownedDeviceGuid = Guid.Parse(ownedDeviceId);
+
+        if (!RoomRepository.Exists(roomGuid))
+        {
+            throw new ArgumentException("Invalid room ID.");
+        }
+
+        var room = RoomRepository.Get(roomGuid);
+        var ownedDevice = OwnedDeviceRepository.GetOwnedDeviceById(ownedDeviceGuid);
+
+        room.AddOwnedDevice(ownedDevice);
+        RoomRepository.Update(room);
+        return ownedDevice.HardwareId;
+    }
+
+    public List<Room> GetRoomsByHomeId(string homesId)
+    {
+        var rooms = RoomRepository.GetRoomsByHomeId(Guid.Parse(homesId));
+        return rooms;
+    }
+
     private void ValidateNameHomeParameters(Guid ownerId, Guid homeId, string newName)
     {
         if (ownerId == Guid.Empty)
@@ -150,10 +219,17 @@ public class HomeOwnerService : IHomeOwnerService
         return home.Members;
     }
 
-    public IEnumerable<OwnedDevice> GetHomeDevices(string homeId)
+    public IEnumerable<OwnedDevice> GetHomeDevices(string homeId, string? roomId = null)
     {
-        Home home = GetHome(ValidateAndParseGuid(homeId));
-        return OwnedDeviceRepository.GetOwnedDevicesByHome(home);
+        var home = GetHome(ValidateAndParseGuid(homeId));
+        var devicesQuery = OwnedDeviceRepository.GetOwnedDevicesByHome(home);
+
+        if (!string.IsNullOrEmpty(roomId))
+        {
+            devicesQuery = devicesQuery.Where(od => od.Room != null && od.Room.Id.ToString() == roomId);
+        }
+
+        return devicesQuery.ToList();
     }
 
     public void UpdateMemberNotifications(Guid memberId, bool? requestShouldBeNotified)

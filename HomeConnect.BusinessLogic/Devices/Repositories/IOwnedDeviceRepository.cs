@@ -15,4 +15,6 @@ public interface IOwnedDeviceRepository
     bool GetLampState(Guid hardwareId);
     bool GetSensorState(Guid hardwareId);
     void Rename(OwnedDevice ownedDevice, string newName);
+    OwnedDevice GetOwnedDeviceById(Guid ownedDeviceId);
+    void UpdateOwnedDevice(OwnedDevice ownedDevice);
 }

@@ -12,6 +12,7 @@ using BusinessLogic.Users.Entities;
 using HomeConnect.WebApi.Controllers.Devices.Models;
 using HomeConnect.WebApi.Controllers.HomeOwners.Models;
 using HomeConnect.WebApi.Controllers.Homes.Models;
+using HomeConnect.WebApi.Controllers.Rooms.Models;
 using HomeConnect.WebApi.Filters;
 using Microsoft.AspNetCore.Mvc;
 using GetDevicesResponse = HomeConnect.WebApi.Controllers.Devices.Models.GetDevicesResponse;
@@ -104,6 +105,16 @@ public class DeviceController : ControllerBase
     {
         var connectionState = _deviceService.TurnDevice(hardwareId, false);
         return new ConnectionResponse { Connected = connectionState, HardwareId = hardwareId };
+    }
+
+    [HttpPatch("{hardwareId}/room")]
+    [AuthorizationFilter(SystemPermission.MoveDevice)]
+    [HomeAuthorizationFilter(HomePermission.MoveDevice)]
+    public MoveDeviceResponse MoveDevice([FromRoute] string hardwareId, [FromBody] MoveDeviceRequest request)
+    {
+        _deviceService.MoveDevice(request.TargetRoomId ?? string.Empty,
+            hardwareId);
+        return new MoveDeviceResponse { TargetRoomId = request.TargetRoomId!, DeviceId = hardwareId };
     }
 
     [HttpPatch("{hardwareId}/name")]

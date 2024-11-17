@@ -3,6 +3,7 @@ using BusinessLogic.Roles.Entities;
 using BusinessLogic.Users.Entities;
 using FluentAssertions;
 using HomeConnect.DataAccess.Repositories;
+using Microsoft.EntityFrameworkCore;
 
 namespace HomeConnect.DataAccess.Test.Repositories;
 
@@ -15,6 +16,7 @@ public class HomeRepositoryTests
     private HomeRepository _homeRepository = null!;
     private Member _member = null!;
     private User _otherOwner = null!;
+    private Room _room = null!;
 
     [TestInitialize]
     public void Initialize()
@@ -27,8 +29,10 @@ public class HomeRepositoryTests
         _home = new Home(_homeOwner, "Main St 123", 12.5, 12.5, 5);
         _member = new Member(_otherOwner);
         _home.AddMember(_member);
+        _room = new Room { Id = Guid.NewGuid(), Name = "Bath room", Home = _home };
         _context.Users.Add(_homeOwner);
         _context.Homes.Add(_home);
+        _context.Rooms.Add(_room);
 
         _context.SaveChanges();
 
@@ -203,6 +207,35 @@ public class HomeRepositoryTests
     }
 
     #endregion
+
+    #endregion
+
+    #region UpdateHome
+
+    [TestMethod]
+    public void UpdateHome_WhenRoomsAreUpdated_UpdatesRoomsList()
+    {
+        // Arrange
+        var home = new Home(_homeOwner, "Main St 123", 12.5, 12.5, 5);
+        var room = new Room { Id = Guid.NewGuid(), Name = "Living Room", Home = home };
+
+        _context.Homes.Add(home);
+        _context.Rooms.Add(room);
+        _context.SaveChanges();
+
+        // Act
+        if (!home.Rooms.Any(r => r.Id == room.Id))
+        {
+            home.Rooms.Add(room);
+        }
+
+        _homeRepository.Update(home);
+
+        // Assert
+        var updatedHome = _context.Homes.Include(h => h.Rooms).FirstOrDefault(h => h.Id == home.Id);
+        updatedHome.Should().NotBeNull();
+        updatedHome.Rooms.Should().ContainSingle(r => r.Id == room.Id && r.Name == "Living Room");
+    }
 
     #endregion
 }

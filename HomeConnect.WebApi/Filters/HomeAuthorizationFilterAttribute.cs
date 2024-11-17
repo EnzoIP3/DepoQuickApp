@@ -13,6 +13,7 @@ public class HomeAuthorizationFilterAttribute(string? permission = null) : Attri
     private const string HomeIdRoute = "homesId";
     private const string MemberIdRoute = "membersId";
     private const string HardwareIdRoute = "hardwareId";
+    private const string RoomIdRoute = "roomId";
 
     public void OnAuthorization(AuthorizationFilterContext context)
     {
@@ -26,6 +27,7 @@ public class HomeAuthorizationFilterAttribute(string? permission = null) : Attri
         var homeId = GetRouteValueAsString(context, HomeIdRoute);
         var memberId = GetRouteValueAsString(context, MemberIdRoute);
         var hardwareId = GetRouteValueAsString(context, HardwareIdRoute);
+        var roomId = GetRouteValueAsString(context, RoomIdRoute);
 
         if (homeId != null)
         {
@@ -42,6 +44,37 @@ public class HomeAuthorizationFilterAttribute(string? permission = null) : Attri
         if (hardwareId != null)
         {
             HandleHardwareId(context, hardwareId, user);
+            return;
+        }
+
+        if (roomId != null)
+        {
+            HandleRoomId(context, roomId, user);
+        }
+    }
+
+    private void HandleRoomId(AuthorizationFilterContext context, string roomId, User user)
+    {
+        if (!IsValidGuid(roomId, out Guid _))
+        {
+            SetBadRequestResult(context, "The room ID is invalid");
+            return;
+        }
+
+        IHomeOwnerService homeOwnerService = GetHomeOwnerService(context);
+        try
+        {
+            var room = homeOwnerService.GetRoom(roomId);
+            var home = room.Home;
+
+            if (!UserHasRequiredPermission(user, home, permission))
+            {
+                SetForbiddenResult(context, permission);
+            }
+        }
+        catch (KeyNotFoundException)
+        {
+            SetNotFoundResult(context, "The room does not exist");
         }
     }
 

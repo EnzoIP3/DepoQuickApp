@@ -28,6 +28,7 @@ public class HomeOwnerServiceTests
     private Mock<IMemberRepository> _memberRepositoryMock = null!;
     private Mock<IOwnedDeviceRepository> _ownedDeviceRepositoryMock = null!;
     private Mock<IUserRepository> _userRepositoryMock = null!;
+    private Mock<IRoomRepository> _roomRepositoryMock = null!;
     private List<Member> _testMembers = null!;
 
     [TestInitialize]
@@ -38,8 +39,10 @@ public class HomeOwnerServiceTests
         _ownedDeviceRepositoryMock = new Mock<IOwnedDeviceRepository>(MockBehavior.Strict);
         _deviceRepositoryMock = new Mock<IDeviceRepository>(MockBehavior.Strict);
         _memberRepositoryMock = new Mock<IMemberRepository>(MockBehavior.Strict);
+        _roomRepositoryMock = new Mock<IRoomRepository>(MockBehavior.Strict);
         _homeOwnerService = new HomeOwnerService(_homeRepositoryMock.Object, _userRepositoryMock.Object,
-            _deviceRepositoryMock.Object, _ownedDeviceRepositoryMock.Object, _memberRepositoryMock.Object);
+            _deviceRepositoryMock.Object, _ownedDeviceRepositoryMock.Object, _memberRepositoryMock.Object,
+            _roomRepositoryMock.Object);
         var home1 = new Home(_user, "Amarales 3420", 40.7128, -74.0060, 4);
         var home2 = new Home(_user, "Arteaga 1470", 34.0522, -118.2437, 6);
         _testMembers =
@@ -490,6 +493,32 @@ public class HomeOwnerServiceTests
 
         // Assert
         result.Should().BeEquivalentTo(ownedDevices);
+    }
+
+    [TestMethod]
+    public void GetHomeDevices_WhenRoomIdIsProvided_ReturnsDevicesInThatRoom()
+    {
+        // Arrange
+        var home = new Home(_user, "Main St 123", 1.0, 2.0, 5);
+        var room = new Room { Id = Guid.NewGuid(), Name = "Living Room" };
+        var sensor = new Device("Sensor", "1", "A sensor", "https://example.com/image.png", [], "Sensor",
+            new Business());
+        var camera = new Camera("Camera", "2", "A camera", "https://example.com/image.png", [], new Business(), true,
+            true, true, true);
+        var ownedDeviceInRoom = new OwnedDevice(home, sensor) { Room = room };
+        var ownedDeviceNotInRoom = new OwnedDevice(home, camera);
+        var ownedDevices = new List<OwnedDevice> { ownedDeviceInRoom, ownedDeviceNotInRoom };
+
+        _homeRepositoryMock.Setup(x => x.Exists(home.Id)).Returns(true);
+        _homeRepositoryMock.Setup(x => x.Get(home.Id)).Returns(home);
+        _ownedDeviceRepositoryMock.Setup(x => x.GetOwnedDevicesByHome(home)).Returns(ownedDevices);
+
+        // Act
+        IEnumerable<OwnedDevice> result = _homeOwnerService.GetHomeDevices(home.Id.ToString(), room.Id.ToString());
+
+        // Assert
+        result.Should().ContainSingle(x => x.Room == room);
+        result.Should().NotContain(x => x.Room == null);
     }
 
     #endregion
@@ -957,5 +986,202 @@ public class HomeOwnerServiceTests
 
     #endregion
 
+    #endregion
+
+    #region CreateRoom
+
+    #region Success
+
+    [TestMethod]
+    public void CreateRoom_ShouldCreateRoomAndAddToRepository_WhenParametersAreValid()
+    {
+        // Arrange
+        var homeId = Guid.NewGuid().ToString();
+        var home = new Home { Id = Guid.Parse(homeId), Address = "Arteaga 1470", NickName = "My Home", Rooms = [] };
+        var roomName = "Living Room";
+        _homeRepositoryMock.Setup(repo => repo.Exists(home.Id)).Returns(true);
+        _homeRepositoryMock.Setup(repo => repo.Get(It.IsAny<Guid>())).Returns(home);
+        _roomRepositoryMock.Setup(repo => repo.Add(It.IsAny<Room>()));
+
+        // Act
+        var createdRoom = _homeOwnerService.CreateRoom(homeId, roomName);
+
+        // Assert
+        _roomRepositoryMock.Verify(repo => repo.Add(It.Is<Room>(r => r.Name == roomName)), Times.Once);
+        createdRoom.Home.Should().Be(home);
+        createdRoom.Should().NotBeNull();
+    }
+
+    #endregion
+
+    #region Error
+
+    [TestMethod]
+    public void CreateRoom_ShouldThrowArgumentException_WhenHomeIdIsNullOrEmpty()
+    {
+        // Arrange
+        var name = "Living Room";
+
+        // Act
+        Action act = () => _homeOwnerService.CreateRoom(null, name);
+
+        // Assert
+        act.Should().Throw<ArgumentException>().WithMessage("Home ID cannot be null or empty.");
+    }
+
+    [TestMethod]
+    public void CreateRoom_ShouldThrowArgumentException_WhenNameIsNullOrEmpty()
+    {
+        // Arrange
+        var homeId = Guid.NewGuid().ToString();
+
+        // Act
+        Action act = () => _homeOwnerService.CreateRoom(homeId, null);
+
+        // Assert
+        act.Should().Throw<ArgumentException>().WithMessage("Room name cannot be null or empty.");
+    }
+
+    [TestMethod]
+    public void CreateRoom_ShouldThrowArgumentException_WhenHomeDoesNotExist()
+    {
+        // Arrange
+        var homeId = Guid.NewGuid();
+        var name = "Living Room";
+        _homeRepositoryMock.Setup(repo => repo.Exists(homeId)).Returns(false);
+
+        // Act
+        Action act = () => _homeOwnerService.CreateRoom(homeId.ToString(), name);
+
+        // Assert
+        act.Should().Throw<KeyNotFoundException>().WithMessage("Home does not exist.");
+    }
+
+    #endregion
+
+    #region AddOwnedDeviceToRoom
+
+    [TestMethod]
+    public void AddOwnedDeviceToRoom_ValidInput_DeviceAssociatedSuccessfully()
+    {
+        // Arrange
+        var home = new Home(Mock.Of<User>(), "Arteaga 1470", 0, 0, 5);
+        var room = new Room("Living Room", home);
+        var device = new Device();
+        var ownedDevice = new OwnedDevice(home, device);
+
+        _roomRepositoryMock.Setup(repo => repo.Exists(room.Id)).Returns(true);
+        _roomRepositoryMock.Setup(repo => repo.Get(room.Id)).Returns(room);
+        _ownedDeviceRepositoryMock.Setup(repo => repo.GetOwnedDeviceById(device.Id)).Returns(ownedDevice);
+        _roomRepositoryMock.Setup(repo => repo.Update(room)).Verifiable();
+
+        // Act
+        var result = _homeOwnerService.AddOwnedDeviceToRoom(room.Id.ToString(), device.Id.ToString());
+
+        // Assert
+        result.Should().Be(ownedDevice.HardwareId);
+        _homeRepositoryMock.VerifyAll();
+    }
+
+    #region Error
+
+    [TestMethod]
+    public void AddOwnedDeviceToRoom_WhenRoomDoesNotExist_ThrowsArgumentException()
+    {
+        // Arrange
+        var roomId = Guid.NewGuid().ToString();
+        var deviceId = Guid.NewGuid().ToString();
+        _roomRepositoryMock.Setup(repo => repo.Exists(It.IsAny<Guid>())).Returns(false);
+
+        // Act
+        Action act = () => _homeOwnerService.AddOwnedDeviceToRoom(roomId, deviceId);
+
+        // Assert
+        act.Should().Throw<ArgumentException>().WithMessage("Invalid room ID.");
+    }
+
+    #endregion
+
+    #endregion
+
+    #endregion
+
+    #region GetRoom
+
+    #region Success
+
+    [TestMethod]
+    public void GetRoom_WhenCalled_ReturnsCorrectRoom()
+    {
+        // Arrange
+        var home = new Home(_user, "Main St 123", 1.0, 2.0, 5);
+        var room = new Room { Id = Guid.NewGuid(), Name = "Living Room", Home = home };
+        _roomRepositoryMock.Setup(repo => repo.Get(room.Id)).Returns(room);
+        _roomRepositoryMock.Setup(repo => repo.Exists(room.Id)).Returns(true);
+
+        // Act
+        Room result = _homeOwnerService.GetRoom(room.Id.ToString());
+
+        // Assert
+        _roomRepositoryMock.Verify(repo => repo.Exists(room.Id), Times.Once);
+        _roomRepositoryMock.Verify(repo => repo.Get(room.Id), Times.Once);
+        result.Should().Be(room);
+    }
+
+    #endregion
+
+    #region Error
+
+    [TestMethod]
+    public void GetRoom_WhenRoomIdIsNotAGuid_ThrowsException()
+    {
+        // Arrange
+        var roomId = "invalid-guid";
+
+        // Act
+        var act = () => _homeOwnerService.GetRoom(roomId);
+
+        // Assert
+        act.Should().Throw<ArgumentException>();
+    }
+
+    [TestMethod]
+    public void GetRoom_WhenRoomDoesNotExist_ThrowsException()
+    {
+        // Arrange
+        var roomId = Guid.NewGuid();
+        _roomRepositoryMock.Setup(repo => repo.Exists(roomId)).Returns(false);
+
+        // Act
+        var act = () => _homeOwnerService.GetRoom(roomId.ToString());
+
+        // Assert
+        act.Should().Throw<KeyNotFoundException>();
+    }
+
+    #endregion
+
+    #endregion
+    #region GetRoomsByHomeId
+    [TestMethod]
+    public void GetRoomsByHomeId_ShouldReturnRooms()
+    {
+        // Arrange
+        var homeId = "123e4567-e89b-12d3-a456-426614174000";
+        var rooms = new List<Room>
+        {
+            new Room { Id = Guid.NewGuid(), Name = "Room1" },
+            new Room { Id = Guid.NewGuid(), Name = "Room2" }
+        };
+        _roomRepositoryMock.Setup(repo => repo.GetRoomsByHomeId(It.IsAny<Guid>())).Returns(rooms);
+
+        // Act
+        var result = _homeOwnerService.GetRoomsByHomeId(homeId);
+
+        // Assert
+        result.Count.Should().Be(rooms.Count);
+        result[0].Name.Should().Be(rooms[0].Name);
+        result[1].Name.Should().Be(rooms[1].Name);
+    }
     #endregion
 }

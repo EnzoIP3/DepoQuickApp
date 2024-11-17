@@ -23,6 +23,7 @@ public class Context(DbContextOptions<Context> options) : DbContext(options)
     public DbSet<Token> Tokens { get; set; } = null!;
     public DbSet<Member> Members { get; set; } = null!;
     public DbSet<HomePermission> HomePermissions { get; set; } = null!;
+    public DbSet<Room> Rooms { get; set; } = null!;
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
@@ -84,7 +85,10 @@ public class Context(DbContextOptions<Context> options) : DbContext(options)
             new SystemPermission { Value = SystemPermission.GetBusinessDevices },
             new SystemPermission { Value = SystemPermission.GetCamera },
             new SystemPermission { Value = SystemPermission.GetDeviceImporters },
-            new SystemPermission { Value = SystemPermission.NameDevice });
+            new SystemPermission { Value = SystemPermission.NameDevice },
+            new SystemPermission { Value = SystemPermission.AddDeviceToRoom },
+            new SystemPermission { Value = SystemPermission.MoveDevice },
+            new SystemPermission { Value = SystemPermission.CreateRoom });
     }
 
     private void ConfigureRolePermissions(ModelBuilder modelBuilder)
@@ -105,6 +109,9 @@ public class Context(DbContextOptions<Context> options) : DbContext(options)
                 new { RolesName = Role.HomeOwner, PermissionsValue = SystemPermission.GetMembers },
                 new { RolesName = Role.HomeOwner, PermissionsValue = SystemPermission.UpdateMember },
                 new { RolesName = Role.HomeOwner, PermissionsValue = SystemPermission.GetNotifications },
+                new { RolesName = Role.HomeOwner, PermissionsValue = SystemPermission.AddDeviceToRoom },
+                new { RolesName = Role.HomeOwner, PermissionsValue = SystemPermission.CreateRoom },
+                new { RolesName = Role.HomeOwner, PermissionsValue = SystemPermission.MoveDevice },
                 new { RolesName = Role.HomeOwner, PermissionsValue = SystemPermission.GetHomes },
                 new { RolesName = Role.HomeOwner, PermissionsValue = SystemPermission.NameHome },
                 new { RolesName = Role.HomeOwner, PermissionsValue = SystemPermission.NameDevice },

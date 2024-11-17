@@ -228,4 +228,28 @@ public class DeviceControllerTests
     #endregion
 
     #endregion
+
+    [TestMethod]
+    public void MoveDevice_WhenCalledWithValidRequest_ReturnsExpectedResponse()
+    {
+        // Arrange
+        var targetRoomId = "123e4567-e89b-12d3-a456-426614174001";
+        var deviceId = "123e4567-e89b-12d3-a456-426614174002";
+
+        _deviceService.Setup(x => x.MoveDevice(targetRoomId, deviceId)).Verifiable();
+
+        var request = new MoveDeviceRequest
+        {
+            TargetRoomId = targetRoomId
+        };
+
+        // Act
+        var response = _controller.MoveDevice(deviceId, request);
+
+        // Assert
+        _deviceService.VerifyAll();
+        response.Should().NotBeNull();
+        response.TargetRoomId.Should().Be(targetRoomId);
+        response.DeviceId.Should().Be(deviceId);
+    }
 }

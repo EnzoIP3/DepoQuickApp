@@ -164,9 +164,9 @@ public class HomeController(IHomeOwnerService homeOwnerService) : ControllerBase
     [HttpGet("{homesId}/devices")]
     [AuthorizationFilter(SystemPermission.GetDevices)]
     [HomeAuthorizationFilter(HomePermission.GetDevices)]
-    public GetDevicesResponse GetDevices([FromRoute] string homesId)
+    public GetDevicesResponse GetDevices([FromRoute] string homesId, [FromQuery] string? roomId = null)
     {
-        IEnumerable<OwnedDevice> devices = homeOwnerService.GetHomeDevices(homesId);
+        IEnumerable<OwnedDevice> devices = homeOwnerService.GetHomeDevices(homesId, roomId);
         var deviceInfos = devices.Select(ListDeviceInfo.FromOwnedDevice).ToList();
         return new GetDevicesResponse { Devices = deviceInfos };
     }
@@ -185,5 +185,22 @@ public class HomeController(IHomeOwnerService homeOwnerService) : ControllerBase
     {
         var addDevicesArgs = new AddDevicesArgs { HomeId = homesId, DeviceIds = request.DeviceIds ?? [] };
         return addDevicesArgs;
+    }
+
+    [HttpPost("{homesId}/rooms")]
+    [AuthorizationFilter(SystemPermission.CreateRoom)]
+    [HomeAuthorizationFilter(HomePermission.CreateRoom)]
+    public CreateRoomResponse CreateRoom([FromRoute] string homesId, [FromBody] CreateRoomRequest request)
+    {
+        var room = homeOwnerService.CreateRoom(homesId, request.Name ?? string.Empty);
+        return new CreateRoomResponse { RoomId = room.Id.ToString() };
+    }
+
+    [HttpGet("{homesId}/rooms")]
+    public GetRoomsResponse GetRooms([FromRoute] string homesId)
+    {
+        IEnumerable<Room> rooms = homeOwnerService.GetRoomsByHomeId(homesId);
+        var roomInfos = rooms.Select(ListRoomInfo.FromRoom).ToList();
+        return new GetRoomsResponse { Rooms = roomInfos };
     }
 }

@@ -9,5 +9,6 @@ public interface IHomeRepository
     Home? GetByAddress(string argsAddress);
     bool Exists(Guid homeId);
     void Rename(Home home, string newName);
+    void Update(Home home);
     List<Home> GetHomesByUserId(Guid userId);
 }

@@ -32,6 +32,9 @@ public record SystemPermission
     public const string GetBusinesses = "get-businesses";
     public const string GetBusinessDevices = "get-business-devices";
     public const string GetCamera = "get-camera";
+    public const string AddDeviceToRoom = "add-device-to-room";
+    public const string MoveDevice = "move-device";
+    public const string CreateRoom = "create-room";
 
     public SystemPermission()
     {

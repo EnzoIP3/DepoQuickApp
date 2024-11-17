@@ -56,6 +56,12 @@ public class HomeRepository : IHomeRepository
             .Where(h => h.Owner.Id == userId || h.Members.Any(m => m.User.Id == userId)).ToList();
     }
 
+    public void Update(Home home)
+    {
+        _context.Homes.Update(home);
+        _context.SaveChanges();
+    }
+
     private void EnsureHomeDoesNotExist(Home home)
     {
         if (_context.Homes.Any(h => h.Address == home.Address))

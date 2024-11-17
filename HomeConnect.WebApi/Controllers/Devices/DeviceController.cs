@@ -60,7 +60,8 @@ public class DeviceController : ControllerBase
                 Type = d.Type.ToString(),
                 ModelNumber = d.ModelNumber,
                 MainPhoto = d.MainPhoto,
-                SecondaryPhotos = d.SecondaryPhotos
+                SecondaryPhotos = d.SecondaryPhotos,
+                Description = d.Description
             }).ToList(),
             Pagination = new Pagination
             {

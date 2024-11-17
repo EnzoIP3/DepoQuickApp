@@ -33,7 +33,8 @@ public class OwnedDevice
             Type = Device.Type.ToString(),
             ModelNumber = Device.ModelNumber,
             Photo = Device.MainPhoto,
-            SecondaryPhotos = Device.SecondaryPhotos
+            SecondaryPhotos = Device.SecondaryPhotos,
+            Description = Device.Description,
         };
     }
 }

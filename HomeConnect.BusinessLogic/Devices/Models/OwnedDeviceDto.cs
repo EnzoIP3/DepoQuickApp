@@ -12,4 +12,5 @@ public record OwnedDeviceDto
     public List<string> SecondaryPhotos { get; set; } = null!;
     public bool? State { get; set; }
     public bool? IsOpen { get; set; }
+    public string Description { get; set; } = null!;
 }

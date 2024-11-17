@@ -189,7 +189,8 @@ public class HomeControllerTests
                     Type = device1.Device.Type.ToString(),
                     ModelNumber = device1.Device.ModelNumber,
                     MainPhoto = device1.Device.MainPhoto,
-                    SecondaryPhotos = device1.Device.SecondaryPhotos
+                    SecondaryPhotos = device1.Device.SecondaryPhotos,
+                    Description = device1.Device.Description
                 },
                 new ListDeviceInfo
                 {
@@ -199,7 +200,8 @@ public class HomeControllerTests
                     Type = device2.Device.Type.ToString(),
                     ModelNumber = device2.Device.ModelNumber,
                     MainPhoto = device2.Device.MainPhoto,
-                    SecondaryPhotos = device2.Device.SecondaryPhotos
+                    SecondaryPhotos = device2.Device.SecondaryPhotos,
+                    Description = device2.Device.Description
                 }
 
             ]
@@ -256,7 +258,8 @@ public class HomeControllerTests
                     ModelNumber = lamp1.Device.ModelNumber,
                     MainPhoto = lamp1.Device.MainPhoto,
                     SecondaryPhotos = lamp1.Device.SecondaryPhotos,
-                    State = false
+                    State = false,
+                    Description = lamp1.Device.Description
                 },
                 new ListDeviceInfo
                 {
@@ -267,7 +270,8 @@ public class HomeControllerTests
                     ModelNumber = lamp2.Device.ModelNumber,
                     MainPhoto = lamp2.Device.MainPhoto,
                     SecondaryPhotos = lamp2.Device.SecondaryPhotos,
-                    State = false
+                    State = false,
+                    Description = lamp2.Device.Description
                 }
 
             ]
@@ -324,7 +328,8 @@ public class HomeControllerTests
                     ModelNumber = sensor1.Device.ModelNumber,
                     MainPhoto = sensor1.Device.MainPhoto,
                     SecondaryPhotos = sensor1.Device.SecondaryPhotos,
-                    IsOpen = false
+                    IsOpen = false,
+                    Description = sensor1.Device.Description
                 },
                 new ListDeviceInfo
                 {
@@ -335,7 +340,8 @@ public class HomeControllerTests
                     ModelNumber = sensor2.Device.ModelNumber,
                     MainPhoto = sensor2.Device.MainPhoto,
                     SecondaryPhotos = sensor2.Device.SecondaryPhotos,
-                    IsOpen = false
+                    IsOpen = false,
+                    Description = sensor2.Device.Description
                 }
 
             ]

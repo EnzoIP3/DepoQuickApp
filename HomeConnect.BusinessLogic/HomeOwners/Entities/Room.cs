@@ -1,4 +1,5 @@
 using BusinessLogic.Devices.Entities;
+using BusinessLogic.HomeOwners.Models;
 
 namespace BusinessLogic.HomeOwners.Entities;
 
@@ -96,5 +97,16 @@ public class Room
         {
             throw new ArgumentException("Device does not belong to the room.");
         }
+    }
+
+    public RoomDto ToRoomDto()
+    {
+        return new RoomDto
+        {
+            Id = Id.ToString(),
+            Name = Name,
+            HomeId = Home.Id.ToString(),
+            OwnedDevicesId = OwnedDevices.Select(od => od.HardwareId.ToString()).ToList()
+        };
     }
 }

@@ -189,6 +189,12 @@ public class HomeOwnerService : IHomeOwnerService
         return ownedDevice.HardwareId;
     }
 
+    public List<Room> GetRoomsByHomeId(string homesId)
+    {
+        var rooms = RoomRepository.GetRoomsByHomeId(Guid.Parse(homesId));
+        return rooms;
+    }
+
     private void ValidateNameHomeParameters(Guid ownerId, Guid homeId, string newName)
     {
         if (ownerId == Guid.Empty)

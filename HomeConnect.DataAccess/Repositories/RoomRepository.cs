@@ -35,4 +35,13 @@ public class RoomRepository : IRoomRepository
         _context.Rooms.Update(updatedRoom);
         _context.SaveChanges();
     }
+
+    public List<Room> GetRoomsByHomeId(Guid homeId)
+    {
+        return _context.Rooms
+            .Include(r => r.OwnedDevices)
+            .Include(r => r.Home)
+            .Where(r => r.Home.Id == homeId)
+            .ToList();
+    }
 }

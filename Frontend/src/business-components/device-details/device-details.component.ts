@@ -10,4 +10,5 @@ import { CommonModule } from "@angular/common";
 })
 export class DeviceDetailsComponent {
   @Input() device!: Device;
+  @Input() imageWidth: string = "100%";
 }

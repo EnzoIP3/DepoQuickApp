@@ -18,8 +18,8 @@
     </ng-template>
 </ng-template>
 
-<app-dialog [(visible)]="dialogVisible" (close)="closeDialog()">
+<app-dialog [(visible)]="dialogVisible" (close)="closeDialog()" [maximizable] = "true">
     <ng-container *ngIf="selectedDevice">
-        <app-device-details [device]="selectedDevice!"></app-device-details>
+        <app-device-details [device]="selectedDevice!" [imageWidth]="'300px'"></app-device-details>
     </ng-container>
 </app-dialog>

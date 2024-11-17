@@ -15,6 +15,7 @@ export class DialogComponent {
   @Input() closable: boolean = true;
   @Input() draggable: boolean = false;
   @Input() resizable: boolean = false;
+  @Input() maximizable: boolean = false;
   @Output() visibleChange: EventEmitter<boolean> = new EventEmitter<boolean>();
 
   closeDialog() {

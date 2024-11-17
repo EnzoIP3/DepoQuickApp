@@ -18,6 +18,7 @@ import { FormCheckboxComponent } from '../../components/form/form-checkbox/form-
 import { ImportDevicesFormComponent } from './import-devices-form/import-devices-form.component';
 import { BusinessDevicesTableComponent } from "../../business-components/business-devices-table/business-devices-table.component";
 import { DialogTestComponent } from "../../business-components/dialog-test/dialog-test.component";
+import { ChangeValidatorFormComponent } from './change-validator-form/change-validator-form.component';
 
 
 @NgModule({
@@ -26,7 +27,8 @@ import { DialogTestComponent } from "../../business-components/dialog-test/dialo
     AddBusinessFormComponent,
     BusinessPageComponent,
     AddDeviceFormComponent,
-    ImportDevicesFormComponent
+    ImportDevicesFormComponent,
+    ChangeValidatorFormComponent
   ],
   imports: [
     CommonModule,

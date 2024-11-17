@@ -1,0 +1,16 @@
+<div class="centered-content">
+    <app-icon-title icon="pi pi-desktop" class="mb-4 text-primary-600 text-center"></app-icon-title>
+    
+    <app-form [form]="changeValidatorForm" (onSubmit)="onSubmit()">
+      <app-form-dropdown 
+        label="Validator" 
+        placeholder="Select Validator" 
+        name="validator" 
+        [form]="changeValidatorForm" 
+        [options]="validatorOptions">
+      </app-form-dropdown>
+  
+      <app-form-button title="Change Validator" color="primary" [loading]="changeValidatorForm.invalid" [disabled]="changeValidatorForm.invalid"></app-form-button>
+    </app-form>
+  </div>
+  

@@ -36,8 +36,12 @@ public class RoomRepository : IRoomRepository
         _context.SaveChanges();
     }
 
-    public List<Room> GetRoomsByHomeId(Guid parse)
+    public List<Room> GetRoomsByHomeId(Guid homeId)
     {
-        throw new NotImplementedException();
+        return _context.Rooms
+            .Include(r => r.OwnedDevices)
+            .Include(r => r.Home)
+            .Where(r => r.Home.Id == homeId)
+            .ToList();
     }
 }

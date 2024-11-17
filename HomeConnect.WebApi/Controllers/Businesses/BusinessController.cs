@@ -116,7 +116,8 @@ public class BusinessController(IAdminService adminService, IBusinessOwnerServic
                 Description = d.Description,
                 MainPhoto = d.MainPhoto,
                 SecondaryPhotos = d.SecondaryPhotos,
-                Type = d.Type.ToString()
+                Type = d.Type.ToString(),
+                BusinessName = d.Business.Name
             }).ToList(),
             Pagination = new Pagination
             {

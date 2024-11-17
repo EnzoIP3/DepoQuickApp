@@ -249,7 +249,8 @@ public class BusinessControllerTests
                     Description = deviceList[0].Description,
                     MainPhoto = deviceList[0].MainPhoto,
                     SecondaryPhotos = deviceList[0].SecondaryPhotos,
-                    Type = deviceList[0].Type.ToString()
+                    Type = deviceList[0].Type.ToString(),
+                    BusinessName = deviceList[0].Business.Name
                 }
 
             ],

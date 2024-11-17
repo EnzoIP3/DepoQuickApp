@@ -35,6 +35,7 @@ public class OwnedDevice
             Type = Device.Type.ToString(),
             ModelNumber = Device.ModelNumber,
             Photo = Device.MainPhoto,
+            RoomId = Room.Id.ToString(),
             SecondaryPhotos = Device.SecondaryPhotos
         };
     }

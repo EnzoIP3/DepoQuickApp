@@ -26,6 +26,7 @@ public class RoomRepositoryTests
         _context.Database.EnsureDeleted();
     }
 
+    #region Add
     [TestMethod]
     public void Add_WhenArgumentsAreValid_AddsRoom()
     {
@@ -38,7 +39,9 @@ public class RoomRepositoryTests
         // Assert
         _context.Rooms.Should().Contain(room);
     }
+    #endregion
 
+    #region Get
     [TestMethod]
     public void Get_WhenRoomExists_ReturnsRoom()
     {
@@ -53,7 +56,9 @@ public class RoomRepositoryTests
         // Assert
         result.Should().Be(room);
     }
+    #endregion
 
+    #region Exists
     [TestMethod]
     public void Exists_WhenRoomExists_ReturnsTrue()
     {
@@ -68,7 +73,9 @@ public class RoomRepositoryTests
         // Assert
         result.Should().BeTrue();
     }
+    #endregion
 
+    #region Update
     [TestMethod]
     public void Update_WhenRoomExists_UpdatesRoom()
     {
@@ -84,6 +91,7 @@ public class RoomRepositoryTests
         // Assert
         _context.Rooms.First(r => r.Id == room.Id).Name.Should().Be("Updated Room");
     }
+    #endregion
 
     #region GetRooms
     [TestMethod]

@@ -1158,4 +1158,26 @@ public class HomeOwnerServiceTests
     #endregion
 
     #endregion
+    #region GetRoomsByHomeId
+    [TestMethod]
+    public void GetRoomsByHomeId_ShouldReturnRooms()
+    {
+        // Arrange
+        var homeId = "123e4567-e89b-12d3-a456-426614174000";
+        var rooms = new List<Room>
+        {
+            new Room { Id = Guid.NewGuid(), Name = "Room1" },
+            new Room { Id = Guid.NewGuid(), Name = "Room2" }
+        };
+        _roomRepositoryMock.Setup(repo => repo.GetRoomsByHomeId(It.IsAny<Guid>())).Returns(rooms);
+
+        // Act
+        var result = _homeOwnerService.GetRoomsByHomeId(homeId);
+
+        // Assert
+        result.Count.Should().Be(rooms.Count);
+        result[0].Name.Should().Be(rooms[0].Name);
+        result[1].Name.Should().Be(rooms[1].Name);
+    }
+    #endregion
 }

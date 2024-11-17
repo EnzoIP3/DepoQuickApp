@@ -35,4 +35,9 @@ public class RoomRepository : IRoomRepository
         _context.Rooms.Update(updatedRoom);
         _context.SaveChanges();
     }
+
+    public List<Room> GetRoomsByHomeId(Guid parse)
+    {
+        throw new NotImplementedException();
+    }
 }

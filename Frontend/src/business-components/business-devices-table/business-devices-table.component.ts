@@ -12,6 +12,9 @@ import { ImageGalleryComponent } from "../../components/image-gallery/image-gall
 import { DialogComponent } from "../../components/dialog/dialog.component";
 import { DeviceDetailsComponent } from "../device-details/device-details.component";
 import { CommonModule } from "@angular/common";
+import GetDevicesResponse from "../../backend/services/devices/models/get-devices-response";
+import { Subscription } from "rxjs";
+import { BusinessesService } from "../../backend/services/businesses/businesses.service";
 
 @Component({
     selector: "app-business-devices-table",
@@ -29,106 +32,40 @@ export class BusinessDevicesTableComponent {
         { field: "modelNumber", header: "Model Number" }
     ];
 
-    // Datos simulados directamente, sin usar array
-    devices: Device[] = [
-        {
-            id: "1",
-            mainPhoto: "https://picsum.photos/200",
-            secondaryPhotos: [
-                "https://picsum.photos/200",
-                "https://picsum.photos/200"
-            ],
-            name: "Device 1",
-            businessName: "Business 1",
-            type: "Type A",
-            modelNumber: "Model 001"
-        },
-        {
-            id: "2",
-            mainPhoto: "https://picsum.photos/200",
-            secondaryPhotos: [
-                "https://picsum.photos/200",
-                "https://picsum.photos/200"
-            ],
-            name: "Device 2",
-            businessName: "Business 2",
-            type: "Type B",
-            modelNumber: "Model 002"
-        },
-        {
-            id: "3",
-            mainPhoto: "https://picsum.photos/200",
-            secondaryPhotos: [
-                "https://picsum.photos/200",
-                "https://picsum.photos/200"
-            ],
-            name: "Device 3",
-            businessName: "Business 3",
-            type: "Type C",
-            modelNumber: "Model 003"
-        },
-        {
-            id: "4",
-            mainPhoto: "https://picsum.photos/200",
-            secondaryPhotos: [
-                "https://picsum.photos/200",
-                "https://picsum.photos/200"
-            ],
-            name: "Device 4",
-            businessName: "Business 4",
-            type: "Type D",
-            modelNumber: "Model 004"
-        },
-        {
-            id: "5",
-            mainPhoto: "https://picsum.photos/2003",
-            secondaryPhotos: [
-                "https://picsum.photos/2004",
-                "https://picsum.photos/2005"
-            ],
-            name: "Device 5",
-            businessName: "Business 5",
-            type: "Type E",
-            modelNumber: "Model 005"
-        }
-    ];
-
-    pagination: PaginationResponse | null = {
-        page: 1,
-        pageSize: 10,
-        totalPages: 5,
-    };
+    devices: Device[] = [];
 
     loading: boolean = false;
     dialogVisible: boolean = false;
     selectedDevice: Device | null = null;
+    pagination: PaginationResponse | null = null;
+    private _businessId: string | null = null;
+    private _devicesSubscription: Subscription | null = null;
 
     constructor(
-        private readonly _devicesService: DevicesService,
+        private readonly _businessesService: BusinessesService,
         private readonly _messageService: MessageService
-    ) {}
-
-    ngOnInit() {
-        // Cargar datos de prueba cuando la componente se inicialice
-        this._loadDummyData();
+    ) {
+        this._setBusinessId();
     }
 
-    // Método de paginación
+    private _setBusinessId(): void {
+        const url = window.location.href;
+        const urlSegments = url.split("/");
+        this._businessId = urlSegments[urlSegments.length - 1];
+        console.log(this._businessId);
+    }
+
+    ngOnInit() {
+        this._subscribeToDevices();
+    }
+
     onPageChange(pagination: Pagination): void {
-        console.log("Pagina cambiada: ", pagination);
         this.loading = true;
-        this._loadDummyData(pagination);
+        this._subscribeToDevices({ ...pagination });
     }
 
     ngOnDestroy() {
-        // Limpiar recursos si es necesario
-    }
-
-    private _loadDummyData(pagination: Pagination = { page: 1, pageSize: 10 }): void {
-        console.log("Obteniendo dispositivos con paginación: ", pagination);
-        this.loading = false;
-        console.log("Dispositivos simulados: ", this.devices);
-        console.log("Paginación simulada: ", this.pagination);
+        this._devicesSubscription?.unsubscribe();
     }
 
     onRowClick(device: Device): void {
@@ -140,6 +77,26 @@ export class BusinessDevicesTableComponent {
     closeDialog(): void {
         this.dialogVisible = false;
         console.log("Cerrando diálogo");
+    }
+
+    private _subscribeToDevices(queries?: object): void {
+    this._devicesSubscription = this._businessesService
+            .getDevices(this._businessId!,queries ? { ...queries } : {})
+            .subscribe({
+                next: (response: GetDevicesResponse) => {
+                    this.devices = response.devices;
+                    this.pagination = response.pagination;
+                    this.loading = false;
+                },
+                error: (error) => {
+                    this.loading = false;
+                    this._messageService.add({
+                        severity: "error",
+                        summary: "Error",
+                        detail: error.message
+                    });
+                }
+            });
     }
 
 }

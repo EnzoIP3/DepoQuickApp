@@ -20,6 +20,6 @@
 
 <app-dialog [(visible)]="dialogVisible" (close)="closeDialog()">
     <ng-container *ngIf="selectedDevice">
-      <app-device-details [device]="selectedDevice!"></app-device-details>
+        <app-device-details [device]="selectedDevice!"></app-device-details>
     </ng-container>
-  </app-dialog>
+</app-dialog>

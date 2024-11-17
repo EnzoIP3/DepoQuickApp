@@ -56,7 +56,10 @@ public class DeviceServiceTests
 
         _pagedDeviceList = new PagedData<Device>
         {
-            Data = _devices, Page = _parameters.Page ?? 1, PageSize = _parameters.PageSize ?? 10, TotalPages = 1
+            Data = _devices,
+            Page = _parameters.Page ?? 1,
+            PageSize = _parameters.PageSize ?? 10,
+            TotalPages = 1
         };
     }
 
@@ -124,7 +127,10 @@ public class DeviceServiceTests
         // Assert
         var expectedPagedDeviceList = new PagedData<Device>
         {
-            Data = _devices, Page = _parameters.Page ?? 1, PageSize = _parameters.PageSize ?? 10, TotalPages = 1
+            Data = _devices,
+            Page = _parameters.Page ?? 1,
+            PageSize = _parameters.PageSize ?? 10,
+            TotalPages = 1
         };
 
         result.Should().BeEquivalentTo(expectedPagedDeviceList,
@@ -506,9 +512,11 @@ public class DeviceServiceTests
             new OwnedDevice { HardwareId = ownedDeviceId, Room = new Room { Id = sourceRoomId }, Home = home };
         var sourceRoom = new Room
         {
-            Id = sourceRoomId, OwnedDevices = new List<OwnedDevice> { ownedDevice }, Home = home
+            Id = sourceRoomId,
+            OwnedDevices = [ownedDevice],
+            Home = home
         };
-        var targetRoom = new Room { Id = targetRoomId, OwnedDevices = new List<OwnedDevice>(), Home = home };
+        var targetRoom = new Room { Id = targetRoomId, OwnedDevices = [], Home = home };
 
         _roomRepository.Setup(r => r.Exists(targetRoomId)).Returns(true);
         _roomRepository.Setup(r => r.Get(targetRoomId)).Returns(targetRoom);

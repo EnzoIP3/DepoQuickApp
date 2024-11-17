@@ -14,7 +14,6 @@ using HomeConnect.WebApi.Controllers.Devices;
 using HomeConnect.WebApi.Controllers.Devices.Models;
 using HomeConnect.WebApi.Controllers.HomeOwners.Models;
 using HomeConnect.WebApi.Controllers.Homes.Models;
-using HomeConnect.WebApi.Controllers.Rooms.Models;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Moq;

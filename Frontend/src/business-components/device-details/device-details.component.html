@@ -1,22 +1,33 @@
 <div *ngIf="device">
-  <h2>{{ device.name }}</h2>
-  <img [src]="device.mainPhoto" alt="Main Photo" [style.width]="imageWidth" />
-  <p><strong>Business Name:</strong> {{ device.businessName }}</p>
-  <p><strong>Type:</strong> {{ device.type }}</p>
-  <p><strong>Model Number:</strong> {{ device.modelNumber }}</p>
-  <p><strong>Description:</strong> {{ device.description }}</p>
-  <p><strong>Id:</strong> {{ device.id }}</p>
-  <h4>Secondary Photos</h4>
-  <div *ngFor="let photo of device.secondaryPhotos">
-    <img [src]="photo" alt="Secondary Photo" [style.width]="imageWidth" />
-  </div>
+    <h2>{{ device.name }}</h2>
+    <img [src]="device.mainPhoto" alt="Main Photo" [style.width]="imageWidth" />
+    <p><strong>Business Name:</strong> {{ device.businessName }}</p>
+    <p><strong>Type:</strong> {{ device.type }}</p>
+    <p><strong>Model Number:</strong> {{ device.modelNumber }}</p>
+    <p><strong>Description:</strong> {{ device.description }}</p>
+    <p><strong>Id:</strong> {{ device.id }}</p>
+    <h4>Secondary Photos</h4>
+    <div *ngFor="let photo of device.secondaryPhotos">
+        <img [src]="photo" alt="Secondary Photo" [style.width]="imageWidth" />
+    </div>
 
-  <!-- Mostrar detalles adicionales para cámaras -->
-  <div *ngIf="device.type === 'Camera' && cameraExtraDetails">
-    <h3>Camera Details</h3>
-    <p><strong>Motion Detection:</strong> {{ cameraExtraDetails.motionDetection ? 'Yes' : 'No' }}</p>
-    <p><strong>Person Detection:</strong> {{ cameraExtraDetails.personDetection ? 'Yes' : 'No' }}</p>
-    <p><strong>Exterior:</strong> {{ cameraExtraDetails.isExterior ? 'Yes' : 'No' }}</p>
-    <p><strong>Interior:</strong> {{ cameraExtraDetails.isInterior ? 'Yes' : 'No' }}</p>
-  </div>
+    <div *ngIf="device.type === 'Camera' && cameraExtraDetails">
+        <h3>Camera Details</h3>
+        <p>
+            <strong>Motion Detection:</strong>
+            {{ cameraExtraDetails.motionDetection ? "Yes" : "No" }}
+        </p>
+        <p>
+            <strong>Person Detection:</strong>
+            {{ cameraExtraDetails.personDetection ? "Yes" : "No" }}
+        </p>
+        <p>
+            <strong>Exterior:</strong>
+            {{ cameraExtraDetails.isExterior ? "Yes" : "No" }}
+        </p>
+        <p>
+            <strong>Interior:</strong>
+            {{ cameraExtraDetails.isInterior ? "Yes" : "No" }}
+        </p>
+    </div>
 </div>

@@ -25,6 +25,7 @@ export const AuthenticatedRoutes: Route[] = [
     },
     {
         label: "Businesses",
+        permission: Permissions.CREATE_BUSINESS,
         items: [
             {
                 label: "My businesses",

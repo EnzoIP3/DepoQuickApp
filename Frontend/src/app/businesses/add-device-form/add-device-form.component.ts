@@ -65,13 +65,8 @@ export class AddDeviceFormComponent implements OnInit, OnDestroy {
             modelNumber: ["", [Validators.required]],
             description: ["", [Validators.required]],
             mainPhoto: [
-                "",
-                [
-                    Validators.required,
-                    Validators.pattern(
-                        /^(https?:\/\/.*\.(?:png|jpg|jpeg|gif|bmp))$/
-                    )
-                ]
+          "",
+          [Validators.required, Validators.pattern(/^(http|https):\/\/[^ "]+$/)]
             ],
             secondaryPhotos: [],
             type: ["", [Validators.required]],
@@ -149,6 +144,11 @@ export class AddDeviceFormComponent implements OnInit, OnDestroy {
                         detail: `The ${deviceType.toLowerCase()} with ID: ${response.id} has been added successfully.`
                     });
                     this.deviceForm.reset();
+                    this.deviceForm.patchValue({
+                      motionDetection: false,
+                      personDetection: false,
+                      isExterior: false
+                    });
                 },
                 error: (error: any) => {
                     this.status.loading = false;

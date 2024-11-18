@@ -16,9 +16,12 @@
             </app-panel>
         </div>
     </div>
-    <div class="w-full">
+    <div class="w-full flex gap-2 flex-column">
         <app-panel title="Members" icon="pi-users" [toggleable]="true">
             <app-members-table [homeId]="id" />
+        </app-panel>
+        <app-panel title="Devices" icon="pi-lightbulb" [toggleable]="true">
+            <app-home-devices-table [homeId]="id" />
         </app-panel>
     </div>
 </div>

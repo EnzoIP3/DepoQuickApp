@@ -10,12 +10,16 @@ import AddMemberResponse from "./models/add-member-response";
 import GetMembersResponse from "./models/get-members-response";
 import AddDevicesRequest from "./models/add-devices-request";
 import AddDevicesResponse from "./models/add-devices-response";
+import GetHomeDevicesResponse from "./models/get-home-devices-response";
 
 @Injectable({
     providedIn: "root"
 })
 export class HomesService {
     private _members$ = new BehaviorSubject<GetMembersResponse | null>(null);
+    private _devices$ = new BehaviorSubject<GetHomeDevicesResponse | null>(
+        null
+    );
 
     constructor(private readonly _repository: HomesApiRepositoryService) {}
 
@@ -56,10 +60,28 @@ export class HomesService {
         homeId: string,
         addDevicesRequest: AddDevicesRequest
     ): Observable<AddDevicesResponse> {
-        return this._repository.addDevicesToHome(homeId, addDevicesRequest);
+        return this._repository
+            .addDevicesToHome(homeId, addDevicesRequest)
+            .pipe(
+                tap(() => {
+                    this.getDevices(homeId).subscribe();
+                })
+            );
+    }
+
+    public getDevices(homeId: string): Observable<GetHomeDevicesResponse> {
+        return this._repository.getDevices(homeId).pipe(
+            tap((devices) => {
+                this._devices$.next(devices);
+            })
+        );
     }
 
     get members(): Observable<GetMembersResponse | null> {
         return this._members$.asObservable();
+    }
+
+    get devices(): Observable<GetHomeDevicesResponse | null> {
+        return this._devices$.asObservable();
     }
 }

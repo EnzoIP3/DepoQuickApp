@@ -55,7 +55,8 @@ export class MembersTableComponent {
     ];
 
     members: Member[] = [];
-    private _homesServiceSubscription: Subscription | null = null;
+    private _membersSubscription: Subscription | null = null;
+    private _getMembersSubscription: Subscription | null = null;
     loading: boolean = true;
     customTemplates: any;
 
@@ -66,8 +67,10 @@ export class MembersTableComponent {
 
     ngOnInit() {
         this.customTemplates = {};
-        this._homesService.getMembers(this.homeId).subscribe();
-        this._homesServiceSubscription = this._homesService.members.subscribe({
+        this._getMembersSubscription = this._homesService
+            .getMembers(this.homeId)
+            .subscribe();
+        this._membersSubscription = this._homesService.members.subscribe({
             next: (response: GetMembersResponse | null) => {
                 if (response) {
                     this.members = response.members;
@@ -96,6 +99,7 @@ export class MembersTableComponent {
     }
 
     ngOnDestroy() {
-        this._homesServiceSubscription?.unsubscribe();
+        this._getMembersSubscription?.unsubscribe();
+        this._membersSubscription?.unsubscribe();
     }
 }

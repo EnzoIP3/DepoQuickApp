@@ -6,4 +6,8 @@ export default interface Device {
     modelNumber: number;
     mainPhoto: string;
     secondaryPhotos: string[];
+    roomId: string;
+    hardwareId: string;
+    state: string;
+    isOpen: boolean;
 }

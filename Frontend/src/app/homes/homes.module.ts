@@ -17,6 +17,7 @@ import { AddMemberFormComponent } from "./add-member-form/add-member-form.compon
 import { FormToggleButtonComponent } from "../../components/form/form-toggle-button/form-toggle-button.component";
 import { MembersTableComponent } from "../../business-components/members-table/members-table.component";
 import { AddDeviceFormComponent } from "./add-device-form/add-device-form.component";
+import { HomeDevicesTableComponent } from "../../business-components/home-devices-table/home-devices-table.component";
 
 @NgModule({
     declarations: [
@@ -26,19 +27,20 @@ import { AddDeviceFormComponent } from "./add-device-form/add-device-form.compon
         AddMemberFormComponent
     ],
     imports: [
-        CommonModule,
-        HomesRoutingModule,
-        PanelComponent,
-        HomesTableComponent,
-        HomeListComponent,
-        ButtonComponent,
-        FormButtonComponent,
-        FormInputComponent,
-        FormToggleButtonComponent,
-        IconTitleComponent,
-        FormComponent,
-        MembersTableComponent,
-        AddDeviceFormComponent
-    ]
+    CommonModule,
+    HomesRoutingModule,
+    PanelComponent,
+    HomesTableComponent,
+    HomeListComponent,
+    ButtonComponent,
+    FormButtonComponent,
+    FormInputComponent,
+    FormToggleButtonComponent,
+    IconTitleComponent,
+    FormComponent,
+    MembersTableComponent,
+    AddDeviceFormComponent,
+    HomeDevicesTableComponent
+]
 })
 export class HomesModule {}

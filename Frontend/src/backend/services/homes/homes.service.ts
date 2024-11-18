@@ -15,6 +15,7 @@ import NameHomeResponse from "./models/name-home-response";
 import NameHomeRequest from "./models/name-home-request";
 import AddRoomRequest from "./models/add-room-request";
 import AddRoomResponse from "./models/add-room-response";
+import GetRoomsResponse from "./models/get-rooms-response";
 
 @Injectable({
     providedIn: "root"
@@ -25,6 +26,7 @@ export class HomesService {
         null
     );
     private _home$ = new BehaviorSubject<GetHomeResponse | null>(null);
+    private _rooms$ = new BehaviorSubject<GetRoomsResponse | null>(null);
 
     constructor(private readonly _repository: HomesApiRepositoryService) {}
 
@@ -101,7 +103,19 @@ export class HomesService {
         homeId: string,
         addRoomRequest: AddRoomRequest
     ): Observable<AddRoomResponse> {
-        return this._repository.addRoom(homeId, addRoomRequest);
+        return this._repository.addRoom(homeId, addRoomRequest).pipe(
+            tap(() => {
+                this.getRooms(homeId).subscribe();
+            })
+        );
+    }
+
+    public getRooms(homeId: string): Observable<GetRoomsResponse> {
+        return this._repository.getRooms(homeId).pipe(
+            tap((rooms) => {
+                this._rooms$.next(rooms);
+            })
+        );
     }
 
     get members(): Observable<GetMembersResponse | null> {
@@ -114,5 +128,9 @@ export class HomesService {
 
     get home(): Observable<GetHomeResponse | null> {
         return this._home$.asObservable();
+    }
+
+    get rooms(): Observable<GetRoomsResponse | null> {
+        return this._rooms$.asObservable();
     }
 }

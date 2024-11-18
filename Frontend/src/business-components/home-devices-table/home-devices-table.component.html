@@ -1,1 +1,5 @@
-<app-table [data]="devices" [columns]="columns" />
+<app-table [data]="devices" [columns]="columns" [customTemplates]="{roomId: roomTemplate}" />
+
+<ng-template #roomTemplate let-row="row">
+    <app-rooms-dropdown [hardwareId]="row.hardwareId" [homeId]="homeId" [roomId]="row.roomId" />
+</ng-template>

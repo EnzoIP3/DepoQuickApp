@@ -17,6 +17,7 @@ import NameHomeRequest from "../services/homes/models/name-home-request";
 import NameHomeResponse from "../services/homes/models/name-home-response";
 import AddRoomRequest from "../services/homes/models/add-room-request";
 import AddRoomResponse from "../services/homes/models/add-room-response";
+import GetRoomsResponse from "../services/homes/models/get-rooms-response";
 
 @Injectable({
     providedIn: "root"
@@ -84,5 +85,11 @@ export class HomesApiRepositoryService extends ApiRepository {
         addRoomRequest: AddRoomRequest
     ): Observable<AddRoomResponse> {
         return this.post<AddRoomResponse>(addRoomRequest, `${homeId}/rooms`);
+    }
+
+    public getRooms(homeId: string): Observable<GetRoomsResponse> {
+        return this.get<GetRoomsResponse>({
+            extraResource: `${homeId}/rooms`
+        });
     }
 }

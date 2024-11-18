@@ -6,11 +6,12 @@ import { Subscription } from "rxjs";
 import { HomesService } from "../../backend/services/homes/homes.service";
 import { MessageService } from "primeng/api";
 import GetHomeDevicesResponse from "../../backend/services/homes/models/get-home-devices-response";
+import { RoomsDropdownComponent } from "../rooms-dropdown/rooms-dropdown.component";
 
 @Component({
     selector: "app-home-devices-table",
     standalone: true,
-    imports: [TableComponent],
+    imports: [TableComponent, RoomsDropdownComponent],
     templateUrl: "./home-devices-table.component.html"
 })
 export class HomeDevicesTableComponent {

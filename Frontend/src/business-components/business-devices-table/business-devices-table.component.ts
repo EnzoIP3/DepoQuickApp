@@ -71,12 +71,10 @@ export class BusinessDevicesTableComponent {
     onRowClick(device: Device): void {
         this.selectedDevice = device;
         this.dialogVisible = true;
-        console.log("Dispositivo seleccionado: ", device);
     }
 
     closeDialog(): void {
         this.dialogVisible = false;
-        console.log("Cerrando diálogo");
     }
 
     private _subscribeToDevices(queries?: object): void {

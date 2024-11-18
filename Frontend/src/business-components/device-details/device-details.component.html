@@ -10,4 +10,13 @@
   <div *ngFor="let photo of device.secondaryPhotos">
     <img [src]="photo" alt="Secondary Photo" [style.width]="imageWidth" />
   </div>
+
+  <!-- Mostrar detalles adicionales para cámaras -->
+  <div *ngIf="device.type === 'Camera' && cameraExtraDetails">
+    <h3>Camera Details</h3>
+    <p><strong>Motion Detection:</strong> {{ cameraExtraDetails.motionDetection ? 'Yes' : 'No' }}</p>
+    <p><strong>Person Detection:</strong> {{ cameraExtraDetails.personDetection ? 'Yes' : 'No' }}</p>
+    <p><strong>Exterior:</strong> {{ cameraExtraDetails.isExterior ? 'Yes' : 'No' }}</p>
+    <p><strong>Interior:</strong> {{ cameraExtraDetails.isInterior ? 'Yes' : 'No' }}</p>
+  </div>
 </div>

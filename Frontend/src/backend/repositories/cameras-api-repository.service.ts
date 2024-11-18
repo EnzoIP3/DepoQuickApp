@@ -5,6 +5,7 @@ import { environment } from "../../environments/environment";
 import { CreateCameraRequest } from "../services/cameras/models/create-camera-request";
 import { CreateDeviceResponse } from "../services/devices/models/create-device-response";
 import ApiRepository from "./api-repository";
+import { GetCameraResponse } from "../services/cameras/models/get-camera-response";
 
 @Injectable({
     providedIn: "root"
@@ -19,4 +20,8 @@ export class CamerasApiRepositoryService extends ApiRepository {
     ): Observable<CreateDeviceResponse> {
         return this.post<CreateDeviceResponse>(request);
     }
+
+    public getCameraDetails(deviceId: string): Observable<GetCameraResponse> {
+        return this.get<GetCameraResponse>({extraResource: `${deviceId}`});
+      }
 }

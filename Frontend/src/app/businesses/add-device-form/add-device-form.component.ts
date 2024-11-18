@@ -50,7 +50,6 @@ export class AddDeviceFormComponent implements OnInit, OnDestroy {
 
     constructor(
         private _formBuilder: FormBuilder,
-        private _router: Router,
         private _messageService: MessageService,
         private _cameraService: CamerasService,
         private _sensorService: SensorsService,
@@ -61,9 +60,9 @@ export class AddDeviceFormComponent implements OnInit, OnDestroy {
 
     ngOnInit() {
         this.deviceForm = this._formBuilder.group({
-            name: ["", [Validators.required]],
-            modelNumber: ["", [Validators.required]],
-            description: ["", [Validators.required]],
+            name: ["", [Validators.required], Validators.maxLength(100)],
+            modelNumber: ["", [Validators.required], Validators.maxLength(50)],
+            description: ["", [Validators.required], Validators.maxLength(250)],
             mainPhoto: [
                 "",
                 [

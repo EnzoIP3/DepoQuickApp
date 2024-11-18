@@ -13,6 +13,8 @@ import AddDevicesResponse from "./models/add-devices-response";
 import GetHomeDevicesResponse from "./models/get-home-devices-response";
 import NameHomeResponse from "./models/name-home-response";
 import NameHomeRequest from "./models/name-home-request";
+import AddRoomRequest from "./models/add-room-request";
+import AddRoomResponse from "./models/add-room-response";
 
 @Injectable({
     providedIn: "root"
@@ -93,6 +95,13 @@ export class HomesService {
                 this.getHome(homeId).subscribe();
             })
         );
+    }
+
+    public addRoom(
+        homeId: string,
+        addRoomRequest: AddRoomRequest
+    ): Observable<AddRoomResponse> {
+        return this._repository.addRoom(homeId, addRoomRequest);
     }
 
     get members(): Observable<GetMembersResponse | null> {

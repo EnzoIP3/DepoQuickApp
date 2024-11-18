@@ -16,6 +16,11 @@
             </app-panel>
         </div>
         <div class="max-w-full">
+            <app-panel title="Add Room" icon="pi-plus" [toggleable]="true">
+                <app-add-room-form [homeId]="id" />
+            </app-panel>
+        </div>
+        <div class="max-w-full">
             <app-panel title="Name Home" icon="pi-pencil" [toggleable]="true">
                 <app-name-home-form [homeId]="id" />
             </app-panel>

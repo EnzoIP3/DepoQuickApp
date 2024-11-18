@@ -15,6 +15,8 @@ import AddDevicesResponse from "../services/homes/models/add-devices-response";
 import GetHomeDevicesResponse from "../services/homes/models/get-home-devices-response";
 import NameHomeRequest from "../services/homes/models/name-home-request";
 import NameHomeResponse from "../services/homes/models/name-home-response";
+import AddRoomRequest from "../services/homes/models/add-room-request";
+import AddRoomResponse from "../services/homes/models/add-room-response";
 
 @Injectable({
     providedIn: "root"
@@ -75,5 +77,12 @@ export class HomesApiRepositoryService extends ApiRepository {
         nameHomeRequest: NameHomeRequest
     ): Observable<NameHomeResponse> {
         return this.patch<NameHomeResponse>(nameHomeRequest, `${homeId}/name`);
+    }
+
+    public addRoom(
+        homeId: string,
+        addRoomRequest: AddRoomRequest
+    ): Observable<AddRoomResponse> {
+        return this.post<AddRoomResponse>(addRoomRequest, `${homeId}/rooms`);
     }
 }

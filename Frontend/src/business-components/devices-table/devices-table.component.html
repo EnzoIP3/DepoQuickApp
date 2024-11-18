@@ -1,5 +1,5 @@
 <app-table [columns]="columns" [data]="devices" [loading]="loading" [filterableColumns]="filterableColumns"
-    (filter)="onFilterChange($event)"
+    (filter)="onFilterChange($event)" (rowClick)="onRowClick($event)" [clickableRows]="true"
     [customTemplates]="{mainPhoto: mainPhotoTemplate, secondaryPhotos: secondaryPhotosTemplate}" />
 <app-paginator [currentPage]="pagination?.page" [totalPages]="pagination?.totalPages" [pageSize]="pagination?.pageSize"
     (pageChange)="onPageChange($event)" />
@@ -14,3 +14,9 @@
         <app-avatar defaultIcon="" [image]="image" shape="square" size="xlarge" />
     </ng-template>
 </ng-template>
+
+<app-dialog [(visible)]="dialogVisible" [width]="'50rem'" [resizable]="true" (close)="closeDialog()" [maximizable] = "true">
+    <ng-container *ngIf="selectedDevice">
+        <app-device-details [device]="selectedDevice!" [imageWidth]="'300px'"></app-device-details>
+    </ng-container>
+</app-dialog>

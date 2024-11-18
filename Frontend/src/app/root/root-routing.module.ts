@@ -25,6 +25,13 @@ const routes: Routes = [
         canActivate: [authGuard],
         loadChildren: () =>
             import("../homes/homes.module").then((m) => m.HomesModule)
+    },
+    {
+        path: "admins",
+        component: RootPageComponent,
+        canActivate: [authGuard],
+        loadChildren: () =>
+            import("../admins/admins.module").then((m) => m.AdminsModule)
     }
 ];
 

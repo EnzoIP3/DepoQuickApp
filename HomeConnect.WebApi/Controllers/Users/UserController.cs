@@ -24,7 +24,7 @@ public class UserController(IAdminService adminService, IUserService userService
     {
         PagedData<User> users = adminService.GetUsers(request.CurrentPage,
             request.PageSize, request.FullName,
-            request.Role);
+            request.Roles);
         GetUsersResponse response = ResponseFromUsers(users);
         return response;
     }

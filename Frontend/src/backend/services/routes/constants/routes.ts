@@ -22,6 +22,17 @@ export const AuthenticatedRoutes: Route[] = [
                 routerLink: ["/homes"]
             }
         ]
+    },
+    {
+        label: "Admins",
+        permission: Permissions.CREATE_ADMINISTATOR,
+        items: [
+            {
+                label: "Admins",
+                icon: "pi pi-shield",
+                routerLink: ["/admins"]
+            }
+        ]
     }
 ];
 

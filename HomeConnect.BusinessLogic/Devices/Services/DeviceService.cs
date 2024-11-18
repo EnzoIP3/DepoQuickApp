@@ -1,6 +1,7 @@
 using BusinessLogic.Devices.Entities;
 using BusinessLogic.Devices.Models;
 using BusinessLogic.Devices.Repositories;
+using BusinessLogic.HomeOwners.Repositories;
 using BusinessLogic.Notifications.Models;
 using BusinessLogic.Notifications.Services;
 
@@ -9,16 +10,20 @@ namespace BusinessLogic.Devices.Services;
 public class DeviceService : IDeviceService
 {
     public DeviceService(IDeviceRepository deviceRepository, IOwnedDeviceRepository ownedDeviceRepository,
-        INotificationService notificationService)
+        INotificationService notificationService, IHomeRepository homeRepository, IRoomRepository roomRepository)
     {
+        HomeRepository = homeRepository;
         DeviceRepository = deviceRepository;
         OwnedDeviceRepository = ownedDeviceRepository;
         NotificationService = notificationService;
+        RoomRepository = roomRepository;
     }
 
     private IDeviceRepository DeviceRepository { get; }
     private IOwnedDeviceRepository OwnedDeviceRepository { get; }
     private INotificationService NotificationService { get; }
+    private IHomeRepository HomeRepository { get; }
+    private IRoomRepository RoomRepository { get; }
 
     public PagedData<Device> GetDevices(GetDevicesArgs parameters)
     {
@@ -104,6 +109,31 @@ public class DeviceService : IDeviceService
         if (string.IsNullOrWhiteSpace(cameraId) || !Guid.TryParse(cameraId, out _))
         {
             throw new ArgumentException("Camera ID format is invalid.");
+        }
+    }
+
+    public void MoveDevice(string targetRoomId, string ownedDeviceId)
+    {
+        if (!RoomRepository.Exists(Guid.Parse(targetRoomId)))
+        {
+            throw new ArgumentException("The room where the device should be moved does not exist.");
+        }
+
+        var targetRoom = RoomRepository.Get(Guid.Parse(targetRoomId));
+        var ownedDevice = OwnedDeviceRepository.GetByHardwareId(Guid.Parse(ownedDeviceId));
+
+        if (ownedDevice.Room != null)
+        {
+            targetRoom.AddOwnedDevice(ownedDevice);
+            var sourceRoom = RoomRepository.Get(ownedDevice.Room.Id);
+            sourceRoom.RemoveOwnedDevice(ownedDevice);
+            RoomRepository.Update(sourceRoom);
+            RoomRepository.Update(targetRoom);
+            OwnedDeviceRepository.Update(ownedDevice);
+        }
+        else
+        {
+            throw new ArgumentException("Device is not in a room.");
         }
     }
 

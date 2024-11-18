@@ -4,6 +4,7 @@ using HomeConnect.DataAccess;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace HomeConnect.DataAccess.Migrations
 {
     [DbContext(typeof(Context))]
-    partial class ContextModelSnapshot : ModelSnapshot
+    [Migration("20241115010615_NameDevicePermission")]
+    partial class NameDevicePermission
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -138,16 +141,11 @@ namespace HomeConnect.DataAccess.Migrations
                     b.Property<string>("Name")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<Guid?>("RoomId")
-                        .HasColumnType("uniqueidentifier");
-
                     b.HasKey("HardwareId");
 
                     b.HasIndex("DeviceId");
 
                     b.HasIndex("HomeId");
-
-                    b.HasIndex("RoomId");
 
                     b.ToTable("OwnedDevices");
 
@@ -222,26 +220,6 @@ namespace HomeConnect.DataAccess.Migrations
                     b.HasIndex("UserId");
 
                     b.ToTable("Members");
-                });
-
-            modelBuilder.Entity("BusinessLogic.HomeOwners.Entities.Room", b =>
-                {
-                    b.Property<Guid>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("uniqueidentifier");
-
-                    b.Property<Guid>("HomeId")
-                        .HasColumnType("uniqueidentifier");
-
-                    b.Property<string>("Name")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("HomeId");
-
-                    b.ToTable("Rooms");
                 });
 
             modelBuilder.Entity("BusinessLogic.Notifications.Entities.Notification", b =>
@@ -420,18 +398,6 @@ namespace HomeConnect.DataAccess.Migrations
                         new
                         {
                             Value = "name-device"
-                        },
-                        new
-                        {
-                            Value = "add-device-to-room"
-                        },
-                        new
-                        {
-                            Value = "move-device"
-                        },
-                        new
-                        {
-                            Value = "create-room"
                         });
                 });
 
@@ -571,21 +537,6 @@ namespace HomeConnect.DataAccess.Migrations
                         },
                         new
                         {
-                            PermissionsValue = "add-device-to-room",
-                            RolesName = "HomeOwner"
-                        },
-                        new
-                        {
-                            PermissionsValue = "create-room",
-                            RolesName = "HomeOwner"
-                        },
-                        new
-                        {
-                            PermissionsValue = "move-device",
-                            RolesName = "HomeOwner"
-                        },
-                        new
-                        {
                             PermissionsValue = "get-homes",
                             RolesName = "HomeOwner"
                         },
@@ -692,12 +643,6 @@ namespace HomeConnect.DataAccess.Migrations
                 {
                     b.HasBaseType("BusinessLogic.Devices.Entities.Device");
 
-                    b.Property<bool>("IsExterior")
-                        .HasColumnType("bit");
-
-                    b.Property<bool>("IsInterior")
-                        .HasColumnType("bit");
-
                     b.Property<bool>("MotionDetection")
                         .HasColumnType("bit");
 
@@ -772,15 +717,9 @@ namespace HomeConnect.DataAccess.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("BusinessLogic.HomeOwners.Entities.Room", "Room")
-                        .WithMany("OwnedDevices")
-                        .HasForeignKey("RoomId");
-
                     b.Navigation("Device");
 
                     b.Navigation("Home");
-
-                    b.Navigation("Room");
                 });
 
             modelBuilder.Entity("BusinessLogic.HomeOwners.Entities.Home", b =>
@@ -811,17 +750,6 @@ namespace HomeConnect.DataAccess.Migrations
                     b.Navigation("Home");
 
                     b.Navigation("User");
-                });
-
-            modelBuilder.Entity("BusinessLogic.HomeOwners.Entities.Room", b =>
-                {
-                    b.HasOne("BusinessLogic.HomeOwners.Entities.Home", "Home")
-                        .WithMany("Rooms")
-                        .HasForeignKey("HomeId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("Home");
                 });
 
             modelBuilder.Entity("BusinessLogic.Notifications.Entities.Notification", b =>
@@ -889,13 +817,6 @@ namespace HomeConnect.DataAccess.Migrations
             modelBuilder.Entity("BusinessLogic.HomeOwners.Entities.Home", b =>
                 {
                     b.Navigation("Members");
-
-                    b.Navigation("Rooms");
-                });
-
-            modelBuilder.Entity("BusinessLogic.HomeOwners.Entities.Room", b =>
-                {
-                    b.Navigation("OwnedDevices");
                 });
 #pragma warning restore 612, 618
         }

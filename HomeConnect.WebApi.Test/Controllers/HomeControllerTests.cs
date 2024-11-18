@@ -154,6 +154,7 @@ public class HomeControllerTests
     public void GetDevices_WhenCalledWithValidRequest_ReturnsDevices()
     {
         // Arrange
+        var room = new Room { Id = Guid.NewGuid(), Name = "Living Room" };
         var device1 = new OwnedDevice(_home,
             new Device
             {
@@ -163,6 +164,7 @@ public class HomeControllerTests
                 MainPhoto = "https://www.example.com/photo1.jpg",
                 Business = new Business { Name = "Name1" }
             });
+        device1.Room = room;
         var device2 = new OwnedDevice(_home,
             new Device
             {
@@ -172,9 +174,10 @@ public class HomeControllerTests
                 MainPhoto = "https://www.example.com/photo2.jpg",
                 Business = new Business { Name = "Name2" }
             });
+        device2.Room = room;
         var items = new Dictionary<object, object?> { { Item.UserLogged, _user } };
         _httpContextMock.Setup(h => h.Items).Returns(items);
-        _homeOwnerService.Setup(x => x.GetHomeDevices(_home.Id.ToString()))
+        _homeOwnerService.Setup(x => x.GetHomeDevices(_home.Id.ToString(), null))
             .Returns(new List<OwnedDevice> { device1, device2 });
 
         var expectedResponse = new GetDevicesResponse
@@ -190,7 +193,8 @@ public class HomeControllerTests
                     ModelNumber = device1.Device.ModelNumber,
                     MainPhoto = device1.Device.MainPhoto,
                     SecondaryPhotos = device1.Device.SecondaryPhotos,
-                    Description = device1.Device.Description
+                    Description = device1.Device.Description,
+                    RoomId = device1.Room.Id.ToString()
                 },
                 new ListDeviceInfo
                 {
@@ -201,7 +205,8 @@ public class HomeControllerTests
                     ModelNumber = device2.Device.ModelNumber,
                     MainPhoto = device2.Device.MainPhoto,
                     SecondaryPhotos = device2.Device.SecondaryPhotos,
-                    Description = device2.Device.Description
+                    Description = device2.Device.Description,
+                    RoomId = device2.Room.Id.ToString()
                 }
 
             ]
@@ -222,6 +227,7 @@ public class HomeControllerTests
     public void GetDevices_WhenCalledWithAHomeWithALamp_ShouldHaveTheStateOfTheLamp()
     {
         // Arrange
+        var room = new Room { Id = Guid.NewGuid(), Name = "Living Room" };
         var lamp1 = new LampOwnedDevice(_home,
             new Device
             {
@@ -229,8 +235,10 @@ public class HomeControllerTests
                 Type = DeviceType.Lamp,
                 ModelNumber = "1",
                 MainPhoto = "https://www.example.com/photo1.jpg",
-                Business = new Business { Name = "Name1" }
+                Business = new Business { Name = "Name1" },
             });
+        lamp1.Room = room;
+
         var lamp2 = new LampOwnedDevice(_home,
             new Device
             {
@@ -240,9 +248,11 @@ public class HomeControllerTests
                 MainPhoto = "https://www.example.com/photo2.jpg",
                 Business = new Business { Name = "Name2" }
             });
+        lamp2.Room = room;
+
         var items = new Dictionary<object, object?> { { Item.UserLogged, _user } };
         _httpContextMock.Setup(h => h.Items).Returns(items);
-        _homeOwnerService.Setup(x => x.GetHomeDevices(_home.Id.ToString()))
+        _homeOwnerService.Setup(x => x.GetHomeDevices(_home.Id.ToString(), null))
             .Returns(new List<OwnedDevice> { lamp1, lamp2 });
 
         var expectedResponse = new GetDevicesResponse
@@ -259,7 +269,8 @@ public class HomeControllerTests
                     MainPhoto = lamp1.Device.MainPhoto,
                     SecondaryPhotos = lamp1.Device.SecondaryPhotos,
                     State = false,
-                    Description = lamp1.Device.Description
+                    Description = lamp1.Device.Description,
+                    RoomId = lamp1.Room.Id.ToString()
                 },
                 new ListDeviceInfo
                 {
@@ -271,7 +282,8 @@ public class HomeControllerTests
                     MainPhoto = lamp2.Device.MainPhoto,
                     SecondaryPhotos = lamp2.Device.SecondaryPhotos,
                     State = false,
-                    Description = lamp2.Device.Description
+                    Description = lamp2.Device.Description,
+                    RoomId = lamp2.Room.Id.ToString()
                 }
 
             ]
@@ -292,6 +304,7 @@ public class HomeControllerTests
     public void GetDevices_WhenCalledWithAHomeWithASensor_ShouldHaveTheStateOfTheSensor()
     {
         // Arrange
+        var room = new Room { Id = Guid.NewGuid(), Name = "Living Room" };
         var sensor1 = new SensorOwnedDevice(_home,
             new Device
             {
@@ -301,6 +314,9 @@ public class HomeControllerTests
                 MainPhoto = "https://www.example.com/photo1.jpg",
                 Business = new Business { Name = "Name1" }
             });
+
+        sensor1.Room = room;
+
         var sensor2 = new SensorOwnedDevice(_home,
             new Device
             {
@@ -310,9 +326,12 @@ public class HomeControllerTests
                 MainPhoto = "https://www.example.com/photo2.jpg",
                 Business = new Business { Name = "Name2" }
             });
+
+        sensor2.Room = room;
+
         var items = new Dictionary<object, object?> { { Item.UserLogged, _user } };
         _httpContextMock.Setup(h => h.Items).Returns(items);
-        _homeOwnerService.Setup(x => x.GetHomeDevices(_home.Id.ToString()))
+        _homeOwnerService.Setup(x => x.GetHomeDevices(_home.Id.ToString(), null))
             .Returns(new List<OwnedDevice> { sensor1, sensor2 });
 
         var expectedResponse = new GetDevicesResponse
@@ -329,7 +348,8 @@ public class HomeControllerTests
                     MainPhoto = sensor1.Device.MainPhoto,
                     SecondaryPhotos = sensor1.Device.SecondaryPhotos,
                     IsOpen = false,
-                    Description = sensor1.Device.Description
+                    Description = sensor1.Device.Description,
+                    RoomId = sensor1.Room.Id.ToString()
                 },
                 new ListDeviceInfo
                 {
@@ -341,7 +361,8 @@ public class HomeControllerTests
                     MainPhoto = sensor2.Device.MainPhoto,
                     SecondaryPhotos = sensor2.Device.SecondaryPhotos,
                     IsOpen = false,
-                    Description = sensor2.Device.Description
+                    Description = sensor2.Device.Description,
+                    RoomId = sensor2.Room.Id.ToString()
                 }
 
             ]
@@ -614,5 +635,101 @@ public class HomeControllerTests
 
     #endregion
 
+    #endregion
+
+    #region CreateRoom
+
+    [TestMethod]
+    public void CreateRoom_WhenCalledWithValidRequest_ReturnsCreatedResponse()
+    {
+        // Arrange
+        var homeId = "123e4567-e89b-12d3-a456-426614174000";
+        var name = "Living Room";
+        var room = new Room
+        {
+            Id = Guid.NewGuid(),
+            Name = name
+        };
+
+        _homeOwnerService.Setup(x => x.CreateRoom(It.IsAny<string>(), name)).Returns(room);
+
+        var request = new CreateRoomRequest
+        {
+            Name = name
+        };
+
+        // Act
+        var response = _controller.CreateRoom(homeId, request);
+
+        // Assert
+        _homeOwnerService.VerifyAll();
+        response.Should().NotBeNull();
+        response.RoomId.Should().Be(room.Id.ToString());
+    }
+
+    #endregion
+    #region GetRooms
+    [TestMethod]
+    public void GetRooms_WhenCalledWithValidRequest_ReturnsRooms()
+    {
+        // Arrange
+        var room1 = new Room
+        {
+            Id = Guid.NewGuid(),
+            Name = "Living Room",
+            Home = _home,
+            OwnedDevices =
+            [
+                new OwnedDevice { HardwareId = Guid.NewGuid() },
+                new OwnedDevice { HardwareId = Guid.NewGuid() }
+            ]
+        };
+        var room2 = new Room
+        {
+            Id = Guid.NewGuid(),
+            Name = "Bedroom",
+            Home = _home,
+            OwnedDevices =
+            [
+                new OwnedDevice { HardwareId = Guid.NewGuid() }
+            ]
+        };
+        var items = new Dictionary<object, object?> { { Item.UserLogged, _user } };
+        _httpContextMock.Setup(h => h.Items).Returns(items);
+        _homeOwnerService.Setup(x => x.GetRoomsByHomeId(_home.Id.ToString()))
+            .Returns([room1, room2]);
+
+        var expectedResponse = new GetRoomsResponse
+        {
+            Rooms =
+            [
+                new ListRoomInfo
+                {
+                    Id = room1.Id.ToString(),
+                    Name = room1.Name,
+                    HomeId = room1.Home.Id.ToString(),
+                    OwnedDevicesId = room1.OwnedDevices.Select(od => od.HardwareId.ToString()).ToList()
+                },
+                new ListRoomInfo
+                {
+                    Id = room2.Id.ToString(),
+                    Name = room2.Name,
+                    HomeId = room2.Home.Id.ToString(),
+                    OwnedDevicesId = room2.OwnedDevices.Select(od => od.HardwareId.ToString()).ToList()
+                }
+
+            ]
+        };
+
+        // Act
+        GetRoomsResponse response = _controller.GetRooms(_home.Id.ToString());
+
+        // Assert
+        _homeOwnerService.VerifyAll();
+        response.Should().NotBeNull();
+        response.Rooms.Should().NotBeNullOrEmpty();
+        response.Rooms.Should().HaveCount(2);
+        response.Rooms.Should().BeEquivalentTo(expectedResponse.Rooms);
+    }
     #endregion
 }

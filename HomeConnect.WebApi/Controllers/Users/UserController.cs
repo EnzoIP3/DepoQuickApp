@@ -18,8 +18,6 @@ namespace HomeConnect.WebApi.Controllers.Users;
 [AuthenticationFilter]
 public class UserController(IAdminService adminService, IUserService userService, IBusinessOwnerService businessOwnerService) : ControllerBase
 {
-    public IUserService UserService { get; } = userService;
-
     [HttpGet]
     [AuthorizationFilter(SystemPermission.GetAllUsers)]
     public GetUsersResponse GetUsers([FromQuery] GetUsersRequest request)

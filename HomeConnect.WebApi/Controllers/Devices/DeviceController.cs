@@ -4,10 +4,15 @@ using BusinessLogic.BusinessOwners.Services;
 using BusinessLogic.Devices.Entities;
 using BusinessLogic.Devices.Models;
 using BusinessLogic.Devices.Services;
+using BusinessLogic.HomeOwners.Entities;
+using BusinessLogic.HomeOwners.Models;
+using BusinessLogic.HomeOwners.Services;
 using BusinessLogic.Roles.Entities;
 using BusinessLogic.Users.Entities;
 using HomeConnect.WebApi.Controllers.Devices.Models;
+using HomeConnect.WebApi.Controllers.HomeOwners.Models;
 using HomeConnect.WebApi.Controllers.Homes.Models;
+using HomeConnect.WebApi.Controllers.Rooms.Models;
 using HomeConnect.WebApi.Filters;
 using Microsoft.AspNetCore.Mvc;
 using GetDevicesResponse = HomeConnect.WebApi.Controllers.Devices.Models.GetDevicesResponse;
@@ -22,13 +27,15 @@ public class DeviceController : ControllerBase
     private readonly IDeviceService _deviceService;
     private readonly IValidatorService _validatorService;
     private readonly IImporterService _importerService;
+    private readonly IHomeOwnerService _homeOwnerService;
 
     public DeviceController(IDeviceService deviceService, IValidatorService validatorService,
-        IImporterService importerService)
+        IImporterService importerService, IHomeOwnerService homeOwnerService)
     {
         _deviceService = deviceService;
         _validatorService = validatorService;
         _importerService = importerService;
+        _homeOwnerService = homeOwnerService;
     }
 
     [HttpGet]
@@ -99,5 +106,46 @@ public class DeviceController : ControllerBase
     {
         var connectionState = _deviceService.TurnDevice(hardwareId, false);
         return new ConnectionResponse { Connected = connectionState, HardwareId = hardwareId };
+    }
+
+    [HttpPatch("{hardwareId}/room")]
+    [AuthorizationFilter(SystemPermission.MoveDevice)]
+    [HomeAuthorizationFilter(HomePermission.MoveDevice)]
+    public MoveDeviceResponse MoveDevice([FromRoute] string hardwareId, [FromBody] MoveDeviceRequest request)
+    {
+        _deviceService.MoveDevice(request.TargetRoomId ?? string.Empty,
+            hardwareId);
+        return new MoveDeviceResponse { TargetRoomId = request.TargetRoomId!, DeviceId = hardwareId };
+    }
+
+    [HttpPatch("{hardwareId}/name")]
+    [AuthorizationFilter(SystemPermission.NameDevice)]
+    [HomeAuthorizationFilter(HomePermission.NameDevice)]
+    public NameDeviceResponse NameDevice([FromRoute] string hardwareId, [FromBody] NameDeviceRequest request)
+    {
+        var userLoggedIn = HttpContext.Items[Item.UserLogged] as User;
+        var nameDeviceArgs = NameDeviceArgsFromRequest(request, userLoggedIn.Id, hardwareId);
+        _homeOwnerService.NameDevice(nameDeviceArgs);
+        return new NameDeviceResponse { DeviceId = hardwareId };
+    }
+
+    private static NameDeviceArgs NameDeviceArgsFromRequest(NameDeviceRequest request, Guid userId, string hardwareId)
+    {
+        if (string.IsNullOrEmpty(hardwareId))
+        {
+            throw new ArgumentException("DeviceId cannot be null or empty");
+        }
+
+        if (string.IsNullOrEmpty(request.NewName))
+        {
+            throw new ArgumentException("NewName cannot be null or empty");
+        }
+
+        return new NameDeviceArgs()
+        {
+            HardwareId = Guid.Parse(hardwareId),
+            NewName = request.NewName,
+            OwnerId = userId
+        };
     }
 }

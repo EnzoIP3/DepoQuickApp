@@ -5,6 +5,7 @@ using BusinessLogic.Devices.Models;
 using BusinessLogic.Devices.Repositories;
 using BusinessLogic.Devices.Services;
 using BusinessLogic.HomeOwners.Entities;
+using BusinessLogic.HomeOwners.Repositories;
 using BusinessLogic.Notifications.Models;
 using BusinessLogic.Notifications.Services;
 using BusinessLogic.Roles.Entities;
@@ -22,6 +23,8 @@ public class DeviceServiceTests
     private DeviceService _deviceService = null!;
     private Mock<IOwnedDeviceRepository> _ownedDeviceRepository = null!;
     private Mock<INotificationService> _notificationService = null!;
+    private Mock<IHomeRepository> _homeRepository = null!;
+    private Mock<IRoomRepository> _roomRepository = null!;
     private PagedData<Device> _pagedDeviceList = null!;
     private GetDevicesArgs _parameters = null!;
     private Device otherDevice = null!;
@@ -35,8 +38,10 @@ public class DeviceServiceTests
         _deviceRepository = new Mock<IDeviceRepository>(MockBehavior.Strict);
         _ownedDeviceRepository = new Mock<IOwnedDeviceRepository>(MockBehavior.Strict);
         _notificationService = new Mock<INotificationService>(MockBehavior.Strict);
+        _homeRepository = new Mock<IHomeRepository>(MockBehavior.Strict);
+        _roomRepository = new Mock<IRoomRepository>(MockBehavior.Strict);
         _deviceService = new DeviceService(_deviceRepository.Object, _ownedDeviceRepository.Object,
-            _notificationService.Object);
+            _notificationService.Object, _homeRepository.Object, _roomRepository.Object);
 
         user1 = new User("name", "surname", "email1@email.com", "Password#100", new Role());
         user2 = new User("name", "surname", "email2@email.com", "Password#100", new Role());
@@ -306,9 +311,11 @@ public class DeviceServiceTests
     }
 
     #endregion
+
     #endregion
 
     #region UpdateSensorState
+
     #region Error
 
     [TestMethod]
@@ -363,7 +370,8 @@ public class DeviceServiceTests
     }
 
     [TestMethod]
-    public void UpdateSensorState_WhenCalledWithValidHardwareIdAndCurrentStateIsEqualToTheNewState_DoesNotCreateANotification()
+    public void
+        UpdateSensorState_WhenCalledWithValidHardwareIdAndCurrentStateIsEqualToTheNewState_DoesNotCreateANotification()
     {
         // Arrange
         var hardwareId = Guid.NewGuid().ToString();
@@ -381,7 +389,8 @@ public class DeviceServiceTests
     }
 
     [TestMethod]
-    public void UpdateSensorState_WhenCalledWithValidHardwareIdAndCurrentStateIsDifferentThanTheNewState_CreatesANotification()
+    public void
+        UpdateSensorState_WhenCalledWithValidHardwareIdAndCurrentStateIsDifferentThanTheNewState_CreatesANotification()
     {
         // Arrange
         var hardwareId = Guid.NewGuid().ToString();
@@ -407,12 +416,15 @@ public class DeviceServiceTests
             y.Event == args.Event), _deviceService), Times.Once);
         _ownedDeviceRepository.VerifyAll();
     }
+
     #endregion
+
     #endregion
 
     #region GetCameraById
 
     #region Error
+
     [TestMethod]
     public void GetCameraById_WhenIdFormatIsInvalid_ThrowsArgumentException()
     {
@@ -447,7 +459,8 @@ public class DeviceServiceTests
         // Arrange
         var cameraId = Guid.NewGuid().ToString();
         _deviceRepository.Setup(x => x.Exists(Guid.Parse(cameraId))).Returns(true);
-        _deviceRepository.Setup(x => x.Get(Guid.Parse(cameraId))).Returns(new Device("Name", "123", "Description", "https://example.com/photo.png", [], "Sensor", new Business()));
+        _deviceRepository.Setup(x => x.Get(Guid.Parse(cameraId))).Returns(new Device("Name", "123", "Description",
+            "https://example.com/photo.png", [], "Sensor", new Business()));
 
         // Act
         Action act = () => _deviceService.GetCameraById(cameraId);
@@ -456,9 +469,11 @@ public class DeviceServiceTests
         act.Should().Throw<InvalidOperationException>().WithMessage("Device is not a camera.");
         _deviceRepository.VerifyAll();
     }
+
     #endregion
 
     #region Success
+
     [TestMethod]
     public void GetCameraById_WhenCalledWithValidId_ReturnsCamera()
     {
@@ -476,6 +491,94 @@ public class DeviceServiceTests
         result.Should().BeOfType<Camera>();
         _deviceRepository.VerifyAll();
     }
+
     #endregion
+
+    #endregion
+
+    #region MoveDevice
+
+    #region Success
+
+    [TestMethod]
+    public void MoveDevice_WhenCalled_MovesDeviceSuccessfully()
+    {
+        // Arrange
+        var sourceRoomId = Guid.NewGuid();
+        var targetRoomId = Guid.NewGuid();
+        var ownedDeviceId = Guid.NewGuid();
+        var home = new Home();
+        var ownedDevice =
+            new OwnedDevice { HardwareId = ownedDeviceId, Room = new Room { Id = sourceRoomId }, Home = home };
+        var sourceRoom = new Room
+        {
+            Id = sourceRoomId,
+            OwnedDevices = [ownedDevice],
+            Home = home
+        };
+        var targetRoom = new Room { Id = targetRoomId, OwnedDevices = [], Home = home };
+
+        _roomRepository.Setup(r => r.Exists(targetRoomId)).Returns(true);
+        _roomRepository.Setup(r => r.Get(targetRoomId)).Returns(targetRoom);
+        _ownedDeviceRepository.Setup(r => r.GetByHardwareId(ownedDeviceId)).Returns(ownedDevice);
+        _roomRepository.Setup(r => r.Update(targetRoom)).Verifiable();
+        _roomRepository.Setup(r => r.Get(sourceRoomId)).Returns(sourceRoom);
+        _roomRepository.Setup(r => r.Update(sourceRoom)).Verifiable();
+        _ownedDeviceRepository.Setup(r => r.Update(ownedDevice)).Verifiable();
+
+        // Act
+        _deviceService.MoveDevice(targetRoomId.ToString(), ownedDeviceId.ToString());
+
+        // Assert
+        _roomRepository.VerifyAll();
+        _ownedDeviceRepository.Verify(r => r.GetByHardwareId(ownedDeviceId), Times.Once);
+        _ownedDeviceRepository.Verify(r => r.Update(ownedDevice), Times.Once);
+        sourceRoom.OwnedDevices.Should().BeEmpty();
+        targetRoom.OwnedDevices.Should().Contain(ownedDevice);
+    }
+
+    #endregion
+
+    #region Error
+
+    [TestMethod]
+    public void MoveDevice_WhenSourceRoomIdIsInvalid_ThrowsArgumentException()
+    {
+        // Arrange
+        var targetRoomId = Guid.NewGuid();
+        var ownedDeviceId = Guid.NewGuid();
+
+        _roomRepository.Setup(r => r.Exists(targetRoomId)).Returns(true);
+        _roomRepository.Setup(r => r.Get(targetRoomId)).Returns(new Room());
+        _ownedDeviceRepository.Setup(r => r.GetByHardwareId(ownedDeviceId)).Returns(new OwnedDevice());
+
+        // Act
+        Action act = () =>
+            _deviceService.MoveDevice(targetRoomId.ToString(), ownedDeviceId.ToString());
+
+        // Assert
+        act.Should().Throw<ArgumentException>().WithMessage("Device is not in a room.");
+    }
+
+    [TestMethod]
+    public void MoveDevice_WhenTargetRoomIdIsInvalid_ThrowsArgumentException()
+    {
+        // Arrange
+        var targetRoomId = Guid.NewGuid();
+        var ownedDeviceId = Guid.NewGuid();
+
+        _roomRepository.Setup(r => r.Exists(targetRoomId)).Returns(false);
+
+        // Act
+        Action act = () =>
+            _deviceService.MoveDevice(targetRoomId.ToString(), ownedDeviceId.ToString());
+
+        // Assert
+        act.Should().Throw<ArgumentException>()
+            .WithMessage("The room where the device should be moved does not exist.");
+    }
+
+    #endregion
+
     #endregion
 }

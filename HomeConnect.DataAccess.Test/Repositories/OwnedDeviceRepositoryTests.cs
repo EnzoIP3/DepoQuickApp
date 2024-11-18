@@ -5,6 +5,7 @@ using BusinessLogic.Roles.Entities;
 using BusinessLogic.Users.Entities;
 using FluentAssertions;
 using HomeConnect.DataAccess.Repositories;
+using Microsoft.EntityFrameworkCore;
 
 namespace HomeConnect.DataAccess.Test.Repositories;
 
@@ -37,15 +38,18 @@ public class OwnedDeviceRepositoryTests
         _business = new Business("123456789123", "Business Name", "https://example.com/image.png", _businessOwner);
         _device = new Device("Sensor", "12345", "A sensor", "https://sensor.com/image.png", [], "Sensor", _business);
 
-        _ownedDevice = new OwnedDevice(_home, _device) { Connected = false };
-
+        var room = new Room { Id = Guid.NewGuid(), Name = "Living Room", Home = _home };
         _context.Users.Add(_homeOwner);
         _context.Users.Add(_businessOwner);
         _context.Homes.Add(_home);
         _context.Businesses.Add(_business);
         _context.Devices.Add(_device);
-        _context.OwnedDevices.Add(_ownedDevice);
+        _context.Rooms.Add(room);
+        _context.SaveChanges();
 
+        _ownedDevice = new OwnedDevice(_home, _device) { Connected = false, Room = room };
+
+        _context.OwnedDevices.Add(_ownedDevice);
         _context.SaveChanges();
 
         _ownedDeviceRepository = new OwnedDeviceRepository(_context);
@@ -133,7 +137,9 @@ public class OwnedDeviceRepositoryTests
     #endregion
 
     #region UpdateLampState
+
     #region Error
+
     [TestMethod]
     public void UpdateLampState_WhenOwnedDeviceIsNotALamp_ThrowsInvalidOperationException()
     {
@@ -151,9 +157,11 @@ public class OwnedDeviceRepositoryTests
         // Assert
         act.Should().Throw<InvalidOperationException>().WithMessage("The device is not a lamp.");
     }
+
     #endregion
 
     #region Success
+
     [TestMethod]
     public void UpdateLampState_WhenOwnedDeviceIsALamp_UpdatesLampState()
     {
@@ -173,12 +181,15 @@ public class OwnedDeviceRepositoryTests
         var lamp = (LampOwnedDevice)result;
         lamp.State.Should().BeTrue();
     }
+
     #endregion
+
     #endregion
 
     #region UpdateSensorState
 
     #region Error
+
     [TestMethod]
     public void UpdateSensorState_WhenDeviceIsNotASensor_ThrowsInvalidOperationException()
     {
@@ -196,10 +207,13 @@ public class OwnedDeviceRepositoryTests
         // Assert
         act.Should().Throw<InvalidOperationException>().WithMessage("The device is not a sensor.");
     }
+
     #endregion
+
     #endregion
 
     #region GetLampState
+
     [TestMethod]
     public void GetLampState_IfDeviceIsNotALamp_ThrowsInvalidOperationException()
     {
@@ -235,8 +249,11 @@ public class OwnedDeviceRepositoryTests
         // Assert
         result.Should().BeFalse();
     }
+
     #endregion
+
     #region GetSensorState
+
     [TestMethod]
     public void GetSensorState_IfDeviceIsNotASensor_ThrowsInvalidOperationException()
     {
@@ -272,5 +289,79 @@ public class OwnedDeviceRepositoryTests
         // Assert
         result.Should().BeFalse();
     }
+    #endregion
+
+    #region Rename
+    [TestMethod]
+    public void Rename_ShouldUpdateDeviceNameAndSaveChanges()
+    {
+        // Arrange
+        _ownedDevice.Name = "OldName";
+        _context.OwnedDevices.Update(_ownedDevice);
+        _context.SaveChanges();
+
+        // Act
+        _ownedDeviceRepository.Rename(_ownedDevice, "NewName");
+
+        // Assert
+        var updatedDevice = _context.OwnedDevices.First(od => od.HardwareId == _ownedDevice.HardwareId);
+        Assert.AreEqual("NewName", updatedDevice.Name);
+    }
+
+    #endregion
+
+    #region GetOwnedDeviceById
+
+    [TestMethod]
+    public void GetOwnedDeviceById_WhenDeviceExists_ReturnsDevice()
+    {
+        // Act
+        var result = _ownedDeviceRepository.GetOwnedDeviceById(_ownedDevice.HardwareId);
+
+        // Assert
+        result.Should().NotBeNull();
+        result.HardwareId.Should().Be(_ownedDevice.HardwareId);
+    }
+
+    [TestMethod]
+    public void GetOwnedDeviceById_WhenDeviceDoesNotExist_ThrowsException()
+    {
+        // Arrange
+        var nonExistentDeviceId = Guid.NewGuid();
+
+        // Act
+        Action act = () => _ownedDeviceRepository.GetOwnedDeviceById(nonExistentDeviceId);
+
+        // Assert
+        act.Should().Throw<ArgumentException>().WithMessage("Owned device does not exist");
+    }
+    #endregion
+
+    #region UpdateOwnedDevice
+    [TestMethod]
+    public void UpdateOwnedDevice_UpdatesRoom()
+    {
+        // Arrange
+        var home = new Home(new User(), "Main St 123", 12.5, 12.5, 5);
+        var room = new Room { Id = Guid.NewGuid(), Name = "Living Room", Home = home };
+        var device = new Device();
+        var ownedDevice = new OwnedDevice { HardwareId = Guid.NewGuid(), Device = device, Home = home };
+
+        _context.Homes.Add(home);
+        _context.Rooms.Add(room);
+        room.AddOwnedDevice(ownedDevice);
+        _context.SaveChanges();
+
+        // Act
+        ownedDevice.Room = room;
+        _ownedDeviceRepository.UpdateOwnedDevice(ownedDevice);
+
+        // Assert
+        var updatedDevice = _context.OwnedDevices.Include(d => d.Room).FirstOrDefault(d => d.HardwareId == ownedDevice.HardwareId);
+        updatedDevice.Should().NotBeNull();
+        updatedDevice.Room.Should().NotBeNull();
+        updatedDevice.Room.Id.Should().Be(room.Id);
+    }
+
     #endregion
 }

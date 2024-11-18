@@ -22,12 +22,14 @@ public class OwnedDeviceRepository : IOwnedDeviceRepository
 
     public IEnumerable<OwnedDevice> GetOwnedDevicesByHome(Home home)
     {
-        return _context.OwnedDevices.Include(od => od.Device).ThenInclude(d => d.Business).Where(od => od.Home == home);
+        return _context.OwnedDevices.Include(od => od.Room).Include(od => od.Device).ThenInclude(d => d.Business)
+            .Where(od => od.Home == home);
     }
 
     public OwnedDevice GetByHardwareId(Guid hardwareId)
     {
-        return _context.OwnedDevices.Include(od => od.Device).Include(od => od.Home).ThenInclude(h => h.Members)
+        return _context.OwnedDevices.Include(od => od.Room).Include(od => od.Device).Include(od => od.Home)
+            .ThenInclude(h => h.Members)
             .ThenInclude(m => m.User).Include(od => od.Home).ThenInclude(h => h.Members)
             .ThenInclude(m => m.HomePermissions).Include(od => od.Home).ThenInclude(h => h.Owner)
             .First(od => od.HardwareId == hardwareId);
@@ -40,6 +42,13 @@ public class OwnedDeviceRepository : IOwnedDeviceRepository
 
     public void Update(OwnedDevice ownedDevice)
     {
+        _context.OwnedDevices.Update(ownedDevice);
+        _context.SaveChanges();
+    }
+
+    public void Rename(OwnedDevice ownedDevice, string newName)
+    {
+        ownedDevice.Name = newName;
         _context.OwnedDevices.Update(ownedDevice);
         _context.SaveChanges();
     }
@@ -67,6 +76,23 @@ public class OwnedDeviceRepository : IOwnedDeviceRepository
     {
         EnsureDeviceIsSensor(hardwareId);
         return ((SensorOwnedDevice)GetByHardwareId(hardwareId)).IsOpen;
+    }
+
+    public OwnedDevice GetOwnedDeviceById(Guid ownedDeviceId)
+    {
+        var ownedDevice = _context.OwnedDevices.FirstOrDefault(d => d.HardwareId == ownedDeviceId);
+        if (ownedDevice == null)
+        {
+            throw new ArgumentException("Owned device does not exist");
+        }
+
+        return ownedDevice;
+    }
+
+    public void UpdateOwnedDevice(OwnedDevice ownedDevice)
+    {
+        _context.OwnedDevices.Update(ownedDevice);
+        _context.SaveChanges();
     }
 
     private void EnsureDeviceIsSensor(Guid hardwareId)

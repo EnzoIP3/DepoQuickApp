@@ -13,4 +13,5 @@ public interface IDeviceService
     void TurnLamp(string hardwareId, bool state, NotificationArgs args);
     void UpdateSensorState(string hardwareId, bool state, NotificationArgs args);
     public Camera GetCameraById(string cameraId);
+    void MoveDevice(string targetRoomId, string deviceId);
 }

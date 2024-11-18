@@ -56,10 +56,7 @@ public class DeviceServiceTests
 
         _pagedDeviceList = new PagedData<Device>
         {
-            Data = _devices,
-            Page = _parameters.Page ?? 1,
-            PageSize = _parameters.PageSize ?? 10,
-            TotalPages = 1
+            Data = _devices, Page = _parameters.Page ?? 1, PageSize = _parameters.PageSize ?? 10, TotalPages = 1
         };
     }
 
@@ -127,10 +124,7 @@ public class DeviceServiceTests
         // Assert
         var expectedPagedDeviceList = new PagedData<Device>
         {
-            Data = _devices,
-            Page = _parameters.Page ?? 1,
-            PageSize = _parameters.PageSize ?? 10,
-            TotalPages = 1
+            Data = _devices, Page = _parameters.Page ?? 1, PageSize = _parameters.PageSize ?? 10, TotalPages = 1
         };
 
         result.Should().BeEquivalentTo(expectedPagedDeviceList,
@@ -143,6 +137,19 @@ public class DeviceServiceTests
                 args.ModelNumberFilter == _parameters.ModelNumberFilter &&
                 args.BusinessNameFilter == _parameters.BusinessNameFilter &&
                 args.DeviceTypeFilter == _parameters.DeviceTypeFilter)), Times.Once);
+    }
+
+    [TestMethod]
+    public void GetDevices_WhenCalledWithInvalidDeviceType_ThrowsArgumentException()
+    {
+        // Arrange
+        var parameters = new GetDevicesArgs { DeviceTypeFilter = "InvalidType" };
+
+        // Act
+        var act = () => _deviceService.GetDevices(parameters);
+
+        // Assert
+        act.Should().Throw<ArgumentException>().WithMessage("That device type does not exist.");
     }
 
     [TestMethod]
@@ -510,12 +517,7 @@ public class DeviceServiceTests
         var home = new Home();
         var ownedDevice =
             new OwnedDevice { HardwareId = ownedDeviceId, Room = new Room { Id = sourceRoomId }, Home = home };
-        var sourceRoom = new Room
-        {
-            Id = sourceRoomId,
-            OwnedDevices = [ownedDevice],
-            Home = home
-        };
+        var sourceRoom = new Room { Id = sourceRoomId, OwnedDevices = [ownedDevice], Home = home };
         var targetRoom = new Room { Id = targetRoomId, OwnedDevices = [], Home = home };
 
         _roomRepository.Setup(r => r.Exists(targetRoomId)).Returns(true);

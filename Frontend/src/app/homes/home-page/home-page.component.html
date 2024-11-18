@@ -15,6 +15,11 @@
                 <app-add-device-form [homeId]="id" />
             </app-panel>
         </div>
+        <div class="max-w-full">
+            <app-panel title="Name Home" icon="pi-pencil" [toggleable]="true">
+                <app-name-home-form [homeId]="id" />
+            </app-panel>
+        </div>
     </div>
     <div class="w-full flex gap-2 flex-column">
         <app-panel title="Members" icon="pi-users" [toggleable]="true">

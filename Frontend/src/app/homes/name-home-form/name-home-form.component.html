@@ -1,0 +1,7 @@
+<app-form [form]="homeForm" (onSubmit)="onSubmit()">
+    <app-form-input type="text" label="Name" placeholder="Home Name" name="newName" [form]="homeForm"
+        iconClass="pi pi-home" [formField]="formFields.newName"></app-form-input>
+
+    <app-form-button title="Name Home" color="primary" [loading]="homeStatus.loading"
+        [disabled]="!homeForm.valid"></app-form-button>
+</app-form>

@@ -68,8 +68,6 @@ export class AddMemberFormComponent {
     }
 
     ngOnDestroy() {
-        if (this._addMemberSubscription) {
-            this._addMemberSubscription.unsubscribe();
-        }
+        this._addMemberSubscription?.unsubscribe();
     }
 }

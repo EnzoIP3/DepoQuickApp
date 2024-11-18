@@ -56,9 +56,7 @@ export class AddBusinessFormComponent {
                 "",
                 [
                     Validators.required,
-                    Validators.pattern(
-                        /^(https?:\/\/.*\.(?:png|jpg|jpeg|gif|bmp))$/
-                    )
+                    Validators.pattern(/^(http|https):\/\/[^ "]+$/)
                 ]
             ],
             rut: [

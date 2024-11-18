@@ -14,6 +14,7 @@ public record ListDeviceInfo
     public List<string> SecondaryPhotos { get; set; } = null!;
     public bool? State { get; set; }
     public bool? IsOpen { get; set; }
+    public string Description { get; set; } = null!;
     public string? RoomId { get; set; } = null!;
 
     public static ListDeviceInfo FromOwnedDevice(OwnedDevice ownedDevice)
@@ -31,6 +32,7 @@ public record ListDeviceInfo
             SecondaryPhotos = dto.SecondaryPhotos,
             State = dto.State,
             IsOpen = dto.IsOpen,
+            Description = dto.Description,
             RoomId = dto.RoomId
         };
     }

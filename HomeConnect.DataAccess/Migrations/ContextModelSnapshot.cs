@@ -692,6 +692,12 @@ namespace HomeConnect.DataAccess.Migrations
                 {
                     b.HasBaseType("BusinessLogic.Devices.Entities.Device");
 
+                    b.Property<bool>("IsExterior")
+                        .HasColumnType("bit");
+
+                    b.Property<bool>("IsInterior")
+                        .HasColumnType("bit");
+
                     b.Property<bool>("MotionDetection")
                         .HasColumnType("bit");
 

@@ -43,5 +43,6 @@ public class AuthControllerTests
         _tokenService.Verify(x => x.CreateToken(args), Times.Once);
         response.Token.Should().Be(token.Id.ToString());
         response.Permissions.Should().BeEquivalentTo(new List<string> { "Permission" });
+        response.UserId.Should().Be(user.Id.ToString());
     }
 }

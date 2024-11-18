@@ -22,6 +22,17 @@ export const AuthenticatedRoutes: Route[] = [
                 routerLink: ["/homes"]
             }
         ]
+    },
+    {
+        label: "Businesses",
+        permission: Permissions.CREATE_BUSINESS,
+        items: [
+            {
+                label: "My businesses",
+                icon: "pi pi-building",
+                routerLink: ["/businesses"]
+            }
+        ]
     }
 ];
 

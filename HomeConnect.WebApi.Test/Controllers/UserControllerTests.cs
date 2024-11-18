@@ -208,6 +208,7 @@ public class UserControllerTests
             PageSize = 10,
             TotalPages = 1
         };
+        var request = new GetUserBusinessesRequest { CurrentPage = 1, PageSize = 10 };
         var expectedResponse = new GetBusinessesResponse
         {
             Businesses = businesses.Data.Select(b => new ListBusinessInfo
@@ -216,7 +217,8 @@ public class UserControllerTests
                 OwnerEmail = b.Owner.Email,
                 OwnerName = b.Owner.Name,
                 OwnerSurname = b.Owner.Surname,
-                Rut = b.Rut
+                Rut = b.Rut,
+                Logo = b.Logo
             }).ToList(),
             Pagination = new Pagination
             {
@@ -225,10 +227,11 @@ public class UserControllerTests
                 TotalPages = businesses.TotalPages
             }
         };
-        _businessOwnerService.Setup(x => x.GetBusinesses(_user.Id.ToString())).Returns(businesses);
+        _businessOwnerService.Setup(x => x.GetBusinesses(_user.Id.ToString(), request.CurrentPage, request.PageSize))
+            .Returns(businesses);
 
         // Act
-        GetBusinessesResponse response = _controller.GetBusinesses(_user.Id.ToString());
+        GetBusinessesResponse response = _controller.GetBusinesses(_user.Id.ToString(), request);
 
         // Assert
         _businessOwnerService.VerifyAll();

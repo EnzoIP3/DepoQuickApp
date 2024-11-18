@@ -1,4 +1,4 @@
-import { Component, Input, TemplateRef } from "@angular/core";
+import { Component, Input, TemplateRef, OnInit } from "@angular/core";
 import { GalleriaModule } from "primeng/galleria";
 
 @Component({
@@ -7,7 +7,13 @@ import { GalleriaModule } from "primeng/galleria";
     imports: [GalleriaModule],
     templateUrl: "./image-gallery.component.html"
 })
-export class ImageGalleryComponent {
+export class ImageGalleryComponent implements OnInit {
     @Input() images!: string[];
     @Input() imageTemplate: TemplateRef<any> | null = null;
+    @Input() numVisible: number = 3;
+    imagesToDisplay: string[] = [];
+
+    ngOnInit() {
+        this.imagesToDisplay = this.images.slice(0, this.numVisible);
+    }
 }

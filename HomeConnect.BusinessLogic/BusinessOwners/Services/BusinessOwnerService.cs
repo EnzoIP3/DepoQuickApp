@@ -85,19 +85,24 @@ public class BusinessOwnerService : IBusinessOwnerService
         BusinessRepository.UpdateValidator(args.BusinessRut, validatorId);
     }
 
-    public PagedData<Business> GetBusinesses(string ownerIdFilter)
+    public PagedData<Business> GetBusinesses(string ownerIdFilter, int currentPage, int pageSize)
     {
         Guid ownerId = ParseAndValidateOwnerId(ownerIdFilter);
-        var filterArgs = new FilterArgs { OwnerIdFilter = ownerId };
+        var filterArgs = new FilterArgs { OwnerIdFilter = ownerId, CurrentPage = currentPage, PageSize = pageSize };
         PagedData<Business> businesses =
             BusinessRepository.GetPaged(filterArgs);
         return businesses;
     }
 
-    public PagedData<Device> GetDevices(string businessId, User user)
+    public PagedData<Device> GetDevices(GetBusinessDevicesArgs args)
     {
-        EnsureBusinessIsFromOwner(businessId, user.Id.ToString());
-        return DeviceRepository.GetPaged(new GetDevicesArgs { RutFilter = businessId });
+        EnsureBusinessIsFromOwner(args.Rut, args.User.Id.ToString());
+        return DeviceRepository.GetPaged(new GetDevicesArgs
+        {
+            RutFilter = args.Rut,
+            PageSize = args.PageSize,
+            Page = args.CurrentPage
+        });
     }
 
     private void EnsureBusinessExistsFromRut(string argsBusinessRut)

@@ -7,7 +7,9 @@ import { DeviceValidatorsApiRepositoryService } from "../../repositories/device-
     providedIn: "root"
 })
 export class DeviceValidatorsService {
-    constructor(private readonly _repository: DeviceValidatorsApiRepositoryService) {}
+    constructor(
+        private readonly _repository: DeviceValidatorsApiRepositoryService
+    ) {}
 
     public getDeviceValidators(): Observable<GetValidatorsResponse> {
         return this._repository.getDeviceValidators();

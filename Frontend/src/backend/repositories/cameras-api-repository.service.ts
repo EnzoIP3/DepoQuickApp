@@ -22,6 +22,6 @@ export class CamerasApiRepositoryService extends ApiRepository {
     }
 
     public getCameraDetails(deviceId: string): Observable<GetCameraResponse> {
-        return this.get<GetCameraResponse>({extraResource: `${deviceId}`});
-      }
+        return this.get<GetCameraResponse>({ extraResource: `${deviceId}` });
+    }
 }

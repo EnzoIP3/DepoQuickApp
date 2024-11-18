@@ -43,7 +43,7 @@ export class BusinessesTableComponent {
         private readonly _userService: UsersService,
         private readonly _messageService: MessageService,
         private readonly _authService: AuthService
-     ) {}
+    ) {}
 
     onPageChange(pagination: Pagination): void {
         this.loading = true;
@@ -53,7 +53,7 @@ export class BusinessesTableComponent {
     ngOnInit() {
         this._getUserId();
     }
-    
+
     private _getUserId() {
         this._authSubscription = this._authService.userLogged.subscribe({
             next: (user) => {
@@ -96,14 +96,17 @@ export class BusinessesTableComponent {
             .getBusiness(queries ? { ...queries } : {}, this._userId)
             .subscribe({
                 next: (response: GetBusinessResponse) => {
-                    this.businesses = response.businesses.map(business => new Business(
-                        business.name,
-                        business.ownerName,
-                        business.ownerSurname,
-                        business.ownerEmail,
-                        business.rut,
-                        business.logo
-                    ));
+                    this.businesses = response.businesses.map(
+                        (business) =>
+                            new Business(
+                                business.name,
+                                business.ownerName,
+                                business.ownerSurname,
+                                business.ownerEmail,
+                                business.rut,
+                                business.logo
+                            )
+                    );
                     this.pagination = response.pagination;
                     this.loading = false;
                 },

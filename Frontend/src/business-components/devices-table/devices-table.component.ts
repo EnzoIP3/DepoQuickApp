@@ -19,7 +19,15 @@ import { CommonModule } from "@angular/common";
 @Component({
     selector: "app-devices-table",
     standalone: true,
-    imports: [CommonModule, TableComponent, PaginatorComponent, AvatarComponent, ImageGalleryComponent, DialogComponent, DeviceDetailsComponent],
+    imports: [
+        CommonModule,
+        TableComponent,
+        PaginatorComponent,
+        AvatarComponent,
+        ImageGalleryComponent,
+        DialogComponent,
+        DeviceDetailsComponent
+    ],
     templateUrl: "./devices-table.component.html"
 })
 export class DevicesTableComponent {

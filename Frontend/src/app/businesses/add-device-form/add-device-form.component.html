@@ -1,26 +1,93 @@
 <div class="centered-content">
-    <app-icon-title title="Register a New Device" icon="pi pi-desktop" class="mb-4 text-primary-600 text-center" />
-    
+    <app-icon-title
+        title="Register a New Device"
+        icon="pi pi-desktop"
+        class="mb-4 text-primary-600 text-center"
+    />
+
     <app-form [form]="deviceForm" (onSubmit)="onSubmit()">
-      <app-form-input type="text" label="Name" placeholder="Enter device name" name="name" [form]="deviceForm" iconClass="pi pi-cogs" [formField]="{ required: { message: 'Name is required' } }"></app-form-input>
-      
-      <app-form-input type="text" label="Model Number" placeholder="Enter model number" name="modelNumber" [form]="deviceForm" iconClass="pi pi-cogs" [formField]="{ required: { message: 'Model Number is required' } }"></app-form-input>
-      
-      <app-form-input type="text" label="Description" placeholder="Enter description" name="description" [form]="deviceForm" iconClass="pi pi-comment" [formField]="{ required: { message: 'Description is required' } }"></app-form-input>
-      
-      <app-form-input type="text" label="Main Photo URL" placeholder="Enter main photo URL" name="mainPhoto" [form]="deviceForm" iconClass="pi pi-image" [formField]="{ required: { message: 'Main Photo URL is required' } }"></app-form-input>
-      
-      <app-form-input type="text" label="Secondary Photos URLs" placeholder="Enter secondary photo URLs (comma-separated)" name="secondaryPhotos" [form]="deviceForm" iconClass="pi pi-image" ></app-form-input>
-      
-      <app-form-dropdown label="Device Type" placeholder="Select device type" name="type" [form]="deviceForm" [options]="deviceTypes"></app-form-dropdown>
-      
-      <div *ngIf="deviceForm.get('type')?.value === 'Camera'">
-        <app-form-checkbox label="Motion Detection" name="motionDetection" [form]="deviceForm"></app-form-checkbox>
-        <app-form-checkbox label="Person Detection" name="personDetection" [form]="deviceForm"></app-form-checkbox>
-        <app-form-checkbox label="Is this device exterior?" name="isExterior" [form]="deviceForm"></app-form-checkbox>
-      </div>
-      
-      <app-form-button title="Register Device" color="primary" [loading]="status.loading" [disabled]="!deviceForm.valid"></app-form-button>
+        <app-form-input
+            type="text"
+            label="Name"
+            placeholder="Enter device name"
+            name="name"
+            [form]="deviceForm"
+            iconClass="pi pi-cogs"
+            [formField]="{ required: { message: 'Name is required' } }"
+        ></app-form-input>
+
+        <app-form-input
+            type="text"
+            label="Model Number"
+            placeholder="Enter model number"
+            name="modelNumber"
+            [form]="deviceForm"
+            iconClass="pi pi-cogs"
+            [formField]="{ required: { message: 'Model Number is required' } }"
+        ></app-form-input>
+
+        <app-form-input
+            type="text"
+            label="Description"
+            placeholder="Enter description"
+            name="description"
+            [form]="deviceForm"
+            iconClass="pi pi-comment"
+            [formField]="{ required: { message: 'Description is required' } }"
+        ></app-form-input>
+
+        <app-form-input
+            type="text"
+            label="Main Photo URL"
+            placeholder="Enter main photo URL"
+            name="mainPhoto"
+            [form]="deviceForm"
+            iconClass="pi pi-image"
+            [formField]="{
+                required: { message: 'Main Photo URL is required' }
+            }"
+        ></app-form-input>
+
+        <app-form-input
+            type="text"
+            label="Secondary Photos URLs"
+            placeholder="Enter secondary photo URLs (comma-separated)"
+            name="secondaryPhotos"
+            [form]="deviceForm"
+            iconClass="pi pi-image"
+        ></app-form-input>
+
+        <app-form-dropdown
+            label="Device Type"
+            placeholder="Select device type"
+            name="type"
+            [form]="deviceForm"
+            [options]="deviceTypes"
+        ></app-form-dropdown>
+
+        <div *ngIf="deviceForm.get('type')?.value === 'Camera'">
+            <app-form-checkbox
+                label="Motion Detection"
+                name="motionDetection"
+                [form]="deviceForm"
+            ></app-form-checkbox>
+            <app-form-checkbox
+                label="Person Detection"
+                name="personDetection"
+                [form]="deviceForm"
+            ></app-form-checkbox>
+            <app-form-checkbox
+                label="Is this device exterior?"
+                name="isExterior"
+                [form]="deviceForm"
+            ></app-form-checkbox>
+        </div>
+
+        <app-form-button
+            title="Register Device"
+            color="primary"
+            [loading]="status.loading"
+            [disabled]="!deviceForm.valid"
+        ></app-form-button>
     </app-form>
-  </div>
-  
+</div>

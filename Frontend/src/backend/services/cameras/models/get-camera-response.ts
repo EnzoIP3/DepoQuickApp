@@ -9,5 +9,4 @@ export interface GetCameraResponse {
     personDetection: boolean;
     exterior: boolean;
     interior: boolean;
-  }
-  
+}

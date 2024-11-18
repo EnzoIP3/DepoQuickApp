@@ -9,7 +9,7 @@ import { GetBusinessResponse } from "./models/get-business-response";
 })
 export class UsersService {
     constructor(private readonly _repository: UsersApiRepositoryService) {}
-    
+
     public getBusiness(
         request: GetBusinessRequest,
         userId: string

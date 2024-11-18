@@ -21,7 +21,6 @@ export class UsersApiRepositoryService extends ApiRepository {
         return this.get<GetBusinessResponse>({
             extraResource: `${userId}/businesses`,
             queries: request
-        }
-      )
+        });
     }
 }

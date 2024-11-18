@@ -1,3 +1,3 @@
 export default interface GetValidatorsResponse {
-  validators: string[];
+    validators: string[];
 }

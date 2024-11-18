@@ -12,11 +12,15 @@ import ImportDevicesRequest from "./models/import-devices-request";
 export class DevicesService {
     constructor(private readonly _repository: DevicesApiRepositoryService) {}
 
-    public getDevices(request?: GetDevicesRequest): Observable<GetDevicesResponse> {
+    public getDevices(
+        request?: GetDevicesRequest
+    ): Observable<GetDevicesResponse> {
         return this._repository.getDevices(request);
     }
 
-    public importDevices(request: ImportDevicesRequest): Observable<ImportDevicesResponse> {
+    public importDevices(
+        request: ImportDevicesRequest
+    ): Observable<ImportDevicesResponse> {
         return this._repository.importDevices(request);
     }
 }

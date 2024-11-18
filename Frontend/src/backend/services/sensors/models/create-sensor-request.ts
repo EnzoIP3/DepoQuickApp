@@ -4,4 +4,4 @@ export interface CreateSensorRequest {
     modelNumber?: string;
     name?: string;
     secondaryPhotos?: string[];
-  }  
+}

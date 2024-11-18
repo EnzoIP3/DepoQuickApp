@@ -1,25 +1,60 @@
-<app-table [columns]="columns" [data]="devices" [loading]="loading" [clickableRows]="true"
-    [customTemplates]="{ mainPhoto: mainPhotoTemplate, secondaryPhotos: secondaryPhotosTemplate }"
-    (rowClick)="onRowClick($event)">
+<app-table
+    [columns]="columns"
+    [data]="devices"
+    [loading]="loading"
+    [clickableRows]="true"
+    [customTemplates]="{
+        mainPhoto: mainPhotoTemplate,
+        secondaryPhotos: secondaryPhotosTemplate
+    }"
+    (rowClick)="onRowClick($event)"
+>
 </app-table>
 
-<app-paginator [currentPage]="pagination?.page" [totalPages]="pagination?.totalPages" [pageSize]="pagination?.pageSize"
-    (pageChange)="onPageChange($event)">
+<app-paginator
+    [currentPage]="pagination?.page"
+    [totalPages]="pagination?.totalPages"
+    [pageSize]="pagination?.pageSize"
+    (pageChange)="onPageChange($event)"
+>
 </app-paginator>
 
 <ng-template #mainPhotoTemplate let-row="row">
-    <app-avatar defaultIcon="pi pi-image" [image]="row.mainPhoto" shape="square" size="xlarge" />
+    <app-avatar
+        defaultIcon="pi pi-image"
+        [image]="row.mainPhoto"
+        shape="square"
+        size="xlarge"
+    />
 </ng-template>
 
 <ng-template #secondaryPhotosTemplate let-row="row">
-    <app-image-gallery [images]="row.secondaryPhotos" [imageTemplate]="imageTemplate" [numVisible]="3"/>
+    <app-image-gallery
+        [images]="row.secondaryPhotos"
+        [imageTemplate]="imageTemplate"
+        [numVisible]="3"
+    />
     <ng-template #imageTemplate let-image>
-        <app-avatar defaultIcon="" [image]="image" shape="square" size="xlarge" />
+        <app-avatar
+            defaultIcon=""
+            [image]="image"
+            shape="square"
+            size="xlarge"
+        />
     </ng-template>
 </ng-template>
 
-<app-dialog [(visible)]="dialogVisible" [width]="'50rem'" [resizable]="true" (close)="closeDialog()" [maximizable] = "true">
+<app-dialog
+    [(visible)]="dialogVisible"
+    [width]="'50rem'"
+    [resizable]="true"
+    (close)="closeDialog()"
+    [maximizable]="true"
+>
     <ng-container *ngIf="selectedDevice">
-        <app-device-details [device]="selectedDevice!" [imageWidth]="'300px'"></app-device-details>
+        <app-device-details
+            [device]="selectedDevice!"
+            [imageWidth]="'300px'"
+        ></app-device-details>
     </ng-container>
 </app-dialog>

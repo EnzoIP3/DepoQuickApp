@@ -12,16 +12,19 @@ import ImportDevicesResponse from "../services/devices/models/import-devices-res
     providedIn: "root"
 })
 export class DevicesApiRepositoryService extends ApiRepository {
-    
     constructor(http: HttpClient) {
         super(environment.apiUrl, "devices", http);
     }
 
-    public getDevices(request?: GetDevicesRequest): Observable<GetDevicesResponse> {
+    public getDevices(
+        request?: GetDevicesRequest
+    ): Observable<GetDevicesResponse> {
         return this.get<GetDevicesResponse>({ queries: request });
     }
 
-    importDevices(request: ImportDevicesRequest): Observable<ImportDevicesResponse> {
+    importDevices(
+        request: ImportDevicesRequest
+    ): Observable<ImportDevicesResponse> {
         return this.post<ImportDevicesResponse>(request);
     }
 }

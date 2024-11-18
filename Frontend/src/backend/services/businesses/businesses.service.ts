@@ -13,15 +13,23 @@ import GetBusinessDevicesRequest from "./models/get-business-devices-request";
 export class BusinessesService {
     constructor(private readonly _repository: BusinessesApiRepositoryService) {}
 
-    public postBusiness(request: CreateBusinessRequest): Observable<CreateBusinessResponse> {
+    public postBusiness(
+        request: CreateBusinessRequest
+    ): Observable<CreateBusinessResponse> {
         return this._repository.postBusiness(request);
     }
 
-    public updateValidator(businessId: string, request: UpdateValidatorRequest): Observable<UpdateValidatorResponse> {
+    public updateValidator(
+        businessId: string,
+        request: UpdateValidatorRequest
+    ): Observable<UpdateValidatorResponse> {
         return this._repository.updateValidator(businessId, request);
     }
 
-    public getDevices(businessId: string, request: GetBusinessDevicesRequest): Observable<GetDevicesResponse> {
+    public getDevices(
+        businessId: string,
+        request: GetBusinessDevicesRequest
+    ): Observable<GetDevicesResponse> {
         return this._repository.getDevices(businessId, request);
     }
 }

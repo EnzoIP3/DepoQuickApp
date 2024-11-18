@@ -1,17 +1,18 @@
-import { Injectable } from '@angular/core';
-import { Observable } from 'rxjs';
-import { LampsApiRepositoryService } from '../../repositories/lamps-api-repository.service';
-import { CreateDeviceResponse } from '../devices/models/create-device-response';
-import { CreateLampRequest } from './models/create-lamp-request';
+import { Injectable } from "@angular/core";
+import { Observable } from "rxjs";
+import { LampsApiRepositoryService } from "../../repositories/lamps-api-repository.service";
+import { CreateDeviceResponse } from "../devices/models/create-device-response";
+import { CreateLampRequest } from "./models/create-lamp-request";
 
 @Injectable({
-  providedIn: 'root'
+    providedIn: "root"
 })
 export class LampsService {
+    constructor(private readonly _repository: LampsApiRepositoryService) {}
 
-  constructor(private readonly _repository: LampsApiRepositoryService) {}
-
-    public postDevice(request: CreateLampRequest): Observable<CreateDeviceResponse> {
+    public postDevice(
+        request: CreateLampRequest
+    ): Observable<CreateDeviceResponse> {
         return this._repository.postDevice(request);
     }
 }

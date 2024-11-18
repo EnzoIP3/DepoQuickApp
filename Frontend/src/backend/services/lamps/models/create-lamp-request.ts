@@ -4,4 +4,4 @@ export interface CreateLampRequest {
     modelNumber?: string;
     name?: string;
     secondaryPhotos?: string[];
-  }  
+}

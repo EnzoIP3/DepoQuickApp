@@ -18,7 +18,15 @@ import { BusinessesService } from "../../backend/services/businesses/businesses.
 @Component({
     selector: "app-business-devices-table",
     standalone: true,
-    imports: [CommonModule, TableComponent, PaginatorComponent, AvatarComponent, ImageGalleryComponent, DeviceDetailsComponent, DialogComponent],
+    imports: [
+        CommonModule,
+        TableComponent,
+        PaginatorComponent,
+        AvatarComponent,
+        ImageGalleryComponent,
+        DeviceDetailsComponent,
+        DialogComponent
+    ],
     templateUrl: "./business-devices-table.component.html"
 })
 export class BusinessDevicesTableComponent {
@@ -77,8 +85,8 @@ export class BusinessDevicesTableComponent {
     }
 
     private _subscribeToDevices(queries?: object): void {
-    this._devicesSubscription = this._businessesService
-            .getDevices(this._businessId!,queries ? { ...queries } : {})
+        this._devicesSubscription = this._businessesService
+            .getDevices(this._businessId!, queries ? { ...queries } : {})
             .subscribe({
                 next: (response: GetDevicesResponse) => {
                     this.devices = response.devices;
@@ -95,5 +103,4 @@ export class BusinessDevicesTableComponent {
                 }
             });
     }
-
 }

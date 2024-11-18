@@ -4,4 +4,4 @@ export interface CreateMotionSensorRequest {
     modelNumber?: string;
     name?: string;
     secondaryPhotos?: string[];
-  }  
+}

@@ -18,15 +18,26 @@ export class BusinessesApiRepositoryService extends ApiRepository {
         super(environment.apiUrl, "businesses", http);
     }
 
-    public postBusiness(request: CreateBusinessRequest): Observable<CreateBusinessResponse> {
+    public postBusiness(
+        request: CreateBusinessRequest
+    ): Observable<CreateBusinessResponse> {
         return this.post<CreateBusinessResponse>(request);
     }
 
-    updateValidator(businessId: string, request: UpdateValidatorRequest): Observable<UpdateValidatorResponse> {
-        return this.patch<UpdateValidatorResponse>(request, `${businessId}/validator`);
+    updateValidator(
+        businessId: string,
+        request: UpdateValidatorRequest
+    ): Observable<UpdateValidatorResponse> {
+        return this.patch<UpdateValidatorResponse>(
+            request,
+            `${businessId}/validator`
+        );
     }
 
-    getDevices(businessId: string, request: GetBusinessDevicesRequest): Observable<GetDevicesResponse> {
+    getDevices(
+        businessId: string,
+        request: GetBusinessDevicesRequest
+    ): Observable<GetDevicesResponse> {
         return this.get<GetDevicesResponse>({
             queries: request,
             extraResource: `${businessId}/devices`

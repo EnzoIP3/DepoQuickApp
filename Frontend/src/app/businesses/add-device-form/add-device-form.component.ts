@@ -65,8 +65,11 @@ export class AddDeviceFormComponent implements OnInit, OnDestroy {
             modelNumber: ["", [Validators.required]],
             description: ["", [Validators.required]],
             mainPhoto: [
-          "",
-          [Validators.required, Validators.pattern(/^(http|https):\/\/[^ "]+$/)]
+                "",
+                [
+                    Validators.required,
+                    Validators.pattern(/^(http|https):\/\/[^ "]+$/)
+                ]
             ],
             secondaryPhotos: [],
             type: ["", [Validators.required]],
@@ -145,9 +148,9 @@ export class AddDeviceFormComponent implements OnInit, OnDestroy {
                     });
                     this.deviceForm.reset();
                     this.deviceForm.patchValue({
-                      motionDetection: false,
-                      personDetection: false,
-                      isExterior: false
+                        motionDetection: false,
+                        personDetection: false,
+                        isExterior: false
                     });
                 },
                 error: (error: any) => {

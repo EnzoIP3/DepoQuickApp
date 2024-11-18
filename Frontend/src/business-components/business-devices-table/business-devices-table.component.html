@@ -12,7 +12,7 @@
 </ng-template>
 
 <ng-template #secondaryPhotosTemplate let-row="row">
-    <app-image-gallery [images]="row.secondaryPhotos" [imageTemplate]="imageTemplate" />
+    <app-image-gallery [images]="row.secondaryPhotos" [imageTemplate]="imageTemplate" [numVisible]="3"/>
     <ng-template #imageTemplate let-image>
         <app-avatar defaultIcon="" [image]="image" shape="square" size="xlarge" />
     </ng-template>

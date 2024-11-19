@@ -4,12 +4,12 @@ import { TableComponent } from '../../components/table/table.component';
 import TableColumn from '../../components/table/models/table-column';
 import { Subscription } from 'rxjs';
 import PaginationResponse from "../../backend/services/pagination";
-import { BusinessesService } from '../../backend/services/businesses/business.service';
 import { MessageService } from 'primeng/api';
 import Pagination from '../../backend/services/pagination';
 import FilterValues from '../../components/table/models/filter-values';
 import GetBusinessesResponse from '../../backend/services/businesses/models/business-response';
 import Business from '../../backend/services/businesses/models/Business';
+import { BusinessesService } from '../../backend/services/businesses/businesses.service';
 
 @Component({
   selector: 'app-businesses-table',
@@ -77,7 +77,7 @@ businesses: any;
 
   private _subscribeToBusinesses(queries?: object): void {
     this._businessesSubscription = this._businessesService
-        .getUsers(queries ? { ...queries } : {})
+        .getBusinesses(queries ? { ...queries } : {})
         .subscribe({
             next: (response: GetBusinessesResponse) => {
                 this.ownerName = response.businesses.map((business: Business) => ({

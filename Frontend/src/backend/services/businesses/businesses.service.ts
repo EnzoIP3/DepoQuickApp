@@ -10,7 +10,7 @@ import GetBusinessesResponse from "./models/business-response.js";
 export class BusinessesService {
     constructor(private readonly _repository: BusinessesApiRepositoryService) {}
 
-    public getUsers(request?: GetBusinessesRequest): Observable<GetBusinessesResponse> {
+    public getBusinesses(request?: GetBusinessesRequest): Observable<GetBusinessesResponse> {
         return this._repository.getBusinesses(request);
     }
 }

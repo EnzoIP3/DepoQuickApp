@@ -1,4 +1,4 @@
 export default interface ImportDevicesRequest {
     importerName: string;
-    route: string;
+    parameters: Record<string, string>;
 }

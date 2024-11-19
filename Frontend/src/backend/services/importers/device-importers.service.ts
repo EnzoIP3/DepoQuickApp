@@ -1,7 +1,7 @@
 import { Injectable } from "@angular/core";
 import { Observable } from "rxjs";
 import { DeviceImportersApiRepositoryService } from "../../repositories/device-importers-api-repository.service";
-import GetImportersResponse from "./models/get-importers-response";
+import { GetImportersResponse } from "./models/get-importers-response";
 
 @Injectable({
     providedIn: "root"

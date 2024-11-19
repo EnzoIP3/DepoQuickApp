@@ -3,12 +3,12 @@ import { FormBuilder, FormGroup, Validators } from "@angular/forms";
 import { MessageService } from "primeng/api";
 import { Subscription } from "rxjs";
 import GetImportFilesResponse from "../../../backend/services/importers/models/get-import-files-response";
-import GetImportersResponse from "../../../backend/services/importers/models/get-importers-response";
 import { DeviceImportFilesService } from "../../../backend/services/importers/device-import-files.service";
 import { DeviceImportersService } from "../../../backend/services/importers/device-importers.service";
 import { DevicesService } from "../../../backend/services/devices/devices.service";
 import ImportDevicesResponse from "../../../backend/services/devices/models/import-devices-response";
 import ImportDevicesRequest from "../../../backend/services/devices/models/import-devices-request";
+import { GetImportersResponse } from "../../../backend/services/importers/models/get-importers-response";
 
 @Component({
     selector: "app-import-devices-form",
@@ -17,9 +17,9 @@ import ImportDevicesRequest from "../../../backend/services/devices/models/impor
 })
 export class ImportDevicesFormComponent implements OnInit, OnDestroy {
     importDevicesForm: FormGroup;
-    importerOptions: { label: string; value: string }[] = [];
+    importerOptions: { label: string; value: string; parameters: string[] }[] = [];
     fileOptions: { label: string; value: string }[] = [];
-    showConfirmationDialog: boolean = false; // Visibilidad del diálogo
+    showConfirmationDialog: boolean = false;
     private _businessId: string = "123";
     private _importersSubscription: Subscription | null = null;
     private _filesSubscription: Subscription | null = null;
@@ -36,7 +36,7 @@ export class ImportDevicesFormComponent implements OnInit, OnDestroy {
         this._setBusinessId();
         this.importDevicesForm = this.fb.group({
             importer: ["", Validators.required],
-            importFile: ["", Validators.required]
+            parameters: [""],
         });
     }
 
@@ -54,11 +54,13 @@ export class ImportDevicesFormComponent implements OnInit, OnDestroy {
             .subscribe({
                 next: (response: GetImportersResponse) => {
                     this.importerOptions = response.importers.map(
-                        (importerName) => ({
-                            label: importerName,
-                            value: importerName
+                        (importer) => ({
+                            label: importer.name,
+                            value: importer.name,
+                            parameters: importer.parameters
                         })
                     );
+                    console.log(response);
                     this.status.loading = false;
                 },
                 error: (error) => {
@@ -93,8 +95,9 @@ export class ImportDevicesFormComponent implements OnInit, OnDestroy {
     }
 
     onSubmit(): void {
+        console.log(this.importDevicesForm.value);
         if (this.importDevicesForm.valid) {
-            this.showConfirmationDialog = true; // Mostrar diálogo de confirmación
+            this.showConfirmationDialog = true;
         } else {
             this._messageService.add({
                 severity: "warn",
@@ -109,8 +112,9 @@ export class ImportDevicesFormComponent implements OnInit, OnDestroy {
         if (confirm) {
             const request: ImportDevicesRequest = {
                 importerName: this.importDevicesForm.value.importer,
-                route: this.importDevicesForm.value.importFile
+                parameters: this.importDevicesForm.value.importer.parameters,
             };
+            console.log(request);
             this.status.loading = true;
             this._devicesSubscription = this._deviceService
                 .importDevices(request)

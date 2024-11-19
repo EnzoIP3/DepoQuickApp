@@ -193,6 +193,7 @@ public class HomeControllerTests
                     ModelNumber = device1.Device.ModelNumber,
                     MainPhoto = device1.Device.MainPhoto,
                     SecondaryPhotos = device1.Device.SecondaryPhotos,
+                    Description = device1.Device.Description,
                     RoomId = device1.Room.Id.ToString()
                 },
                 new ListOwnedDeviceInfo
@@ -204,6 +205,7 @@ public class HomeControllerTests
                     ModelNumber = device2.Device.ModelNumber,
                     MainPhoto = device2.Device.MainPhoto,
                     SecondaryPhotos = device2.Device.SecondaryPhotos,
+                    Description = device2.Device.Description,
                     RoomId = device2.Room.Id.ToString()
                 }
 
@@ -267,6 +269,7 @@ public class HomeControllerTests
                     MainPhoto = lamp1.Device.MainPhoto,
                     SecondaryPhotos = lamp1.Device.SecondaryPhotos,
                     State = false,
+                    Description = lamp1.Device.Description,
                     RoomId = lamp1.Room.Id.ToString()
                 },
                 new ListOwnedDeviceInfo
@@ -279,6 +282,7 @@ public class HomeControllerTests
                     MainPhoto = lamp2.Device.MainPhoto,
                     SecondaryPhotos = lamp2.Device.SecondaryPhotos,
                     State = false,
+                    Description = lamp2.Device.Description,
                     RoomId = lamp2.Room.Id.ToString()
                 }
 
@@ -344,6 +348,7 @@ public class HomeControllerTests
                     MainPhoto = sensor1.Device.MainPhoto,
                     SecondaryPhotos = sensor1.Device.SecondaryPhotos,
                     IsOpen = false,
+                    Description = sensor1.Device.Description,
                     RoomId = sensor1.Room.Id.ToString()
                 },
                 new ListOwnedDeviceInfo
@@ -356,6 +361,7 @@ public class HomeControllerTests
                     MainPhoto = sensor2.Device.MainPhoto,
                     SecondaryPhotos = sensor2.Device.SecondaryPhotos,
                     IsOpen = false,
+                    Description = sensor2.Device.Description,
                     RoomId = sensor2.Room.Id.ToString()
                 }
 

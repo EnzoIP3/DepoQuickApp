@@ -5,6 +5,8 @@ import { environment } from "../../environments/environment";
 import GetDevicesResponse from "../services/devices/models/get-devices-response";
 import { Observable } from "rxjs";
 import GetDevicesRequest from "../services/devices/models/get-devices-request";
+import ImportDevicesRequest from "../services/devices/models/import-devices-request";
+import ImportDevicesResponse from "../services/devices/models/import-devices-response";
 import MoveDeviceRequest from "../services/devices/models/move-device-request";
 import MoveDeviceResponse from "../services/devices/models/move-device-response";
 
@@ -27,5 +29,11 @@ export class DevicesApiRepositoryService extends ApiRepository {
         request: MoveDeviceRequest
     ): Observable<MoveDeviceResponse> {
         return this.patch<MoveDeviceResponse>(request, `${hardwareId}/room`);
+    }
+
+    importDevices(
+        request: ImportDevicesRequest
+    ): Observable<ImportDevicesResponse> {
+        return this.post<ImportDevicesResponse>(request);
     }
 }

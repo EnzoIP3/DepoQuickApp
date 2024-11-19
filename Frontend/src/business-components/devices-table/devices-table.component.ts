@@ -12,11 +12,22 @@ import { PaginatorComponent } from "../../components/paginator/paginator.compone
 import FilterValues from "../../components/table/models/filter-values";
 import { AvatarComponent } from "../../components/avatar/avatar.component";
 import { ImageGalleryComponent } from "../../components/image-gallery/image-gallery.component";
+import { DialogComponent } from "../../components/dialog/dialog.component";
+import { DeviceDetailsComponent } from "../device-details/device-details.component";
+import { CommonModule } from "@angular/common";
 
 @Component({
     selector: "app-devices-table",
     standalone: true,
-    imports: [TableComponent, PaginatorComponent, AvatarComponent, ImageGalleryComponent],
+    imports: [
+        CommonModule,
+        TableComponent,
+        PaginatorComponent,
+        AvatarComponent,
+        ImageGalleryComponent,
+        DialogComponent,
+        DeviceDetailsComponent
+    ],
     templateUrl: "./devices-table.component.html"
 })
 export class DevicesTableComponent {
@@ -60,6 +71,8 @@ export class DevicesTableComponent {
     pagination: PaginationResponse | null = null;
     filters: FilterValues = {};
     loading: boolean = true;
+    selectedDevice: Device | null = null;
+    dialogVisible: boolean = false;
 
     constructor(
         private readonly _devicesService: DevicesService,
@@ -102,5 +115,14 @@ export class DevicesTableComponent {
                     });
                 }
             });
+    }
+
+    onRowClick(device: Device): void {
+        this.selectedDevice = device;
+        this.dialogVisible = true;
+    }
+
+    closeDialog(): void {
+        this.dialogVisible = false;
     }
 }

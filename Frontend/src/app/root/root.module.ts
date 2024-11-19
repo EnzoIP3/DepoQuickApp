@@ -9,11 +9,11 @@ import { ToastComponent } from "../../components/toast/toast.component";
 @NgModule({
     declarations: [RootPageComponent],
     imports: [
-    CommonModule,
-    RootRoutingModule,
-    PermissionSidebarComponent,
-    ToolbarComponent,
-    ToastComponent
-]
+        CommonModule,
+        RootRoutingModule,
+        PermissionSidebarComponent,
+        ToolbarComponent,
+        ToastComponent
+    ]
 })
 export class RootModule {}

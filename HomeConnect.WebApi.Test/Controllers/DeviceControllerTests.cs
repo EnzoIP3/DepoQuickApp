@@ -84,7 +84,8 @@ public class DeviceControllerTests
                 Type = d.Type.ToString(),
                 ModelNumber = d.ModelNumber,
                 MainPhoto = d.MainPhoto,
-                SecondaryPhotos = d.SecondaryPhotos
+                SecondaryPhotos = d.SecondaryPhotos,
+                Description = d.Description
             }).ToList(),
             Pagination = _expectedPagination
         };

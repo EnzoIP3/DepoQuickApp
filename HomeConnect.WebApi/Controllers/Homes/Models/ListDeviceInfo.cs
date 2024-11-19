@@ -1,3 +1,5 @@
+using BusinessLogic.Devices.Entities;
+
 namespace HomeConnect.WebApi.Controllers.Homes.Models;
 
 public record ListDeviceInfo
@@ -9,4 +11,5 @@ public record ListDeviceInfo
     public string ModelNumber { get; set; } = null!;
     public string MainPhoto { get; set; } = null!;
     public List<string> SecondaryPhotos { get; set; } = null!;
+    public string Description { get; set; } = null!;
 }

@@ -4,6 +4,7 @@ public struct DeviceInfo
 {
     public string Id { get; set; }
     public string Name { get; set; }
+    public string BusinessName { get; set; }
     public string ModelNumber { get; set; }
     public string Description { get; set; }
     public string MainPhoto { get; set; }

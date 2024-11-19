@@ -1,5 +1,15 @@
 <div class="field" [formGroup]="form">
-    <p-multiSelect [options]="values" [optionLabel]="optionLabel" [optionValue]="optionValue" [loading]="loading"
-        [placeholder]="placeholder" [filter]="false" [formControlName]="name" display="chip" [showClear]="true"
-        styleClass="w-full max-w-full" [maxSelectedLabels]="1" />
+    <p-multiSelect
+        [options]="values"
+        [optionLabel]="optionLabel"
+        [optionValue]="optionValue"
+        [loading]="loading"
+        [placeholder]="placeholder"
+        [filter]="false"
+        [formControlName]="name"
+        display="chip"
+        [showClear]="true"
+        styleClass="w-full max-w-full"
+        [maxSelectedLabels]="1"
+    />
 </div>

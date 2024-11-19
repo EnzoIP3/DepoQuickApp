@@ -652,9 +652,11 @@ public class BusinessOwnerServiceTests
     {
         // Arrange
         var ownerFilter = "not-a-guid";
+        var currentPage = 1;
+        var pageSize = 10;
 
         // Act
-        Action act = () => _businessOwnerService.GetBusinesses(ownerFilter);
+        Action act = () => _businessOwnerService.GetBusinesses(ownerFilter, currentPage, pageSize);
 
         // Assert
         act.Should().Throw<ArgumentException>().WithMessage("The business owner ID is not a valid GUID.");
@@ -674,11 +676,13 @@ public class BusinessOwnerServiceTests
             PageSize = 10,
             TotalPages = 1
         };
-        var filterArgs = new FilterArgs { OwnerIdFilter = _owner.Id };
+        var currentPage = 1;
+        var pageSize = 10;
+        var filterArgs = new FilterArgs { OwnerIdFilter = _owner.Id, CurrentPage = currentPage, PageSize = pageSize };
         _businessRepository.Setup(x => x.GetPaged(filterArgs)).Returns(businesses);
 
         // Act
-        PagedData<Business> returnedBusinesses = _businessOwnerService.GetBusinesses(_owner.Id.ToString());
+        PagedData<Business> returnedBusinesses = _businessOwnerService.GetBusinesses(_owner.Id.ToString(), currentPage, pageSize);
 
         // Assert
         returnedBusinesses.Should().BeEquivalentTo(businesses);
@@ -698,9 +702,10 @@ public class BusinessOwnerServiceTests
         var business = new Business("RUTexample", "Business Name", "https://example.com/image.png", _owner);
         var user = new User("John", "Doe", "email@email.com", "Password@1", new Role());
         _businessRepository.Setup(x => x.Get(business.Rut)).Returns(business);
+        var args = new GetBusinessDevicesArgs { Rut = business.Rut, User = user, CurrentPage = 1, PageSize = 10 };
 
         // Act
-        Action act = () => _businessOwnerService.GetDevices(business.Rut, user);
+        Action act = () => _businessOwnerService.GetDevices(args);
 
         // Assert
         act.Should().Throw<InvalidOperationException>().WithMessage("The business does not belong to the specified owner.");
@@ -729,9 +734,10 @@ public class BusinessOwnerServiceTests
         };
         _businessRepository.Setup(x => x.Get(business.Rut)).Returns(business);
         _deviceRepository.Setup(x => x.GetPaged(It.IsAny<GetDevicesArgs>())).Returns(devices);
+        var args = new GetBusinessDevicesArgs { Rut = business.Rut, User = user, CurrentPage = 1, PageSize = 10 };
 
         // Act
-        PagedData<Device> returnedDevices = _businessOwnerService.GetDevices(business.Rut, user);
+        PagedData<Device> returnedDevices = _businessOwnerService.GetDevices(args);
 
         // Assert
         returnedDevices.Should().BeEquivalentTo(devices);

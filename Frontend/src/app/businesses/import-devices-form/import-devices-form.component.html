@@ -1,0 +1,55 @@
+<div class="centered-content">
+    <app-icon-title
+        icon="pi pi-desktop"
+        class="mb-4 text-primary-600 text-center"
+    ></app-icon-title>
+
+    <app-form [form]="importDevicesForm" (onSubmit)="onSubmit()">
+        <app-form-dropdown
+            label="Importer"
+            placeholder="Select importer"
+            name="importer"
+            [form]="importDevicesForm"
+            [options]="importerOptions"
+        >
+        </app-form-dropdown>
+
+        <app-form-dropdown
+            label="Import File"
+            placeholder="Select import file"
+            name="importFile"
+            [form]="importDevicesForm"
+            [options]="fileOptions"
+        >
+        </app-form-dropdown>
+
+        <app-form-button
+            title="Import Devices"
+            color="primary"
+            [loading]="status.loading"
+            [disabled]="importDevicesForm.invalid"
+        >
+        </app-form-button>
+    </app-form>
+
+    <app-dialog
+        [(visible)]="showConfirmationDialog"
+        header="Confirm Import"
+        (visibleChange)="confirmImport($event)"
+        width="30rem"
+    >
+        <p>Are you sure you want to import devices?</p>
+        <div class="flex justify-content-end">
+            <app-button
+                class="mr-2"
+                label="Yes"
+                severity="success"
+                (click)="onConfirm()"
+            >
+            </app-button>
+
+            <app-button label="No" severity="danger" (click)="closeDialog()">
+            </app-button>
+        </div>
+    </app-dialog>
+</div>

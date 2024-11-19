@@ -62,9 +62,9 @@ public class UserController(IAdminService adminService, IUserService userService
 
     [HttpGet("{userId}/businesses")]
     [AuthorizationFilter(SystemPermission.GetBusinesses)]
-    public GetBusinessesResponse GetBusinesses(string userId)
+    public GetBusinessesResponse GetBusinesses(string userId, [FromQuery] GetUserBusinessesRequest request)
     {
-        PagedData<Business> businesses = businessOwnerService.GetBusinesses(userId);
+        PagedData<Business> businesses = businessOwnerService.GetBusinesses(userId, request.CurrentPage, request.PageSize);
         GetBusinessesResponse response = ResponseFromBusinesses(businesses);
         return response;
     }
@@ -79,7 +79,8 @@ public class UserController(IAdminService adminService, IUserService userService
                 OwnerEmail = b.Owner.Email,
                 OwnerName = b.Owner.Name,
                 OwnerSurname = b.Owner.Surname,
-                Rut = b.Rut
+                Rut = b.Rut,
+                Logo = b.Logo
             }).ToList(),
             Pagination = new Pagination
             {

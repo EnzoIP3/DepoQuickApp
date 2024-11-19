@@ -1,0 +1,60 @@
+<div class="centered-content">
+    <app-icon-title
+        title="Register a new business"
+        icon="pi-building"
+        class="mb-4 text-primary-600 text-center"
+    />
+
+    <app-form [form]="businessForm" (onSubmit)="onSubmit()">
+        <!-- Name Field -->
+        <app-form-input
+            type="text"
+            label="Business Name"
+            placeholder="Enter Business Name"
+            name="name"
+            [form]="businessForm"
+            iconClass="pi pi-briefcase"
+            [formField]="formFields.name"
+        ></app-form-input>
+
+        <!-- Logo Field -->
+        <app-form-input
+            type="text"
+            label="Logo URL"
+            placeholder="Enter Logo URL"
+            name="logo"
+            [form]="businessForm"
+            iconClass="pi pi-image"
+            [formField]="formFields.logo"
+        ></app-form-input>
+
+        <!-- Rut Field -->
+        <app-form-input
+            type="text"
+            label="Rut"
+            placeholder="Enter Rut"
+            name="rut"
+            [form]="businessForm"
+            iconClass="pi pi-id-card"
+            [formField]="formFields.rut"
+        ></app-form-input>
+
+        <!-- Validator Dropdown -->
+        <app-form-dropdown
+            [form]="businessForm"
+            name="validator"
+            label="Validator"
+            placeholder="Select Validator"
+            [options]="validatorOptions"
+        >
+        </app-form-dropdown>
+
+        <!-- Submit Button -->
+        <app-form-button
+            title="Register Business"
+            color="primary"
+            [loading]="status.loading"
+            [disabled]="!businessForm.valid"
+        />
+    </app-form>
+</div>

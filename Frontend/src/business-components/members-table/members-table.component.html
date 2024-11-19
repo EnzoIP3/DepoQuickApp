@@ -1,4 +1,9 @@
-<app-table [columns]="columns" [data]="members" [loading]="loading" [customTemplates]="customTemplates" />
+<app-table
+    [columns]="columns"
+    [data]="members"
+    [loading]="loading"
+    [customTemplates]="customTemplates"
+/>
 
 <ng-template #photoTemplate let-value="value">
     <app-avatar [image]="value" />

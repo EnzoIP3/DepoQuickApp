@@ -7,6 +7,7 @@ using BusinessLogic.Helpers;
 using BusinessLogic.Roles.Entities;
 using BusinessLogic.Users.Entities;
 using FluentAssertions;
+using HomeConnect.WebApi.Controllers.DeviceImporters.Models;
 using Moq;
 
 namespace HomeConnect.BusinessLogic.Test.Devices.Services;
@@ -36,16 +37,27 @@ public class ImporterServiceTests
     {
         // Arrange
         var importerName = "ImporterName";
+        var paramsList = new List<string> { "param1", "param2" };
+        var expectedResponse = new List<ImporterData>
+        {
+            new ImporterData { Name = importerName, Parameters = paramsList }
+        };
         _mockAssemblyInterfaceLoader
             .Setup(x => x.GetImplementationsList(It.IsAny<string>()))
             .Returns([importerName]);
+        _mockDeviceImporter
+            .Setup(x => x.GetParams())
+            .Returns(paramsList);
+        _mockAssemblyInterfaceLoader
+            .Setup(x => x.GetImplementationByName(importerName, It.IsAny<string>()))
+            .Returns(_mockDeviceImporter.Object);
 
         // Act
         var result = _importerService.GetImporters();
 
         // Assert
         result.Should().HaveCount(1);
-        result[0].Should().Be(importerName);
+        result.Should().BeEquivalentTo(expectedResponse);
     }
     #endregion
 

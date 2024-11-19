@@ -22,7 +22,12 @@ public class ImporterService : IImporterService
     private static readonly string ImporterFilesPath = AppDomain.CurrentDomain.BaseDirectory + "ImportFiles";
     public List<ImporterData> GetImporters()
     {
-        throw new NotImplementedException();
+        var importers = LoadAssembly.GetImplementationsList(ImportersPath);
+        return importers.Select(importer => new ImporterData
+        {
+            Name = importer,
+            Parameters = LoadAssembly.GetImplementationByName(importer, ImportersPath).GetParams()
+        }).ToList();
     }
 
     public List<string> ImportDevices(ImportDevicesArgs args)

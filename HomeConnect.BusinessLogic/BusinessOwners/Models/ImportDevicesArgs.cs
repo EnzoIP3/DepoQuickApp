@@ -7,4 +7,5 @@ public struct ImportDevicesArgs
     public string ImporterName { get; set; }
     public string FileName { get; set; }
     public User User { get; set; }
+    public Dictionary<string, string> Parameters { get; set; }
 }

@@ -33,7 +33,7 @@ public class ImporterService : IImporterService
     public List<string> ImportDevices(ImportDevicesArgs args)
     {
         IDeviceImporter importer = LoadAssembly.GetImplementationByName(args.ImporterName, ImportersPath);
-        var deviceArgs = importer.ImportDevices(Path.Combine(ImporterFilesPath, args.FileName));
+        var deviceArgs = importer.ImportDevices(args.Parameters);
         CreateDevicesFromArgs(deviceArgs, args.User);
         return deviceArgs.Select(deviceArg => deviceArg.Name).ToList();
     }

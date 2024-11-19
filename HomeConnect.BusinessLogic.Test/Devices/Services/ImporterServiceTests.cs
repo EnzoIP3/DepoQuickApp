@@ -69,11 +69,13 @@ public class ImporterServiceTests
         // Arrange
         var importerName = "ImporterName";
         var route = "Route";
+        var importerParams = new Dictionary<string, string> { { "route", Path.Combine(_importFilesPath, route) }, { "param2", "value2" } };
         var importDevicesArgs = new ImportDevicesArgs
         {
             ImporterName = importerName,
             FileName = route,
-            User = new User("John", "Doe", "email@email.com", "Password123!", new Role())
+            User = new User("John", "Doe", "email@email.com", "Password123!", new Role()),
+            Parameters = importerParams
         };
 
         var deviceArgs = new List<DeviceArgs>
@@ -126,7 +128,7 @@ public class ImporterServiceTests
         };
         var deviceNames = deviceArgs.Select(deviceArg => deviceArg.Name).ToList();
         _mockDeviceImporter
-            .Setup(x => x.ImportDevices(Path.Combine(_importFilesPath, route)))
+            .Setup(x => x.ImportDevices(importerParams))
             .Returns(deviceArgs);
         _mockAssemblyInterfaceLoader
             .Setup(x => x.GetImplementationByName(importerName, It.IsAny<string>()))
@@ -145,28 +147,28 @@ public class ImporterServiceTests
         result[1].Should().Be(deviceNames[1]);
 
         _mockAssemblyInterfaceLoader.Verify(x => x.GetImplementationByName(importerName, It.IsAny<string>()), Times.Once);
-        _mockDeviceImporter.Verify(x => x.ImportDevices(Path.Combine(_importFilesPath, route)), Times.Once);
-        _mockBusinessOwnerService.Verify(x => x.CreateDevice(It.Is<CreateDeviceArgs>(args =>
-            args.SecondaryPhotos != null &&
-            args.Owner == sensorArgs.Owner &&
-            args.ModelNumber == sensorArgs.ModelNumber &&
-            args.Name == sensorArgs.Name &&
-            args.Description == sensorArgs.Description &&
-            args.MainPhoto == sensorArgs.MainPhoto &&
-            args.SecondaryPhotos.SequenceEqual(sensorArgs.SecondaryPhotos) &&
-            args.Type == sensorArgs.Type)), Times.Once);
-        _mockBusinessOwnerService.Verify(x => x.CreateCamera(It.Is<CreateCameraArgs>(args =>
-            args.SecondaryPhotos != null &&
-            args.Owner == cameraArgs.Owner &&
-            args.ModelNumber == cameraArgs.ModelNumber &&
-            args.Name == cameraArgs.Name &&
-            args.Description == cameraArgs.Description &&
-            args.MainPhoto == cameraArgs.MainPhoto &&
-            args.SecondaryPhotos.SequenceEqual(cameraArgs.SecondaryPhotos) &&
-            args.MotionDetection == cameraArgs.MotionDetection &&
-            args.PersonDetection == cameraArgs.PersonDetection &&
-            args.Exterior == cameraArgs.Exterior &&
-            args.Interior == cameraArgs.Interior)), Times.Once);
+        _mockDeviceImporter.Verify(x => x.ImportDevices(importerParams), Times.Once);
+        _mockBusinessOwnerService.Verify(x => x.CreateDevice(It.Is<CreateDeviceArgs>(device =>
+            device.SecondaryPhotos != null &&
+            device.Owner == sensorArgs.Owner &&
+            device.ModelNumber == sensorArgs.ModelNumber &&
+            device.Name == sensorArgs.Name &&
+            device.Description == sensorArgs.Description &&
+            device.MainPhoto == sensorArgs.MainPhoto &&
+            device.SecondaryPhotos.SequenceEqual(sensorArgs.SecondaryPhotos) &&
+            device.Type == sensorArgs.Type)), Times.Once);
+        _mockBusinessOwnerService.Verify(x => x.CreateCamera(It.Is<CreateCameraArgs>(camera =>
+            camera.SecondaryPhotos != null &&
+            camera.Owner == cameraArgs.Owner &&
+            camera.ModelNumber == cameraArgs.ModelNumber &&
+            camera.Name == cameraArgs.Name &&
+            camera.Description == cameraArgs.Description &&
+            camera.MainPhoto == cameraArgs.MainPhoto &&
+            camera.SecondaryPhotos.SequenceEqual(cameraArgs.SecondaryPhotos) &&
+            camera.MotionDetection == cameraArgs.MotionDetection &&
+            camera.PersonDetection == cameraArgs.PersonDetection &&
+            camera.Exterior == cameraArgs.Exterior &&
+            camera.Interior == cameraArgs.Interior)), Times.Once);
     }
 
     #endregion

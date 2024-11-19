@@ -15,20 +15,20 @@
         >
         </app-form-dropdown>
 
-        <div *ngFor="let param of selectedImporterParameters" class="mb-3" [formGroup]="parameters">
-            <label [for]="param">{{ param }}</label>
-            <input
+        <div
+            *ngFor="let param of selectedImporterParameters"
+            class="mb-3">
+            <app-form-input
                 type="text"
-                [formControlName]="param"
-                class="form-control"
-                [placeholder]="'Enter ' + param"
-                [id]="param"
-            />
-            <div *ngIf="importDevicesForm.get(param)?.errors?.['required'] && importDevicesForm.get(param)?.touched" class="text-danger">
-                {{ param }} is required.
-            </div>
+                label="{{ param }}"
+                placeholder="Enter {{ param }}"
+                name="{{ param }}"
+                [form]="parameters"
+                [formField]="{
+                    required: { message: 'Parameter is required' }
+                }"
+            ></app-form-input>
         </div>
-        
 
         <app-panel
             title="Files available for import "

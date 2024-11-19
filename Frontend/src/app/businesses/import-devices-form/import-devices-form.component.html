@@ -14,6 +14,14 @@
         >
         </app-form-dropdown>
 
+        <app-panel title="Files available for import " class="p-panel p-component">
+            <ul>
+                <li *ngFor="let option of fileOptions" class="p-listitem">
+                    {{ option.label }}
+                </li>
+            </ul>
+        </app-panel>
+
         <app-form-button
             title="Import Devices"
             color="primary"

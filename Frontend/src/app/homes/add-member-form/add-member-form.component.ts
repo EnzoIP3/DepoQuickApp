@@ -22,6 +22,28 @@ export class AddMemberFormComponent {
         }
     };
 
+    ngOnInit() {
+        const permissionsGroup = this.createPermissionsGroup();
+        this.memberForm = this._formBuilder.group({
+            email: ["", [Validators.required, Validators.email]],
+            permissions: this._formBuilder.group(permissionsGroup)
+        });
+    }
+
+    private createPermissionsGroup() {
+        return this.availablePermissions.reduce(
+            (group, permission) => {
+                group[permission.key] = this._formBuilder.control(false);
+                return group;
+            },
+            {} as { [key: string]: any }
+        );
+    }
+
+    get permissionsGroup(): FormGroup {
+        return this.memberForm.get("permissions") as FormGroup;
+    }
+
     @Input() homeId!: string;
     memberForm!: FormGroup;
     memberStatus = { loading: false };
@@ -32,13 +54,6 @@ export class AddMemberFormComponent {
         private _homesService: HomesService,
         private _messageService: MessageService
     ) {}
-
-    ngOnInit() {
-        this.memberForm = this._formBuilder.group({
-            email: ["", [Validators.required, Validators.email]],
-            permissions: this._formBuilder.array([])
-        });
-    }
 
     get permissions(): FormArray {
         return this.memberForm.get("permissions") as FormArray;
@@ -59,18 +74,16 @@ export class AddMemberFormComponent {
 
     onSubmit() {
         this.memberStatus.loading = true;
-
-        const request = {
-            email: this.memberForm.value.email,
-            permissions: this.memberForm.value.permissions
-        };
-
+        const selectedPermissions = this._getSelectedPermissions(
+            this.permissionsGroup.value
+        );
+        const request = this._buildRequest(selectedPermissions);
         this._addMemberSubscription = this._homesService
             .addMember(this.homeId, request)
             .subscribe({
                 next: () => {
                     this.memberStatus.loading = false;
-                    this.memberForm.reset({ email: "", permissions: [] });
+                    this.memberForm.reset({ email: "", permissions: {} });
                     this._messageService.add({
                         severity: "success",
                         summary: "Success",
@@ -86,6 +99,19 @@ export class AddMemberFormComponent {
                     });
                 }
             });
+    }
+
+    private _buildRequest(selectedPermissions: string[]) {
+        return {
+            email: this.memberForm.value.email,
+            permissions: selectedPermissions
+        };
+    }
+
+    private _getSelectedPermissions(permissionsValue: any) {
+        return Object.keys(permissionsValue).filter(
+            (key) => permissionsValue[key]
+        );
     }
 
     ngOnDestroy() {

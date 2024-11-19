@@ -1,13 +1,5 @@
-<p-dialog
-    [header]="header"
-    [modal]="true"
-    [(visible)]="visible"
-    [style]="{ width: width }"
-    [closable]="closable"
-    (onHide)="closeDialog()"
-    [draggable]="draggable"
-    [resizable]="resizable"
-    [maximizable]="maximizable"
->
+<p-dialog [header]="header" [modal]="true" [(visible)]="visible" [style]="{ width: width }" [closable]="closable"
+    (onHide)="closeDialog()" [draggable]="draggable" [resizable]="resizable" [maximizable]="maximizable"
+    [header]="title">
     <ng-content></ng-content>
 </p-dialog>

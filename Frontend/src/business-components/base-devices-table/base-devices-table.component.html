@@ -9,7 +9,7 @@
 
 <ng-container *ngIf="dialogVisible">
     <app-dialog [(visible)]="dialogVisible" [width]="'50rem'" [resizable]="true" [maximizable]="true"
-        (close)="closeDialog()">
+        (close)="closeDialog()" [title]="selectedDevice?.name ?? ''">
         <ng-container *ngIf="selectedDevice">
             <app-device-details [device]="selectedDevice!"></app-device-details>
         </ng-container>

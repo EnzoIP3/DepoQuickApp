@@ -6,8 +6,7 @@
     <ng-container *ngFor="let permission of availablePermissions">
         <app-form-toggle-button [onLabel]="permission.label"
             [offLabel]="'Cannot ' + permission.label.split(' ').slice(1).join(' ')" [onIcon]="'pi pi-check'"
-            [offIcon]="'pi pi-times'" [form]="memberForm" [name]="'permissions.' + permission.key"
-            (onChange)="togglePermission(permission.key)">
+            [offIcon]="'pi pi-times'" [form]="permissionsGroup" [name]="permission.key">
         </app-form-toggle-button>
     </ng-container>
 

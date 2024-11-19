@@ -19,56 +19,19 @@ export class RoomsDropdownComponent {
     @Input() homeId!: string;
     @Input() hardwareId!: string;
     @Input() roomId: string | null = null;
+    @Input() rooms: any[] = [];
+    @Input() loading: boolean = true;
 
-    private _roomsSubscription: Subscription | null = null;
-    private _getRoomsSubscription: Subscription | null = null;
     private _addDeviceToRoomSubscription: Subscription | null = null;
     private _moveDeviceToRoomSubscription: Subscription | null = null;
 
-    loading = true;
-    rooms: any = [];
-
     constructor(
-        private readonly _homesService: HomesService,
         private readonly _devicesService: DevicesService,
         private readonly _roomsService: RoomsService,
         private readonly _messageService: MessageService
     ) {}
 
-    ngOnInit() {
-        this._roomsSubscription = this._homesService.rooms.subscribe({
-            next: (response: GetRoomsResponse | null) => {
-                if (!response) {
-                    this.getRooms();
-                    return;
-                }
-
-                this.rooms = response.rooms;
-                this.loading = false;
-            }
-        });
-    }
-
-    private getRooms() {
-        this._getRoomsSubscription = this._homesService
-            .getRooms(this.homeId)
-            .subscribe({
-                next: (response: GetRoomsResponse) => {
-                    this.rooms = response.rooms;
-                },
-                error: (error) => {
-                    this._messageService.add({
-                        severity: "error",
-                        summary: "Error",
-                        detail: error.message
-                    });
-                }
-            });
-    }
-
     ngOnDestroy() {
-        this._getRoomsSubscription?.unsubscribe();
-        this._roomsSubscription?.unsubscribe();
         this._addDeviceToRoomSubscription?.unsubscribe();
         this._moveDeviceToRoomSubscription?.unsubscribe();
     }

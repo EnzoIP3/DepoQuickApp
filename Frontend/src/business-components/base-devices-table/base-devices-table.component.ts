@@ -37,10 +37,13 @@ export class BaseDevicesTableComponent {
     @Output() rowClick: EventEmitter<Device> = new EventEmitter<Device>();
     @Output() pageChange: EventEmitter<Pagination> =
         new EventEmitter<Pagination>();
+    @Input() showDialog: boolean = true;
     dialogVisible: boolean = false;
 
     onRowClick(device: Device): void {
-        this.dialogVisible = true;
+        if (this.showDialog) {
+            this.dialogVisible = true;
+        }
         this.rowClick.emit(device);
     }
 

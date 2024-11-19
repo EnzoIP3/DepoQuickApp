@@ -4,6 +4,7 @@ import { CommonModule } from '@angular/common';
 import { AdminsRoutingModule } from './admins-routing.module';
 import { AdminsPageComponent } from './admins-page/admins-page.component';
 import { UsersTableComponent } from "../../business-components/users-table/users-table.component";
+import { BusinessesTableComponent } from "../../business-components/businesses-table/businesses-table.component";
 
 
 @NgModule({
@@ -13,7 +14,8 @@ import { UsersTableComponent } from "../../business-components/users-table/users
   imports: [
     CommonModule,
     AdminsRoutingModule,
-    UsersTableComponent
+    UsersTableComponent,
+    BusinessesTableComponent
 ]
 })
 export class AdminsModule { }

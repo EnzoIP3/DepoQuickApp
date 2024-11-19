@@ -34,6 +34,7 @@ export const AuthenticatedRoutes: Route[] = [
             }
         ]
     }
+    
 ];
 
 export const UnauthenticatedRoutes: Route[] = [

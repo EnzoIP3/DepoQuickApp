@@ -29,7 +29,8 @@ import { HomeDeviceDetailsComponent } from "../home-device-details/home-device-d
 })
 export class HomeDevicesTableComponent {
     @Input() homeId!: string;
-    @ContentChild('nameDeviceFormTemplate') nameDeviceFormTemplate!: TemplateRef<any>;
+    @ContentChild("nameDeviceFormTemplate")
+    nameDeviceFormTemplate!: TemplateRef<any>;
 
     columns: TableColumn[] = [
         {
@@ -109,6 +110,7 @@ export class HomeDevicesTableComponent {
             next: (response: GetHomeDevicesResponse | null) => {
                 if (response) {
                     this.devices = response.devices;
+                    this._updateSelectedDevice();
                 }
                 this.loading = false;
             },
@@ -121,6 +123,15 @@ export class HomeDevicesTableComponent {
                 });
             }
         });
+    }
+
+    private _updateSelectedDevice() {
+        if (this.selectedDevice) {
+            this.selectedDevice =
+                this.devices.find(
+                    (device) => device.id === this.selectedDevice?.id
+                ) || null;
+        }
     }
 
     onRowClick(device: Device) {

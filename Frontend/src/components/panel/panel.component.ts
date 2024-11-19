@@ -12,4 +12,5 @@ export class PanelComponent {
     @Input() title: string = "";
     @Input() icon?: string;
     @Input() toggleable: boolean = true;
+    @Input() collapsed: boolean = false;
 }

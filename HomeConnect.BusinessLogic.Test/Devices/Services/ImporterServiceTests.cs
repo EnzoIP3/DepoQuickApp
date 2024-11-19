@@ -73,7 +73,6 @@ public class ImporterServiceTests
         var importDevicesArgs = new ImportDevicesArgs
         {
             ImporterName = importerName,
-            FileName = route,
             User = new User("John", "Doe", "email@email.com", "Password123!", new Role()),
             Parameters = importerParams
         };

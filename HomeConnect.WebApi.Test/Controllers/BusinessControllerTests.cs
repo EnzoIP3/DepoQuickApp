@@ -256,12 +256,12 @@ public class BusinessControllerTests
             ],
             Pagination = new Pagination { Page = 1, PageSize = 10, TotalPages = 1 }
         };
-        var request = new GetBusinessDevicesRequest { CurrentPage = 1, PageSize = 10 };
+        var request = new GetBusinessDevicesRequest { Page = 1, PageSize = 10 };
         var args = new GetBusinessDevicesArgs
         {
             Rut = _businesses[0].Rut,
             User = _user,
-            CurrentPage = request.CurrentPage,
+            CurrentPage = request.Page,
             PageSize = request.PageSize
         };
         var user = new User("Name", "Surname", "email@email.com", "Password@1", new Role("BusinessOwner", []));
@@ -280,7 +280,7 @@ public class BusinessControllerTests
         // Assert
         _businessOwnerService.Verify(
             x => x.GetDevices(It.Is<GetBusinessDevicesArgs>(a => a.Rut == _businesses[0].Rut && a.User == user &&
-                                                                 a.CurrentPage == request.CurrentPage &&
+                                                                 a.CurrentPage == request.Page &&
                                                                  a.PageSize == request.PageSize)), Times.Once);
         _httpContextMock.VerifyAll();
         response.Should().NotBeNull();

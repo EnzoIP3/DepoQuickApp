@@ -109,7 +109,8 @@ export class AddDeviceFormComponent implements OnInit, OnDestroy {
             type: ["", [Validators.required]],
             motionDetection: [false, []],
             personDetection: [false, []],
-            isExterior: [false, []]
+            isExterior: [false, []],
+            isInterior: [false, []]
         });
     }
 
@@ -149,7 +150,8 @@ export class AddDeviceFormComponent implements OnInit, OnDestroy {
                     this.deviceForm.patchValue({
                         motionDetection: false,
                         personDetection: false,
-                        isExterior: false
+                        isExterior: false,
+                        isInterior: false
                     });
                 },
                 error: (error: any) => {
@@ -192,7 +194,7 @@ export class AddDeviceFormComponent implements OnInit, OnDestroy {
                     personDetection:
                         this.deviceForm.get("personDetection")?.value,
                     exterior: this.deviceForm.get("isExterior")?.value,
-                    interior: !this.deviceForm.get("isExterior")?.value
+                    interior: this.deviceForm.get("isInterior")?.value
                 };
             case "Sensor":
             case "Lamp":

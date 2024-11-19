@@ -20,7 +20,8 @@
     <div *ngIf="deviceForm.get('type')?.value === 'Camera'">
         <app-form-checkbox label="Motion Detection" name="motionDetection" [form]="deviceForm"></app-form-checkbox>
         <app-form-checkbox label="Person Detection" name="personDetection" [form]="deviceForm"></app-form-checkbox>
-        <app-form-checkbox label="Is this device exterior?" name="isExterior" [form]="deviceForm"></app-form-checkbox>
+        <app-form-checkbox label="Is this camera exterior?" name="isExterior" [form]="deviceForm"></app-form-checkbox>
+        <app-form-checkbox label="Is this camera interior?" name="isInterior" [form]="deviceForm"></app-form-checkbox>
     </div>
 
     <app-form-button title="Register Device" color="primary" [loading]="status.loading"

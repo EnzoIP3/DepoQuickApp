@@ -4,6 +4,7 @@ using BusinessLogic.Devices.Entities;
 using BusinessLogic.Devices.Importer;
 using BusinessLogic.Helpers;
 using BusinessLogic.Users.Entities;
+using HomeConnect.WebApi.Controllers.DeviceImporters.Models;
 
 namespace BusinessLogic.Devices.Services;
 
@@ -19,9 +20,9 @@ public class ImporterService : IImporterService
     private IAssemblyInterfaceLoader<IDeviceImporter> LoadAssembly { get; }
     private static readonly string ImportersPath = AppDomain.CurrentDomain.BaseDirectory + "Importers";
     private static readonly string ImporterFilesPath = AppDomain.CurrentDomain.BaseDirectory + "ImportFiles";
-    public List<string> GetImporters()
+    public List<ImporterData> GetImporters()
     {
-        return LoadAssembly.GetImplementationsList(ImportersPath);
+        throw new NotImplementedException();
     }
 
     public List<string> ImportDevices(ImportDevicesArgs args)

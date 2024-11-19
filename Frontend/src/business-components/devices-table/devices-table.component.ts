@@ -8,8 +8,6 @@ import { Subscription } from "rxjs";
 import { MessageService } from "primeng/api";
 import Pagination from "../../backend/services/pagination";
 import FilterValues from "../../components/table/models/filter-values";
-import { AvatarComponent } from "../../components/avatar/avatar.component";
-import { ImageGalleryComponent } from "../../components/image-gallery/image-gallery.component";
 import { CommonModule } from "@angular/common";
 import { BaseDevicesTableComponent } from "../base-devices-table/base-devices-table.component";
 
@@ -18,8 +16,6 @@ import { BaseDevicesTableComponent } from "../base-devices-table/base-devices-ta
     standalone: true,
     imports: [
     CommonModule,
-    AvatarComponent,
-    ImageGalleryComponent,
     BaseDevicesTableComponent
 ],
     templateUrl: "./devices-table.component.html"

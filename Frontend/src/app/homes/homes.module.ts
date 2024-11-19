@@ -19,6 +19,9 @@ import { AddDeviceFormComponent } from "./add-device-form/add-device-form.compon
 import { HomeDevicesTableComponent } from "../../business-components/home-devices-table/home-devices-table.component";
 import { NameHomeFormComponent } from "./name-home-form/name-home-form.component";
 import { AddRoomFormComponent } from "./add-room-form/add-room-form.component";
+import { ButtonComponent } from "../../components/button/button.component";
+import { NameDeviceFormComponent } from "./name-device-form/name-device-form.component";
+import { DividerComponent } from "../../components/divider/divider.component";
 
 @NgModule({
     declarations: [
@@ -27,7 +30,8 @@ import { AddRoomFormComponent } from "./add-room-form/add-room-form.component";
         AddHomeFormComponent,
         AddMemberFormComponent,
         NameHomeFormComponent,
-        AddRoomFormComponent
+        AddRoomFormComponent,
+        NameDeviceFormComponent
     ],
     imports: [
         CommonModule,
@@ -42,7 +46,9 @@ import { AddRoomFormComponent } from "./add-room-form/add-room-form.component";
         FormComponent,
         MembersTableComponent,
         AddDeviceFormComponent,
-        HomeDevicesTableComponent
+        HomeDevicesTableComponent,
+        ButtonComponent,
+        DividerComponent
     ]
 })
 export class HomesModule {}

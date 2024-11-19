@@ -31,7 +31,11 @@
             <app-members-table [homeId]="id" />
         </app-panel>
         <app-panel title="Devices" icon="pi-lightbulb" [toggleable]="true">
-            <app-home-devices-table [homeId]="id" />
+            <app-home-devices-table [homeId]="id">
+                <ng-template #nameDeviceFormTemplate let-device>
+                    <app-name-device-form [homeId]="id" [hardwareId]="device.hardwareId" />
+                </ng-template>
+            </app-home-devices-table>
         </app-panel>
     </div>
 </div>

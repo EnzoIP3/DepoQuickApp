@@ -3,7 +3,5 @@ export default interface Member {
     name: string;
     surname: string;
     photo: string;
-    canAddDevices: boolean;
-    canListDevices: boolean;
-    shouldBeNotified: boolean;
+    permissions: string[];
 }

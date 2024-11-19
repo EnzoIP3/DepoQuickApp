@@ -9,6 +9,8 @@ import ImportDevicesRequest from "../services/devices/models/import-devices-requ
 import ImportDevicesResponse from "../services/devices/models/import-devices-response";
 import MoveDeviceRequest from "../services/devices/models/move-device-request";
 import MoveDeviceResponse from "../services/devices/models/move-device-response";
+import NameDeviceRequest from "../services/devices/models/name-device-request";
+import NameDeviceResponse from "../services/devices/models/name-device-response";
 
 @Injectable({
     providedIn: "root"
@@ -31,9 +33,18 @@ export class DevicesApiRepositoryService extends ApiRepository {
         return this.patch<MoveDeviceResponse>(request, `${hardwareId}/room`);
     }
 
-    importDevices(
+    public importDevices(
         request: ImportDevicesRequest
     ): Observable<ImportDevicesResponse> {
         return this.post<ImportDevicesResponse>(request);
+    }
+
+    public nameDevice(
+        hardwareId: string,
+        request: NameDeviceRequest
+    ): Observable<
+        import("../services/devices/models/name-device-response").default
+    > {
+        return this.patch<NameDeviceResponse>(request, `${hardwareId}/name`);
     }
 }

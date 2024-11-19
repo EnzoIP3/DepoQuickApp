@@ -115,9 +115,7 @@ public class HomeController(IHomeOwnerService homeOwnerService) : ControllerBase
     {
         var addMemberArgs = new AddMemberArgs
         {
-            HomeId = homesId,
-            UserEmail = request.Email ?? string.Empty,
-            Permissions = request.Permissions
+            HomeId = homesId, UserEmail = request.Email ?? string.Empty, Permissions = request.Permissions
         };
         Guid addedMemberId = homeOwnerService.AddMemberToHome(addMemberArgs);
         return new AddMemberResponse { HomeId = homesId, MemberId = addedMemberId.ToString() };
@@ -149,11 +147,7 @@ public class HomeController(IHomeOwnerService homeOwnerService) : ControllerBase
             Name = m.User.Name,
             Surname = m.User.Surname,
             Photo = m.User.ProfilePicture ?? string.Empty,
-            CanAddDevices = m.HasPermission(new HomePermission(HomePermission.AddDevice)),
-            CanListDevices =
-                m.HasPermission(new HomePermission(HomePermission.GetDevices)),
-            ShouldBeNotified =
-                m.HasPermission(new HomePermission(HomePermission.GetNotifications))
+            Permissions = m.HomePermissions.Select(p => p.Value).ToList()
         }).ToList();
         return new GetMembersResponse { Members = memberInfos };
     }

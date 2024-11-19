@@ -420,9 +420,7 @@ public class HomeControllerTests
                     Name = member.User.Name,
                     Surname = member.User.Surname,
                     Photo = member.User.ProfilePicture ?? string.Empty,
-                    CanAddDevices = member.HasPermission(new HomePermission(HomePermission.AddDevice)),
-                    CanListDevices = member.HasPermission(new HomePermission(HomePermission.GetDevices)),
-                    ShouldBeNotified = member.HasPermission(new HomePermission(HomePermission.GetNotifications))
+                    Permissions = member.HomePermissions.Select(hp => hp.Value).ToList()
                 },
 
                 new ListMemberInfo
@@ -431,10 +429,7 @@ public class HomeControllerTests
                     Name = otherMember.User.Name,
                     Surname = otherMember.User.Surname,
                     Photo = otherMember.User.ProfilePicture ?? string.Empty,
-                    CanAddDevices = otherMember.HasPermission(new HomePermission(HomePermission.AddDevice)),
-                    CanListDevices = otherMember.HasPermission(new HomePermission(HomePermission.GetDevices)),
-                    ShouldBeNotified =
-                        otherMember.HasPermission(new HomePermission(HomePermission.GetNotifications))
+                    Permissions = otherMember.HomePermissions.Select(hp => hp.Value).ToList()
                 }
 
             ]

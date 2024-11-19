@@ -7,6 +7,8 @@ import ImportDevicesResponse from "./models/import-devices-response";
 import ImportDevicesRequest from "./models/import-devices-request";
 import MoveDeviceResponse from "./models/move-device-response";
 import MoveDeviceRequest from "./models/move-device-request";
+import NameDeviceRequest from "./models/name-device-request";
+import NameDeviceResponse from "./models/name-device-response";
 
 @Injectable({
     providedIn: "root"
@@ -29,5 +31,12 @@ export class DevicesService {
         request: MoveDeviceRequest
     ): Observable<MoveDeviceResponse> {
         return this._repository.moveDeviceToRoom(hardwareId, request);
+    }
+
+    public nameDevice(
+        hardwareId: string,
+        request: NameDeviceRequest
+    ): Observable<NameDeviceResponse> {
+        return this._repository.nameDevice(hardwareId, request);
     }
 }

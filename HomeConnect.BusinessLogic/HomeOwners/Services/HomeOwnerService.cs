@@ -50,6 +50,7 @@ public class HomeOwnerService : IHomeOwnerService
         Home home = GetHome(Guid.Parse(args.HomeId));
         Member member = CreateMember(user, args);
         home.AddMember(member);
+        member.AddPermission(new HomePermission(HomePermission.GetHome));
         MemberRepository.Add(member);
         return member.Id;
     }

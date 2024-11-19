@@ -1,6 +1,5 @@
 <app-base-devices-table [clickableRows]="false" [columns]="columns" [devices]="devices" [loading]="loading"
-    [paginate]="false"
-    [customTemplates]="{name: nameTemplate, extraFields: extraFieldsTemplate, roomId: roomTemplate, details: detailsTemplate}" />
+    [paginate]="false" [customTemplates]="{name: nameTemplate, roomId: roomTemplate, details: detailsTemplate}" />
 <ng-template #roomTemplate let-row="row">
     <app-rooms-dropdown [hardwareId]="row.hardwareId" [homeId]="homeId" [roomId]="row.roomId" [rooms]="rooms"
         [loading]="loadingRooms" />
@@ -10,13 +9,12 @@
     {{ row.name || "-"}}
 </ng-template>
 
-<ng-template #extraFieldsTemplate let-row="row">
-    {{ getExtraFields(row) }}
-</ng-template>
-
-<app-dialog [(visible)]="visibleDialog" [closable]="true" [title]="selectedDevice?.businessName ?? ''">
+<app-dialog [(visible)]="visibleDialog" [closable]="true" [title]="selectedDevice?.name ?? 'Unnamed device'">
     <ng-container *ngIf="selectedDevice">
-        <app-list [items]="getExtraFields(selectedDevice)" />
+        <app-home-device-details [columns]="columns" [device]="selectedDevice">
+            <ng-container
+                *ngTemplateOutlet="nameDeviceFormTemplate; context: { $implicit: selectedDevice }"></ng-container>
+        </app-home-device-details>
     </ng-container>
 </app-dialog>
 

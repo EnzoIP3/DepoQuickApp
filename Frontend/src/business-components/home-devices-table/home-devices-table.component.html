@@ -1,5 +1,6 @@
-<app-table [data]="devices" [columns]="columns" [customTemplates]="{roomId: roomTemplate, name: nameTemplate, extraFields: extraFieldsTemplate}" />
-
+<app-base-devices-table [clickableRows]="false" [columns]="columns" [devices]="devices" [loading]="loading"
+    [paginate]="false"
+    [customTemplates]="{name: nameTemplate, extraFields: extraFieldsTemplate, roomId: roomTemplate}" />
 <ng-template #roomTemplate let-row="row">
     <app-rooms-dropdown [hardwareId]="row.hardwareId" [homeId]="homeId" [roomId]="row.roomId" />
 </ng-template>
@@ -11,4 +12,3 @@
 <ng-template #extraFieldsTemplate let-row="row">
     {{ getExtraFields(row) }}
 </ng-template>
-

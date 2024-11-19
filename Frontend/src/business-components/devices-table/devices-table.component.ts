@@ -1,5 +1,4 @@
 import { Component } from "@angular/core";
-import { TableComponent } from "../../components/table/table.component";
 import { DevicesService } from "../../backend/services/devices/devices.service";
 import GetDevicesResponse from "../../backend/services/devices/models/get-devices-response";
 import PaginationResponse from "../../backend/services/pagination";
@@ -8,26 +7,21 @@ import TableColumn from "../../components/table/models/table-column";
 import { Subscription } from "rxjs";
 import { MessageService } from "primeng/api";
 import Pagination from "../../backend/services/pagination";
-import { PaginatorComponent } from "../../components/paginator/paginator.component";
 import FilterValues from "../../components/table/models/filter-values";
 import { AvatarComponent } from "../../components/avatar/avatar.component";
 import { ImageGalleryComponent } from "../../components/image-gallery/image-gallery.component";
-import { DialogComponent } from "../../components/dialog/dialog.component";
-import { DeviceDetailsComponent } from "../device-details/device-details.component";
 import { CommonModule } from "@angular/common";
+import { BaseDevicesTableComponent } from "../base-devices-table/base-devices-table.component";
 
 @Component({
     selector: "app-devices-table",
     standalone: true,
     imports: [
-        CommonModule,
-        TableComponent,
-        PaginatorComponent,
-        AvatarComponent,
-        ImageGalleryComponent,
-        DialogComponent,
-        DeviceDetailsComponent
-    ],
+    CommonModule,
+    AvatarComponent,
+    ImageGalleryComponent,
+    BaseDevicesTableComponent
+],
     templateUrl: "./devices-table.component.html"
 })
 export class DevicesTableComponent {
@@ -119,10 +113,5 @@ export class DevicesTableComponent {
 
     onRowClick(device: Device): void {
         this.selectedDevice = device;
-        this.dialogVisible = true;
-    }
-
-    closeDialog(): void {
-        this.dialogVisible = false;
     }
 }

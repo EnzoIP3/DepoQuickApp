@@ -1,5 +1,4 @@
 import { Component, Input } from "@angular/core";
-import { TableComponent } from "../../components/table/table.component";
 import TableColumn from "../../components/table/models/table-column";
 import Device from "../../backend/services/devices/models/device";
 import { Subscription } from "rxjs";
@@ -7,17 +6,26 @@ import { HomesService } from "../../backend/services/homes/homes.service";
 import { MessageService } from "primeng/api";
 import GetHomeDevicesResponse from "../../backend/services/homes/models/get-home-devices-response";
 import { RoomsDropdownComponent } from "../rooms-dropdown/rooms-dropdown.component";
+import { BaseDevicesTableComponent } from "../base-devices-table/base-devices-table.component";
 
 @Component({
     selector: "app-home-devices-table",
     standalone: true,
-    imports: [TableComponent, RoomsDropdownComponent],
+    imports: [RoomsDropdownComponent, BaseDevicesTableComponent],
     templateUrl: "./home-devices-table.component.html"
 })
 export class HomeDevicesTableComponent {
     @Input() homeId!: string;
 
     columns: TableColumn[] = [
+        {
+            field: "mainPhoto",
+            header: "Main Photo"
+        },
+        {
+            field: "secondaryPhotos",
+            header: "Secondary Photos"
+        },
         {
             field: "name",
             header: "Name"

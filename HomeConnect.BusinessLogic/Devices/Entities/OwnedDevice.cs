@@ -30,7 +30,7 @@ public class OwnedDevice
         return new OwnedDeviceDto
         {
             HardwareId = HardwareId.ToString(),
-            Name = Device.Name,
+            Name = Name,
             BusinessName = Device.Business.Name,
             Type = Device.Type.ToString(),
             ModelNumber = Device.ModelNumber,

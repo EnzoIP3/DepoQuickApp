@@ -19,12 +19,12 @@ export class HomeDevicesTableComponent {
 
     columns: TableColumn[] = [
         {
-            field: "hardwareId",
-            header: "Hardware ID"
-        },
-        {
             field: "name",
             header: "Name"
+        },
+        {
+            field: "hardwareId",
+            header: "Hardware ID"
         },
         {
             field: "type",
@@ -33,8 +33,34 @@ export class HomeDevicesTableComponent {
         {
             field: "roomId",
             header: "Room"
+        },
+        {
+            field: "extraFields",
+            header: "Extra Fields"
         }
     ];
+
+    getExtraFields(device: Device): string {
+        const formatKey = (key: string): string =>
+            key
+                .replace(/([a-z])([A-Z])/g, "$1 $2")
+                .replace(/_/g, " ")
+                .toLowerCase()
+                .replace(/^./, (str) => str.toUpperCase());
+
+        const formatValue = (value: any): string =>
+            value === true ? "Yes" : value === false ? "No" : value;
+
+        return Object.entries(device)
+            .filter(
+                ([key, value]) =>
+                    !this.columns.find((column) => column.field === key) &&
+                    value !== null &&
+                    value !== undefined
+            )
+            .map(([key, value]) => `${formatKey(key)}: ${formatValue(value)}`)
+            .join(", ");
+    }
 
     devices: Device[] = [];
     private _devicesSubscription: Subscription | null = null;

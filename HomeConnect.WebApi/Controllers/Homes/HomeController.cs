@@ -43,8 +43,7 @@ public class HomeController(IHomeOwnerService homeOwnerService) : ControllerBase
         var permissions = homeOwnerService.GetHomePermissions(Guid.Parse(homesId), userLoggedIn!.Id);
         return new GetHomePermissionsResponse
         {
-            HomeId = homesId,
-            HomePermissions = permissions.Select(p => p.Value).ToList()
+            HomeId = homesId, HomePermissions = permissions.Select(p => p.Value).ToList()
         };
     }
 
@@ -167,7 +166,7 @@ public class HomeController(IHomeOwnerService homeOwnerService) : ControllerBase
     public GetDevicesResponse GetDevices([FromRoute] string homesId, [FromQuery] string? roomId = null)
     {
         IEnumerable<OwnedDevice> devices = homeOwnerService.GetHomeDevices(homesId, roomId);
-        var deviceInfos = devices.Select(ListDeviceInfo.FromOwnedDevice).ToList();
+        var deviceInfos = devices.Select(ListOwnedDeviceInfo.FromOwnedDevice).ToList();
         return new GetDevicesResponse { Devices = deviceInfos };
     }
 

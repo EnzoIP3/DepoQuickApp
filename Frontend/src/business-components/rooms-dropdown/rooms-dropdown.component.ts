@@ -36,24 +36,41 @@ export class RoomsDropdownComponent {
     ) {}
 
     ngOnInit() {
-        this._getRoomsSubscription = this._homesService
-            .getRooms(this.homeId)
-            .subscribe();
         this._roomsSubscription = this._homesService.rooms.subscribe({
             next: (response: GetRoomsResponse | null) => {
-                if (response) {
-                    this.rooms = response.rooms;
+                if (!response) {
+                    this.getRooms();
+                    return;
                 }
+
+                this.rooms = response.rooms;
                 this.loading = false;
             }
         });
     }
 
+    private getRooms() {
+        this._getRoomsSubscription = this._homesService
+            .getRooms(this.homeId)
+            .subscribe({
+                next: (response: GetRoomsResponse) => {
+                    this.rooms = response.rooms;
+                },
+                error: (error) => {
+                    this._messageService.add({
+                        severity: "error",
+                        summary: "Error",
+                        detail: error.message
+                    });
+                }
+            });
+    }
+
     ngOnDestroy() {
         this._getRoomsSubscription?.unsubscribe();
+        this._roomsSubscription?.unsubscribe();
         this._addDeviceToRoomSubscription?.unsubscribe();
         this._moveDeviceToRoomSubscription?.unsubscribe();
-        this._roomsSubscription?.unsubscribe();
     }
 
     onRoomChange(roomId: string) {

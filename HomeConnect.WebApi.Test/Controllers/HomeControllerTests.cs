@@ -184,7 +184,7 @@ public class HomeControllerTests
         {
             Devices =
             [
-                new ListDeviceInfo
+                new ListOwnedDeviceInfo
                 {
                     HardwareId = device1.HardwareId.ToString(),
                     Name = device1.Device.Name,
@@ -195,7 +195,7 @@ public class HomeControllerTests
                     SecondaryPhotos = device1.Device.SecondaryPhotos,
                     RoomId = device1.Room.Id.ToString()
                 },
-                new ListDeviceInfo
+                new ListOwnedDeviceInfo
                 {
                     HardwareId = device2.HardwareId.ToString(),
                     Name = device2.Device.Name,
@@ -257,7 +257,7 @@ public class HomeControllerTests
         {
             Devices =
             [
-                new ListDeviceInfo
+                new ListOwnedDeviceInfo
                 {
                     HardwareId = lamp1.HardwareId.ToString(),
                     Name = lamp1.Device.Name,
@@ -269,7 +269,7 @@ public class HomeControllerTests
                     State = false,
                     RoomId = lamp1.Room.Id.ToString()
                 },
-                new ListDeviceInfo
+                new ListOwnedDeviceInfo
                 {
                     HardwareId = lamp2.HardwareId.ToString(),
                     Name = lamp2.Device.Name,
@@ -334,7 +334,7 @@ public class HomeControllerTests
         {
             Devices =
             [
-                new ListDeviceInfo
+                new ListOwnedDeviceInfo
                 {
                     HardwareId = sensor1.HardwareId.ToString(),
                     Name = sensor1.Device.Name,
@@ -346,7 +346,7 @@ public class HomeControllerTests
                     IsOpen = false,
                     RoomId = sensor1.Room.Id.ToString()
                 },
-                new ListDeviceInfo
+                new ListOwnedDeviceInfo
                 {
                     HardwareId = sensor2.HardwareId.ToString(),
                     Name = sensor2.Device.Name,

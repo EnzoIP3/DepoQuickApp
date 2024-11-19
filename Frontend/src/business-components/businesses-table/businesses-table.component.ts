@@ -76,26 +76,27 @@ businesses: any;
   }
 
   private _subscribeToBusinesses(queries?: object): void {
-      this._businessesSubscription = this._businessesService
-          .getUsers(queries ? { ...queries } : {})
-          .subscribe({
-              next: (response: GetBusinessesResponse) => {
-                  this.ownerName = response.businesses.map((business: Business) => ({
-                      ...business,
-                      fullName: `${business.ownerName} ${business.ownerSurname}`}));
-                  this.pagination = response.pagination;
-                  this.loading = false;
-              },
-              error: (error) => {
-                  this.loading = false;
-                  this._messageService.add({
-                      severity: "error",
-                      summary: "Error",
-                      detail: error.message
-                  });
-              }
-          });
-  }
+    this._businessesSubscription = this._businessesService
+        .getUsers(queries ? { ...queries } : {})
+        .subscribe({
+            next: (response: GetBusinessesResponse) => {
+                this.ownerName = response.businesses.map((business: Business) => ({
+                    ...business,
+                    fullName: `${business.ownerName} ${business.ownerSurname}`
+                }));
+                this.pagination = response.pagination;
+                this.loading = false;
+            },
+            error: (error) => {
+                this.loading = false;
+                this._messageService.add({
+                    severity: "error",
+                    summary: "Error",
+                    detail: error.message
+                });
+            }
+        });
+}
 }
 
 

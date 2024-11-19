@@ -20,6 +20,7 @@ import { BusinessDevicesTableComponent } from "../../business-components/busines
 import { DialogTestComponent } from "../../business-components/dialog-test/dialog-test.component";
 import { ChangeValidatorFormComponent } from "./change-validator-form/change-validator-form.component";
 import { DialogComponent } from "../../components/dialog/dialog.component";
+import { ReactiveFormsModule } from "@angular/forms";
 
 @NgModule({
     declarations: [
@@ -44,7 +45,8 @@ import { DialogComponent } from "../../components/dialog/dialog.component";
         FormCheckboxComponent,
         BusinessDevicesTableComponent,
         DialogTestComponent,
-        DialogComponent
+        DialogComponent,
+        ReactiveFormsModule
     ]
 })
 export class BusinessesModule {}

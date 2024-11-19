@@ -11,10 +11,29 @@
             name="importer"
             [form]="importDevicesForm"
             [options]="importerOptions"
+            (onChange)="onImporterChange($event)"
         >
         </app-form-dropdown>
 
-        <app-panel title="Files available for import " class="p-panel p-component">
+        <div *ngFor="let param of selectedImporterParameters" class="mb-3" [formGroup]="parameters">
+            <label [for]="param">{{ param }}</label>
+            <input
+                type="text"
+                [formControlName]="param"
+                class="form-control"
+                [placeholder]="'Enter ' + param"
+                [id]="param"
+            />
+            <div *ngIf="importDevicesForm.get(param)?.errors?.['required'] && importDevicesForm.get(param)?.touched" class="text-danger">
+                {{ param }} is required.
+            </div>
+        </div>
+        
+
+        <app-panel
+            title="Files available for import "
+            class="p-panel p-component"
+        >
             <ul>
                 <li *ngFor="let option of fileOptions" class="p-listitem">
                     {{ option.label }}

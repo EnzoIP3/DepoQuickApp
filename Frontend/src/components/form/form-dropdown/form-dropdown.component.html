@@ -8,5 +8,6 @@
         [showClear]="true"
         class="w-full"
         [style]="{ width: '100%' }"
+        (onChange)="onChange.emit($event)"
     ></p-dropdown>
 </div>

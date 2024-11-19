@@ -1,5 +1,5 @@
 import { Component, Input } from "@angular/core";
-import { FormBuilder, FormGroup, Validators } from "@angular/forms";
+import { FormBuilder, FormGroup, Validators, FormArray } from "@angular/forms";
 import { HomesService } from "../../../backend/services/homes/homes.service";
 import { MessageService } from "primeng/api";
 import { Subscription } from "rxjs";
@@ -9,6 +9,12 @@ import { Subscription } from "rxjs";
     templateUrl: "./add-member-form.component.html"
 })
 export class AddMemberFormComponent {
+    readonly availablePermissions = [
+        { key: "add-devices", label: "Can Add Devices" },
+        { key: "get-devices", label: "Can List Devices" },
+        { key: "name-device", label: "Can Name Devices" }
+    ];
+
     readonly formFields = {
         email: {
             required: { message: "Email is required" },
@@ -30,26 +36,41 @@ export class AddMemberFormComponent {
     ngOnInit() {
         this.memberForm = this._formBuilder.group({
             email: ["", [Validators.required, Validators.email]],
-            canAddDevices: [false],
-            canListDevices: [false],
-            canNameDevices: [false]
+            permissions: this._formBuilder.array([])
         });
+    }
+
+    get permissions(): FormArray {
+        return this.memberForm.get("permissions") as FormArray;
+    }
+
+    isPermissionSelected(permission: string): boolean {
+        return this.permissions.value.includes(permission);
+    }
+
+    togglePermission(permission: string) {
+        const index = this.permissions.value.indexOf(permission);
+        if (index === -1) {
+            this.permissions.push(this._formBuilder.control(permission));
+        } else {
+            this.permissions.removeAt(index);
+        }
     }
 
     onSubmit() {
         this.memberStatus.loading = true;
 
+        const request = {
+            email: this.memberForm.value.email,
+            permissions: this.memberForm.value.permissions
+        };
+
         this._addMemberSubscription = this._homesService
-            .addMember(this.homeId, this.memberForm.value)
+            .addMember(this.homeId, request)
             .subscribe({
                 next: () => {
                     this.memberStatus.loading = false;
-                    this.memberForm.reset({
-                        email: "",
-                        canAddDevices: false,
-                        canListDevices: false,
-                        canNameDevices: false
-                    });
+                    this.memberForm.reset({ email: "", permissions: [] });
                     this._messageService.add({
                         severity: "success",
                         summary: "Success",

@@ -1,21 +1,16 @@
 <app-form [form]="memberForm" (onSubmit)="onSubmit()">
     <app-form-input type="text" label="Email" placeholder="email@example.com" name="email" [form]="memberForm"
-        iconClass="pi pi-envelope" [formField]="formFields.email"></app-form-input>
+        iconClass="pi pi-envelope" [formField]="formFields.email">
+    </app-form-input>
 
-    <div class="flex gap-3">
-        <app-form-toggle-button [form]="memberForm" name="canAddDevices" [onLabel]="'Can Add Devices'"
-            [offLabel]="'Cannot Add Devices'" [onIcon]="'pi pi-check'"
-            [offIcon]="'pi pi-times'"></app-form-toggle-button>
+    <ng-container *ngFor="let permission of availablePermissions">
+        <app-form-toggle-button [onLabel]="permission.label"
+            [offLabel]="'Cannot ' + permission.label.split(' ').slice(1).join(' ')" [onIcon]="'pi pi-check'"
+            [offIcon]="'pi pi-times'" [form]="memberForm" [name]="'permissions.' + permission.key"
+            (onChange)="togglePermission(permission.key)">
+        </app-form-toggle-button>
+    </ng-container>
 
-        <app-form-toggle-button [form]="memberForm" name="canListDevices" [onLabel]="'Can List Devices'"
-            [offLabel]="'Cannot List Devices'" [onIcon]="'pi pi-check'"
-            [offIcon]="'pi pi-times'"></app-form-toggle-button>
-
-        <app-form-toggle-button [form]="memberForm" name="canNameDevices" [onLabel]="'Can Name Devices'"
-            [offLabel]="'Cannot Name Devices'" [onIcon]="'pi pi-check'"
-            [offIcon]="'pi pi-times'"></app-form-toggle-button>
-    </div>
-
-    <app-form-button title="Add Member" color="primary" [loading]="memberStatus.loading"
-        [disabled]="!memberForm.valid"></app-form-button>
+    <app-form-button title="Add Member" color="primary" [loading]="memberStatus.loading" [disabled]="!memberForm.valid">
+    </app-form-button>
 </app-form>

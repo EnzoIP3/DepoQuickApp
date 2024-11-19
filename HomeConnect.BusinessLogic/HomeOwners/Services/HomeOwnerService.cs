@@ -325,20 +325,10 @@ public class HomeOwnerService : IHomeOwnerService
 
     private static void AddPermissionsToMember(Member member, AddMemberArgs args)
     {
-        if (args.CanAddDevices)
+        args.Permissions.ForEach(permission =>
         {
-            member.AddPermission(new HomePermission(HomePermission.AddDevice));
-        }
-
-        if (args.CanNameDevices)
-        {
-            member.AddPermission(new HomePermission(HomePermission.NameDevice));
-        }
-
-        if (args.CanListDevices)
-        {
-            member.AddPermission(new HomePermission(HomePermission.GetDevices));
-        }
+            member.AddPermission(new HomePermission(permission));
+        });
     }
 
     private void ValidateAddDeviceModel(AddDevicesArgs addDevicesArgs)

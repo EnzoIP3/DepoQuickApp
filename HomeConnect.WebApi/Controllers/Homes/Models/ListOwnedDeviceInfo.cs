@@ -6,6 +6,7 @@ public record ListOwnedDeviceInfo
 {
     public string HardwareId { get; set; } = null!;
     public string? Name { get; set; } = null!;
+    public string Description { get; set; } = null!;
     public string BusinessName { get; set; } = null!;
     public string Type { get; set; } = null!;
     public string ModelNumber { get; set; } = null!;
@@ -22,6 +23,7 @@ public record ListOwnedDeviceInfo
         {
             HardwareId = dto.HardwareId,
             Name = dto.Name,
+            Description = dto.Description,
             BusinessName = dto.BusinessName,
             Type = dto.Type,
             ModelNumber = dto.ModelNumber,

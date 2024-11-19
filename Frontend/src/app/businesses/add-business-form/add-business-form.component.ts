@@ -28,9 +28,6 @@ export class AddBusinessFormComponent {
                 message:
                     "Rut must follow the correct format (e.g., 12.345.678-9)"
             }
-        },
-        validator: {
-            required: { message: "Validator is required" }
         }
     };
 
@@ -66,7 +63,7 @@ export class AddBusinessFormComponent {
                 Validators.pattern(/^\d{1,2}\.\d{3}\.\d{3}-[\dKk]{1}$/)
             ]
             ],
-            validator: ["", [Validators.required]]
+            validator: ["", []]
         });
 
         this._validatorsSubscription = this._validatorService

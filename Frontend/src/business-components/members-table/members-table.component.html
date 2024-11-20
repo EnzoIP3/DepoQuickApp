@@ -1,12 +1,17 @@
 <ng-container *ngIf="!error">
-    <app-table [columns]="columns" [data]="members" [loading]="loading" [customTemplates]="{
-        photo: photoTemplate,
-        name: nameTemplate,
-        notifications: notificationTemplate,
-        canAddDevices: boolTemplate,
-        canListDevices: boolTemplate,
-        canNameDevices: boolTemplate
-    }" />
+    <app-table
+        [columns]="columns"
+        [data]="members"
+        [loading]="loading"
+        [customTemplates]="{
+            photo: photoTemplate,
+            name: nameTemplate,
+            notifications: notificationTemplate,
+            canAddDevices: boolTemplate,
+            canListDevices: boolTemplate,
+            canNameDevices: boolTemplate
+        }"
+    />
 
     <ng-template #photoTemplate let-value="value">
         <app-avatar [image]="value" />

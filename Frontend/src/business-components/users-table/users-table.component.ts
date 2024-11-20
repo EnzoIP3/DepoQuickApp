@@ -1,4 +1,10 @@
-import { Component, EventEmitter, Output, OnInit, OnDestroy } from "@angular/core";
+import {
+    Component,
+    EventEmitter,
+    Output,
+    OnInit,
+    OnDestroy
+} from "@angular/core";
 import { TableComponent } from "../../components/table/table.component";
 import PaginationResponse from "../../backend/services/pagination";
 import TableColumn from "../../components/table/models/table-column";

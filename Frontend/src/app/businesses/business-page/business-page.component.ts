@@ -17,7 +17,7 @@ export class BusinessPageComponent implements OnInit, OnDestroy {
     title: string = "Unnamed business";
     businesses: Business[] = [];
     pagination: PaginationResponse | null = {};
-    private _businessId: string = "";
+    public businessId: string = "";
     private _userId: string | null = null;
     private _businessesSubscription: Subscription | null = null;
     private _authSubscription: Subscription | null = null;
@@ -27,17 +27,18 @@ export class BusinessPageComponent implements OnInit, OnDestroy {
         private readonly _userService: UsersService,
         private readonly _authService: AuthService,
         private readonly _messageService: MessageService
-    ) {}
+    ) {
+        this._setBusinessId();
+    }
 
     ngOnInit(): void {
-        this._setBusinessId();
         this._getUserId();
     }
 
     private _setBusinessId(): void {
         const url = window.location.href;
         const urlSegments = url.split("/");
-        this._businessId = urlSegments[urlSegments.length - 1];
+        this.businessId = urlSegments[urlSegments.length - 1];
     }
 
     private _getUserId(): void {
@@ -76,7 +77,7 @@ export class BusinessPageComponent implements OnInit, OnDestroy {
             .subscribe({
                 next: (response) => {
                     this.businesses = response.businesses.filter(
-                        (business) => business.rut === this._businessId
+                        (business) => business.rut === this.businessId
                     );
 
                     if (this.businesses.length > 0) {

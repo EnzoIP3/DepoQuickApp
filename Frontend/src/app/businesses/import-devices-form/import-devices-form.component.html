@@ -11,17 +11,33 @@
             name="importer"
             [form]="importDevicesForm"
             [options]="importerOptions"
+            (onChange)="onImporterChange($event)"
         >
         </app-form-dropdown>
 
-        <app-form-dropdown
-            label="Import File"
-            placeholder="Select import file"
-            name="importFile"
-            [form]="importDevicesForm"
-            [options]="fileOptions"
+        <div *ngFor="let param of selectedImporterParameters" class="mb-3">
+            <app-form-input
+                type="text"
+                label="{{ param }}"
+                placeholder="Enter {{ param }}"
+                name="{{ param }}"
+                [form]="parameters"
+                [formField]="{
+                    required: { message: 'Parameter is required' }
+                }"
+            ></app-form-input>
+        </div>
+
+        <app-panel
+            title="Files available for import "
+            class="p-panel p-component"
         >
-        </app-form-dropdown>
+            <ul>
+                <li *ngFor="let option of fileOptions" class="p-listitem">
+                    {{ option.label }}
+                </li>
+            </ul>
+        </app-panel>
 
         <app-form-button
             title="Import Devices"

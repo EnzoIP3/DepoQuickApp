@@ -18,19 +18,22 @@ public class DeviceImporterControllerTests
         _controller = new DeviceImporterController(_importerService.Object);
     }
     #region GetImporters
+
     [TestMethod]
     public void GetImporters_WhenCalled_ReturnsGetImportersResponse()
     {
         // Arrange
-        var importers = new List<string>
-        {
-            "Importer1",
-            "Importer2"
-        };
+        List<ImporterData> importers =
+        [
+            new ImporterData { Name = "Importer1", Parameters = ["route", "password"] },
+            new ImporterData { Name = "Importer2", Parameters = ["route"] }
+        ];
+
         var expectedResponse = new GetImportersResponse
         {
             Importers = importers
         };
+
         _importerService.Setup(x => x.GetImporters()).Returns(importers);
 
         // Act

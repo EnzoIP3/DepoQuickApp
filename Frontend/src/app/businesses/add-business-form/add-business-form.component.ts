@@ -53,18 +53,18 @@ export class AddBusinessFormComponent {
         this.businessForm = this._formBuilder.group({
             name: ["", [Validators.required, Validators.maxLength(100)]],
             logo: [
-            "",
-            [
-                Validators.required,
-                Validators.pattern(/^(http|https):\/\/[^ "]+$/)
-            ]
+                "",
+                [
+                    Validators.required,
+                    Validators.pattern(/^(http|https):\/\/[^ "]+$/)
+                ]
             ],
             rut: [
-            "",
-            [
-                Validators.required,
-                Validators.pattern(/^\d{1,2}\.\d{3}\.\d{3}-[\dKk]{1}$/)
-            ]
+                "",
+                [
+                    Validators.required,
+                    Validators.pattern(/^\d{1,2}\.\d{3}\.\d{3}-[\dKk]{1}$/)
+                ]
             ],
             validator: ["", [Validators.required]]
         });

@@ -22,7 +22,7 @@ export class AdminsPageComponent {
   }
 
   deleteAdmin() {
-    if (this.selectedUser) {
+    if (this.selectedUser && this.selectedUser.roles.includes("Admin")) {
       this._adminsService.deleteAdmin(this.selectedUser.id).subscribe({
         next: () => {
           this._messageService.add({

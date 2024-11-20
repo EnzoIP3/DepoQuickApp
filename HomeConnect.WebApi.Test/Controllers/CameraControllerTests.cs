@@ -96,7 +96,7 @@ public class CameraControllerTests
         var hardwareId = "hardwareId";
         var args = new NotificationArgs { HardwareId = hardwareId, Date = DateTime.Now, Event = "Movement detected" };
         _deviceService.Setup(x => x.IsConnected(hardwareId)).Returns(true);
-        _notificationService.Setup(x => x.Notify(args, _deviceService.Object));
+        _notificationService.Setup(x => x.Notify(args));
 
         // Act
         NotifyResponse result = _cameraController.MovementDetected(hardwareId);
@@ -123,7 +123,7 @@ public class CameraControllerTests
             Event = $"Person detected with email: {request.UserEmail}"
         };
         _deviceService.Setup(x => x.IsConnected(hardwareId)).Returns(true);
-        _notificationService.Setup(x => x.Notify(args, _deviceService.Object));
+        _notificationService.Setup(x => x.Notify(args));
 
         // Act
         NotifyResponse result = _cameraController.PersonDetected(hardwareId, request);

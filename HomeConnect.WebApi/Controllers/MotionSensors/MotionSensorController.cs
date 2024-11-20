@@ -17,7 +17,6 @@ namespace HomeConnect.WebApi.Controllers.MotionSensors;
 [Route("motion_sensors")]
 public class MotionSensorController(
     INotificationService notificationService,
-    IDeviceService deviceService,
     IBusinessOwnerService businessOwnerService)
     : ControllerBase
 {
@@ -47,7 +46,7 @@ public class MotionSensorController(
     public NotifyResponse MovementDetected([FromRoute] string hardwareId)
     {
         NotificationArgs args = CreateMovementDetectedNotificationArgs(hardwareId);
-        notificationService.Notify(args, deviceService);
+        notificationService.Notify(args);
         return new NotifyResponse { HardwareId = hardwareId };
     }
 

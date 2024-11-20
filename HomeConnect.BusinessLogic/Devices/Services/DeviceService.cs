@@ -77,7 +77,7 @@ public class DeviceService : IDeviceService
     {
         if (OwnedDeviceRepository.GetLampState(Guid.Parse(hardwareId)) != state)
         {
-            NotificationService.Notify(args, this);
+            NotificationService.Notify(args);
         }
     }
 
@@ -150,7 +150,7 @@ public class DeviceService : IDeviceService
     {
         if (OwnedDeviceRepository.GetSensorState(Guid.Parse(hardwareId)) != state)
         {
-            NotificationService.Notify(args, this);
+            NotificationService.Notify(args);
         }
     }
 

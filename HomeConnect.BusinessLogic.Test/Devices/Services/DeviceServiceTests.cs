@@ -306,7 +306,7 @@ public class DeviceServiceTests
         _ownedDeviceRepository.Setup(x => x.UpdateLampState(Guid.Parse(hardwareId), true)).Verifiable();
         _ownedDeviceRepository.Setup(x => x.GetLampState(Guid.Parse(hardwareId))).Returns(false);
         var args = new NotificationArgs { HardwareId = hardwareId, Date = DateTime.Now, Event = "example" };
-        _notificationService.Setup(x => x.Notify(args, _deviceService));
+        _notificationService.Setup(x => x.Notify(args));
 
         // Act
         _deviceService.TurnLamp(hardwareId, true, args);
@@ -319,7 +319,7 @@ public class DeviceServiceTests
             y.Date.Day == date.Day &&
             y.Date.Hour == date.Hour &&
             y.Date.Minute == date.Minute &&
-            y.Event == args.Event), _deviceService), Times.Once);
+            y.Event == args.Event)), Times.Once);
         _ownedDeviceRepository.VerifyAll();
     }
 
@@ -413,7 +413,7 @@ public class DeviceServiceTests
         _ownedDeviceRepository.Setup(x => x.Exists(Guid.Parse(hardwareId))).Returns(true);
         _ownedDeviceRepository.Setup(x => x.UpdateSensorState(Guid.Parse(hardwareId), state)).Verifiable();
         _ownedDeviceRepository.Setup(x => x.GetSensorState(Guid.Parse(hardwareId))).Returns(!state);
-        _notificationService.Setup(x => x.Notify(args, _deviceService));
+        _notificationService.Setup(x => x.Notify(args));
 
         // Act
         _deviceService.UpdateSensorState(hardwareId, state, args);
@@ -426,7 +426,7 @@ public class DeviceServiceTests
             y.Date.Day == date.Day &&
             y.Date.Hour == date.Hour &&
             y.Date.Minute == date.Minute &&
-            y.Event == args.Event), _deviceService), Times.Once);
+            y.Event == args.Event)), Times.Once);
         _ownedDeviceRepository.VerifyAll();
     }
 

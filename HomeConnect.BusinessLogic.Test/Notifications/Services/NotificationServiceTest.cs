@@ -23,17 +23,15 @@ public class NotificationServiceTest
     private readonly User _user = new("owner", "owner", "owner@email.com", "Password@100", _role);
     private Mock<INotificationRepository> _mockNotificationRepository = null!;
     private Mock<IOwnedDeviceRepository> _mockOwnedDeviceRepository = null!;
-    private Mock<IDeviceService> _mockDeviceService = null!;
     private Mock<IUserRepository> _mockUserRepository = null!;
     private NotificationService _notificationService = null!;
 
     [TestInitialize]
     public void TestInitialize()
     {
-        _mockOwnedDeviceRepository = new Mock<IOwnedDeviceRepository>();
-        _mockNotificationRepository = new Mock<INotificationRepository>();
-        _mockDeviceService = new Mock<IDeviceService>();
-        _mockUserRepository = new Mock<IUserRepository>();
+        _mockOwnedDeviceRepository = new Mock<IOwnedDeviceRepository>(MockBehavior.Strict);
+        _mockNotificationRepository = new Mock<INotificationRepository>(MockBehavior.Strict);
+        _mockUserRepository = new Mock<IUserRepository>(MockBehavior.Strict);
         _notificationService =
             new NotificationService(_mockNotificationRepository.Object, _mockOwnedDeviceRepository.Object,
                 _mockUserRepository.Object);
@@ -53,6 +51,7 @@ public class NotificationServiceTest
         var home = new Home(user, "Adress 3420", 50, 100, 5);
         var ownedDevice = new OwnedDevice(home, device);
         const string @event = "Test Event";
+        _mockNotificationRepository.Setup(x => x.Add(It.IsAny<Notification>())).Verifiable();
 
         // Act
         _notificationService.CreateNotification(ownedDevice, @event, user);
@@ -167,7 +166,7 @@ public class NotificationServiceTest
         _mockOwnedDeviceRepository.Setup(x => x.Exists(Guid.Parse(args.HardwareId))).Returns(false);
 
         // Act
-        Action act = () => _notificationService.Notify(args, _mockDeviceService.Object);
+        Action act = () => _notificationService.Notify(args);
 
         // Assert
         act.Should().Throw<KeyNotFoundException>();
@@ -195,12 +194,12 @@ public class NotificationServiceTest
             Event = "Test Event",
             Date = DateTime.Now
         };
-        _mockDeviceService.Setup(x => x.IsConnected(args.HardwareId)).Returns(true);
         _mockOwnedDeviceRepository.Setup(x => x.Exists(Guid.Parse(args.HardwareId))).Returns(true);
         _mockOwnedDeviceRepository.Setup(x => x.GetByHardwareId(Guid.Parse(args.HardwareId))).Returns(ownedDevice);
+        _mockNotificationRepository.Setup(x => x.Add(It.IsAny<Notification>())).Verifiable();
 
         // Act
-        _notificationService.Notify(args, _mockDeviceService.Object);
+        _notificationService.Notify(args);
 
         // Assert
         _mockNotificationRepository.Verify(x => x.Add(It.Is<Notification>(
@@ -219,17 +218,21 @@ public class NotificationServiceTest
     public void Notify_WhenDeviceIsDisconnected_ThrowsArgumentException()
     {
         // Arrange
-        var hardwareId = Guid.NewGuid().ToString();
+        var ownedDevice = new OwnedDevice(new Home(_user, "Street 3420", 50, 100, 5),
+            new Device("Device", _modelNumber, "Device description", "https://example.com/image.png", [],
+                "Sensor", new Business()));
+        ownedDevice.Connected = false;
+        var hardwareId = ownedDevice.HardwareId.ToString();
         var args = new NotificationArgs { HardwareId = hardwareId, Date = DateTime.Now, Event = "example" };
+        _mockUserRepository.Setup(x => x.ExistsByEmail(_user.Email)).Returns(true);
         _mockOwnedDeviceRepository.Setup(x => x.Exists(Guid.Parse(hardwareId))).Returns(true);
-        _mockDeviceService.Setup(x => x.IsConnected(hardwareId)).Returns(false);
+        _mockOwnedDeviceRepository.Setup(x => x.GetByHardwareId(Guid.Parse(hardwareId))).Returns(ownedDevice);
 
         // Act
-        var act = () => _notificationService.Notify(args, _mockDeviceService.Object);
+        var act = () => _notificationService.Notify(args);
 
         // Assert
         act.Should().Throw<ArgumentException>().WithMessage("Device is not connected");
-        _mockDeviceService.VerifyAll();
     }
 
     [TestMethod]
@@ -241,7 +244,7 @@ public class NotificationServiceTest
         _mockUserRepository.Setup(x => x.ExistsByEmail(userEmail)).Returns(false);
 
         // Act
-        var act = () => _notificationService.Notify(args, _mockDeviceService.Object);
+        var act = () => _notificationService.Notify(args);
 
         // Assert
         act.Should().Throw<ArgumentException>().WithMessage("User detected by camera was not found.");

@@ -1,6 +1,5 @@
 using BusinessLogic.Devices.Entities;
 using BusinessLogic.Devices.Repositories;
-using BusinessLogic.Devices.Services;
 using BusinessLogic.HomeOwners.Entities;
 using BusinessLogic.Notifications.Entities;
 using BusinessLogic.Notifications.Models;
@@ -24,11 +23,11 @@ public class NotificationService : INotificationService
     private IOwnedDeviceRepository OwnedDeviceRepository { get; }
     private IUserRepository UserRepository { get; }
 
-    public void Notify(NotificationArgs args, IDeviceService deviceService)
+    public void Notify(NotificationArgs args)
     {
         EnsureUserExists(args.UserEmail);
         EnsureOwnedDeviceExists(args.HardwareId);
-        EnsureDeviceIsConnected(args.HardwareId, deviceService);
+        EnsureDeviceIsConnected(args.HardwareId);
         OwnedDevice ownedDevice = OwnedDeviceRepository.GetByHardwareId(Guid.Parse(args.HardwareId));
         Home home = ownedDevice.Home;
         var shouldReceiveNotification = new HomePermission(HomePermission.GetNotifications);
@@ -43,12 +42,18 @@ public class NotificationService : INotificationService
         }
     }
 
-    private static void EnsureDeviceIsConnected(string hardwareId, IDeviceService deviceService)
+    private void EnsureDeviceIsConnected(string hardwareId)
     {
-        if (!deviceService.IsConnected(hardwareId))
+        if (!IsConnected(hardwareId))
         {
             throw new ArgumentException("Device is not connected");
         }
+    }
+
+    private bool IsConnected(string hardwareId)
+    {
+        OwnedDevice ownedDevice = OwnedDeviceRepository.GetByHardwareId(Guid.Parse(hardwareId));
+        return ownedDevice.Connected;
     }
 
     public List<Notification> GetNotifications(Guid userId, string? deviceFilter = null, DateTime? dateFilter = null,

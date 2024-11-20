@@ -71,7 +71,7 @@ public class CameraController(
     public NotifyResponse MovementDetected([FromRoute] string hardwareId)
     {
         NotificationArgs args = CreateMovementDetectedNotificationArgs(hardwareId);
-        notificationService.Notify(args, deviceService);
+        notificationService.Notify(args);
         return new NotifyResponse { HardwareId = hardwareId };
     }
 
@@ -85,7 +85,7 @@ public class CameraController(
     public NotifyResponse PersonDetected([FromRoute] string hardwareId, [FromBody] PersonDetectedRequest request)
     {
         NotificationArgs args = CreatePersonDetectedNotificationArgs(hardwareId, request.UserEmail ?? string.Empty);
-        notificationService.Notify(args, deviceService);
+        notificationService.Notify(args);
         return new NotifyResponse { HardwareId = hardwareId };
     }
 

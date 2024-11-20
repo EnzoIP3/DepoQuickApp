@@ -6,14 +6,27 @@ namespace JsonImporter;
 
 public class JsonDeviceImporter : IDeviceImporter
 {
-    public List<DeviceArgs> ImportDevices(string route)
+    private readonly Dictionary<string, string> _params = new()
     {
+        ["fileName"] = "fileName"
+    };
+    private readonly string _directoryRoute = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "ImportFiles");
+    public List<DeviceArgs> ImportDevices(Dictionary<string, string> parameters)
+    {
+        var route = parameters[_params["fileName"]];
+        route = Path.Combine(_directoryRoute, route);
+        Console.WriteLine(route);
         EnsureFileExists(route);
         var json = File.ReadAllText(route);
         EnsureJsonIsNotNull(json);
         Root? deviceList = DeserializeJson(json);
         EnsureDeviceListIsNotNull(deviceList);
         return deviceList.Value.Dispositivos!.Select(ToDeviceArgs).ToList();
+    }
+
+    public List<string> GetParams()
+    {
+        return _params.Keys.ToList();
     }
 
     private static void EnsureFileExists(string route)

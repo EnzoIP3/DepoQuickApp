@@ -1,9 +1,11 @@
 using BusinessLogic.BusinessOwners.Models;
 using BusinessLogic.BusinessOwners.Services;
 using BusinessLogic.Devices.Entities;
+using BusinessLogic.Devices.Helpers;
 using BusinessLogic.Devices.Importer;
 using BusinessLogic.Helpers;
 using BusinessLogic.Users.Entities;
+using HomeConnect.WebApi.Controllers.DeviceImporters.Models;
 
 namespace BusinessLogic.Devices.Services;
 
@@ -19,67 +21,33 @@ public class ImporterService : IImporterService
     private IAssemblyInterfaceLoader<IDeviceImporter> LoadAssembly { get; }
     private static readonly string ImportersPath = AppDomain.CurrentDomain.BaseDirectory + "Importers";
     private static readonly string ImporterFilesPath = AppDomain.CurrentDomain.BaseDirectory + "ImportFiles";
-    public List<string> GetImporters()
+    public List<ImporterData> GetImporters()
     {
-        return LoadAssembly.GetImplementationsList(ImportersPath);
+        var importers = LoadAssembly.GetImplementationsList(ImportersPath);
+        return importers.Select(importer => new ImporterData
+        {
+            Name = importer,
+            Parameters = LoadAssembly.GetImplementationByName(importer, ImportersPath).GetParams()
+        }).ToList();
     }
 
     public List<string> ImportDevices(ImportDevicesArgs args)
     {
         IDeviceImporter importer = LoadAssembly.GetImplementationByName(args.ImporterName, ImportersPath);
-        var deviceArgs = importer.ImportDevices(Path.Combine(ImporterFilesPath, args.FileName));
+        var deviceArgs = importer.ImportDevices(args.Parameters);
         CreateDevicesFromArgs(deviceArgs, args.User);
         return deviceArgs.Select(deviceArg => deviceArg.Name).ToList();
     }
 
     private void CreateDevicesFromArgs(List<DeviceArgs> deviceArgs, User user)
     {
+        var factoryProvider = new DeviceFactoryProvider(BusinessOwnerService);
         foreach (var deviceArg in deviceArgs)
         {
             var deviceType = Enum.Parse<DeviceType>(deviceArg.Type);
-            switch (deviceType)
-            {
-                case DeviceType.Camera:
-                    CreateCamera(user, deviceArg);
-                    break;
-                default:
-                    CreateDevice(user, deviceArg);
-                    break;
-            }
+            var factory = factoryProvider.GetFactory(deviceType);
+            factory.CreateDevice(user, deviceArg);
         }
-    }
-
-    private void CreateCamera(User user, DeviceArgs deviceArg)
-    {
-        var cameraArgs = new CreateCameraArgs
-        {
-            Owner = user,
-            ModelNumber = deviceArg.ModelNumber,
-            Name = deviceArg.Name,
-            Description = deviceArg.Description,
-            MainPhoto = deviceArg.MainPhoto,
-            SecondaryPhotos = deviceArg.SecondaryPhotos,
-            MotionDetection = deviceArg.MotionDetection,
-            PersonDetection = deviceArg.PersonDetection,
-            Exterior = deviceArg.IsExterior,
-            Interior = deviceArg.IsInterior
-        };
-        BusinessOwnerService.CreateCamera(cameraArgs);
-    }
-
-    private void CreateDevice(User user, DeviceArgs deviceArg)
-    {
-        var newDeviceArgs = new CreateDeviceArgs
-        {
-            Owner = user,
-            ModelNumber = deviceArg.ModelNumber,
-            Name = deviceArg.Name,
-            Description = deviceArg.Description,
-            MainPhoto = deviceArg.MainPhoto,
-            SecondaryPhotos = deviceArg.SecondaryPhotos,
-            Type = deviceArg.Type
-        };
-        BusinessOwnerService.CreateDevice(newDeviceArgs);
     }
 
     public List<string> GetImportFiles()

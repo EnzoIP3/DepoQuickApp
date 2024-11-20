@@ -205,5 +205,28 @@ public class UserTests
 
     #endregion
 
+    #region GetRolesAndPermissions
+
+    [TestMethod]
+    public void GetRolesAndPermissions_WhenUserHasRoles_ReturnsRolesAndPermissions()
+    {
+        // Arrange
+        var permission = new SystemPermission("Permission");
+        var otherPermission = new SystemPermission("Other Permission");
+        var role = new Role("Role", [permission, otherPermission]);
+        var user = new User(Name, Surname, Email, Password, role);
+
+        // Act
+        var rolesAndPermissions = user.GetRolesAndPermissions();
+
+        // Assert
+        rolesAndPermissions.Should().BeEquivalentTo(new Dictionary<Role, List<SystemPermission>>
+        {
+            { role, new List<SystemPermission> { permission, otherPermission } }
+        });
+    }
+
+    #endregion
+
     #endregion
 }

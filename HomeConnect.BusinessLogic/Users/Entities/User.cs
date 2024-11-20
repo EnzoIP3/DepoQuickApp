@@ -174,4 +174,9 @@ public class User
     {
         return Roles.SelectMany(role => role.Permissions).Distinct().ToList();
     }
+
+    public Dictionary<Role, List<SystemPermission>> GetRolesAndPermissions()
+    {
+        return Roles.ToDictionary(role => role, role => role.Permissions);
+    }
 }

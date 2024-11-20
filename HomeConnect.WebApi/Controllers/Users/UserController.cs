@@ -46,7 +46,9 @@ public class UserController(
             }).ToList(),
             Pagination = new Pagination
             {
-                Page = users.Page, PageSize = users.PageSize, TotalPages = users.TotalPages
+                Page = users.Page,
+                PageSize = users.PageSize,
+                TotalPages = users.TotalPages
             }
         };
         return response;
@@ -91,7 +93,9 @@ public class UserController(
             }).ToList(),
             Pagination = new Pagination
             {
-                Page = businesses.Page, PageSize = businesses.PageSize, TotalPages = businesses.TotalPages
+                Page = businesses.Page,
+                PageSize = businesses.PageSize,
+                TotalPages = businesses.TotalPages
             }
         };
     }

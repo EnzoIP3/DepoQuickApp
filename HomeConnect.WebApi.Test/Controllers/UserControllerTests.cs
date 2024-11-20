@@ -145,7 +145,8 @@ public class UserControllerTests
         // Arrange
         var parameters = new GetUsersRequest
         {
-            Page = _expectedPagination.Page, PageSize = _expectedPagination.PageSize
+            Page = _expectedPagination.Page,
+            PageSize = _expectedPagination.PageSize
         };
         _adminService.Setup(x => x.GetUsers(parameters.Page, parameters.PageSize, parameters.FullName,
             parameters.Roles)).Returns(_pagedList);
@@ -227,7 +228,9 @@ public class UserControllerTests
             }).ToList(),
             Pagination = new Pagination
             {
-                Page = businesses.Page, PageSize = businesses.PageSize, TotalPages = businesses.TotalPages
+                Page = businesses.Page,
+                PageSize = businesses.PageSize,
+                TotalPages = businesses.TotalPages
             }
         };
         _businessOwnerService.Setup(x => x.GetBusinesses(_user.Id.ToString(), request.CurrentPage, request.PageSize))

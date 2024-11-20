@@ -54,7 +54,7 @@ public class UserRepository : PaginatedRepositoryBase<User>, IUserRepository
 
     public User Get(Guid id)
     {
-        return _context.Users.First(u => u.Id == id);
+        return _context.Users.Include(u => u.Roles).ThenInclude(u => u.Permissions).First(u => u.Id == id);
     }
 
     protected override IQueryable<User> GetQueryable()

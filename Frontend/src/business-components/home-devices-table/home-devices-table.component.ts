@@ -73,6 +73,7 @@ export class HomeDevicesTableComponent implements OnInit, OnDestroy {
     private _getDevicesSubscription: Subscription | null = null;
     loading = true;
     loadingRooms = true;
+    error: string | null = null;
     rooms: Room[] = [];
     visibleDialog = false;
     selectedDevice: Device | null = null;
@@ -112,24 +113,32 @@ export class HomeDevicesTableComponent implements OnInit, OnDestroy {
     private _getDevices() {
         this._getDevicesSubscription = this._homesService
             .getDevices(this.homeId)
-            .subscribe();
-        this._devicesSubscription = this._homesService.devices.subscribe({
-            next: (response: GetHomeDevicesResponse | null) => {
-                if (response) {
-                    this.devices = response.devices;
-                    this._updateSelectedDevice();
+            .subscribe({
+                error: () => {
+                    this.loading = false;
+                    this.error =
+                        "You do not have permission to view devices in this home.";
                 }
-                this.loading = false;
-            },
-            error: (error) => {
-                this.loading = false;
-                this._messageService.add({
-                    severity: "error",
-                    summary: "Error",
-                    detail: error.message
-                });
-            }
-        });
+            });
+        if (!this.error) {
+            this._devicesSubscription = this._homesService.devices.subscribe({
+                next: (response: GetHomeDevicesResponse | null) => {
+                    if (response) {
+                        this.devices = response.devices;
+                        this._updateSelectedDevice();
+                    }
+                    this.loading = false;
+                },
+                error: (error) => {
+                    this.loading = false;
+                    this._messageService.add({
+                        severity: "error",
+                        summary: "Error",
+                        detail: error.message
+                    });
+                }
+            });
+        }
     }
 
     private _updateSelectedDevice() {

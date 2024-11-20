@@ -5,18 +5,38 @@
 </div>
 <div class="flex md:flex-row mt-2 gap-2 flex-column">
     <div class="flex flex-column gap-2 md:w-6 w-full">
-        <app-panel title="Add Members" icon="pi-user-plus" [toggleable]="true" [collapsed]="true">
+        <app-panel
+            title="Add Members"
+            icon="pi-user-plus"
+            [toggleable]="true"
+            [collapsed]="true"
+        >
             <app-add-member-form [homeId]="id" />
         </app-panel>
-        <app-panel title="Add Device" icon="pi-plus" [toggleable]="true" [collapsed]="true">
+        <app-panel
+            title="Add Device"
+            icon="pi-plus"
+            [toggleable]="true"
+            [collapsed]="true"
+        >
             <app-add-device-form [homeId]="id" />
         </app-panel>
     </div>
     <div class="flex flex-column gap-2 md:w-6 w-full">
-        <app-panel title="Name Home" icon="pi-pencil" [toggleable]="true" [collapsed]="true">
+        <app-panel
+            title="Name Home"
+            icon="pi-pencil"
+            [toggleable]="true"
+            [collapsed]="true"
+        >
             <app-name-home-form [homeId]="id" />
         </app-panel>
-        <app-panel title="Add Room" icon="pi-plus" [toggleable]="true" [collapsed]="true">
+        <app-panel
+            title="Add Room"
+            icon="pi-plus"
+            [toggleable]="true"
+            [collapsed]="true"
+        >
             <app-add-room-form [homeId]="id" />
         </app-panel>
     </div>
@@ -31,7 +51,10 @@
     <app-panel title="Devices" icon="pi-lightbulb" [toggleable]="true">
         <app-home-devices-table [homeId]="id">
             <ng-template #nameDeviceFormTemplate let-device>
-                <app-name-device-form [homeId]="id" [hardwareId]="device.hardwareId" />
+                <app-name-device-form
+                    [homeId]="id"
+                    [hardwareId]="device.hardwareId"
+                />
             </ng-template>
         </app-home-devices-table>
     </app-panel>

@@ -6,7 +6,6 @@ import {
     OnInit
 } from "@angular/core";
 import {
-    Form,
     FormBuilder,
     FormControl,
     FormGroup,
@@ -18,7 +17,6 @@ import GetImportFilesResponse from "../../../backend/services/importers/models/g
 import { DeviceImportFilesService } from "../../../backend/services/importers/device-import-files.service";
 import { DeviceImportersService } from "../../../backend/services/importers/device-importers.service";
 import { DevicesService } from "../../../backend/services/devices/devices.service";
-import ImportDevicesResponse from "../../../backend/services/devices/models/import-devices-response";
 import ImportDevicesRequest from "../../../backend/services/devices/models/import-devices-request";
 import { GetImportersResponse } from "../../../backend/services/importers/models/get-importers-response";
 
@@ -36,7 +34,7 @@ export class ImportDevicesFormComponent implements OnInit, OnDestroy {
     importerOptions: { label: string; value: string; parameters: string[] }[] =
         [];
     fileOptions: { label: string; value: string }[] = [];
-    showConfirmationDialog: boolean = false;
+    showConfirmationDialog = false;
     status = { loading: false, error: null };
 
     private _importersSubscription: Subscription | null = null;
@@ -132,7 +130,7 @@ export class ImportDevicesFormComponent implements OnInit, OnDestroy {
             this._devicesSubscription = this._deviceService
                 .importDevices(request)
                 .subscribe({
-                    next: (response: ImportDevicesResponse) => {
+                    next: () => {
                         this.status.loading = false;
                         this._messageService.add({
                             severity: "success",

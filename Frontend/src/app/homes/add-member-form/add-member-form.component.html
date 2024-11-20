@@ -1,17 +1,36 @@
 <app-form [form]="memberForm" (onSubmit)="onSubmit()">
-    <app-form-input type="text" label="Email" placeholder="email@example.com" name="email" [form]="memberForm"
-        iconClass="pi pi-envelope" [formField]="formFields.email">
+    <app-form-input
+        type="text"
+        label="Email"
+        placeholder="email@example.com"
+        name="email"
+        [form]="memberForm"
+        iconClass="pi pi-envelope"
+        [formField]="formFields.email"
+    >
     </app-form-input>
 
     <div class="flex flex-row gap-2">
         <ng-container *ngFor="let permission of availablePermissions">
-            <app-form-toggle-button [onLabel]="permission.label"
-                [offLabel]="'Cannot ' + permission.label.split(' ').slice(1).join(' ')" [onIcon]="'pi pi-check'"
-                [offIcon]="'pi pi-times'" [form]="permissionsGroup" [name]="permission.key">
+            <app-form-toggle-button
+                [onLabel]="permission.label"
+                [offLabel]="
+                    'Cannot ' + permission.label.split(' ').slice(1).join(' ')
+                "
+                [onIcon]="'pi pi-check'"
+                [offIcon]="'pi pi-times'"
+                [form]="permissionsGroup"
+                [name]="permission.key"
+            >
             </app-form-toggle-button>
         </ng-container>
     </div>
 
-    <app-form-button title="Add Member" color="primary" [loading]="memberStatus.loading" [disabled]="!memberForm.valid">
+    <app-form-button
+        title="Add Member"
+        color="primary"
+        [loading]="memberStatus.loading"
+        [disabled]="!memberForm.valid"
+    >
     </app-form-button>
 </app-form>

@@ -17,7 +17,7 @@ export class BusinessPageComponent implements OnInit, OnDestroy {
     title = "Unnamed business";
     businesses: Business[] = [];
     pagination: PaginationResponse | null = {};
-    public businessId: string = "";
+    public businessId = "";
     private _userId: string | null = null;
     private _businessesSubscription: Subscription | null = null;
     private _authSubscription: Subscription | null = null;

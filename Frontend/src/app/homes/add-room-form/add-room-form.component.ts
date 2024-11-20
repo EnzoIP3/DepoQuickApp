@@ -1,4 +1,4 @@
-import { Component, Input } from "@angular/core";
+import { Component, Input, OnInit, OnDestroy } from "@angular/core";
 import { FormBuilder, FormGroup, Validators } from "@angular/forms";
 import { MessageService } from "primeng/api";
 import { Subscription } from "rxjs";
@@ -8,7 +8,7 @@ import { HomesService } from "../../../backend/services/homes/homes.service";
     selector: "app-add-room-form",
     templateUrl: "./add-room-form.component.html"
 })
-export class AddRoomFormComponent {
+export class AddRoomFormComponent implements OnInit, OnDestroy {
     readonly formFields = {
         name: {
             required: { message: "Name is required" }

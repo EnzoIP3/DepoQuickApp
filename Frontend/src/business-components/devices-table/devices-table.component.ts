@@ -14,10 +14,7 @@ import { BaseDevicesTableComponent } from "../base-devices-table/base-devices-ta
 @Component({
     selector: "app-devices-table",
     standalone: true,
-    imports: [
-    CommonModule,
-    BaseDevicesTableComponent
-],
+    imports: [CommonModule, BaseDevicesTableComponent],
     templateUrl: "./devices-table.component.html"
 })
 export class DevicesTableComponent implements OnInit, OnDestroy {

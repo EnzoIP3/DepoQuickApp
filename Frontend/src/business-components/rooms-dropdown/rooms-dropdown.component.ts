@@ -1,8 +1,6 @@
-import { Component, Input } from "@angular/core";
+import { Component, Input, OnDestroy } from "@angular/core";
 import { DropdownComponent } from "../../components/dropdown/dropdown.component";
-import { HomesService } from "../../backend/services/homes/homes.service";
 import { Subscription } from "rxjs";
-import GetRoomsResponse from "../../backend/services/homes/models/get-rooms-response";
 import { DevicesService } from "../../backend/services/devices/devices.service";
 import { RoomsService } from "../../backend/services/rooms/rooms.service";
 import AddDeviceToRoomResponse from "../../backend/services/rooms/models/add-device-to-room-response";
@@ -15,12 +13,12 @@ import MoveDeviceResponse from "../../backend/services/devices/models/move-devic
     imports: [DropdownComponent],
     templateUrl: "./rooms-dropdown.component.html"
 })
-export class RoomsDropdownComponent {
+export class RoomsDropdownComponent implements OnDestroy {
     @Input() homeId!: string;
     @Input() hardwareId!: string;
     @Input() roomId: string | null = null;
     @Input() rooms: any[] = [];
-    @Input() loading: boolean = true;
+    @Input() loading = true;
 
     private _addDeviceToRoomSubscription: Subscription | null = null;
     private _moveDeviceToRoomSubscription: Subscription | null = null;

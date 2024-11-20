@@ -1,4 +1,4 @@
-import { Component, ContentChild, Input, TemplateRef } from "@angular/core";
+import { Component, ContentChild, Input, TemplateRef, OnInit, OnDestroy } from "@angular/core";
 import TableColumn from "../../components/table/models/table-column";
 import Device from "../../backend/services/devices/models/device";
 import { Subscription } from "rxjs";
@@ -27,7 +27,7 @@ import { HomeDeviceDetailsComponent } from "../home-device-details/home-device-d
     ],
     templateUrl: "./home-devices-table.component.html"
 })
-export class HomeDevicesTableComponent {
+export class HomeDevicesTableComponent implements OnInit, OnDestroy {
     @Input() homeId!: string;
     @ContentChild("nameDeviceFormTemplate")
     nameDeviceFormTemplate!: TemplateRef<any>;
@@ -64,10 +64,10 @@ export class HomeDevicesTableComponent {
     private _getRoomsSubscription: Subscription | null = null;
     private _devicesSubscription: Subscription | null = null;
     private _getDevicesSubscription: Subscription | null = null;
-    loading: boolean = true;
-    loadingRooms: boolean = true;
+    loading = true;
+    loadingRooms = true;
     rooms: Room[] = [];
-    visibleDialog: boolean = false;
+    visibleDialog = false;
     selectedDevice: Device | null = null;
 
     constructor(

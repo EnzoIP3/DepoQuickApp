@@ -16,10 +16,12 @@ import NameDeviceResponse from "./models/name-device-response";
 export class DevicesService {
     constructor(private readonly _repository: DevicesApiRepositoryService) {}
 
-    public getDevices(request?: GetDevicesRequest): Observable<GetDevicesResponse> {
+    public getDevices(
+        request?: GetDevicesRequest
+    ): Observable<GetDevicesResponse> {
         return this._repository.getDevices(request);
     }
-    
+
     public importDevices(
         request: ImportDevicesRequest
     ): Observable<ImportDevicesResponse> {

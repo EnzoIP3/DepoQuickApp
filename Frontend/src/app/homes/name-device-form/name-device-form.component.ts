@@ -1,4 +1,4 @@
-import { Component, Input } from "@angular/core";
+import { Component, Input, OnInit, OnDestroy } from "@angular/core";
 import { FormBuilder, FormGroup, Validators } from "@angular/forms";
 import { Subscription } from "rxjs";
 import { DevicesService } from "../../../backend/services/devices/devices.service";
@@ -9,7 +9,7 @@ import { HomesService } from "../../../backend/services/homes/homes.service";
     selector: "app-name-device-form",
     templateUrl: "./name-device-form.component.html"
 })
-export class NameDeviceFormComponent {
+export class NameDeviceFormComponent implements OnInit, OnDestroy {
     readonly formFields = {
         newName: {
             required: { message: "Name is required" }

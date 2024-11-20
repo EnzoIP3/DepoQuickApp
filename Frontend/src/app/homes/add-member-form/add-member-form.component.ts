@@ -36,7 +36,7 @@ export class AddMemberFormComponent implements OnInit, OnDestroy {
                 group[permission.key] = this._formBuilder.control(false);
                 return group;
             },
-            {} as { [key: string]: any }
+            {} as Record<string, any>
         );
     }
 

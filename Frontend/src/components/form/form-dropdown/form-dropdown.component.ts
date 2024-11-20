@@ -1,5 +1,5 @@
 import { CommonModule } from "@angular/common";
-import { Component, Input } from "@angular/core";
+import { Component, EventEmitter, Input, Output } from "@angular/core";
 import { FormGroup, ReactiveFormsModule } from "@angular/forms";
 import { DropdownModule } from "primeng/dropdown";
 
@@ -15,6 +15,7 @@ export class FormDropdownComponent {
     @Input() label!: string;
     @Input() placeholder!: string;
     @Input() options: { label: string; value: any }[] = [];
+    @Output() onChange = new EventEmitter<any>();
 
     get error(): boolean {
         const control = this.form.get(this.name)!;

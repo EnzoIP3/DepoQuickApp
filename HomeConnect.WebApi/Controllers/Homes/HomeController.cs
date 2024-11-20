@@ -118,9 +118,7 @@ public class HomeController(IHomeOwnerService homeOwnerService) : ControllerBase
         {
             HomeId = homesId,
             UserEmail = request.Email ?? string.Empty,
-            CanAddDevices = request.CanAddDevices,
-            CanListDevices = request.CanListDevices,
-            CanNameDevices = request.CanNameDevices
+            Permissions = request.Permissions
         };
         Guid addedMemberId = homeOwnerService.AddMemberToHome(addMemberArgs);
         return new AddMemberResponse { HomeId = homesId, MemberId = addedMemberId.ToString() };
@@ -152,11 +150,7 @@ public class HomeController(IHomeOwnerService homeOwnerService) : ControllerBase
             Name = m.User.Name,
             Surname = m.User.Surname,
             Photo = m.User.ProfilePicture ?? string.Empty,
-            CanAddDevices = m.HasPermission(new HomePermission(HomePermission.AddDevice)),
-            CanListDevices =
-                m.HasPermission(new HomePermission(HomePermission.GetDevices)),
-            ShouldBeNotified =
-                m.HasPermission(new HomePermission(HomePermission.GetNotifications))
+            Permissions = m.HomePermissions.Select(p => p.Value).ToList()
         }).ToList();
         return new GetMembersResponse { Members = memberInfos };
     }
@@ -167,7 +161,7 @@ public class HomeController(IHomeOwnerService homeOwnerService) : ControllerBase
     public GetDevicesResponse GetDevices([FromRoute] string homesId, [FromQuery] string? roomId = null)
     {
         IEnumerable<OwnedDevice> devices = homeOwnerService.GetHomeDevices(homesId, roomId);
-        var deviceInfos = devices.Select(ListDeviceInfo.FromOwnedDevice).ToList();
+        var deviceInfos = devices.Select(ListOwnedDeviceInfo.FromOwnedDevice).ToList();
         return new GetDevicesResponse { Devices = deviceInfos };
     }
 

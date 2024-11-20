@@ -146,6 +146,19 @@ public class DeviceServiceTests
     }
 
     [TestMethod]
+    public void GetDevices_WhenCalledWithInvalidDeviceType_ThrowsArgumentException()
+    {
+        // Arrange
+        var parameters = new GetDevicesArgs { DeviceTypeFilter = "InvalidType" };
+
+        // Act
+        var act = () => _deviceService.GetDevices(parameters);
+
+        // Assert
+        act.Should().Throw<ArgumentException>().WithMessage("That device type does not exist.");
+    }
+
+    [TestMethod]
     public void GetAllDeviceTypes_WhenCalled_ReturnsDeviceTypes()
     {
         // Arrange
@@ -510,12 +523,7 @@ public class DeviceServiceTests
         var home = new Home();
         var ownedDevice =
             new OwnedDevice { HardwareId = ownedDeviceId, Room = new Room { Id = sourceRoomId }, Home = home };
-        var sourceRoom = new Room
-        {
-            Id = sourceRoomId,
-            OwnedDevices = [ownedDevice],
-            Home = home
-        };
+        var sourceRoom = new Room { Id = sourceRoomId, OwnedDevices = [ownedDevice], Home = home };
         var targetRoom = new Room { Id = targetRoomId, OwnedDevices = [], Home = home };
 
         _roomRepository.Setup(r => r.Exists(targetRoomId)).Returns(true);

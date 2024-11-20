@@ -1,13 +1,26 @@
-import { FormBuilder, FormGroup, Validators } from "@angular/forms";
+import {
+    ChangeDetectorRef,
+    Component,
+    Input,
+    OnDestroy,
+    OnInit
+} from "@angular/core";
+import {
+    Form,
+    FormBuilder,
+    FormControl,
+    FormGroup,
+    Validators
+} from "@angular/forms";
 import { MessageService } from "primeng/api";
 import { Subscription } from "rxjs";
 import GetImportFilesResponse from "../../../backend/services/importers/models/get-import-files-response";
-import GetImportersResponse from "../../../backend/services/importers/models/get-importers-response";
 import { DeviceImportFilesService } from "../../../backend/services/importers/device-import-files.service";
 import { DeviceImportersService } from "../../../backend/services/importers/device-importers.service";
 import { DevicesService } from "../../../backend/services/devices/devices.service";
+import ImportDevicesResponse from "../../../backend/services/devices/models/import-devices-response";
 import ImportDevicesRequest from "../../../backend/services/devices/models/import-devices-request";
-import { Component, OnInit, OnDestroy, Input } from "@angular/core";
+import { GetImportersResponse } from "../../../backend/services/importers/models/get-importers-response";
 
 @Component({
     selector: "app-import-devices-form",
@@ -16,27 +29,33 @@ import { Component, OnInit, OnDestroy, Input } from "@angular/core";
 })
 export class ImportDevicesFormComponent implements OnInit, OnDestroy {
     @Input() businessId!: string;
+
     selectedImporterParameters: string[] = [];
     importDevicesForm: FormGroup;
-    importerOptions: { label: string; value: string }[] = [];
+    parameters: FormGroup;
+    importerOptions: { label: string; value: string; parameters: string[] }[] =
+        [];
     fileOptions: { label: string; value: string }[] = [];
-    showConfirmationDialog = false;
+    showConfirmationDialog: boolean = false;
+    status = { loading: false, error: null };
+
     private _importersSubscription: Subscription | null = null;
     private _filesSubscription: Subscription | null = null;
     private _devicesSubscription: Subscription | null = null;
-    status = { loading: false, error: null };
 
     constructor(
         private fb: FormBuilder,
         private _messageService: MessageService,
         private _deviceImportersService: DeviceImportersService,
         private _deviceImportFilesService: DeviceImportFilesService,
-        private _deviceService: DevicesService
+        private _deviceService: DevicesService,
+        private cdr: ChangeDetectorRef
     ) {
         this.importDevicesForm = this.fb.group({
             importer: ["", Validators.required],
-            importFile: ["", Validators.required]
+            parameters: this.fb.group({})
         });
+        this.parameters = this.importDevicesForm.get("parameters") as FormGroup;
     }
 
     ngOnInit(): void {
@@ -47,11 +66,13 @@ export class ImportDevicesFormComponent implements OnInit, OnDestroy {
             .subscribe({
                 next: (response: GetImportersResponse) => {
                     this.importerOptions = response.importers.map(
-                        (importerName) => ({
-                            label: importerName,
-                            value: importerName
+                        (importer) => ({
+                            label: importer.name,
+                            value: importer.name,
+                            parameters: importer.parameters
                         })
                     );
+                    console.log(response);
                     this.status.loading = false;
                 },
                 error: (error) => {
@@ -86,6 +107,7 @@ export class ImportDevicesFormComponent implements OnInit, OnDestroy {
     }
 
     onSubmit(): void {
+        console.log(this.importDevicesForm.value);
         if (this.importDevicesForm.valid) {
             this.showConfirmationDialog = true;
         } else {
@@ -102,13 +124,15 @@ export class ImportDevicesFormComponent implements OnInit, OnDestroy {
         if (confirm) {
             const request: ImportDevicesRequest = {
                 importerName: this.importDevicesForm.value.importer,
-                route: this.importDevicesForm.value.importFile
+                parameters: this.importDevicesForm.value.parameters
             };
+            console.log("request");
+            console.log(request);
             this.status.loading = true;
             this._devicesSubscription = this._deviceService
                 .importDevices(request)
                 .subscribe({
-                    next: () => {
+                    next: (response: ImportDevicesResponse) => {
                         this.status.loading = false;
                         this._messageService.add({
                             severity: "success",
@@ -136,12 +160,47 @@ export class ImportDevicesFormComponent implements OnInit, OnDestroy {
         this._devicesSubscription?.unsubscribe();
     }
 
+    onImporterChange(event: any): void {
+        console.log("changed");
+        console.log(event);
+        const selectedImporter = this.importerOptions.find(
+            (importer) => importer.value === event.value
+        );
+        console.log(selectedImporter);
+        this.selectedImporterParameters = selectedImporter?.parameters || [];
+        console.log(this.selectedImporterParameters);
+        this._updateParameterFields();
+    }
+
+    private _updateParameterFields(): void {
+        const parametersGroup = this.importDevicesForm.get(
+            "parameters"
+        ) as FormGroup;
+
+        Object.keys(parametersGroup.controls).forEach((key) => {
+            parametersGroup.removeControl(key);
+        });
+
+        this.selectedImporterParameters.forEach((param) => {
+            console.log("voy a poner el parametro: " + param);
+            parametersGroup.addControl(
+                param.toString(),
+                new FormControl("", Validators.required)
+            );
+        });
+        console.log("parameters Group Controls:", parametersGroup.controls);
+        console.log("keys parametersGroup");
+        console.log(Object.keys(parametersGroup.controls));
+    }
+
     closeDialog() {
         this.showConfirmationDialog = false;
     }
 
     onConfirm() {
         this.confirmImport(true);
+        this.selectedImporterParameters = [];
+        this._updateParameterFields();
         this.closeDialog();
     }
 }

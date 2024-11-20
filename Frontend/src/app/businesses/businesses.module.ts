@@ -17,7 +17,6 @@ import { AddDeviceFormComponent } from "./add-device-form/add-device-form.compon
 import { FormCheckboxComponent } from "../../components/form/form-checkbox/form-checkbox.component";
 import { ImportDevicesFormComponent } from "./import-devices-form/import-devices-form.component";
 import { BusinessDevicesTableComponent } from "../../business-components/business-devices-table/business-devices-table.component";
-import { DialogTestComponent } from "../../business-components/dialog-test/dialog-test.component";
 import { ChangeValidatorFormComponent } from "./change-validator-form/change-validator-form.component";
 import { DialogComponent } from "../../components/dialog/dialog.component";
 
@@ -43,7 +42,6 @@ import { DialogComponent } from "../../components/dialog/dialog.component";
         FormDropdownComponent,
         FormCheckboxComponent,
         BusinessDevicesTableComponent,
-        DialogTestComponent,
         DialogComponent
     ]
 })

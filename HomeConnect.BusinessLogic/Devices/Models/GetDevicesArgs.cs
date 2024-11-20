@@ -1,6 +1,6 @@
 namespace BusinessLogic.Devices.Models;
 
-public class GetDevicesArgs
+public record GetDevicesArgs
 {
     public int? Page { get; set; } = 1;
     public int? PageSize { get; set; } = 20;

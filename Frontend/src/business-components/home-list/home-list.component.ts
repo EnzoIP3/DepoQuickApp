@@ -28,7 +28,8 @@ export class HomeListComponent implements OnInit, OnDestroy {
     home: GetHomeResponse | null = null;
     listItems: ListItem[] = [];
 
-    private _homesServiceSubscription: Subscription | null = null;
+    private _homeSubscription: Subscription | null = null;
+    private _getHomeSubscription: Subscription | null = null;
 
     constructor(
         private readonly _homesService: HomesService,
@@ -37,52 +38,58 @@ export class HomeListComponent implements OnInit, OnDestroy {
     ) {}
 
     ngOnInit() {
-        this._homesServiceSubscription = this._homesService
+        this._getHomeSubscription = this._homesService
             .getHome(this.id)
-            .subscribe({
-                next: (response: GetHomeResponse) => {
-                    this.listItems = [
-                        {
-                            label: "Owner Name",
-                            value: `${response.owner.name} ${response.owner.surname}`
-                        },
-                        {
-                            label: "Address",
-                            value: response.address
-                        },
-                        {
-                            label: "Latitude",
-                            value: response.latitude.toString()
-                        },
-                        {
-                            label: "Longitude",
-                            value: response.longitude.toString()
-                        },
-                        {
-                            label: "Limit of Members",
-                            value: response.maxMembers.toString()
-                        }
-                    ];
-
-                    if (response.name) {
-                        this.onHomeNameChange.emit(response.name);
-                    }
-
-                    this.loading = false;
-                },
-                error: (error) => {
-                    this.loading = false;
-                    this._messageService.add({
-                        severity: "error",
-                        summary: "Error",
-                        detail: error.message
-                    });
-                    this._router.navigate(["/homes"]);
+            .subscribe();
+        this._homeSubscription = this._homesService.home.subscribe({
+            next: (response: GetHomeResponse | null) => {
+                if (!response) {
+                    return;
                 }
-            });
+
+                this.listItems = [
+                    {
+                        label: "Owner Name",
+                        value: `${response.owner.name} ${response.owner.surname}`
+                    },
+                    {
+                        label: "Address",
+                        value: response.address
+                    },
+                    {
+                        label: "Latitude",
+                        value: response.latitude.toString()
+                    },
+                    {
+                        label: "Longitude",
+                        value: response.longitude.toString()
+                    },
+                    {
+                        label: "Limit of Members",
+                        value: response.maxMembers.toString()
+                    }
+                ];
+
+                if (response.name) {
+                    this.onHomeNameChange.emit(response.name);
+                }
+
+                this.loading = false;
+            },
+            error: (error) => {
+                this.loading = false;
+                this._messageService.add({
+                    severity: "error",
+                    summary: "Error",
+                    detail: error.message
+                });
+                this._router.navigate(["/homes"]);
+            }
+        });
     }
 
     ngOnDestroy() {
-        this._homesServiceSubscription?.unsubscribe();
+        this._getHomeSubscription?.unsubscribe();
+        this._homeSubscription?.unsubscribe();
     }
 }

@@ -1,12 +1,4 @@
-import {
-    Component,
-    Input,
-    TemplateRef,
-    ViewChild,
-    OnInit,
-    AfterViewInit,
-    OnDestroy
-} from "@angular/core";
+import { Component, Input, TemplateRef, ViewChild } from "@angular/core";
 import TableColumn from "../../components/table/models/table-column";
 import Member from "../../backend/services/homes/models/member";
 import { Subscription } from "rxjs";
@@ -16,6 +8,7 @@ import GetMembersResponse from "../../backend/services/homes/models/get-members-
 import { TableComponent } from "../../components/table/table.component";
 import { CommonModule } from "@angular/common";
 import { AvatarComponent } from "../../components/avatar/avatar.component";
+import { ButtonComponent } from "../../components/button/button.component";
 import { SetNotificationsButtonComponent } from "../set-notifications-button/set-notifications-button.component";
 
 @Component({
@@ -29,7 +22,7 @@ import { SetNotificationsButtonComponent } from "../set-notifications-button/set
     ],
     templateUrl: "./members-table.component.html"
 })
-export class MembersTableComponent implements OnInit, AfterViewInit, OnDestroy {
+export class MembersTableComponent {
     @ViewChild("photoTemplate") photoTemplate: TemplateRef<any> | undefined;
     @ViewChild("nameTemplate") nameTemplate: TemplateRef<any> | undefined;
     @ViewChild("boolTemplate") boolTemplate: TemplateRef<any> | undefined;
@@ -56,14 +49,19 @@ export class MembersTableComponent implements OnInit, AfterViewInit, OnDestroy {
             header: "Can List Devices"
         },
         {
-            field: "shouldBeNotified",
+            field: "canNameDevices",
+            header: "Can Name Devices"
+        },
+        {
+            field: "notifications",
             header: "Notifications"
         }
     ];
 
-    members: Member[] = [];
-    private _homesServiceSubscription: Subscription | null = null;
-    loading = true;
+    members: any[] = [];
+    private _membersSubscription: Subscription | null = null;
+    private _getMembersSubscription: Subscription | null = null;
+    loading: boolean = true;
     customTemplates: any;
 
     constructor(
@@ -73,11 +71,29 @@ export class MembersTableComponent implements OnInit, AfterViewInit, OnDestroy {
 
     ngOnInit() {
         this.customTemplates = {};
-        this._homesService.getMembers(this.homeId).subscribe();
-        this._homesServiceSubscription = this._homesService.members.subscribe({
+        this._getMembersSubscription = this._homesService
+            .getMembers(this.homeId)
+            .subscribe();
+        this._membersSubscription = this._homesService.members.subscribe({
             next: (response: GetMembersResponse | null) => {
                 if (response) {
-                    this.members = response.members;
+                    this.members = response.members.map((member: Member) => {
+                        return {
+                            ...member,
+                            canAddDevices: this.hasPermission(
+                                member,
+                                "add-devices"
+                            ),
+                            canListDevices: this.hasPermission(
+                                member,
+                                "get-devices"
+                            ),
+                            canNameDevices: this.hasPermission(
+                                member,
+                                "name-device"
+                            )
+                        };
+                    });
                 }
                 this.loading = false;
             },
@@ -103,6 +119,11 @@ export class MembersTableComponent implements OnInit, AfterViewInit, OnDestroy {
     }
 
     ngOnDestroy() {
-        this._homesServiceSubscription?.unsubscribe();
+        this._getMembersSubscription?.unsubscribe();
+        this._membersSubscription?.unsubscribe();
+    }
+
+    hasPermission(member: Member, permission: string): boolean {
+        return member.permissions.includes(permission);
     }
 }

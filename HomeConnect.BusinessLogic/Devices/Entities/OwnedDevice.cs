@@ -30,14 +30,14 @@ public class OwnedDevice
         return new OwnedDeviceDto
         {
             HardwareId = HardwareId.ToString(),
-            Name = Device.Name,
+            Name = Name,
             BusinessName = Device.Business.Name,
             Type = Device.Type.ToString(),
             ModelNumber = Device.ModelNumber,
             Photo = Device.MainPhoto,
+            RoomId = Room?.Id.ToString(),
             SecondaryPhotos = Device.SecondaryPhotos,
-            Description = Device.Description,
-            RoomId = Room.Id.ToString(),
+            Description = Device.Description
         };
     }
 }

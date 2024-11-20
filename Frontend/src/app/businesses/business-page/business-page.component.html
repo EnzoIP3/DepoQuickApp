@@ -8,7 +8,7 @@
                         icon="pi-file-import"
                         [toggleable]="true"
                     >
-                        <app-import-devices-form />
+                        <app-import-devices-form [businessId]="businessId" />
                     </app-panel>
                 </div>
                 <div class="max-w-full">
@@ -35,5 +35,4 @@
     <app-panel title="Devices" icon="pi-desktop" [toggleable]="false">
         <app-business-devices-table />
     </app-panel>
-    <app-dialog-test />
 </div>

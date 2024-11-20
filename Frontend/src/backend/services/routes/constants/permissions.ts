@@ -1,5 +1,6 @@
 export const Permissions = {
     CREATE_HOME: "create-home",
     CREATE_BUSINESS: "create-business",
-    GET_NOTIFICATIONS: "get-notifications"
+    GET_NOTIFICATIONS: "get-notifications",
+    CREATE_ADMINISTATOR: "create-administrator"
 };

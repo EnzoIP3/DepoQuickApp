@@ -7,11 +7,20 @@ import UpdateValidatorResponse from "./models/update-validator-response";
 import UpdateValidatorRequest from "./models/update-validator-request";
 import GetDevicesResponse from "../devices/models/get-devices-response";
 import GetBusinessDevicesRequest from "./models/get-business-devices-request";
+import GetBusinessesRequest from "./models/business-request.js";
+import GetBusinessesResponse from "./models/business-response.js";
+
 @Injectable({
     providedIn: "root"
 })
 export class BusinessesService {
     constructor(private readonly _repository: BusinessesApiRepositoryService) {}
+
+    public getBusinesses(
+        request?: GetBusinessesRequest
+    ): Observable<GetBusinessesResponse> {
+        return this._repository.getBusinesses(request);
+    }
 
     public postBusiness(
         request: CreateBusinessRequest

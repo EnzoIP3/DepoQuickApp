@@ -1,0 +1,18 @@
+<div class="mt-2">
+  <app-panel title="Users" icon="pi-user">
+    <app-users-table (userSelected)="onUserSelected($event)"></app-users-table>
+  </app-panel>
+</div>
+
+<div class="my-2 flex flex-row gap-3 justify-content-end">
+  <app-delete-admin-button [user]="selectedUser"></app-delete-admin-button>
+  <app-button icon="pi pi-plus" label="Add Admin" routerLink="/admins/new"></app-button>
+</div>
+
+<app-panel title="Businesses" icon="pi-building">
+  <app-admin-businesses-table></app-admin-businesses-table>
+</app-panel>
+
+<div class="my-2 flex justify-content-end">
+  <app-button icon="pi pi-plus" label="Add Business Owner" routerLink="/admins/business_owner/new"></app-button>
+</div>

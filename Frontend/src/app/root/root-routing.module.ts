@@ -48,6 +48,13 @@ const routes: Routes = [
             import("../notifications/notifications.module").then(
                 (m) => m.NotificationsModule
             )
+    },
+    {
+        path: "admins",
+        component: RootPageComponent,
+        canActivate: [authGuard],
+        loadChildren: () =>
+            import("../admins/admins.module").then((m) => m.AdminsModule)
     }
 ];
 

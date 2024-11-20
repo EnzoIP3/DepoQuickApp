@@ -2,11 +2,11 @@ import { Component, OnDestroy, OnInit } from "@angular/core";
 import { ActivatedRoute } from "@angular/router";
 import { MessageService } from "primeng/api";
 import { Subscription } from "rxjs";
-import Business from "../../../backend/services/businesses/models/business";
 import Pagination from "../../../backend/services/pagination";
 import { UsersService } from "../../../backend/services/users/users.service";
 import PaginationResponse from "../../../backend/services/pagination";
 import { AuthService } from "../../../backend/services/auth/auth.service";
+import Business from "../../../backend/services/businesses/models/business";
 
 @Component({
     selector: "app-business-page",
@@ -73,7 +73,7 @@ export class BusinessPageComponent implements OnInit, OnDestroy {
         }
 
         this._businessesSubscription = this._userService
-            .getBusiness(paginationParams, this._userId)
+            .getBusinesses(paginationParams, this._userId)
             .subscribe({
                 next: (response) => {
                     this.businesses = response.businesses.filter(

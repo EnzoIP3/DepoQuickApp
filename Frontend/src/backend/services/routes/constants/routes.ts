@@ -30,6 +30,15 @@ export const AuthenticatedRoutes: Route[] = [
         ]
     },
     {
+        label: "Admin",
+        permission: Permissions.CREATE_ADMINISTATOR,
+        items: [
+            {
+                label: "Administration",
+                icon: "pi pi-shield",
+                routerLink: ["/admins"]
+            }]},
+    {
         label: "Businesses",
         permission: Permissions.CREATE_BUSINESS,
         items: [

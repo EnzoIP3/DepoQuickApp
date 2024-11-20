@@ -10,6 +10,8 @@ import UpdateValidatorRequest from "../services/businesses/models/update-validat
 import GetBusinessDevicesRequest from "../services/businesses/models/get-business-devices-request";
 import GetDevicesResponse from "../services/devices/models/get-devices-response";
 import { Router } from "@angular/router";
+import GetBusinessesRequest from "../services/businesses/models/business-request";
+import GetBusinessesResponse from "../services/businesses/models/business-response";
 
 @Injectable({
     providedIn: "root"
@@ -19,13 +21,19 @@ export class BusinessesApiRepositoryService extends ApiRepository {
         super(environment.apiUrl, "businesses", http, router);
     }
 
+    public getBusinesses(
+        request?: GetBusinessesRequest
+    ): Observable<GetBusinessesResponse> {
+        return this.get<GetBusinessesResponse>({ queries: request });
+    }
+
     public postBusiness(
         request: CreateBusinessRequest
     ): Observable<CreateBusinessResponse> {
         return this.post<CreateBusinessResponse>(request);
     }
 
-    updateValidator(
+    public updateValidator(
         businessId: string,
         request: UpdateValidatorRequest
     ): Observable<UpdateValidatorResponse> {
@@ -35,7 +43,7 @@ export class BusinessesApiRepositoryService extends ApiRepository {
         );
     }
 
-    getDevices(
+    public getDevices(
         businessId: string,
         request: GetBusinessDevicesRequest
     ): Observable<GetDevicesResponse> {

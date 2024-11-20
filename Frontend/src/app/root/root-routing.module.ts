@@ -34,6 +34,15 @@ const routes: Routes = [
             import("../businesses/businesses.module").then(
                 (m) => m.BusinessesModule
             )
+    },
+    {
+        path: "notifications",
+        component: RootPageComponent,
+        canActivate: [authGuard],
+        loadChildren: () =>
+            import("../notifications/notifications.module").then(
+                (m) => m.NotificationsModule
+            )
     }
 ];
 

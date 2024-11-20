@@ -9,13 +9,14 @@ import UpdateValidatorResponse from "../services/businesses/models/update-valida
 import UpdateValidatorRequest from "../services/businesses/models/update-validator-response";
 import GetBusinessDevicesRequest from "../services/businesses/models/get-business-devices-request";
 import GetDevicesResponse from "../services/devices/models/get-devices-response";
+import { Router } from "@angular/router";
 
 @Injectable({
     providedIn: "root"
 })
 export class BusinessesApiRepositoryService extends ApiRepository {
-    constructor(http: HttpClient) {
-        super(environment.apiUrl, "businesses", http);
+    constructor(http: HttpClient, router: Router) {
+        super(environment.apiUrl, "businesses", http, router);
     }
 
     public postBusiness(

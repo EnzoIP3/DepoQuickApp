@@ -11,10 +11,10 @@ import { GetCameraResponse } from "./models/get-camera-response";
 export class CamerasService {
     constructor(private readonly _repository: CamerasApiRepositoryService) {}
 
-    public postDevice(
+    public addDevice(
         request: CreateCameraRequest
     ): Observable<CreateDeviceResponse> {
-        return this._repository.postDevice(request);
+        return this._repository.addDevice(request);
     }
 
     getCameraDetails(deviceId: string): Observable<GetCameraResponse> {

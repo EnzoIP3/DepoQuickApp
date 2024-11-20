@@ -6,7 +6,6 @@ using BusinessLogic.Notifications.Models;
 using BusinessLogic.Notifications.Services;
 using BusinessLogic.Roles.Entities;
 using BusinessLogic.Users.Entities;
-using BusinessLogic.Users.Services;
 using HomeConnect.WebApi.Controllers.Cameras.Models;
 using HomeConnect.WebApi.Controllers.Devices.Models;
 using HomeConnect.WebApi.Filters;
@@ -19,8 +18,7 @@ namespace HomeConnect.WebApi.Controllers.Cameras;
 public class CameraController(
     INotificationService notificationService,
     IDeviceService deviceService,
-    IBusinessOwnerService businessOwnerService,
-    IUserService userService) : ControllerBase
+    IBusinessOwnerService businessOwnerService) : ControllerBase
 {
     [HttpPost]
     [AuthenticationFilter]
@@ -79,34 +77,25 @@ public class CameraController(
 
     private static NotificationArgs CreateMovementDetectedNotificationArgs(string hardwareId)
     {
-        var args = new NotificationArgs { HardwareId = hardwareId, Date = DateTime.Now, Event = "movement-detected" };
+        var args = new NotificationArgs { HardwareId = hardwareId, Date = DateTime.Now, Event = "Movement detected" };
         return args;
     }
 
     [HttpPost("{hardwareId}/person-detected")]
     public NotifyResponse PersonDetected([FromRoute] string hardwareId, [FromBody] PersonDetectedRequest request)
     {
-        NotificationArgs args = CreatePersonDetectedNotificationArgs(hardwareId, request.UserId ?? string.Empty);
-        EnsureDetectedUserIsRegistered(request.UserId ?? string.Empty);
+        NotificationArgs args = CreatePersonDetectedNotificationArgs(hardwareId, request.UserEmail ?? string.Empty);
         notificationService.Notify(args, deviceService);
         return new NotifyResponse { HardwareId = hardwareId };
     }
 
-    private void EnsureDetectedUserIsRegistered(string requestUserId)
-    {
-        if (!userService.Exists(requestUserId))
-        {
-            throw new ArgumentException("User detected by camera is not found");
-        }
-    }
-
-    private static NotificationArgs CreatePersonDetectedNotificationArgs(string hardwareId, string userId)
+    private static NotificationArgs CreatePersonDetectedNotificationArgs(string hardwareId, string userEmail)
     {
         var args = new NotificationArgs
         {
             HardwareId = hardwareId,
             Date = DateTime.Now,
-            Event = $"person detected with id: {userId}"
+            Event = $"Person detected with email: {userEmail}"
         };
         return args;
     }

@@ -12,9 +12,9 @@ export class MotionSensorsService {
         private readonly _repository: MotionSensorsApiRepositoryService
     ) {}
 
-    public postDevice(
+    public addDevice(
         request: CreateMotionSensorRequest
     ): Observable<CreateDeviceResponse> {
-        return this._repository.postDevice(request);
+        return this._repository.addDevice(request);
     }
 }

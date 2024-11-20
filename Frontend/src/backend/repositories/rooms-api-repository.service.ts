@@ -5,13 +5,14 @@ import { environment } from "../../environments/environment";
 import AddDeviceToRoomRequest from "../services/rooms/models/add-device-to-room-request";
 import { Observable } from "rxjs";
 import AddDeviceToRoomResponse from "../services/rooms/models/add-device-to-room-response";
+import { Router } from "@angular/router";
 
 @Injectable({
     providedIn: "root"
 })
 export class RoomsApiRepositoryService extends ApiRepository {
-    constructor(http: HttpClient) {
-        super(environment.apiUrl, "rooms", http);
+    constructor(http: HttpClient, router: Router) {
+        super(environment.apiUrl, "rooms", http, router);
     }
 
     public addDeviceToRoom(

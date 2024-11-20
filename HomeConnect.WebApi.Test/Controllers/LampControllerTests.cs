@@ -85,7 +85,7 @@ public class LampControllerTests
         var hardwareId = Guid.NewGuid().ToString();
         var date = DateTime.Now;
         var state = true;
-        var args = new NotificationArgs { HardwareId = hardwareId, Date = date, Event = "lamp-turned-on" };
+        var args = new NotificationArgs { HardwareId = hardwareId, Date = date, Event = "Lamp was turned on" };
         _deviceServiceMock.Setup(x => x.TurnLamp(hardwareId, state, args));
 
         // Act
@@ -111,7 +111,7 @@ public class LampControllerTests
         var hardwareId = Guid.NewGuid().ToString();
         var date = DateTime.Now;
         var state = false;
-        var args = new NotificationArgs { HardwareId = hardwareId, Date = date, Event = "lamp-turned-off" };
+        var args = new NotificationArgs { HardwareId = hardwareId, Date = date, Event = "Lamp was turned off" };
         _deviceServiceMock.Setup(x => x.TurnLamp(hardwareId, state, args));
 
         // Act

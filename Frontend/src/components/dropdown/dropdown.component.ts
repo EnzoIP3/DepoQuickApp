@@ -17,7 +17,7 @@ export class DropdownComponent {
     @Input() optionLabel = "label";
     @Input() optionValue = "value";
     @Input() value: string | null = null;
-    @Output() change = new EventEmitter<string>();
+    @Output() change = new EventEmitter<any>();
     @Output() click = new EventEmitter<any>();
 
     onChange(event: any) {

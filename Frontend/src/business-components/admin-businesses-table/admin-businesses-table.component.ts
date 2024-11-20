@@ -1,4 +1,4 @@
-import { Component } from "@angular/core";
+import { Component, OnInit, OnDestroy } from "@angular/core";
 import TableColumn from "../../components/table/models/table-column";
 import { Subscription } from "rxjs";
 import PaginationResponse from "../../backend/services/pagination";
@@ -16,7 +16,7 @@ import { BaseBusinessesTableComponent } from "../base-businesses-table/base-busi
     imports: [BaseBusinessesTableComponent],
     templateUrl: "./admin-businesses-table.component.html"
 })
-export class AdminBusinessesTableComponent {
+export class AdminBusinessesTableComponent implements OnInit, OnDestroy {
     columns: TableColumn[] = [
         {
             field: "logo",
@@ -46,7 +46,7 @@ export class AdminBusinessesTableComponent {
 
     pagination: PaginationResponse | null = null;
     filters: FilterValues = {};
-    loading: boolean = true;
+    loading = true;
     businesses: Business[] = [];
 
     constructor(

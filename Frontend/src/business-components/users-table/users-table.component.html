@@ -1,5 +1,15 @@
-<app-table [columns]="columns" [data]="users" [loading]="loading" [filterableColumns]="filterableColumns" [clickableRows]="true" (rowClick)="onRowClick($event)"
+<app-table
+    [columns]="columns"
+    [data]="users"
+    [loading]="loading"
+    [filterableColumns]="filterableColumns"
+    [clickableRows]="true"
+    (rowClick)="onRowClick($event)"
     (filter)="onFilterChange($event)"
-     />
-<app-paginator [currentPage]="pagination?.page" [totalPages]="pagination?.totalPages" [pageSize]="pagination?.pageSize"
-    (pageChange)="onPageChange($event)" />
+/>
+<app-paginator
+    [currentPage]="pagination?.page"
+    [totalPages]="pagination?.totalPages"
+    [pageSize]="pagination?.pageSize"
+    (pageChange)="onPageChange($event)"
+/>

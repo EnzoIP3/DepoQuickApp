@@ -1,19 +1,41 @@
 <div class="flex md:flex-row flex-column gap-1">
-    <app-dropdown [options]="devices" placeholder="Filter by Device" [showClear]="true"
-        (change)="onDeviceFilterChange($event)" [appendTo]="null"></app-dropdown>
+    <app-dropdown
+        [options]="devices"
+        placeholder="Filter by Device"
+        [showClear]="true"
+        (change)="onDeviceFilterChange($event)"
+        [appendTo]="null"
+    ></app-dropdown>
 
-    <app-dropdown [options]="dates" placeholder="Filter by Date Created" [showClear]="true"
-        (change)="onDateFilterChange($event)" [appendTo]="null"></app-dropdown>
+    <app-dropdown
+        [options]="dates"
+        placeholder="Filter by Date Created"
+        [showClear]="true"
+        (change)="onDateFilterChange($event)"
+        [appendTo]="null"
+    ></app-dropdown>
 
-    <app-dropdown [options]="readStates" placeholder="Filter by Read Status" [showClear]="true" [optionLabel]="'label'"
-        [optionValue]="'value'" (change)="onReadFilterChange($event)" [value]="false" [appendTo]="null"></app-dropdown>
+    <app-dropdown
+        [options]="readStates"
+        placeholder="Filter by Read Status"
+        [showClear]="true"
+        [optionLabel]="'label'"
+        [optionValue]="'value'"
+        (change)="onReadFilterChange($event)"
+        [value]="false"
+        [appendTo]="null"
+    ></app-dropdown>
 </div>
 
 <ng-container *ngIf="!loading">
     <ng-container *ngFor="let notification of notifications">
-        <app-message severity="info" [text]="notification.event"
-            [icon]="notification.read ? 'pi pi-eye' : 'pi pi-sparkles'" [detail]="getNotificationDetail(notification)"
-            [closable]="false"></app-message>
+        <app-message
+            severity="info"
+            [text]="notification.event"
+            [icon]="notification.read ? 'pi pi-eye' : 'pi pi-sparkles'"
+            [detail]="getNotificationDetail(notification)"
+            [closable]="false"
+        ></app-message>
     </ng-container>
 </ng-container>
 

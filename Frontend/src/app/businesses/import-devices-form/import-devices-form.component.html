@@ -1,13 +1,25 @@
 <app-form [form]="importDevicesForm" (onSubmit)="onSubmit()">
-    <app-form-dropdown label="Importer" placeholder="Select importer" name="importer" [form]="importDevicesForm"
-        [options]="importerOptions" (onChange)="onImporterChange($event)">
+    <app-form-dropdown
+        label="Importer"
+        placeholder="Select importer"
+        name="importer"
+        [form]="importDevicesForm"
+        [options]="importerOptions"
+        (onChange)="onImporterChange($event)"
+    >
     </app-form-dropdown>
 
     <div *ngFor="let param of selectedImporterParameters">
-        <app-form-input type="text" label="{{ param }}" placeholder="Enter {{ param }}" name="{{ param }}"
-            [form]="parameters" [formField]="{
-                    required: { message: 'Parameter is required' }
-                }"></app-form-input>
+        <app-form-input
+            type="text"
+            label="{{ param }}"
+            placeholder="Enter {{ param }}"
+            name="{{ param }}"
+            [form]="parameters"
+            [formField]="{
+                required: { message: 'Parameter is required' }
+            }"
+        ></app-form-input>
     </div>
 
     <div class="mb-3">
@@ -20,16 +32,29 @@
         </app-panel>
     </div>
 
-    <app-form-button title="Import Devices" color="primary" [loading]="status.loading"
-        [disabled]="importDevicesForm.invalid">
+    <app-form-button
+        title="Import Devices"
+        color="primary"
+        [loading]="status.loading"
+        [disabled]="importDevicesForm.invalid"
+    >
     </app-form-button>
 </app-form>
 
-<app-dialog [(visible)]="showConfirmationDialog" header="Confirm Import" (visibleChange)="confirmImport($event)"
-    width="30rem">
+<app-dialog
+    [(visible)]="showConfirmationDialog"
+    header="Confirm Import"
+    (visibleChange)="confirmImport($event)"
+    width="30rem"
+>
     <p>Are you sure you want to import devices?</p>
     <div class="flex justify-content-end">
-        <app-button class="mr-2" label="Yes" severity="success" (click)="onConfirm()">
+        <app-button
+            class="mr-2"
+            label="Yes"
+            severity="success"
+            (click)="onConfirm()"
+        >
         </app-button>
 
         <app-button label="No" severity="danger" (click)="closeDialog()">

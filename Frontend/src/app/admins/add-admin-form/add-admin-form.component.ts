@@ -1,4 +1,4 @@
-import { Component } from "@angular/core";
+import { Component, OnInit, OnDestroy } from "@angular/core";
 import { FormBuilder, FormGroup, Validators } from "@angular/forms";
 import { Subscription } from "rxjs";
 import { AdminsService } from "../../../backend/services/admins/admins.service";
@@ -8,7 +8,7 @@ import { MessageService } from "primeng/api";
     selector: "app-add-admin-form",
     templateUrl: "./add-admin-form.component.html"
 })
-export class AddAdminFormComponent {
+export class AddAdminFormComponent implements OnInit, OnDestroy {
     readonly formFields = {
         name: {
             required: { message: "Name is required" }

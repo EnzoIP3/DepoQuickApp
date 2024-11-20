@@ -3,20 +3,39 @@
         <app-icon-title [icon]="'pi-building'" [title]="title"></app-icon-title>
     </div>
     <div class="mt-2">
-        <app-panel title="Import Devices" icon="pi-file-import" [toggleable]="true" [collapsed]="true">
+        <app-panel
+            title="Import Devices"
+            icon="pi-file-import"
+            [toggleable]="true"
+            [collapsed]="true"
+        >
             <app-import-devices-form [businessId]="businessId" />
         </app-panel>
     </div>
     <div class="flex md:flex-row flex-column gap-2 my-2">
         <div class="w-full">
-            <app-panel title="Change Validator" icon="pi-file-import" [toggleable]="false" [collapsed]="false">
+            <app-panel
+                title="Change Validator"
+                icon="pi-file-import"
+                [toggleable]="false"
+                [collapsed]="false"
+            >
                 <app-change-validator-form />
             </app-panel>
-            <app-button [routerLink]="'/businesses/' + businessId + '/devices'" label="List of Devices"
-                icon="pi pi-lightbulb" className="w-full my-2" />
+            <app-button
+                [routerLink]="'/businesses/' + businessId + '/devices'"
+                label="List of Devices"
+                icon="pi pi-lightbulb"
+                className="w-full my-2"
+            />
         </div>
         <div class="w-full">
-            <app-panel title="Create device" icon="pi-plus-circle" [toggleable]="false" [collapsed]="false">
+            <app-panel
+                title="Create device"
+                icon="pi-plus-circle"
+                [toggleable]="false"
+                [collapsed]="false"
+            >
                 <app-add-device-form />
             </app-panel>
         </div>

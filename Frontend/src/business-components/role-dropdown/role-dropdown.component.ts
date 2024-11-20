@@ -1,4 +1,4 @@
-import { Component } from "@angular/core";
+import { Component, OnInit } from "@angular/core";
 import { DropdownComponent } from "../../components/dropdown/dropdown.component";
 import { AuthService } from "../../backend/services/auth/auth.service";
 import UserLogged from "../../backend/services/auth/models/user-logged";
@@ -11,14 +11,14 @@ import { Router } from "@angular/router";
     imports: [CommonModule, DropdownComponent],
     templateUrl: "./role-dropdown.component.html"
 })
-export class RoleDropdownComponent {
+export class RoleDropdownComponent implements OnInit {
     constructor(
         private readonly _authService: AuthService,
         private readonly _router: Router
     ) {}
 
     user: UserLogged | null = null;
-    canSwitchRoles: boolean = false;
+    canSwitchRoles = false;
     roles: any[] = [];
     selectedRole: string | null = null;
 

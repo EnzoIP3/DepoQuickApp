@@ -37,7 +37,9 @@ export const AuthenticatedRoutes: Route[] = [
                 label: "Administration",
                 icon: "pi pi-shield",
                 routerLink: ["/admins"]
-            }]},
+            }
+        ]
+    },
     {
         label: "Businesses",
         permission: Permissions.CREATE_BUSINESS,

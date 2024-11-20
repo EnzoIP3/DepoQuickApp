@@ -1,6 +1,5 @@
-import { Component } from "@angular/core";
+import { Component, OnInit, OnDestroy } from "@angular/core";
 import {
-    EmailValidator,
     FormBuilder,
     FormGroup,
     Validators
@@ -13,7 +12,7 @@ import { BusinessOwnersService } from "../../../backend/services/business-owners
     selector: "app-add-businessowner-form",
     templateUrl: "./add-business-owner-form.component.html"
 })
-export class AddBusinessOwnerFormComponent {
+export class AddBusinessOwnerFormComponent implements OnInit, OnDestroy {
     readonly formFields = {
         name: {
             required: { message: "Name is required" }

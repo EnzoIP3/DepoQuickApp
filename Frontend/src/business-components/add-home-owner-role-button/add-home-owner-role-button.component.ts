@@ -1,4 +1,4 @@
-import { Component } from "@angular/core";
+import { Component, OnInit } from "@angular/core";
 import { ButtonComponent } from "../../components/button/button.component";
 import { AuthService } from "../../backend/services/auth/auth.service";
 import { UsersService } from "../../backend/services/users/users.service";
@@ -13,7 +13,7 @@ import { DialogComponent } from "../../components/dialog/dialog.component";
     imports: [CommonModule, ButtonComponent, DialogComponent],
     templateUrl: "./add-home-owner-role-button.component.html"
 })
-export class AddHomeOwnerRoleButtonComponent {
+export class AddHomeOwnerRoleButtonComponent implements OnInit {
     constructor(
         private readonly _authService: AuthService,
         private readonly _usersService: UsersService,
@@ -21,9 +21,9 @@ export class AddHomeOwnerRoleButtonComponent {
     ) {}
 
     user: UserLogged | null = null;
-    loading: boolean = false;
-    canAddHomeOwnerRole: boolean = false;
-    showConfirmationDialog: boolean = false;
+    loading = false;
+    canAddHomeOwnerRole = false;
+    showConfirmationDialog = false;
 
     ngOnInit() {
         this._authService.userLogged.subscribe((user) => {

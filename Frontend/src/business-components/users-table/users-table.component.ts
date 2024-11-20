@@ -1,4 +1,4 @@
-import { Component, EventEmitter, Output } from "@angular/core";
+import { Component, EventEmitter, Output, OnInit, OnDestroy } from "@angular/core";
 import { TableComponent } from "../../components/table/table.component";
 import PaginationResponse from "../../backend/services/pagination";
 import TableColumn from "../../components/table/models/table-column";
@@ -17,7 +17,7 @@ import User from "../../backend/services/users/models/user";
     imports: [TableComponent, PaginatorComponent],
     templateUrl: "./users-table.component.html"
 })
-export class UsersTableComponent {
+export class UsersTableComponent implements OnInit, OnDestroy {
     columns: TableColumn[] = [
         {
             field: "fullName",
@@ -43,7 +43,7 @@ export class UsersTableComponent {
     users: any[] = [];
     pagination: PaginationResponse | null = null;
     filters: FilterValues = {};
-    loading: boolean = true;
+    loading = true;
 
     constructor(
         private readonly _usersService: UsersService,

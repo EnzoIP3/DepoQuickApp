@@ -1,5 +1,5 @@
 import { CommonModule } from "@angular/common";
-import { Component, Input } from "@angular/core";
+import { Component, Input, OnDestroy } from "@angular/core";
 import { MessageService } from "primeng/api";
 import { AdminsService } from "../../backend/services/admins/admins.service";
 import User from "../../backend/services/users/models/user";
@@ -13,7 +13,7 @@ import { Subscription } from "rxjs";
     imports: [CommonModule, ButtonComponent],
     templateUrl: "./delete-admin-button.component.html"
 })
-export class DeleteAdminButtonComponent {
+export class DeleteAdminButtonComponent implements OnDestroy {
     @Input() user!: User | null;
 
     constructor(
@@ -24,7 +24,7 @@ export class DeleteAdminButtonComponent {
 
     private _deleteAdminSubscription: Subscription | null = null;
     private _getUsersSubscription: Subscription | null = null;
-    deleting: boolean = false;
+    deleting = false;
 
     deleteAdmin() {
         if (this.user && this.user.roles.includes("Admin")) {

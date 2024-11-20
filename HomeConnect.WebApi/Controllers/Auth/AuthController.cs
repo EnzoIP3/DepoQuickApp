@@ -19,7 +19,8 @@ public class AuthController(IAuthService authService)
         {
             UserId = user.Id.ToString(),
             Token = token,
-            Permissions = user.GetPermissions().Select(p => p.Value).ToList()
+            Roles = user.GetRolesAndPermissions()
+                .ToDictionary(x => x.Key.Name, x => x.Value.Select(y => y.Value).ToList())
         };
     }
 }

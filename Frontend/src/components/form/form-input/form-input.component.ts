@@ -4,7 +4,7 @@ import { FormGroup, ReactiveFormsModule } from "@angular/forms";
 import { IconFieldModule } from "primeng/iconfield";
 import { InputIconModule } from "primeng/inputicon";
 import { InputTextModule } from "primeng/inputtext";
-import FormField from "./models/form-field";
+import { FormField } from "./models/form-field";
 
 @Component({
     selector: "app-form-input",

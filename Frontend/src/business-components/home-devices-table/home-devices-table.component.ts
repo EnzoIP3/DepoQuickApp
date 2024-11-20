@@ -1,4 +1,11 @@
-import { Component, ContentChild, Input, TemplateRef, OnInit, OnDestroy } from "@angular/core";
+import {
+    Component,
+    ContentChild,
+    Input,
+    TemplateRef,
+    OnInit,
+    OnDestroy
+} from "@angular/core";
 import TableColumn from "../../components/table/models/table-column";
 import Device from "../../backend/services/devices/models/device";
 import { Subscription } from "rxjs";
@@ -129,7 +136,8 @@ export class HomeDevicesTableComponent implements OnInit, OnDestroy {
         if (this.selectedDevice) {
             this.selectedDevice =
                 this.devices.find(
-                    (device) => device.hardwareId === this.selectedDevice?.hardwareId
+                    (device) =>
+                        device.hardwareId === this.selectedDevice?.hardwareId
                 ) || null;
         }
     }

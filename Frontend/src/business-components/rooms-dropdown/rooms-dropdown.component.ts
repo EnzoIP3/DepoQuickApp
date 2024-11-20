@@ -78,7 +78,7 @@ export class RoomsDropdownComponent implements OnDestroy {
                         detail: "Added device to room"
                     });
                 },
-                error: (error) => {
+                error: (error: { message: any }) => {
                     this._messageService.add({
                         severity: "error",
                         summary: "Error",

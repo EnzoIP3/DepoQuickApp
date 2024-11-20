@@ -1,4 +1,12 @@
-import { Component, Input, TemplateRef, ViewChild, OnInit, AfterViewInit, OnDestroy } from "@angular/core";
+import {
+    Component,
+    Input,
+    TemplateRef,
+    ViewChild,
+    OnInit,
+    AfterViewInit,
+    OnDestroy
+} from "@angular/core";
 import TableColumn from "../../components/table/models/table-column";
 import Member from "../../backend/services/homes/models/member";
 import { Subscription } from "rxjs";

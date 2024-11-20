@@ -32,7 +32,8 @@ public class CameraControllerTests
         _notificationService = new Mock<INotificationService>();
         _businessOwnerService = new Mock<IBusinessOwnerService>();
         _cameraController = new CameraController(_notificationService.Object, _deviceService.Object,
-            _businessOwnerService.Object) { ControllerContext = { HttpContext = _httpContext.Object } };
+            _businessOwnerService.Object)
+        { ControllerContext = { HttpContext = _httpContext.Object } };
     }
 
     #region CreateCamera
@@ -117,7 +118,9 @@ public class CameraControllerTests
         var request = new PersonDetectedRequest { UserEmail = "email@example.com" };
         var args = new NotificationArgs
         {
-            HardwareId = hardwareId, Date = DateTime.Now, Event = $"Person detected with email: {request.UserEmail}"
+            HardwareId = hardwareId,
+            Date = DateTime.Now,
+            Event = $"Person detected with email: {request.UserEmail}"
         };
         _deviceService.Setup(x => x.IsConnected(hardwareId)).Returns(true);
         _notificationService.Setup(x => x.Notify(args, _deviceService.Object));

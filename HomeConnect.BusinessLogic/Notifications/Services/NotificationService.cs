@@ -7,7 +7,6 @@ using BusinessLogic.Notifications.Models;
 using BusinessLogic.Notifications.Repositories;
 using BusinessLogic.Users.Entities;
 using BusinessLogic.Users.Repositories;
-using BusinessLogic.Users.Services;
 
 namespace BusinessLogic.Notifications.Services;
 

@@ -93,7 +93,9 @@ public class CameraController(
     {
         var args = new NotificationArgs
         {
-            HardwareId = hardwareId, Date = DateTime.Now, Event = $"Person detected with email: {userEmail}"
+            HardwareId = hardwareId,
+            Date = DateTime.Now,
+            Event = $"Person detected with email: {userEmail}"
         };
         return args;
     }

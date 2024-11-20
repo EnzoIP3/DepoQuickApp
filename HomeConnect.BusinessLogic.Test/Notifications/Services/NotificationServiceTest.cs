@@ -10,7 +10,6 @@ using BusinessLogic.Notifications.Services;
 using BusinessLogic.Roles.Entities;
 using BusinessLogic.Users.Entities;
 using BusinessLogic.Users.Repositories;
-using BusinessLogic.Users.Services;
 using FluentAssertions;
 using Moq;
 
@@ -160,7 +159,9 @@ public class NotificationServiceTest
         // Arrange
         var args = new NotificationArgs
         {
-            HardwareId = Guid.NewGuid().ToString(), Event = "Test Event", Date = DateTime.Now
+            HardwareId = Guid.NewGuid().ToString(),
+            Event = "Test Event",
+            Date = DateTime.Now
         };
 
         _mockOwnedDeviceRepository.Setup(x => x.Exists(Guid.Parse(args.HardwareId))).Returns(false);
@@ -190,7 +191,9 @@ public class NotificationServiceTest
         var ownedDevice = new OwnedDevice(home, device);
         var args = new NotificationArgs
         {
-            HardwareId = ownedDevice.HardwareId.ToString(), Event = "Test Event", Date = DateTime.Now
+            HardwareId = ownedDevice.HardwareId.ToString(),
+            Event = "Test Event",
+            Date = DateTime.Now
         };
         _mockDeviceService.Setup(x => x.IsConnected(args.HardwareId)).Returns(true);
         _mockOwnedDeviceRepository.Setup(x => x.Exists(Guid.Parse(args.HardwareId))).Returns(true);

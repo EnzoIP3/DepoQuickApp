@@ -15,9 +15,7 @@
         >
         </app-form-dropdown>
 
-        <div
-            *ngFor="let param of selectedImporterParameters"
-            class="mb-3">
+        <div *ngFor="let param of selectedImporterParameters" class="mb-3">
             <app-form-input
                 type="text"
                 label="{{ param }}"

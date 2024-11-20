@@ -60,7 +60,9 @@ public class BusinessController(IAdminService adminService, IBusinessOwnerServic
             }).ToList(),
             Pagination = new Pagination
             {
-                Page = businesses.Page, PageSize = businesses.PageSize, TotalPages = businesses.TotalPages
+                Page = businesses.Page,
+                PageSize = businesses.PageSize,
+                TotalPages = businesses.TotalPages
             }
         };
     }
@@ -97,7 +99,10 @@ public class BusinessController(IAdminService adminService, IBusinessOwnerServic
     {
         return new GetBusinessDevicesArgs
         {
-            Rut = businessId, User = userLoggedIn!, CurrentPage = request.Page, PageSize = request.PageSize
+            Rut = businessId,
+            User = userLoggedIn!,
+            CurrentPage = request.Page,
+            PageSize = request.PageSize
         };
     }
 
@@ -118,7 +123,9 @@ public class BusinessController(IAdminService adminService, IBusinessOwnerServic
             }).ToList(),
             Pagination = new Pagination
             {
-                Page = devices.Page, PageSize = devices.PageSize, TotalPages = devices.TotalPages
+                Page = devices.Page,
+                PageSize = devices.PageSize,
+                TotalPages = devices.TotalPages
             }
         };
     }

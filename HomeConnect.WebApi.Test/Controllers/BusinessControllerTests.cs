@@ -118,7 +118,8 @@ public class BusinessControllerTests
 
         var expectedResponse = new GetBusinessesResponse
         {
-            Businesses = expectedBusinesses, Pagination = _expectedPagination
+            Businesses = expectedBusinesses,
+            Pagination = _expectedPagination
         };
 
         // Act
@@ -148,7 +149,8 @@ public class BusinessControllerTests
 
         var expectedResponse = new GetBusinessesResponse
         {
-            Businesses = expectedBusinesses, Pagination = _expectedPagination
+            Businesses = expectedBusinesses,
+            Pagination = _expectedPagination
         };
 
         // Act
@@ -179,7 +181,8 @@ public class BusinessControllerTests
 
         var expectedResponse = new GetBusinessesResponse
         {
-            Businesses = expectedBusinesses, Pagination = _expectedPagination
+            Businesses = expectedBusinesses,
+            Pagination = _expectedPagination
         };
 
         // Act
@@ -262,13 +265,19 @@ public class BusinessControllerTests
         var request = new GetBusinessDevicesRequest { Page = 1, PageSize = 10 };
         var args = new GetBusinessDevicesArgs
         {
-            Rut = _businesses[0].Rut, User = _user, CurrentPage = request.Page, PageSize = request.PageSize
+            Rut = _businesses[0].Rut,
+            User = _user,
+            CurrentPage = request.Page,
+            PageSize = request.PageSize
         };
         var user = new User("Name", "Surname", "email@email.com", "Password@1", new Role("BusinessOwner", []));
         _httpContextMock.Setup(x => x.Items).Returns(new Dictionary<object, object?> { { Item.UserLogged, user } });
         _businessOwnerService.Setup(x => x.GetDevices(It.IsAny<GetBusinessDevicesArgs>())).Returns(new PagedData<Device>
         {
-            Data = deviceList, Page = 1, PageSize = 10, TotalPages = 1
+            Data = deviceList,
+            Page = 1,
+            PageSize = 10,
+            TotalPages = 1
         });
 
         // Act

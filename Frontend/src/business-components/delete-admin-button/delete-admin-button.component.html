@@ -1,0 +1,9 @@
+<ng-container *ngIf="user && user.roles.includes('Admin')">
+    <app-button
+        label="Delete Admin"
+        severity="danger"
+        icon="pi pi-minus"
+        (click)="deleteAdmin()"
+        [disabled]="deleting"
+    ></app-button>
+</ng-container>

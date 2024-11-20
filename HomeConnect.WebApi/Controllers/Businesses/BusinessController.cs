@@ -55,7 +55,8 @@ public class BusinessController(IAdminService adminService, IBusinessOwnerServic
                 OwnerEmail = b.Owner.Email,
                 OwnerName = b.Owner.Name,
                 OwnerSurname = b.Owner.Surname,
-                Rut = b.Rut
+                Rut = b.Rut,
+                Logo = b.Logo
             }).ToList(),
             Pagination = new Pagination
             {
@@ -92,7 +93,8 @@ public class BusinessController(IAdminService adminService, IBusinessOwnerServic
         return response;
     }
 
-    private static GetBusinessDevicesArgs CreateGetBusinessDevicesArgs(string businessId, GetBusinessDevicesRequest request,
+    private static GetBusinessDevicesArgs CreateGetBusinessDevicesArgs(string businessId,
+        GetBusinessDevicesRequest request,
         User? userLoggedIn)
     {
         return new GetBusinessDevicesArgs

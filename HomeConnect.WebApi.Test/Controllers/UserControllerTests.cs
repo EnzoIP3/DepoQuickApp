@@ -63,8 +63,8 @@ public class UserControllerTests
     {
         // Arrange
         var parameters = new GetUsersRequest();
-        _adminService.Setup(x => x.GetUsers(parameters.CurrentPage, parameters.PageSize, parameters.FullName,
-            parameters.Role)).Returns(_pagedList);
+        _adminService.Setup(x => x.GetUsers(parameters.Page, parameters.PageSize, parameters.FullName,
+            parameters.Roles)).Returns(_pagedList);
 
         // Act
         GetUsersResponse response = _controller.GetUsers(parameters);
@@ -90,8 +90,8 @@ public class UserControllerTests
     {
         // Arrange
         var parameters = new GetUsersRequest { FullName = _expectedUsers.First().Name };
-        _adminService.Setup(x => x.GetUsers(parameters.CurrentPage, parameters.PageSize, parameters.FullName,
-            parameters.Role)).Returns(_pagedList);
+        _adminService.Setup(x => x.GetUsers(parameters.Page, parameters.PageSize, parameters.FullName,
+            parameters.Roles)).Returns(_pagedList);
 
         // Act
         GetUsersResponse response = _controller.GetUsers(parameters);
@@ -116,9 +116,9 @@ public class UserControllerTests
     public void GetUsers_WhenCalledWithValidRequestAndRoleFilter_ReturnsFilteredExpectedResponse()
     {
         // Arrange
-        var parameters = new GetUsersRequest { Role = _expectedUsers.First().Roles.First().Name };
-        _adminService.Setup(x => x.GetUsers(parameters.CurrentPage, parameters.PageSize, parameters.FullName,
-            parameters.Role)).Returns(_pagedList);
+        var parameters = new GetUsersRequest { Roles = _expectedUsers.First().Roles.First().Name };
+        _adminService.Setup(x => x.GetUsers(parameters.Page, parameters.PageSize, parameters.FullName,
+            parameters.Roles)).Returns(_pagedList);
 
         // Act
         GetUsersResponse response = _controller.GetUsers(parameters);
@@ -145,11 +145,11 @@ public class UserControllerTests
         // Arrange
         var parameters = new GetUsersRequest
         {
-            CurrentPage = _expectedPagination.Page,
+            Page = _expectedPagination.Page,
             PageSize = _expectedPagination.PageSize
         };
-        _adminService.Setup(x => x.GetUsers(parameters.CurrentPage, parameters.PageSize, parameters.FullName,
-            parameters.Role)).Returns(_pagedList);
+        _adminService.Setup(x => x.GetUsers(parameters.Page, parameters.PageSize, parameters.FullName,
+            parameters.Roles)).Returns(_pagedList);
 
         // Act
         GetUsersResponse response = _controller.GetUsers(parameters);

@@ -1,6 +1,7 @@
 using BusinessLogic;
 using BusinessLogic.Users.Entities;
 using BusinessLogic.Users.Repositories;
+using Microsoft.EntityFrameworkCore;
 
 namespace HomeConnect.DataAccess.Repositories;
 
@@ -58,7 +59,7 @@ public class UserRepository : PaginatedRepositoryBase<User>, IUserRepository
 
     protected override IQueryable<User> GetQueryable()
     {
-        return _context.Users;
+        return _context.Users.Include(u => u.Roles);
     }
 
     protected override IQueryable<User> ApplyFilters(IQueryable<User> query, params object[] filters)

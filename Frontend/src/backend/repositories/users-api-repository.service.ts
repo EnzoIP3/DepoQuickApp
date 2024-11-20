@@ -5,13 +5,14 @@ import { environment } from "../../environments/environment";
 import ApiRepository from "./api-repository";
 import GetBusinessRequest from "../services/users/models/get-business-request";
 import { GetBusinessResponse } from "../services/users/models/get-business-response";
+import { Router } from "@angular/router";
 
 @Injectable({
     providedIn: "root"
 })
 export class UsersApiRepositoryService extends ApiRepository {
-    constructor(http: HttpClient) {
-        super(environment.apiUrl, "users", http);
+    constructor(http: HttpClient, router: Router) {
+        super(environment.apiUrl, "users", http, router);
     }
 
     public getBusiness(

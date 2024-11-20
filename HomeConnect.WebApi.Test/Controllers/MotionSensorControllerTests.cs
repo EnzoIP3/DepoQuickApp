@@ -86,7 +86,7 @@ public class MotionSensorControllerTests
     {
         // Arrange
         var hardwareId = "hardwareId";
-        var args = new NotificationArgs { HardwareId = hardwareId, Date = DateTime.Now, Event = "movement-detected" };
+        var args = new NotificationArgs { HardwareId = hardwareId, Date = DateTime.Now, Event = "Movement detected" };
         _deviceServiceMock.Setup(x => x.IsConnected(hardwareId)).Returns(true);
         _notificationServiceMock.Setup(x => x.Notify(args, _deviceServiceMock.Object));
 

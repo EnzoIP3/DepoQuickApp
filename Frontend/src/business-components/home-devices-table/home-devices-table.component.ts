@@ -129,7 +129,7 @@ export class HomeDevicesTableComponent implements OnInit, OnDestroy {
         if (this.selectedDevice) {
             this.selectedDevice =
                 this.devices.find(
-                    (device) => device.id === this.selectedDevice?.id
+                    (device) => device.hardwareId === this.selectedDevice?.hardwareId
                 ) || null;
         }
     }

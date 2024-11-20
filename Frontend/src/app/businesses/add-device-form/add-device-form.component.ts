@@ -119,12 +119,12 @@ export class AddDeviceFormComponent implements OnInit, OnDestroy {
                 return this._cameraService;
             case "Sensor":
                 return this._sensorService;
-            case "Movement Sensor":
+            case "MotionSensor":
                 return this._motionSensorService;
             case "Lamp":
                 return this._lampService;
             default:
-                throw new Error(`Unknown device type: ${type}`);
+                throw new Error("Invalid device type.");
         }
     }
 
@@ -137,7 +137,7 @@ export class AddDeviceFormComponent implements OnInit, OnDestroy {
             const service = this._getServiceForType(deviceType);
 
             const formData = this._filterFormDataForDeviceType(deviceType);
-            this._deviceSubscription = service.postDevice(formData).subscribe({
+            this._deviceSubscription = service.addDevice(formData).subscribe({
                 next: (response) => {
                     this.status.loading = false;
                     this._messageService.add({
@@ -153,7 +153,7 @@ export class AddDeviceFormComponent implements OnInit, OnDestroy {
                         isInterior: false
                     });
                 },
-                error: (error: any) => {
+                error: (error) => {
                     this.status.loading = false;
                     this.status.error = error;
                     this._messageService.add({

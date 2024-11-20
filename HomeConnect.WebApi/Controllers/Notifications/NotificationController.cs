@@ -27,9 +27,9 @@ public class NotificationController(INotificationService notificationService) : 
             Notifications = notifications.Select(n => new NotificationData
             {
                 Event = n.Event,
-                DeviceId = n.OwnedDevice.HardwareId.ToString(),
+                Device = n.OwnedDevice.ToOwnedDeviceDto(),
                 Read = n.Read,
-                DateCreated = n.Date
+                DateCreated = n.Date.ToString("dd MMMM yyyy HH:mm:ss", CultureInfo.InvariantCulture)
             }).ToList()
         };
         notificationService.MarkNotificationsAsRead(notifications);

@@ -83,12 +83,12 @@ public class BusinessController(IAdminService adminService, IBusinessOwnerServic
 
     [HttpGet("{businessId}/devices")]
     [AuthorizationFilter(SystemPermission.GetBusinessDevices)]
-    public GetDevicesResponse GetDevices(string businessId, [FromQuery] GetBusinessDevicesRequest request)
+    public GetBusinessDevicesResponse GetDevices(string businessId, [FromQuery] GetBusinessDevicesRequest request)
     {
         var userLoggedIn = HttpContext.Items[Item.UserLogged] as User;
         var args = CreateGetBusinessDevicesArgs(businessId, request, userLoggedIn);
         PagedData<Device> devices = businessOwnerService.GetDevices(args);
-        GetDevicesResponse response = ResponseFromDevices(devices);
+        GetBusinessDevicesResponse response = ResponseFromDevices(devices);
         return response;
     }
 
@@ -104,9 +104,9 @@ public class BusinessController(IAdminService adminService, IBusinessOwnerServic
         };
     }
 
-    private GetDevicesResponse ResponseFromDevices(PagedData<Device> devices)
+    private GetBusinessDevicesResponse ResponseFromDevices(PagedData<Device> devices)
     {
-        return new GetDevicesResponse
+        return new GetBusinessDevicesResponse
         {
             Devices = devices.Data.Select(d => new DeviceInfo
             {

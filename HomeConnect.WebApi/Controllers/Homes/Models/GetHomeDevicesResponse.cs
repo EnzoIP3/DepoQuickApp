@@ -1,6 +1,6 @@
 namespace HomeConnect.WebApi.Controllers.Homes.Models;
 
-public record GetDevicesResponse
+public record GetHomeDevicesResponse
 {
     public List<ListOwnedDeviceInfo> Devices { get; set; } = null!;
 }

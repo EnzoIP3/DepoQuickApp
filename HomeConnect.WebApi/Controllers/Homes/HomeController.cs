@@ -158,11 +158,11 @@ public class HomeController(IHomeOwnerService homeOwnerService) : ControllerBase
     [HttpGet("{homesId}/devices")]
     [AuthorizationFilter(SystemPermission.GetDevices)]
     [HomeAuthorizationFilter(HomePermission.GetDevices)]
-    public GetDevicesResponse GetDevices([FromRoute] string homesId, [FromQuery] string? roomId = null)
+    public GetHomeDevicesResponse GetDevices([FromRoute] string homesId, [FromQuery] string? roomId = null)
     {
         IEnumerable<OwnedDevice> devices = homeOwnerService.GetHomeDevices(homesId, roomId);
         var deviceInfos = devices.Select(ListOwnedDeviceInfo.FromOwnedDevice).ToList();
-        return new GetDevicesResponse { Devices = deviceInfos };
+        return new GetHomeDevicesResponse { Devices = deviceInfos };
     }
 
     [HttpPost("{homesId}/devices")]

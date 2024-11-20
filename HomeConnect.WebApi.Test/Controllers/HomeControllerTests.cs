@@ -172,7 +172,7 @@ public class HomeControllerTests
         _homeOwnerService.Setup(x => x.GetHomeDevices(_home.Id.ToString(), null))
             .Returns(new List<OwnedDevice> { device1, device2 });
 
-        var expectedResponse = new GetDevicesResponse
+        var expectedResponse = new GetHomeDevicesResponse
         {
             Devices =
             [
@@ -205,7 +205,7 @@ public class HomeControllerTests
         };
 
         // Act
-        GetDevicesResponse response = _controller.GetDevices(_home.Id.ToString());
+        GetHomeDevicesResponse response = _controller.GetDevices(_home.Id.ToString());
 
         // Assert
         _homeOwnerService.VerifyAll();
@@ -247,7 +247,7 @@ public class HomeControllerTests
         _homeOwnerService.Setup(x => x.GetHomeDevices(_home.Id.ToString(), null))
             .Returns(new List<OwnedDevice> { lamp1, lamp2 });
 
-        var expectedResponse = new GetDevicesResponse
+        var expectedResponse = new GetHomeDevicesResponse
         {
             Devices =
             [
@@ -282,7 +282,7 @@ public class HomeControllerTests
         };
 
         // Act
-        GetDevicesResponse response = _controller.GetDevices(_home.Id.ToString());
+        GetHomeDevicesResponse response = _controller.GetDevices(_home.Id.ToString());
 
         // Assert
         _homeOwnerService.VerifyAll();
@@ -326,7 +326,7 @@ public class HomeControllerTests
         _homeOwnerService.Setup(x => x.GetHomeDevices(_home.Id.ToString(), null))
             .Returns(new List<OwnedDevice> { sensor1, sensor2 });
 
-        var expectedResponse = new GetDevicesResponse
+        var expectedResponse = new GetHomeDevicesResponse
         {
             Devices =
             [
@@ -361,7 +361,7 @@ public class HomeControllerTests
         };
 
         // Act
-        GetDevicesResponse response = _controller.GetDevices(_home.Id.ToString());
+        GetHomeDevicesResponse response = _controller.GetDevices(_home.Id.ToString());
 
         // Assert
         _homeOwnerService.VerifyAll();

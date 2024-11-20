@@ -237,7 +237,7 @@ public class BusinessControllerTests
                 Type = DeviceType.Sensor
             }
         };
-        var expectedResponse = new GetDevicesResponse
+        var expectedResponse = new GetBusinessDevicesResponse
         {
             Devices =
             [
@@ -275,7 +275,7 @@ public class BusinessControllerTests
         });
 
         // Act
-        GetDevicesResponse response = _controller.GetDevices(_businesses[0].Rut, request);
+        GetBusinessDevicesResponse response = _controller.GetDevices(_businesses[0].Rut, request);
 
         // Assert
         _businessOwnerService.Verify(

@@ -14,6 +14,7 @@ import { FormButtonComponent } from "../../components/form/form-button/form-butt
 import { PanelComponent } from "../../components/panel/panel.component";
 import { ButtonComponent } from '../../components/button/button.component';
 import { AddDeviceFormComponent } from "../homes/add-device-form/add-device-form.component";
+import { DeleteAdminButtonComponent } from "../../business-components/delete-admin-button/delete-admin-button/delete-admin-button.component";
 
 
 @NgModule({
@@ -33,7 +34,8 @@ import { AddDeviceFormComponent } from "../homes/add-device-form/add-device-form
     FormButtonComponent,
     PanelComponent,
     ButtonComponent,
-    AddDeviceFormComponent
+    AddDeviceFormComponent,
+    DeleteAdminButtonComponent
 ]
 })
 export class AdminsModule { }

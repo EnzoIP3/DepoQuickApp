@@ -49,13 +49,18 @@ export class MembersTableComponent {
             header: "Can List Devices"
         },
         {
-            field: "shouldBeNotified",
+            field: "canNameDevices",
+            header: "Can Name Devices"
+        },
+        {
+            field: "notifications",
             header: "Notifications"
         }
     ];
 
-    members: Member[] = [];
-    private _homesServiceSubscription: Subscription | null = null;
+    members: any[] = [];
+    private _membersSubscription: Subscription | null = null;
+    private _getMembersSubscription: Subscription | null = null;
     loading: boolean = true;
     customTemplates: any;
 
@@ -66,11 +71,29 @@ export class MembersTableComponent {
 
     ngOnInit() {
         this.customTemplates = {};
-        this._homesService.getMembers(this.homeId).subscribe();
-        this._homesServiceSubscription = this._homesService.members.subscribe({
+        this._getMembersSubscription = this._homesService
+            .getMembers(this.homeId)
+            .subscribe();
+        this._membersSubscription = this._homesService.members.subscribe({
             next: (response: GetMembersResponse | null) => {
                 if (response) {
-                    this.members = response.members;
+                    this.members = response.members.map((member: Member) => {
+                        return {
+                            ...member,
+                            canAddDevices: this.hasPermission(
+                                member,
+                                "add-devices"
+                            ),
+                            canListDevices: this.hasPermission(
+                                member,
+                                "get-devices"
+                            ),
+                            canNameDevices: this.hasPermission(
+                                member,
+                                "name-device"
+                            )
+                        };
+                    });
                 }
                 this.loading = false;
             },
@@ -96,6 +119,11 @@ export class MembersTableComponent {
     }
 
     ngOnDestroy() {
-        this._homesServiceSubscription?.unsubscribe();
+        this._getMembersSubscription?.unsubscribe();
+        this._membersSubscription?.unsubscribe();
+    }
+
+    hasPermission(member: Member, permission: string): boolean {
+        return member.permissions.includes(permission);
     }
 }

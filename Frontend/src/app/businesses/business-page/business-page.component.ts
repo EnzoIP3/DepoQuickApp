@@ -36,9 +36,9 @@ export class BusinessPageComponent implements OnInit, OnDestroy {
     }
 
     private _setBusinessId(): void {
-        const url = window.location.href;
-        const urlSegments = url.split("/");
-        this.businessId = urlSegments[urlSegments.length - 1];
+        this._route.params.subscribe((params) => {
+            this.businessId = params["id"];
+        });
     }
 
     private _getUserId(): void {

@@ -1,4 +1,10 @@
-import { ChangeDetectorRef, Component, OnDestroy, OnInit } from "@angular/core";
+import {
+    ChangeDetectorRef,
+    Component,
+    Input,
+    OnDestroy,
+    OnInit
+} from "@angular/core";
 import {
     Form,
     FormBuilder,
@@ -22,6 +28,8 @@ import { GetImportersResponse } from "../../../backend/services/importers/models
     styles: []
 })
 export class ImportDevicesFormComponent implements OnInit, OnDestroy {
+    @Input() businessId!: string;
+
     selectedImporterParameters: string[] = [];
     importDevicesForm: FormGroup;
     parameters: FormGroup;
@@ -29,11 +37,11 @@ export class ImportDevicesFormComponent implements OnInit, OnDestroy {
         [];
     fileOptions: { label: string; value: string }[] = [];
     showConfirmationDialog: boolean = false;
-    private _businessId: string = "123";
+    status = { loading: false, error: null };
+
     private _importersSubscription: Subscription | null = null;
     private _filesSubscription: Subscription | null = null;
     private _devicesSubscription: Subscription | null = null;
-    status = { loading: false, error: null };
 
     constructor(
         private fb: FormBuilder,
@@ -43,18 +51,11 @@ export class ImportDevicesFormComponent implements OnInit, OnDestroy {
         private _deviceService: DevicesService,
         private cdr: ChangeDetectorRef
     ) {
-        this._setBusinessId();
         this.importDevicesForm = this.fb.group({
             importer: ["", Validators.required],
             parameters: this.fb.group({})
         });
         this.parameters = this.importDevicesForm.get("parameters") as FormGroup;
-    }
-
-    private _setBusinessId(): void {
-        const url = window.location.href;
-        const urlSegments = url.split("/");
-        this._businessId = urlSegments[urlSegments.length - 1];
     }
 
     ngOnInit(): void {

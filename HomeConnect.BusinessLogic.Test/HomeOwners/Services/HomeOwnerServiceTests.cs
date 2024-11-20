@@ -177,9 +177,7 @@ public class HomeOwnerServiceTests
         {
             HomeId = home.Id.ToString(),
             UserEmail = invitedUser.Email,
-            CanAddDevices = true,
-            CanListDevices = true,
-            CanNameDevices = true
+            Permissions = [HomePermission.GetDevices, HomePermission.AddDevice, HomePermission.NameDevice]
         };
         _userRepositoryMock.Setup(x => x.ExistsByEmail(model.UserEmail)).Returns(true);
         _userRepositoryMock.Setup(x => x.GetByEmail(model.UserEmail)).Returns(invitedUser);
@@ -213,8 +211,7 @@ public class HomeOwnerServiceTests
         {
             HomeId = homeId,
             UserEmail = homeOwnerEmail,
-            CanAddDevices = true,
-            CanListDevices = true
+            Permissions = [SystemPermission.GetDevices, SystemPermission.AddDevice, SystemPermission.NameDevice]
         };
 
         // Act
@@ -232,8 +229,7 @@ public class HomeOwnerServiceTests
         {
             HomeId = "invalid-guid",
             UserEmail = "a99feb27-7dac-41ec-8fd2-942533868689",
-            CanAddDevices = true,
-            CanListDevices = true
+            Permissions = [SystemPermission.GetDevices, SystemPermission.AddDevice, SystemPermission.NameDevice]
         };
 
         // Act
@@ -251,8 +247,7 @@ public class HomeOwnerServiceTests
         {
             HomeId = "a99feb27-7dac-41ec-8fd2-942533868689",
             UserEmail = "not@exists.com",
-            CanAddDevices = true,
-            CanListDevices = true
+            Permissions = [SystemPermission.GetDevices]
         };
         _homeRepositoryMock.Setup(x => x.Exists(Guid.Parse(model.HomeId))).Returns(true);
         _homeRepositoryMock.Setup(x => x.Get(Guid.Parse(model.HomeId)))
@@ -280,8 +275,7 @@ public class HomeOwnerServiceTests
         {
             HomeId = home.Id.ToString(),
             UserEmail = invitedUser.Id.ToString(),
-            CanAddDevices = true,
-            CanListDevices = true
+            Permissions = [SystemPermission.GetDevices]
         };
         _homeRepositoryMock.Setup(x => x.Exists(home.Id)).Returns(true);
         _homeRepositoryMock.Setup(x => x.Get(home.Id)).Returns(home);

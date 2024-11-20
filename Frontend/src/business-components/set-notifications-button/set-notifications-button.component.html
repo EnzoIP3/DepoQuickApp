@@ -1,4 +1,4 @@
-<ng-container *ngIf="member.shouldBeNotified">
+<ng-container *ngIf="shouldBeNotified">
     <app-button
         label="Disable"
         severity="danger"
@@ -7,7 +7,7 @@
         [disabled]="loadingNotifications"
     />
 </ng-container>
-<ng-container *ngIf="!member.shouldBeNotified">
+<ng-container *ngIf="!shouldBeNotified">
     <app-button
         label="Enable"
         severity="info"

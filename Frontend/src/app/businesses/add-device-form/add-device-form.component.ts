@@ -29,15 +29,6 @@ export class AddDeviceFormComponent implements OnInit, OnDestroy {
         mainPhoto: {
             required: { message: "Main photo is required" },
             pattern: { message: "Main photo must be a valid image URL" }
-        },
-        type: {
-            required: { message: "Device type is required" }
-        },
-        motionDetection: {
-            required: { message: "Motion detection is required for Cameras" }
-        },
-        personDetection: {
-            required: { message: "Person detection is required for Cameras" }
         }
     };
 
@@ -59,24 +50,30 @@ export class AddDeviceFormComponent implements OnInit, OnDestroy {
     ) {}
 
     ngOnInit() {
-        this.deviceForm = this._formBuilder.group({
-            name: ["", [Validators.required], Validators.maxLength(100)],
-            modelNumber: ["", [Validators.required], Validators.maxLength(50)],
-            description: ["", [Validators.required], Validators.maxLength(250)],
-            mainPhoto: [
-                "",
-                [
-                    Validators.required,
-                    Validators.pattern(/^(http|https):\/\/[^ "]+$/)
-                ]
-            ],
-            secondaryPhotos: [],
-            type: ["", [Validators.required]],
-            motionDetection: [false],
-            personDetection: [false],
-            isExterior: [false]
-        });
+        this._buildForm();
+        this._getDeviceTypes();
+        this._handleDeviceTypeChanges();
+    }
 
+    private _handleDeviceTypeChanges() {
+        this.deviceForm.get("type")?.valueChanges.subscribe((value) => {
+            if (value === "Camera") {
+                this.deviceForm
+                    .get("motionDetection")
+                    ?.setValidators(Validators.required);
+                this.deviceForm
+                    .get("personDetection")
+                    ?.setValidators(Validators.required);
+            } else {
+                this.deviceForm.get("motionDetection")?.clearValidators();
+                this.deviceForm.get("personDetection")?.clearValidators();
+            }
+            this.deviceForm.get("motionDetection")?.updateValueAndValidity();
+            this.deviceForm.get("personDetection")?.updateValueAndValidity();
+        });
+    }
+
+    private _getDeviceTypes() {
         this._deviceTypesSubscription = this._deviceTypesService
             .getDeviceTypes()
             .subscribe({
@@ -94,21 +91,26 @@ export class AddDeviceFormComponent implements OnInit, OnDestroy {
                     });
                 }
             });
+    }
 
-        this.deviceForm.get("type")?.valueChanges.subscribe((value) => {
-            if (value === "Camera") {
-                this.deviceForm
-                    .get("motionDetection")
-                    ?.setValidators(Validators.required);
-                this.deviceForm
-                    .get("personDetection")
-                    ?.setValidators(Validators.required);
-            } else {
-                this.deviceForm.get("motionDetection")?.clearValidators();
-                this.deviceForm.get("personDetection")?.clearValidators();
-            }
-            this.deviceForm.get("motionDetection")?.updateValueAndValidity();
-            this.deviceForm.get("personDetection")?.updateValueAndValidity();
+    private _buildForm() {
+        this.deviceForm = this._formBuilder.group({
+            name: ["", [Validators.required, Validators.maxLength(100)]],
+            modelNumber: ["", [Validators.required, Validators.maxLength(50)]],
+            description: ["", [Validators.required, Validators.maxLength(250)]],
+            mainPhoto: [
+                "",
+                [
+                    Validators.required,
+                    Validators.pattern(/^(http|https):\/\/[^ "]+$/)
+                ]
+            ],
+            secondaryPhotos: [],
+            type: ["", [Validators.required]],
+            motionDetection: [false, []],
+            personDetection: [false, []],
+            isExterior: [false, []],
+            isInterior: [false, []]
         });
     }
 
@@ -136,7 +138,6 @@ export class AddDeviceFormComponent implements OnInit, OnDestroy {
             const service = this._getServiceForType(deviceType);
 
             const formData = this._filterFormDataForDeviceType(deviceType);
-            console.log(formData);
             this._deviceSubscription = service.postDevice(formData).subscribe({
                 next: (response) => {
                     this.status.loading = false;
@@ -149,7 +150,8 @@ export class AddDeviceFormComponent implements OnInit, OnDestroy {
                     this.deviceForm.patchValue({
                         motionDetection: false,
                         personDetection: false,
-                        isExterior: false
+                        isExterior: false,
+                        isInterior: false
                     });
                 },
                 error: (error: any) => {
@@ -192,7 +194,7 @@ export class AddDeviceFormComponent implements OnInit, OnDestroy {
                     personDetection:
                         this.deviceForm.get("personDetection")?.value,
                     exterior: this.deviceForm.get("isExterior")?.value,
-                    interior: !this.deviceForm.get("isExterior")?.value
+                    interior: this.deviceForm.get("isInterior")?.value
                 };
             case "Sensor":
             case "Lamp":

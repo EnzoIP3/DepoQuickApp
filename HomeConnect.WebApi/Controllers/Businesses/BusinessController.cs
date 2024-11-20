@@ -99,7 +99,7 @@ public class BusinessController(IAdminService adminService, IBusinessOwnerServic
         {
             Rut = businessId,
             User = userLoggedIn!,
-            CurrentPage = request.CurrentPage,
+            CurrentPage = request.Page,
             PageSize = request.PageSize
         };
     }

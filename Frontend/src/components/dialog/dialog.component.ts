@@ -5,10 +5,10 @@ import { DialogModule } from "primeng/dialog";
     selector: "app-dialog",
     standalone: true,
     imports: [DialogModule],
-    templateUrl: "./dialog.component.html",
-    styles: ``
+    templateUrl: "./dialog.component.html"
 })
 export class DialogComponent {
+    @Input() title: string = "";
     @Input() visible: boolean = false;
     @Input() header: string = "";
     @Input() width: string = "25rem";

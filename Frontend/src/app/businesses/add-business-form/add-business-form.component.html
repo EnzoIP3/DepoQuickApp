@@ -6,7 +6,6 @@
     />
 
     <app-form [form]="businessForm" (onSubmit)="onSubmit()">
-        <!-- Name Field -->
         <app-form-input
             type="text"
             label="Business Name"
@@ -17,7 +16,6 @@
             [formField]="formFields.name"
         ></app-form-input>
 
-        <!-- Logo Field -->
         <app-form-input
             type="text"
             label="Logo URL"
@@ -28,7 +26,6 @@
             [formField]="formFields.logo"
         ></app-form-input>
 
-        <!-- Rut Field -->
         <app-form-input
             type="text"
             label="Rut"
@@ -39,7 +36,6 @@
             [formField]="formFields.rut"
         ></app-form-input>
 
-        <!-- Validator Dropdown -->
         <app-form-dropdown
             [form]="businessForm"
             name="validator"
@@ -49,7 +45,6 @@
         >
         </app-form-dropdown>
 
-        <!-- Submit Button -->
         <app-form-button
             title="Register Business"
             color="primary"

@@ -1,9 +1,7 @@
 import { Component } from "@angular/core";
-import { ActivatedRoute } from "@angular/router";
 
 @Component({
     selector: "app-businesses-page",
-    templateUrl: "./businesses-page.component.html",
-    styles: ``
+    templateUrl: "./businesses-page.component.html"
 })
 export class BusinessesPageComponent {}

@@ -63,7 +63,7 @@ public class UserControllerTests
     {
         // Arrange
         var parameters = new GetUsersRequest();
-        _adminService.Setup(x => x.GetUsers(parameters.CurrentPage, parameters.PageSize, parameters.FullName,
+        _adminService.Setup(x => x.GetUsers(parameters.Page, parameters.PageSize, parameters.FullName,
             parameters.Roles)).Returns(_pagedList);
 
         // Act
@@ -90,7 +90,7 @@ public class UserControllerTests
     {
         // Arrange
         var parameters = new GetUsersRequest { FullName = _expectedUsers.First().Name };
-        _adminService.Setup(x => x.GetUsers(parameters.CurrentPage, parameters.PageSize, parameters.FullName,
+        _adminService.Setup(x => x.GetUsers(parameters.Page, parameters.PageSize, parameters.FullName,
             parameters.Roles)).Returns(_pagedList);
 
         // Act
@@ -117,7 +117,7 @@ public class UserControllerTests
     {
         // Arrange
         var parameters = new GetUsersRequest { Roles = _expectedUsers.First().Roles.First().Name };
-        _adminService.Setup(x => x.GetUsers(parameters.CurrentPage, parameters.PageSize, parameters.FullName,
+        _adminService.Setup(x => x.GetUsers(parameters.Page, parameters.PageSize, parameters.FullName,
             parameters.Roles)).Returns(_pagedList);
 
         // Act
@@ -145,10 +145,10 @@ public class UserControllerTests
         // Arrange
         var parameters = new GetUsersRequest
         {
-            CurrentPage = _expectedPagination.Page,
+            Page = _expectedPagination.Page,
             PageSize = _expectedPagination.PageSize
         };
-        _adminService.Setup(x => x.GetUsers(parameters.CurrentPage, parameters.PageSize, parameters.FullName,
+        _adminService.Setup(x => x.GetUsers(parameters.Page, parameters.PageSize, parameters.FullName,
             parameters.Roles)).Returns(_pagedList);
 
         // Act

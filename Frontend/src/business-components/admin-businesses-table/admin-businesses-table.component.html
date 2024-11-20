@@ -1,5 +1,2 @@
-<app-table [columns]="columns" [data]="businesses" [loading]="loading" [filterableColumns]="filterableColumns"
-    (filter)="onFilterChange($event)"
-     />
-<app-paginator [currentPage]="pagination?.page" [totalPages]="pagination?.totalPages" [pageSize]="pagination?.pageSize"
-    (pageChange)="onPageChange($event)" />
+<app-base-businesses-table [businesses]="businesses" [columns]="columns" [loading]="loading" [pagination]="pagination"
+    (pageChange)="onPageChange($event)" [filterableColumns]="filterableColumns" (filterChange)="onFilterChange($event)">

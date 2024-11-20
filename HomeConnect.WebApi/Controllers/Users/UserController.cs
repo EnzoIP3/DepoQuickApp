@@ -22,7 +22,7 @@ public class UserController(IAdminService adminService, IUserService userService
     [AuthorizationFilter(SystemPermission.GetAllUsers)]
     public GetUsersResponse GetUsers([FromQuery] GetUsersRequest request)
     {
-        PagedData<User> users = adminService.GetUsers(request.CurrentPage,
+        PagedData<User> users = adminService.GetUsers(request.Page,
             request.PageSize, request.FullName,
             request.Roles);
         GetUsersResponse response = ResponseFromUsers(users);

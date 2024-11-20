@@ -5,35 +5,37 @@ import { AdminsService } from "../../../backend/services/admins/admins.service";
 import { MessageService } from "primeng/api";
 
 @Component({
-  selector: 'app-add-admin-form',
-  templateUrl: './add-admin-form.component.html',
+    selector: "app-add-admin-form",
+    templateUrl: "./add-admin-form.component.html"
 })
 export class AddAdminFormComponent {
-  readonly formFields = {
-    name: {
-      required: { message: "Name is required" },
-    },
-    surname: {
-      required: { message: "Surname is required" },
-    },
-    email: {
-      required: { message: "Email is required" },
-      pattern: { message: "Rut must follow the correct format (e.g., 12.345.678-9)" },
-    },
-    password: {
-      required: {
-          message: "Password is required"
-      },
-      minlength: {
-          message: "Password must be at least 8 characters long"
-      }
-  },
-  };
+    readonly formFields = {
+        name: {
+            required: { message: "Name is required" }
+        },
+        surname: {
+            required: { message: "Surname is required" }
+        },
+        email: {
+            required: { message: "Email is required" },
+            email: {
+                message: "Email format is invalid"
+            }
+        },
+        password: {
+            required: {
+                message: "Password is required"
+            },
+            minlength: {
+                message: "Password must be at least 8 characters long"
+            }
+        }
+    };
 
-  addForm!: FormGroup;
+    addForm!: FormGroup;
     adminStatus = { loading: false, success: false, error: null };
     private _addAdminSubscription: Subscription | null = null;
-adminForm: any;
+    adminForm: any;
 
     constructor(
         private _formBuilder: FormBuilder,
@@ -54,7 +56,7 @@ adminForm: any;
         this.adminStatus.loading = true;
         this.adminStatus.error = null;
         this.adminStatus.success = false;
-    
+
         this._addAdminSubscription = this._adminsService
             .addAdmin(this.addForm.value)
             .subscribe({
@@ -65,7 +67,7 @@ adminForm: any;
                     this._messageService.add({
                         severity: "success",
                         summary: "Success",
-                        detail: "Admin created successfully",
+                        detail: "Admin created successfully"
                     });
                 },
                 error: (error) => {
@@ -74,10 +76,13 @@ adminForm: any;
                     this._messageService.add({
                         severity: "error",
                         summary: "Error",
-                        detail: error.message,
+                        detail: error.message
                     });
-                },
+                }
             });
     }
-    
+
+    ngOnDestroy() {
+        this._addAdminSubscription?.unsubscribe();
+    }
 }

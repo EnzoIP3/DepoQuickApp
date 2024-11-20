@@ -10,21 +10,26 @@ import FilterValues from "../../components/table/models/filter-values";
 import GetBusinessesResponse from "../../backend/services/businesses/models/business-response";
 import { BusinessesService } from "../../backend/services/businesses/businesses.service";
 import Business from "../../backend/services/businesses/models/business";
+import { BaseBusinessesTableComponent } from "../base-businesses-table/base-businesses-table.component";
 
 @Component({
-    selector: "app-businesses-table",
+    selector: "app-admin-businesses-table",
     standalone: true,
-    imports: [TableComponent, PaginatorComponent],
+    imports: [BaseBusinessesTableComponent],
     templateUrl: "./admin-businesses-table.component.html"
 })
-export class BusinessesTableComponent {
+export class AdminBusinessesTableComponent {
     columns: TableColumn[] = [
+        {
+            field: "logo",
+            header: "Logo"
+        },
         {
             field: "name",
             header: "Business Name"
         },
         {
-            field: "ownerFullName",
+            field: "ownerName",
             header: "Owner Name"
         },
         {
@@ -37,15 +42,14 @@ export class BusinessesTableComponent {
         }
     ];
 
-    filterableColumns: string[] = ["name", "ownerFullName", "RUT"];
+    filterableColumns: string[] = ["name", "ownerName"];
 
     private _businessesSubscription: Subscription | null = null;
 
-    ownerName: any[] = [];
     pagination: PaginationResponse | null = null;
     filters: FilterValues = {};
     loading: boolean = true;
-    businesses: any;
+    businesses: Business[] = [];
 
     constructor(
         private readonly _businessesService: BusinessesService,
@@ -75,12 +79,7 @@ export class BusinessesTableComponent {
             .getBusinesses(queries ? { ...queries } : {})
             .subscribe({
                 next: (response: GetBusinessesResponse) => {
-                    this.ownerName = response.businesses.map(
-                        (business: Business) => ({
-                            ...business,
-                            fullName: `${business.ownerName} ${business.ownerSurname}`
-                        })
-                    );
+                    this.businesses = response.businesses;
                     this.pagination = response.pagination;
                     this.loading = false;
                 },

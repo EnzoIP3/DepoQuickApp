@@ -73,7 +73,7 @@ export class BusinessPageComponent implements OnInit, OnDestroy {
         }
 
         this._businessesSubscription = this._userService
-            .getBusiness(paginationParams, this._userId)
+            .getBusinesses(paginationParams, this._userId)
             .subscribe({
                 next: (response) => {
                     this.businesses = response.businesses.filter(

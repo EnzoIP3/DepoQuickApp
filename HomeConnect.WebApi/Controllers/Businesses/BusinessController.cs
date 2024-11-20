@@ -55,13 +55,12 @@ public class BusinessController(IAdminService adminService, IBusinessOwnerServic
                 OwnerEmail = b.Owner.Email,
                 OwnerName = b.Owner.Name,
                 OwnerSurname = b.Owner.Surname,
-                Rut = b.Rut
+                Rut = b.Rut,
+                Logo = b.Logo
             }).ToList(),
             Pagination = new Pagination
             {
-                Page = businesses.Page,
-                PageSize = businesses.PageSize,
-                TotalPages = businesses.TotalPages
+                Page = businesses.Page, PageSize = businesses.PageSize, TotalPages = businesses.TotalPages
             }
         };
     }
@@ -92,15 +91,13 @@ public class BusinessController(IAdminService adminService, IBusinessOwnerServic
         return response;
     }
 
-    private static GetBusinessDevicesArgs CreateGetBusinessDevicesArgs(string businessId, GetBusinessDevicesRequest request,
+    private static GetBusinessDevicesArgs CreateGetBusinessDevicesArgs(string businessId,
+        GetBusinessDevicesRequest request,
         User? userLoggedIn)
     {
         return new GetBusinessDevicesArgs
         {
-            Rut = businessId,
-            User = userLoggedIn!,
-            CurrentPage = request.Page,
-            PageSize = request.PageSize
+            Rut = businessId, User = userLoggedIn!, CurrentPage = request.Page, PageSize = request.PageSize
         };
     }
 
@@ -121,9 +118,7 @@ public class BusinessController(IAdminService adminService, IBusinessOwnerServic
             }).ToList(),
             Pagination = new Pagination
             {
-                Page = devices.Page,
-                PageSize = devices.PageSize,
-                TotalPages = devices.TotalPages
+                Page = devices.Page, PageSize = devices.PageSize, TotalPages = devices.TotalPages
             }
         };
     }

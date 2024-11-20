@@ -112,13 +112,13 @@ public class BusinessControllerTests
             OwnerEmail = b.Owner.Email,
             OwnerName = b.Owner.Name,
             OwnerSurname = b.Owner.Surname,
-            Rut = b.Rut
+            Rut = b.Rut,
+            Logo = b.Logo
         }).ToList();
 
         var expectedResponse = new GetBusinessesResponse
         {
-            Businesses = expectedBusinesses,
-            Pagination = _expectedPagination
+            Businesses = expectedBusinesses, Pagination = _expectedPagination
         };
 
         // Act
@@ -142,13 +142,13 @@ public class BusinessControllerTests
             OwnerEmail = b.Owner.Email,
             OwnerName = b.Owner.Name,
             OwnerSurname = b.Owner.Surname,
-            Rut = b.Rut
+            Rut = b.Rut,
+            Logo = b.Logo
         }).ToList();
 
         var expectedResponse = new GetBusinessesResponse
         {
-            Businesses = expectedBusinesses,
-            Pagination = _expectedPagination
+            Businesses = expectedBusinesses, Pagination = _expectedPagination
         };
 
         // Act
@@ -173,13 +173,13 @@ public class BusinessControllerTests
             OwnerEmail = b.Owner.Email,
             OwnerName = b.Owner.Name,
             OwnerSurname = b.Owner.Surname,
-            Rut = b.Rut
+            Rut = b.Rut,
+            Logo = b.Logo
         }).ToList();
 
         var expectedResponse = new GetBusinessesResponse
         {
-            Businesses = expectedBusinesses,
-            Pagination = _expectedPagination
+            Businesses = expectedBusinesses, Pagination = _expectedPagination
         };
 
         // Act
@@ -195,6 +195,7 @@ public class BusinessControllerTests
     #endregion
 
     #region UpdateValidator
+
     [TestMethod]
     public void UpdateValidator_WhenCalledWithValidRequest_ReturnsUpdateValidatorResponse()
     {
@@ -204,7 +205,8 @@ public class BusinessControllerTests
         _httpContextMock.Setup(h => h.Items).Returns(items);
 
         var request = new UpdateValidatorRequest { Validator = "Validator" };
-        var expectedResponse = new UpdateValidatorResponse { BusinessRut = _businesses[0].Rut, Validator = "Validator" };
+        var expectedResponse =
+            new UpdateValidatorResponse { BusinessRut = _businesses[0].Rut, Validator = "Validator" };
 
         // Act
         UpdateValidatorResponse response = _controller.UpdateValidator(_businesses[0].Rut, request);
@@ -214,6 +216,7 @@ public class BusinessControllerTests
         response.Should().NotBeNull();
         response.Should().BeEquivalentTo(expectedResponse);
     }
+
     #endregion
 
     #region GetDevices
@@ -259,19 +262,13 @@ public class BusinessControllerTests
         var request = new GetBusinessDevicesRequest { Page = 1, PageSize = 10 };
         var args = new GetBusinessDevicesArgs
         {
-            Rut = _businesses[0].Rut,
-            User = _user,
-            CurrentPage = request.Page,
-            PageSize = request.PageSize
+            Rut = _businesses[0].Rut, User = _user, CurrentPage = request.Page, PageSize = request.PageSize
         };
         var user = new User("Name", "Surname", "email@email.com", "Password@1", new Role("BusinessOwner", []));
         _httpContextMock.Setup(x => x.Items).Returns(new Dictionary<object, object?> { { Item.UserLogged, user } });
         _businessOwnerService.Setup(x => x.GetDevices(It.IsAny<GetBusinessDevicesArgs>())).Returns(new PagedData<Device>
         {
-            Data = deviceList,
-            Page = 1,
-            PageSize = 10,
-            TotalPages = 1
+            Data = deviceList, Page = 1, PageSize = 10, TotalPages = 1
         });
 
         // Act

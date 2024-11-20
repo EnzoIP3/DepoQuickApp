@@ -29,11 +29,11 @@ export const AuthenticatedRoutes: Route[] = [
         ]
     },
     {
-        label: "Admins",
+        label: "Admin",
         permission: Permissions.CREATE_ADMINISTATOR,
         items: [
             {
-                label: "Admins",
+                label: "Administration",
                 icon: "pi pi-shield",
                 routerLink: ["/admins"]
             }]},

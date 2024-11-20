@@ -2,21 +2,19 @@ import { Component } from "@angular/core";
 import TableColumn from "../../components/table/models/table-column";
 import { Router } from "@angular/router";
 import Business from "../../backend/services/businesses/models/business";
-import { TableComponent } from "../../components/table/table.component";
 import PaginationResponse from "../../backend/services/pagination";
 import Pagination from "../../backend/services/pagination";
-import { PaginatorComponent } from "../../components/paginator/paginator.component";
 import { MessageService } from "primeng/api";
 import { Subscription } from "rxjs";
 import { UsersService } from "../../backend/services/users/users.service";
 import { GetBusinessResponse } from "../../backend/services/users/models/get-business-response";
 import { AuthService } from "../../backend/services/auth/auth.service";
-import { AvatarComponent } from "../../components/avatar/avatar.component";
+import { BaseBusinessesTableComponent } from "../base-businesses-table/base-businesses-table.component";
 
 @Component({
     selector: "app-businesses-table",
     standalone: true,
-    imports: [TableComponent, PaginatorComponent, AvatarComponent],
+    imports: [BaseBusinessesTableComponent],
     templateUrl: "./businesses-table.component.html"
 })
 export class BusinessesTableComponent {
@@ -24,7 +22,6 @@ export class BusinessesTableComponent {
         { field: "logo", header: "Logo" },
         { field: "name", header: "Business Name" },
         { field: "ownerName", header: "Owner Name" },
-        { field: "ownerSurname", header: "Owner Surname" },
         { field: "ownerEmail", header: "Owner Email" },
         { field: "rut", header: "RUT" }
     ];
@@ -72,7 +69,7 @@ export class BusinessesTableComponent {
                 this._messageService.add({
                     severity: "error",
                     summary: "Error",
-                    detail: "Failed to fetch user information"
+                    detail: error.message
                 });
             }
         });
@@ -93,7 +90,7 @@ export class BusinessesTableComponent {
         }
 
         this._businessesSubscription = this._userService
-            .getBusiness(queries ? { ...queries } : {}, this._userId)
+            .getBusinesses(queries ? { ...queries } : {}, this._userId)
             .subscribe({
                 next: (response: GetBusinessResponse) => {
                     this.businesses = response.businesses;

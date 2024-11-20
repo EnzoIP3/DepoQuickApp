@@ -24,5 +24,6 @@ export class ButtonComponent {
         | "contrast"
         | null
         | undefined;
+    @Input() className: string | null = null;
     @Output() click = new EventEmitter<any>();
 }

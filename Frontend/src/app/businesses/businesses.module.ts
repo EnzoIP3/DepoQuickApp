@@ -19,6 +19,7 @@ import { ImportDevicesFormComponent } from "./import-devices-form/import-devices
 import { BusinessDevicesTableComponent } from "../../business-components/business-devices-table/business-devices-table.component";
 import { ChangeValidatorFormComponent } from "./change-validator-form/change-validator-form.component";
 import { DialogComponent } from "../../components/dialog/dialog.component";
+import { BusinessDevicesPageComponent } from './business-devices-page/business-devices-page.component';
 
 @NgModule({
     declarations: [
@@ -27,7 +28,8 @@ import { DialogComponent } from "../../components/dialog/dialog.component";
         BusinessPageComponent,
         AddDeviceFormComponent,
         ImportDevicesFormComponent,
-        ChangeValidatorFormComponent
+        ChangeValidatorFormComponent,
+        BusinessDevicesPageComponent
     ],
     imports: [
         CommonModule,

@@ -1,11 +1,9 @@
-import { Component, OnInit, OnDestroy } from "@angular/core";
+import { Component, OnInit, OnDestroy, Input } from "@angular/core";
 import PaginationResponse from "../../backend/services/pagination";
 import Device from "../../backend/services/devices/models/device";
 import TableColumn from "../../components/table/models/table-column";
 import { MessageService } from "primeng/api";
 import Pagination from "../../backend/services/pagination";
-import { AvatarComponent } from "../../components/avatar/avatar.component";
-import { ImageGalleryComponent } from "../../components/image-gallery/image-gallery.component";
 import { CommonModule } from "@angular/common";
 import GetDevicesResponse from "../../backend/services/devices/models/get-devices-response";
 import { Subscription } from "rxjs";
@@ -15,15 +13,12 @@ import { BaseDevicesTableComponent } from "../base-devices-table/base-devices-ta
 @Component({
     selector: "app-business-devices-table",
     standalone: true,
-    imports: [
-        CommonModule,
-        AvatarComponent,
-        ImageGalleryComponent,
-        BaseDevicesTableComponent
-    ],
+    imports: [CommonModule, BaseDevicesTableComponent],
     templateUrl: "./business-devices-table.component.html"
 })
 export class BusinessDevicesTableComponent implements OnInit, OnDestroy {
+    @Input() businessId!: string;
+
     columns: TableColumn[] = [
         { field: "mainPhoto", header: "Photo" },
         { field: "secondaryPhotos", header: "Other Photos" },
@@ -39,22 +34,12 @@ export class BusinessDevicesTableComponent implements OnInit, OnDestroy {
     dialogVisible = false;
     selectedDevice: Device | null = null;
     pagination: PaginationResponse | null = null;
-    private _businessId: string | null = null;
     private _devicesSubscription: Subscription | null = null;
 
     constructor(
         private readonly _businessesService: BusinessesService,
         private readonly _messageService: MessageService
-    ) {
-        this._setBusinessId();
-    }
-
-    private _setBusinessId(): void {
-        const url = window.location.href;
-        const urlSegments = url.split("/");
-        this._businessId = urlSegments[urlSegments.length - 1];
-        console.log(this._businessId);
-    }
+    ) {}
 
     ngOnInit() {
         this._subscribeToDevices();
@@ -75,7 +60,7 @@ export class BusinessDevicesTableComponent implements OnInit, OnDestroy {
 
     private _subscribeToDevices(queries?: object): void {
         this._devicesSubscription = this._businessesService
-            .getDevices(this._businessId!, queries ? { ...queries } : {})
+            .getDevices(this.businessId, queries ? { ...queries } : {})
             .subscribe({
                 next: (response: GetDevicesResponse) => {
                     this.devices = response.devices;

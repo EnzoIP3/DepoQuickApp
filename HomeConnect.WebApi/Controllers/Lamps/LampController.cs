@@ -3,6 +3,7 @@ using BusinessLogic.BusinessOwners.Services;
 using BusinessLogic.Devices.Entities;
 using BusinessLogic.Devices.Services;
 using BusinessLogic.Notifications.Models;
+using BusinessLogic.Notifications.Services;
 using BusinessLogic.Roles.Entities;
 using BusinessLogic.Users.Entities;
 using HomeConnect.WebApi.Controllers.Devices.Models;
@@ -16,7 +17,8 @@ namespace HomeConnect.WebApi.Controllers.Lamps;
 [Route("lamps")]
 public class LampController(
     IBusinessOwnerService businessOwnerService,
-    IDeviceService deviceService)
+    IDeviceService deviceService,
+    INotificationService notificationService)
     : ControllerBase
 {
     [HttpPost]
@@ -46,6 +48,7 @@ public class LampController(
     {
         NotificationArgs args = CreateTurnNotificationArgs(hardwareId, true);
         deviceService.TurnLamp(hardwareId, true, args);
+        notificationService.SendLampNotification(args, true);
         return new NotifyResponse { HardwareId = hardwareId };
     }
 
@@ -54,6 +57,7 @@ public class LampController(
     {
         NotificationArgs args = CreateTurnNotificationArgs(hardwareId, false);
         deviceService.TurnLamp(hardwareId, false, args);
+        notificationService.SendLampNotification(args, false);
         return new NotifyResponse { HardwareId = hardwareId };
     }
 

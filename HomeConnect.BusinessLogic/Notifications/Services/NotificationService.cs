@@ -102,4 +102,9 @@ public class NotificationService : INotificationService
             .Select(member => member.User));
         usersToNotify.ForEach(user => CreateNotification(ownedDevice, args.Event, user));
     }
+
+    public void SendLampNotification(NotificationArgs args, bool state)
+    {
+        throw new NotImplementedException();
+    }
 }

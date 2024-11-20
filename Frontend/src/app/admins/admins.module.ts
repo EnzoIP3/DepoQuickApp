@@ -4,7 +4,7 @@ import { CommonModule } from '@angular/common';
 import { AdminsRoutingModule } from './admins-routing.module';
 import { AdminsPageComponent } from './admins-page/admins-page.component';
 import { UsersTableComponent } from "../../business-components/users-table/users-table.component";
-import { BusinessesTableComponent } from "../../business-components/businesses-table/businesses-table.component";
+import { BusinessesTableComponent } from "../../business-components/admin-businesses-table/admin-businesses-table.component";
 import { AddAdminFormComponent } from './add-admin-form/add-admin-form.component';
 import { AddBusinessOwnerFormComponent } from './add-businessowner-form/add-businessowner-form/add-businessowner-form.component';
 import { FormComponent } from "../../components/form/form/form.component";

@@ -1,5 +1,7 @@
 using System.Globalization;
+using BusinessLogic.BusinessOwners.Entities;
 using BusinessLogic.Devices.Entities;
+using BusinessLogic.HomeOwners.Entities;
 using BusinessLogic.Notifications.Entities;
 using BusinessLogic.Notifications.Services;
 using BusinessLogic.Roles.Entities;
@@ -41,12 +43,12 @@ public class NotificationControllerTests
         };
         var user = new User("John", "Doe", "email@email.com", "Password@100",
             new Role { Name = "HomeOwner", Permissions = [] });
+        var business = new Business("5.234.235-1", "Business", "https://image.com/logo.png", user);
+        var device = new Device("Device", "123123", "a description", "https://image.com/photo.png", [], "Camera",
+            business);
         var notification = new Notification
         {
-            Event = "Event",
-            OwnedDevice = new OwnedDevice { HardwareId = Guid.NewGuid() },
-            Read = false,
-            Date = DateTime.Now
+            Event = "Event", OwnedDevice = new OwnedDevice(new Home(), device), Read = false, Date = DateTime.Now
         };
         var items = new Dictionary<object, object?> { { Item.UserLogged, user } };
         List<Notification> notifications = [notification];
@@ -65,9 +67,10 @@ public class NotificationControllerTests
         response.Should().NotBeNull();
         response.Notifications.Count.Should().Be(1);
         response.Notifications[0].Event.Should().Be(notification.Event);
-        response.Notifications[0].DeviceId.Should().Be(notification.OwnedDevice.HardwareId.ToString());
+        response.Notifications[0].Device.Should().Be(notification.OwnedDevice.ToOwnedDeviceDto());
         response.Notifications[0].Read.Should().Be(notification.Read);
-        response.Notifications[0].DateCreated.Should().Be(notification.Date.ToString("dd MMMM yyyy HH:mm:ss"));
+        response.Notifications[0].DateCreated.Should()
+            .Be(notification.Date.ToString("dd MMMM yyyy HH:mm:ss", CultureInfo.InvariantCulture));
     }
 
     [TestMethod]

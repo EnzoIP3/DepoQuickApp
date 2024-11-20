@@ -29,7 +29,7 @@ public class NotificationController(INotificationService notificationService) : 
                 Event = n.Event,
                 DeviceId = n.OwnedDevice.HardwareId.ToString(),
                 Read = n.Read,
-                DateCreated = n.Date
+                DateCreated = n.Date.ToString("dd MMMM yyyy HH:mm:ss")
             }).ToList()
         };
         notificationService.MarkNotificationsAsRead(notifications);

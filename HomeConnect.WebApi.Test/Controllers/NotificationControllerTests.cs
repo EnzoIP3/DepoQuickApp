@@ -37,9 +37,7 @@ public class NotificationControllerTests
         // Arrange
         var request = new GetNotificationsRequest
         {
-            Device = Guid.NewGuid().ToString(),
-            DateCreated = DateToString(DateTime.Now),
-            Read = false
+            Device = Guid.NewGuid().ToString(), DateCreated = DateToString(DateTime.Now), Read = false
         };
         var user = new User("John", "Doe", "email@email.com", "Password@100",
             new Role { Name = "HomeOwner", Permissions = [] });
@@ -69,7 +67,7 @@ public class NotificationControllerTests
         response.Notifications[0].Event.Should().Be(notification.Event);
         response.Notifications[0].DeviceId.Should().Be(notification.OwnedDevice.HardwareId.ToString());
         response.Notifications[0].Read.Should().Be(notification.Read);
-        response.Notifications[0].DateCreated.Should().Be(notification.Date);
+        response.Notifications[0].DateCreated.Should().Be(notification.Date.ToString("dd MMMM yyyy HH:mm:ss"));
     }
 
     [TestMethod]
@@ -78,9 +76,7 @@ public class NotificationControllerTests
         // Arrange
         var request = new GetNotificationsRequest
         {
-            Device = Guid.NewGuid().ToString(),
-            DateCreated = "2024/12/2",
-            Read = false
+            Device = Guid.NewGuid().ToString(), DateCreated = "2024/12/2", Read = false
         };
 
         // Act

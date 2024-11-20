@@ -2,7 +2,7 @@ namespace BusinessLogic.HomeOwners.Entities;
 
 public class HomePermission
 {
-    public static List<HomePermission> AllPermissions =
+    public static readonly List<HomePermission> AllPermissions =
     [
         new(GetHome),
         new(AddMember),

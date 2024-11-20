@@ -6,6 +6,7 @@ import { AdminsPageComponent } from './admins-page/admins-page.component';
 import { UsersTableComponent } from "../../business-components/users-table/users-table.component";
 import { BusinessesTableComponent } from "../../business-components/businesses-table/businesses-table.component";
 import { AddAdminFormComponent } from './add-admin-form/add-admin-form.component';
+import { AddBusinessOwnerFormComponent } from './add-businessowner-form/add-businessowner-form/add-businessowner-form.component';
 import { FormComponent } from "../../components/form/form/form.component";
 import { IconTitleComponent } from "../../components/icon-title/icon-title.component";
 import { FormInputComponent } from "../../components/form/form-input/form-input.component";
@@ -18,7 +19,8 @@ import { AddDeviceFormComponent } from "../homes/add-device-form/add-device-form
 @NgModule({
   declarations: [
     AdminsPageComponent,
-    AddAdminFormComponent
+    AddAdminFormComponent,
+    AddBusinessOwnerFormComponent
   ],
   imports: [
     CommonModule,

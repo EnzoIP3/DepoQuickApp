@@ -1,0 +1,20 @@
+<div class="mt-2">
+    <app-table [columns]="columns" [data]="businesses" [loading]="loading" [clickableRows]="true"
+        (rowClick)="onRowClick($event)" [customTemplates]="{
+            logo: logoTemplate,
+            ownerName: ownerNameTemplate
+        }" [filterableColumns]="filterableColumns" (filter)="onFilterChange($event)">
+    </app-table>
+
+    <app-paginator [currentPage]="pagination?.page" [totalPages]="pagination?.totalPages"
+        [pageSize]="pagination?.pageSize" (pageChange)="onPageChange($event)">
+    </app-paginator>
+</div>
+
+<ng-template #logoTemplate let-row="row">
+    <app-avatar defaultIcon="pi pi-image" [image]="row.logo" shape="square" size="xlarge"></app-avatar>
+</ng-template>
+
+<ng-template #ownerNameTemplate let-row="row">
+    {{ row.ownerName }} {{ row.ownerSurname }}
+</ng-template>

@@ -112,7 +112,8 @@ public class BusinessControllerTests
             OwnerEmail = b.Owner.Email,
             OwnerName = b.Owner.Name,
             OwnerSurname = b.Owner.Surname,
-            Rut = b.Rut
+            Rut = b.Rut,
+            Logo = b.Logo
         }).ToList();
 
         var expectedResponse = new GetBusinessesResponse
@@ -142,7 +143,8 @@ public class BusinessControllerTests
             OwnerEmail = b.Owner.Email,
             OwnerName = b.Owner.Name,
             OwnerSurname = b.Owner.Surname,
-            Rut = b.Rut
+            Rut = b.Rut,
+            Logo = b.Logo
         }).ToList();
 
         var expectedResponse = new GetBusinessesResponse
@@ -173,7 +175,8 @@ public class BusinessControllerTests
             OwnerEmail = b.Owner.Email,
             OwnerName = b.Owner.Name,
             OwnerSurname = b.Owner.Surname,
-            Rut = b.Rut
+            Rut = b.Rut,
+            Logo = b.Logo
         }).ToList();
 
         var expectedResponse = new GetBusinessesResponse
@@ -195,6 +198,7 @@ public class BusinessControllerTests
     #endregion
 
     #region UpdateValidator
+
     [TestMethod]
     public void UpdateValidator_WhenCalledWithValidRequest_ReturnsUpdateValidatorResponse()
     {
@@ -204,7 +208,8 @@ public class BusinessControllerTests
         _httpContextMock.Setup(h => h.Items).Returns(items);
 
         var request = new UpdateValidatorRequest { Validator = "Validator" };
-        var expectedResponse = new UpdateValidatorResponse { BusinessRut = _businesses[0].Rut, Validator = "Validator" };
+        var expectedResponse =
+            new UpdateValidatorResponse { BusinessRut = _businesses[0].Rut, Validator = "Validator" };
 
         // Act
         UpdateValidatorResponse response = _controller.UpdateValidator(_businesses[0].Rut, request);
@@ -214,6 +219,7 @@ public class BusinessControllerTests
         response.Should().NotBeNull();
         response.Should().BeEquivalentTo(expectedResponse);
     }
+
     #endregion
 
     #region GetDevices

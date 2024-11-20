@@ -1,8 +1,10 @@
-import { HttpClient } from "@angular/common/http";
 import { Injectable } from "@angular/core";
-import { Observable } from "rxjs";
+import ApiRepository from "./api-repository";
+import { HttpClient } from "@angular/common/http";
 import { environment } from "../../environments/environment";
-import ApiRepository, { RequestConfig } from "./api-repository";
+import { Observable } from "rxjs";
+import GetUsersRequest from "../services/users/models/user-request";
+import GetUsersResponse from "../services/users/models/user-response";
 import GetBusinessRequest from "../services/users/models/get-business-request";
 import { GetBusinessResponse } from "../services/users/models/get-business-response";
 import { Router } from "@angular/router";
@@ -15,7 +17,11 @@ export class UsersApiRepositoryService extends ApiRepository {
         super(environment.apiUrl, "users", http, router);
     }
 
-    public getBusiness(
+    public getUsers(request?: GetUsersRequest): Observable<GetUsersResponse> {
+        return this.get<GetUsersResponse>({ queries: request });
+    }
+
+    public getBusinesses(
         userId: string,
         request: GetBusinessRequest
     ): Observable<GetBusinessResponse> {

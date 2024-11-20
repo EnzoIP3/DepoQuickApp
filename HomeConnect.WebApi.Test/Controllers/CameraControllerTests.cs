@@ -93,7 +93,7 @@ public class CameraControllerTests
     {
         // Arrange
         var hardwareId = "hardwareId";
-        var args = new NotificationArgs { HardwareId = hardwareId, Date = DateTime.Now, Event = "movement-detected" };
+        var args = new NotificationArgs { HardwareId = hardwareId, Date = DateTime.Now, Event = "Movement detected" };
         _deviceService.Setup(x => x.IsConnected(hardwareId)).Returns(true);
         _notificationService.Setup(x => x.Notify(args, _deviceService.Object));
 
@@ -114,10 +114,10 @@ public class CameraControllerTests
     {
         // Arrange
         var hardwareId = "hardwareId";
-        var request = new PersonDetectedRequest { UserEmail = "userId" };
+        var request = new PersonDetectedRequest { UserEmail = "email@example.com" };
         var args = new NotificationArgs
         {
-            HardwareId = hardwareId, Date = DateTime.Now, Event = $"person detected with id: {request.UserEmail}"
+            HardwareId = hardwareId, Date = DateTime.Now, Event = $"Person detected with email: {request.UserEmail}"
         };
         _deviceService.Setup(x => x.IsConnected(hardwareId)).Returns(true);
         _notificationService.Setup(x => x.Notify(args, _deviceService.Object));

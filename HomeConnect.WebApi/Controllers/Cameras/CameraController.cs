@@ -77,7 +77,7 @@ public class CameraController(
 
     private static NotificationArgs CreateMovementDetectedNotificationArgs(string hardwareId)
     {
-        var args = new NotificationArgs { HardwareId = hardwareId, Date = DateTime.Now, Event = "movement-detected" };
+        var args = new NotificationArgs { HardwareId = hardwareId, Date = DateTime.Now, Event = "Movement detected" };
         return args;
     }
 
@@ -93,7 +93,7 @@ public class CameraController(
     {
         var args = new NotificationArgs
         {
-            HardwareId = hardwareId, Date = DateTime.Now, Event = $"person detected with email: {userEmail}"
+            HardwareId = hardwareId, Date = DateTime.Now, Event = $"Person detected with email: {userEmail}"
         };
         return args;
     }

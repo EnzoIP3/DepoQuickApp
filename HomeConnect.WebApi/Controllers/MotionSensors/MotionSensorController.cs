@@ -53,7 +53,7 @@ public class MotionSensorController(
 
     private static NotificationArgs CreateMovementDetectedNotificationArgs(string hardwareId)
     {
-        var args = new NotificationArgs { HardwareId = hardwareId, Date = DateTime.Now, Event = "movement-detected" };
+        var args = new NotificationArgs { HardwareId = hardwareId, Date = DateTime.Now, Event = "Movement detected" };
         return args;
     }
 }

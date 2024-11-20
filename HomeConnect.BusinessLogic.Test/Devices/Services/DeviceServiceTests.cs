@@ -269,7 +269,6 @@ public class DeviceServiceTests
         var hardwareId = Guid.NewGuid().ToString();
         _ownedDeviceRepository.Setup(x => x.Exists(Guid.Parse(hardwareId))).Returns(true);
         _ownedDeviceRepository.Setup(x => x.UpdateLampState(Guid.Parse(hardwareId), true)).Verifiable();
-        _ownedDeviceRepository.Setup(x => x.GetLampState(Guid.Parse(hardwareId))).Returns(true);
         var args = new NotificationArgs { HardwareId = hardwareId, Date = DateTime.Now, Event = "example" };
 
         // Act
@@ -286,7 +285,6 @@ public class DeviceServiceTests
         var hardwareId = Guid.NewGuid().ToString();
         _ownedDeviceRepository.Setup(x => x.Exists(Guid.Parse(hardwareId))).Returns(true);
         _ownedDeviceRepository.Setup(x => x.UpdateLampState(Guid.Parse(hardwareId), true)).Verifiable();
-        _ownedDeviceRepository.Setup(x => x.GetLampState(Guid.Parse(hardwareId))).Returns(true);
         var args = new NotificationArgs { HardwareId = hardwareId, Date = DateTime.Now, Event = "example" };
 
         // Act
@@ -301,25 +299,14 @@ public class DeviceServiceTests
     {
         // Arrange
         var hardwareId = Guid.NewGuid().ToString();
-        var date = DateTime.Now;
         _ownedDeviceRepository.Setup(x => x.Exists(Guid.Parse(hardwareId))).Returns(true);
         _ownedDeviceRepository.Setup(x => x.UpdateLampState(Guid.Parse(hardwareId), true)).Verifiable();
-        _ownedDeviceRepository.Setup(x => x.GetLampState(Guid.Parse(hardwareId))).Returns(false);
         var args = new NotificationArgs { HardwareId = hardwareId, Date = DateTime.Now, Event = "example" };
-        _notificationService.Setup(x => x.Notify(args));
 
         // Act
         _deviceService.TurnLamp(hardwareId, true, args);
 
         // Assert
-        _notificationService.Verify(x => x.Notify(It.Is<NotificationArgs>(y =>
-            y.HardwareId == hardwareId &&
-            y.Date.Year == date.Year &&
-            y.Date.Month == date.Month &&
-            y.Date.Day == date.Day &&
-            y.Date.Hour == date.Hour &&
-            y.Date.Minute == date.Minute &&
-            y.Event == args.Event)), Times.Once);
         _ownedDeviceRepository.VerifyAll();
     }
 

@@ -69,16 +69,7 @@ public class DeviceService : IDeviceService
     {
         EnsureHardwareIdIsValid(hardwareId);
         EnsureOwnedDeviceExists(hardwareId);
-        SendLampNotification(hardwareId, state, args);
         OwnedDeviceRepository.UpdateLampState(Guid.Parse(hardwareId), state);
-    }
-
-    private void SendLampNotification(string hardwareId, bool state, NotificationArgs args)
-    {
-        if (OwnedDeviceRepository.GetLampState(Guid.Parse(hardwareId)) != state)
-        {
-            NotificationService.Notify(args);
-        }
     }
 
     public void UpdateSensorState(string hardwareId, bool state, NotificationArgs args)

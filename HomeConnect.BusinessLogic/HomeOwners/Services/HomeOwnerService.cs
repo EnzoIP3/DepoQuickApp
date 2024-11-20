@@ -50,6 +50,7 @@ public class HomeOwnerService : IHomeOwnerService
         Home home = GetHome(Guid.Parse(args.HomeId));
         Member member = CreateMember(user, args);
         home.AddMember(member);
+        member.AddPermission(new HomePermission(HomePermission.GetHome));
         MemberRepository.Add(member);
         return member.Id;
     }
@@ -325,20 +326,10 @@ public class HomeOwnerService : IHomeOwnerService
 
     private static void AddPermissionsToMember(Member member, AddMemberArgs args)
     {
-        if (args.CanAddDevices)
+        args.Permissions.ForEach(permission =>
         {
-            member.AddPermission(new HomePermission(HomePermission.AddDevice));
-        }
-
-        if (args.CanNameDevices)
-        {
-            member.AddPermission(new HomePermission(HomePermission.NameDevice));
-        }
-
-        if (args.CanListDevices)
-        {
-            member.AddPermission(new HomePermission(HomePermission.GetDevices));
-        }
+            member.AddPermission(new HomePermission(permission));
+        });
     }
 
     private void ValidateAddDeviceModel(AddDevicesArgs addDevicesArgs)

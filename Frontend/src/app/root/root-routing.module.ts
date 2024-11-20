@@ -27,6 +27,24 @@ const routes: Routes = [
             import("../homes/homes.module").then((m) => m.HomesModule)
     },
     {
+        path: "businesses",
+        component: RootPageComponent,
+        canActivate: [authGuard],
+        loadChildren: () =>
+            import("../businesses/businesses.module").then(
+                (m) => m.BusinessesModule
+            )
+    },
+    {
+        path: "notifications",
+        component: RootPageComponent,
+        canActivate: [authGuard],
+        loadChildren: () =>
+            import("../notifications/notifications.module").then(
+                (m) => m.NotificationsModule
+            )
+    },
+    {
         path: "admins",
         component: RootPageComponent,
         canActivate: [authGuard],

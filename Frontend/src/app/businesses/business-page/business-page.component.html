@@ -1,0 +1,38 @@
+<div class="mt-2">
+    <app-panel [title]="title" icon="pi-building" [toggleable]="false">
+        <div class="mt-2 flex w-full gap-2 align-items-stretch">
+            <div class="flex gap-2 flex-column">
+                <div class="max-w-full">
+                    <app-panel
+                        title="Import Devices"
+                        icon="pi-file-import"
+                        [toggleable]="true"
+                    >
+                        <app-import-devices-form [businessId]="businessId" />
+                    </app-panel>
+                </div>
+                <div class="max-w-full">
+                    <app-panel
+                        title="Change Validator"
+                        icon="pi-file-import"
+                        [toggleable]="true"
+                    >
+                        <app-change-validator-form />
+                    </app-panel>
+                </div>
+            </div>
+            <div class="w-full">
+                <app-panel
+                    title="Create device"
+                    icon="pi-plus-circle"
+                    [toggleable]="true"
+                >
+                    <app-add-device-form />
+                </app-panel>
+            </div>
+        </div>
+    </app-panel>
+    <app-panel title="Devices" icon="pi-desktop" [toggleable]="false">
+        <app-business-devices-table />
+    </app-panel>
+</div>

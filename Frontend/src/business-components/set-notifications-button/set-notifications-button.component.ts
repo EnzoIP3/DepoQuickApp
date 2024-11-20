@@ -26,11 +26,11 @@ export class SetNotificationsButtonComponent {
         this.loadingNotifications = true;
         this._membersService
             .setNotifications(this.member.id, {
-                shouldBeNotified: !this.member.shouldBeNotified
+                shouldBeNotified: !this.shouldBeNotified
             })
             .subscribe({
                 next: (response: SetNotificationsResponse) => {
-                    this.member.shouldBeNotified = response.shouldBeNotified;
+                    this._updatePermissions(response);
                     this.loadingNotifications = false;
                     this._messageService.add({
                         severity: "success",
@@ -47,5 +47,19 @@ export class SetNotificationsButtonComponent {
                     });
                 }
             });
+    }
+
+    private _updatePermissions(response: SetNotificationsResponse) {
+        if (response.shouldBeNotified) {
+            this.member.permissions.push("get-notifications");
+        } else {
+            this.member.permissions = this.member.permissions.filter(
+                (permission) => permission !== "get-notifications"
+            );
+        }
+    }
+
+    get shouldBeNotified(): boolean {
+        return this.member.permissions.includes("get-notifications");
     }
 }

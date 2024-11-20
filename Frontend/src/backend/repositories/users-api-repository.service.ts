@@ -5,16 +5,29 @@ import { environment } from "../../environments/environment";
 import { Observable } from "rxjs";
 import GetUsersRequest from "../services/user/models/user-request";
 import GetUsersResponse from "../services/user/models/user-response";
+import GetBusinessRequest from "../services/users/models/get-business-request";
+import { GetBusinessResponse } from "../services/users/models/get-business-response";
+import { Router } from "@angular/router";
 
 @Injectable({
     providedIn: "root"
 })
 export class UsersApiRepositoryService extends ApiRepository {
-    constructor(http: HttpClient) {
-        super(environment.apiUrl, "users", http);
+    constructor(http: HttpClient, router: Router) {
+        super(environment.apiUrl, "users", http, router);
     }
 
     public getUsers(request?: GetUsersRequest): Observable<GetUsersResponse> {
         return this.get<GetUsersResponse>({ queries: request });
+    }
+
+    public getBusinesses(
+        userId: string,
+        request: GetBusinessRequest
+    ): Observable<GetBusinessResponse> {
+        return this.get<GetBusinessResponse>({
+            extraResource: `${userId}/businesses`,
+            queries: request
+        });
     }
 }

@@ -12,13 +12,20 @@ import AddMemberResponse from "../services/homes/models/add-member-response";
 import GetMembersResponse from "../services/homes/models/get-members-response";
 import AddDevicesRequest from "../services/homes/models/add-devices-request";
 import AddDevicesResponse from "../services/homes/models/add-devices-response";
+import GetHomeDevicesResponse from "../services/homes/models/get-home-devices-response";
+import NameHomeRequest from "../services/homes/models/name-home-request";
+import NameHomeResponse from "../services/homes/models/name-home-response";
+import AddRoomRequest from "../services/homes/models/add-room-request";
+import AddRoomResponse from "../services/homes/models/add-room-response";
+import GetRoomsResponse from "../services/homes/models/get-rooms-response";
+import { Router } from "@angular/router";
 
 @Injectable({
     providedIn: "root"
 })
 export class HomesApiRepositoryService extends ApiRepository {
-    constructor(http: HttpClient) {
-        super(environment.apiUrl, "homes", http);
+    constructor(http: HttpClient, router: Router) {
+        super(environment.apiUrl, "homes", http, router);
     }
 
     public getHomes(): Observable<GetHomesResponse> {
@@ -59,5 +66,31 @@ export class HomesApiRepositoryService extends ApiRepository {
             addDevicesRequest,
             `${homeId}/devices`
         );
+    }
+
+    public getDevices(homeId: string): Observable<GetHomeDevicesResponse> {
+        return this.get<GetHomeDevicesResponse>({
+            extraResource: `${homeId}/devices`
+        });
+    }
+
+    public nameHome(
+        homeId: string,
+        nameHomeRequest: NameHomeRequest
+    ): Observable<NameHomeResponse> {
+        return this.patch<NameHomeResponse>(nameHomeRequest, `${homeId}/name`);
+    }
+
+    public addRoom(
+        homeId: string,
+        addRoomRequest: AddRoomRequest
+    ): Observable<AddRoomResponse> {
+        return this.post<AddRoomResponse>(addRoomRequest, `${homeId}/rooms`);
+    }
+
+    public getRooms(homeId: string): Observable<GetRoomsResponse> {
+        return this.get<GetRoomsResponse>({
+            extraResource: `${homeId}/rooms`
+        });
     }
 }

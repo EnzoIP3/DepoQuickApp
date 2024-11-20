@@ -6,29 +6,41 @@ using BusinessLogic.Notifications.Entities;
 using BusinessLogic.Notifications.Models;
 using BusinessLogic.Notifications.Repositories;
 using BusinessLogic.Users.Entities;
+using BusinessLogic.Users.Repositories;
 
 namespace BusinessLogic.Notifications.Services;
 
 public class NotificationService : INotificationService
 {
     public NotificationService(INotificationRepository notificationRepository,
-        IOwnedDeviceRepository ownedDeviceRepository)
+        IOwnedDeviceRepository ownedDeviceRepository, IUserRepository userRepository)
     {
         NotificationRepository = notificationRepository;
         OwnedDeviceRepository = ownedDeviceRepository;
+        UserRepository = userRepository;
     }
 
     private INotificationRepository NotificationRepository { get; }
     private IOwnedDeviceRepository OwnedDeviceRepository { get; }
+    private IUserRepository UserRepository { get; }
 
     public void Notify(NotificationArgs args, IDeviceService deviceService)
     {
+        EnsureUserExists(args.UserEmail);
         EnsureOwnedDeviceExists(args.HardwareId);
         EnsureDeviceIsConnected(args.HardwareId, deviceService);
         OwnedDevice ownedDevice = OwnedDeviceRepository.GetByHardwareId(Guid.Parse(args.HardwareId));
         Home home = ownedDevice.Home;
         var shouldReceiveNotification = new HomePermission(HomePermission.GetNotifications);
         NotifyUsersWithPermission(args, home, shouldReceiveNotification, ownedDevice);
+    }
+
+    private void EnsureUserExists(string? userEmail)
+    {
+        if (userEmail != null && !UserRepository.ExistsByEmail(userEmail))
+        {
+            throw new ArgumentException("User detected by camera was not found.");
+        }
     }
 
     private static void EnsureDeviceIsConnected(string hardwareId, IDeviceService deviceService)

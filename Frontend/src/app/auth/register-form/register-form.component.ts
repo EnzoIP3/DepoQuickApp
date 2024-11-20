@@ -48,7 +48,7 @@ export class RegisterFormComponent implements OnDestroy {
                 "",
                 [
                     Validators.required,
-                    Validators.pattern(/^https?:\/\/.*\.(jpg|jpeg|png|gif)$/)
+                    Validators.pattern(/^(http|https):\/\/[^ "]+$/)
                 ]
             ],
             email: ["", [Validators.required, Validators.email]],

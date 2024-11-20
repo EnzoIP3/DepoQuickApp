@@ -67,7 +67,8 @@ public class DeviceController : ControllerBase
                 Type = d.Type.ToString(),
                 ModelNumber = d.ModelNumber,
                 MainPhoto = d.MainPhoto,
-                SecondaryPhotos = d.SecondaryPhotos
+                SecondaryPhotos = d.SecondaryPhotos,
+                Description = d.Description
             }).ToList(),
             Pagination = new Pagination
             {
@@ -86,8 +87,8 @@ public class DeviceController : ControllerBase
         var args = new ImportDevicesArgs
         {
             ImporterName = request.ImporterName,
-            FileName = request.Route,
-            User = userLoggedIn!
+            User = userLoggedIn!,
+            Parameters = request.Parameters
         };
         var addedDevices = _importerService.ImportDevices(args);
         return new ImportDevicesResponse { ImportedDevices = addedDevices };

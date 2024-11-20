@@ -1,0 +1,11 @@
+<app-divider />
+<p class="font-bold">Name Device</p>
+<app-divider />
+
+<app-form [form]="deviceForm" (onSubmit)="onSubmit()">
+    <app-form-input type="text" label="Name" placeholder="Device name" name="newName" [form]="deviceForm"
+        iconClass="pi pi-lightbulb" [formField]="formFields.newName"></app-form-input>
+
+    <app-form-button title="Name Device" color="primary" [loading]="deviceStatus.loading"
+        [disabled]="!deviceForm.valid"></app-form-button>
+</app-form>

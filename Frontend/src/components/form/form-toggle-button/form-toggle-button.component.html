@@ -1,4 +1,4 @@
 <div class="field" [formGroup]="form">
     <p-toggleButton [onLabel]="onLabel" [offLabel]="offLabel" [onIcon]="onIcon" [offIcon]="offIcon"
-        [formControlName]="name" class="w-full"></p-toggleButton>
+        [formControlName]="name" class="w-full" (onChange)="onChange.emit($event)"></p-toggleButton>
 </div>

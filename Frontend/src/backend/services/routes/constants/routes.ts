@@ -9,6 +9,11 @@ export const AuthenticatedRoutes: Route[] = [
                 label: "All devices",
                 icon: "pi pi-lightbulb",
                 routerLink: ["/devices"]
+            },
+            {
+                label: "Notifications",
+                icon: "pi pi-bell",
+                routerLink: ["/notifications"]
             }
         ]
     },
@@ -31,10 +36,18 @@ export const AuthenticatedRoutes: Route[] = [
                 label: "Admins",
                 icon: "pi pi-shield",
                 routerLink: ["/admins"]
+            }]},
+    {
+        label: "Businesses",
+        permission: Permissions.CREATE_BUSINESS,
+        items: [
+            {
+                label: "My businesses",
+                icon: "pi pi-building",
+                routerLink: ["/businesses"]
             }
         ]
     }
-    
 ];
 
 export const UnauthenticatedRoutes: Route[] = [

@@ -90,19 +90,11 @@ public class HomeControllerTests
         var request = new AddMemberRequest
         {
             Email = _user.Email,
-            CanAddDevices = true,
-            CanListDevices = false
+            Permissions = [SystemPermission.AddDevice, SystemPermission.GetDevices],
         };
         var items = new Dictionary<object, object?> { { Item.UserLogged, _user } };
         _httpContextMock.Setup(h => h.Items).Returns(items);
-        var args = new AddMemberArgs
-        {
-            HomeId = _home.Id.ToString(),
-            UserEmail = _user.Email,
-            CanAddDevices = request.CanAddDevices,
-            CanListDevices = request.CanListDevices
-        };
-        _homeOwnerService.Setup(x => x.AddMemberToHome(args)).Returns(_user.Id);
+        _homeOwnerService.Setup(x => x.AddMemberToHome(It.IsAny<AddMemberArgs>())).Returns(_user.Id);
 
         // Act
         AddMemberResponse response = _controller.AddMember(_home.Id.ToString(), request);
@@ -184,26 +176,28 @@ public class HomeControllerTests
         {
             Devices =
             [
-                new ListDeviceInfo
+                new ListOwnedDeviceInfo
                 {
                     HardwareId = device1.HardwareId.ToString(),
-                    Name = device1.Device.Name,
+                    Name = device1.Name,
                     BusinessName = device1.Device.Business.Name,
                     Type = device1.Device.Type.ToString(),
                     ModelNumber = device1.Device.ModelNumber,
                     MainPhoto = device1.Device.MainPhoto,
                     SecondaryPhotos = device1.Device.SecondaryPhotos,
+                    Description = device1.Device.Description,
                     RoomId = device1.Room.Id.ToString()
                 },
-                new ListDeviceInfo
+                new ListOwnedDeviceInfo
                 {
                     HardwareId = device2.HardwareId.ToString(),
-                    Name = device2.Device.Name,
+                    Name = device2.Name,
                     BusinessName = device2.Device.Business.Name,
                     Type = device2.Device.Type.ToString(),
                     ModelNumber = device2.Device.ModelNumber,
                     MainPhoto = device2.Device.MainPhoto,
                     SecondaryPhotos = device2.Device.SecondaryPhotos,
+                    Description = device2.Device.Description,
                     RoomId = device2.Room.Id.ToString()
                 }
 
@@ -257,28 +251,30 @@ public class HomeControllerTests
         {
             Devices =
             [
-                new ListDeviceInfo
+                new ListOwnedDeviceInfo
                 {
                     HardwareId = lamp1.HardwareId.ToString(),
-                    Name = lamp1.Device.Name,
+                    Name = lamp1.Name,
                     BusinessName = lamp1.Device.Business.Name,
                     Type = lamp1.Device.Type.ToString(),
                     ModelNumber = lamp1.Device.ModelNumber,
                     MainPhoto = lamp1.Device.MainPhoto,
                     SecondaryPhotos = lamp1.Device.SecondaryPhotos,
                     State = false,
+                    Description = lamp1.Device.Description,
                     RoomId = lamp1.Room.Id.ToString()
                 },
-                new ListDeviceInfo
+                new ListOwnedDeviceInfo
                 {
                     HardwareId = lamp2.HardwareId.ToString(),
-                    Name = lamp2.Device.Name,
+                    Name = lamp2.Name,
                     BusinessName = lamp2.Device.Business.Name,
                     Type = lamp2.Device.Type.ToString(),
                     ModelNumber = lamp2.Device.ModelNumber,
                     MainPhoto = lamp2.Device.MainPhoto,
                     SecondaryPhotos = lamp2.Device.SecondaryPhotos,
                     State = false,
+                    Description = lamp2.Device.Description,
                     RoomId = lamp2.Room.Id.ToString()
                 }
 
@@ -334,28 +330,30 @@ public class HomeControllerTests
         {
             Devices =
             [
-                new ListDeviceInfo
+                new ListOwnedDeviceInfo
                 {
                     HardwareId = sensor1.HardwareId.ToString(),
-                    Name = sensor1.Device.Name,
+                    Name = sensor1.Name,
                     BusinessName = sensor1.Device.Business.Name,
                     Type = sensor1.Device.Type.ToString(),
                     ModelNumber = sensor1.Device.ModelNumber,
                     MainPhoto = sensor1.Device.MainPhoto,
                     SecondaryPhotos = sensor1.Device.SecondaryPhotos,
                     IsOpen = false,
+                    Description = sensor1.Device.Description,
                     RoomId = sensor1.Room.Id.ToString()
                 },
-                new ListDeviceInfo
+                new ListOwnedDeviceInfo
                 {
                     HardwareId = sensor2.HardwareId.ToString(),
-                    Name = sensor2.Device.Name,
+                    Name = sensor2.Name,
                     BusinessName = sensor2.Device.Business.Name,
                     Type = sensor2.Device.Type.ToString(),
                     ModelNumber = sensor2.Device.ModelNumber,
                     MainPhoto = sensor2.Device.MainPhoto,
                     SecondaryPhotos = sensor2.Device.SecondaryPhotos,
                     IsOpen = false,
+                    Description = sensor2.Device.Description,
                     RoomId = sensor2.Room.Id.ToString()
                 }
 
@@ -423,9 +421,7 @@ public class HomeControllerTests
                     Name = member.User.Name,
                     Surname = member.User.Surname,
                     Photo = member.User.ProfilePicture ?? string.Empty,
-                    CanAddDevices = member.HasPermission(new HomePermission(HomePermission.AddDevice)),
-                    CanListDevices = member.HasPermission(new HomePermission(HomePermission.GetDevices)),
-                    ShouldBeNotified = member.HasPermission(new HomePermission(HomePermission.GetNotifications))
+                    Permissions = member.HomePermissions.Select(hp => hp.Value).ToList()
                 },
 
                 new ListMemberInfo
@@ -434,10 +430,7 @@ public class HomeControllerTests
                     Name = otherMember.User.Name,
                     Surname = otherMember.User.Surname,
                     Photo = otherMember.User.ProfilePicture ?? string.Empty,
-                    CanAddDevices = otherMember.HasPermission(new HomePermission(HomePermission.AddDevice)),
-                    CanListDevices = otherMember.HasPermission(new HomePermission(HomePermission.GetDevices)),
-                    ShouldBeNotified =
-                        otherMember.HasPermission(new HomePermission(HomePermission.GetNotifications))
+                    Permissions = otherMember.HomePermissions.Select(hp => hp.Value).ToList()
                 }
 
             ]
@@ -639,18 +632,11 @@ public class HomeControllerTests
         // Arrange
         var homeId = "123e4567-e89b-12d3-a456-426614174000";
         var name = "Living Room";
-        var room = new Room
-        {
-            Id = Guid.NewGuid(),
-            Name = name
-        };
+        var room = new Room { Id = Guid.NewGuid(), Name = name };
 
         _homeOwnerService.Setup(x => x.CreateRoom(It.IsAny<string>(), name)).Returns(room);
 
-        var request = new CreateRoomRequest
-        {
-            Name = name
-        };
+        var request = new CreateRoomRequest { Name = name };
 
         // Act
         var response = _controller.CreateRoom(homeId, request);
@@ -662,7 +648,9 @@ public class HomeControllerTests
     }
 
     #endregion
+
     #region GetRooms
+
     [TestMethod]
     public void GetRooms_WhenCalledWithValidRequest_ReturnsRooms()
     {
@@ -725,5 +713,6 @@ public class HomeControllerTests
         response.Rooms.Should().HaveCount(2);
         response.Rooms.Should().BeEquivalentTo(expectedResponse.Rooms);
     }
+
     #endregion
 }

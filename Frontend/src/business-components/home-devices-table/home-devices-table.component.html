@@ -1,0 +1,23 @@
+<app-base-devices-table [clickableRows]="false" [columns]="columns" [devices]="devices" [loading]="loading"
+    [paginate]="false" [customTemplates]="{name: nameTemplate, roomId: roomTemplate, details: detailsTemplate}" />
+<ng-template #roomTemplate let-row="row">
+    <app-rooms-dropdown [hardwareId]="row.hardwareId" [homeId]="homeId" [roomId]="row.roomId" [rooms]="rooms"
+        [loading]="loadingRooms" />
+</ng-template>
+
+<ng-template #nameTemplate let-row="row">
+    {{ row.name || "-"}}
+</ng-template>
+
+<app-dialog [(visible)]="visibleDialog" [closable]="true" [title]="selectedDevice?.name ?? 'Unnamed device'">
+    <ng-container *ngIf="selectedDevice">
+        <app-home-device-details [columns]="columns" [device]="selectedDevice">
+            <ng-container
+                *ngTemplateOutlet="nameDeviceFormTemplate; context: { $implicit: selectedDevice }"></ng-container>
+        </app-home-device-details>
+    </ng-container>
+</app-dialog>
+
+<ng-template #detailsTemplate let-row="row">
+    <app-button (click)="onRowClick(row)" icon="pi pi-info-circle" label="Details" severity="info" />
+</ng-template>

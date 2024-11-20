@@ -8,8 +8,8 @@ import { MessageService } from "primeng/api";
 import Pagination from "../../backend/services/pagination";
 import FilterValues from "../../components/table/models/filter-values";
 import GetBusinessesResponse from "../../backend/services/businesses/models/business-response";
-import Business from "../../backend/services/businesses/models/Business";
 import { BusinessesService } from "../../backend/services/businesses/businesses.service";
+import Business from "../../backend/services/businesses/models/business";
 
 @Component({
     selector: "app-businesses-table",

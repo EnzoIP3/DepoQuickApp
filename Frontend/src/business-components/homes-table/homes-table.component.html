@@ -1,6 +1,12 @@
-<app-table [columns]="columns" [data]="homes" [loading]="loading" [clickableRows]="true" (rowClick)="onRowClick($event)"
-    [customTemplates]="{'name': nameTemplate}" />
+<app-table
+    [columns]="columns"
+    [data]="homes"
+    [loading]="loading"
+    [clickableRows]="true"
+    (rowClick)="onRowClick($event)"
+    [customTemplates]="{ name: nameTemplate }"
+/>
 
 <ng-template #nameTemplate let-value="value">
-    {{ value || '-' }}
+    {{ value || "-" }}
 </ng-template>

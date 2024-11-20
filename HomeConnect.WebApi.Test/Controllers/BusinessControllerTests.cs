@@ -249,15 +249,24 @@ public class BusinessControllerTests
                     Description = deviceList[0].Description,
                     MainPhoto = deviceList[0].MainPhoto,
                     SecondaryPhotos = deviceList[0].SecondaryPhotos,
-                    Type = deviceList[0].Type.ToString()
+                    Type = deviceList[0].Type.ToString(),
+                    BusinessName = deviceList[0].Business.Name
                 }
 
             ],
             Pagination = new Pagination { Page = 1, PageSize = 10, TotalPages = 1 }
         };
+        var request = new GetBusinessDevicesRequest { Page = 1, PageSize = 10 };
+        var args = new GetBusinessDevicesArgs
+        {
+            Rut = _businesses[0].Rut,
+            User = _user,
+            CurrentPage = request.Page,
+            PageSize = request.PageSize
+        };
         var user = new User("Name", "Surname", "email@email.com", "Password@1", new Role("BusinessOwner", []));
         _httpContextMock.Setup(x => x.Items).Returns(new Dictionary<object, object?> { { Item.UserLogged, user } });
-        _businessOwnerService.Setup(x => x.GetDevices(_businesses[0].Rut, user)).Returns(new PagedData<Device>
+        _businessOwnerService.Setup(x => x.GetDevices(It.IsAny<GetBusinessDevicesArgs>())).Returns(new PagedData<Device>
         {
             Data = deviceList,
             Page = 1,
@@ -266,10 +275,13 @@ public class BusinessControllerTests
         });
 
         // Act
-        GetDevicesResponse response = _controller.GetDevices(_businesses[0].Rut);
+        GetDevicesResponse response = _controller.GetDevices(_businesses[0].Rut, request);
 
         // Assert
-        _businessOwnerService.VerifyAll();
+        _businessOwnerService.Verify(
+            x => x.GetDevices(It.Is<GetBusinessDevicesArgs>(a => a.Rut == _businesses[0].Rut && a.User == user &&
+                                                                 a.CurrentPage == request.Page &&
+                                                                 a.PageSize == request.PageSize)), Times.Once);
         _httpContextMock.VerifyAll();
         response.Should().NotBeNull();
         response.Devices.Should().NotBeNullOrEmpty();

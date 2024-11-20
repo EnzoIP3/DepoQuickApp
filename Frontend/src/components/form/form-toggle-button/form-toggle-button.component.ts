@@ -1,5 +1,5 @@
 import { CommonModule } from "@angular/common";
-import { Component, Input } from "@angular/core";
+import { Component, EventEmitter, Input, Output } from "@angular/core";
 import { FormGroup, ReactiveFormsModule } from "@angular/forms";
 import { ToggleButtonModule } from "primeng/togglebutton";
 
@@ -7,8 +7,7 @@ import { ToggleButtonModule } from "primeng/togglebutton";
     selector: "app-form-toggle-button",
     standalone: true,
     imports: [CommonModule, ToggleButtonModule, ReactiveFormsModule],
-    templateUrl: "./form-toggle-button.component.html",
-    styles: ``
+    templateUrl: "./form-toggle-button.component.html"
 })
 export class FormToggleButtonComponent {
     @Input() form!: FormGroup;
@@ -17,4 +16,5 @@ export class FormToggleButtonComponent {
     @Input() offLabel!: string;
     @Input() onIcon!: string;
     @Input() offIcon!: string;
+    @Output() onChange: EventEmitter<any> = new EventEmitter<any>();
 }

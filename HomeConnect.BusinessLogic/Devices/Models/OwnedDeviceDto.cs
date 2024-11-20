@@ -2,9 +2,8 @@ namespace BusinessLogic.Devices.Models;
 
 public record OwnedDeviceDto
 {
-    public string Id { get; set; } = null!;
     public string HardwareId { get; set; } = null!;
-    public string Name { get; set; } = null!;
+    public string? Name { get; set; } = null!;
     public string BusinessName { get; set; } = null!;
     public string Type { get; set; } = null!;
     public string ModelNumber { get; set; } = null!;
@@ -12,5 +11,6 @@ public record OwnedDeviceDto
     public List<string> SecondaryPhotos { get; set; } = null!;
     public bool? State { get; set; }
     public bool? IsOpen { get; set; }
+    public string Description { get; set; } = null!;
     public string? RoomId { get; set; } = null!;
 }

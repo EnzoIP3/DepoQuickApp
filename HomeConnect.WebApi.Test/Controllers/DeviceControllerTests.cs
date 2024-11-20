@@ -84,7 +84,8 @@ public class DeviceControllerTests
                 Type = d.Type.ToString(),
                 ModelNumber = d.ModelNumber,
                 MainPhoto = d.MainPhoto,
-                SecondaryPhotos = d.SecondaryPhotos
+                SecondaryPhotos = d.SecondaryPhotos,
+                Description = d.Description
             }).ToList(),
             Pagination = _expectedPagination
         };
@@ -105,15 +106,16 @@ public class DeviceControllerTests
     {
         // Arrange
         var importerName = "Importer1";
-        var route = "C:/Users/username/Documents/file.csv";
+        var route = "file.csv";
         var expectedDevices = new List<string> { Guid.NewGuid().ToString(), Guid.NewGuid().ToString() };
         var expectedResponse = new ImportDevicesResponse { ImportedDevices = expectedDevices };
-        var request = new ImportDevicesRequest { ImporterName = importerName, Route = route };
+        var importerParameters = new Dictionary<string, string> { { "route", route } };
+        var request = new ImportDevicesRequest { ImporterName = importerName, Parameters = importerParameters };
         var userLoggedIn = new User("John", "Doe", "email@email.com", "Password@100",
             new Role { Name = "BusinessOwner", Permissions = [] });
         var items = new Dictionary<object, object?> { { Item.UserLogged, userLoggedIn } };
         _httpContextMock.Setup(h => h.Items).Returns(items);
-        var args = new ImportDevicesArgs { ImporterName = importerName, FileName = route, User = userLoggedIn };
+        var args = new ImportDevicesArgs { ImporterName = importerName, User = userLoggedIn, Parameters = importerParameters };
         _importerService.Setup(x => x.ImportDevices(args)).Returns(expectedDevices);
 
         // Act

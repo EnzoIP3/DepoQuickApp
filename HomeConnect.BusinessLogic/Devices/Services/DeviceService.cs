@@ -27,10 +27,19 @@ public class DeviceService : IDeviceService
 
     public PagedData<Device> GetDevices(GetDevicesArgs parameters)
     {
+        EnsureDeviceTypeExists(parameters);
         parameters.Page ??= 1;
         parameters.PageSize ??= 10;
         PagedData<Device> devices = DeviceRepository.GetPaged(parameters);
         return devices;
+    }
+
+    private static void EnsureDeviceTypeExists(GetDevicesArgs parameters)
+    {
+        if (parameters.DeviceTypeFilter != null && !Enum.TryParse(parameters.DeviceTypeFilter, out DeviceType _))
+        {
+            throw new ArgumentException("That device type does not exist.");
+        }
     }
 
     public bool TurnDevice(string hardwareId, bool state)

@@ -5,6 +5,8 @@ import { ToolbarComponent } from "../../components/toolbar/toolbar.component";
 import { RootPageComponent } from "./root-page/root-page.component";
 import { RootRoutingModule } from "./root-routing.module";
 import { ToastComponent } from "../../components/toast/toast.component";
+import { AddHomeOwnerRoleButtonComponent } from "../../business-components/add-home-owner-role-button/add-home-owner-role-button.component";
+import { RoleDropdownComponent } from "../../business-components/role-dropdown/role-dropdown.component";
 
 @NgModule({
     declarations: [RootPageComponent],
@@ -13,7 +15,9 @@ import { ToastComponent } from "../../components/toast/toast.component";
         RootRoutingModule,
         PermissionSidebarComponent,
         ToolbarComponent,
-        ToastComponent
+        ToastComponent,
+        AddHomeOwnerRoleButtonComponent,
+        RoleDropdownComponent
     ]
 })
 export class RootModule {}

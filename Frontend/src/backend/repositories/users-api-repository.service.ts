@@ -8,6 +8,7 @@ import ApiRepository from "./api-repository";
 import GetBusinessRequest from "../services/users/models/get-business-request";
 import { GetBusinessResponse } from "../services/users/models/get-business-response";
 import { Router } from "@angular/router";
+import HomeOwnerRoleResponse from "../services/users/models/home-owner-role-response";
 
 @Injectable({
     providedIn: "root"
@@ -29,5 +30,9 @@ export class UsersApiRepositoryService extends ApiRepository {
             extraResource: `${userId}/businesses`,
             queries: request
         });
+    }
+
+    public addHomeOwnerRole(): Observable<HomeOwnerRoleResponse> {
+        return this.patch<HomeOwnerRoleResponse>(null, "home_owner_role");
     }
 }

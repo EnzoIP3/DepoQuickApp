@@ -1,0 +1,3 @@
+<ng-container *ngIf="canSwitchRoles">
+    <app-dropdown [options]="roles" [value]="selectedRole" (change)="onRoleChange($event)" />
+</ng-container>

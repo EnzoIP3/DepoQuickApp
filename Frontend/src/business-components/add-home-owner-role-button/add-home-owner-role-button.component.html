@@ -1,0 +1,4 @@
+<ng-container *ngIf="canAddHomeOwnerRole">
+    <app-button [disabled]="loading" (click)="addHomeOwnerRole()" label="Become Home Owner"
+        icon="pi pi-user-plus"></app-button>
+</ng-container>

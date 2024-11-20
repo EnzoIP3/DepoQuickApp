@@ -62,11 +62,12 @@ public class UserService : IUserService
         }
     }
 
-    public void AddRoleToUser(AddRoleToUserArgs args)
+    public User AddRoleToUser(AddRoleToUserArgs args)
     {
         var user = UserRepository.Get(Guid.Parse(args.UserId));
         var role = RoleRepository.Get(args.Role);
         user.AddRole(role);
         UserRepository.Update(user);
+        return user;
     }
 }

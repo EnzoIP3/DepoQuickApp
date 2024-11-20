@@ -6,7 +6,7 @@ export const permissionsGuard: CanActivateFn = (route, __) => {
     const user = JSON.parse(localStorage.getItem("user")!) as UserLogged;
     const requiredPermissions = route.data["permissions"] as string[];
     const hasPermissions = requiredPermissions.every((p) =>
-        user.permissions.includes(p)
+        user.roles[user.currentRole].includes(p)
     );
 
     if (!hasPermissions) {

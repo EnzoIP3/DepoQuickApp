@@ -1,8 +1,9 @@
 <app-toast />
 <div class="m-2">
-    <app-permission-sidebar
-        [(sidebarVisible)]="sidebarVisible"
-    ></app-permission-sidebar>
-    <app-toolbar [title]="title" (onClick)="openSidebar()"></app-toolbar>
+    <app-permission-sidebar [(sidebarVisible)]="sidebarVisible"></app-permission-sidebar>
+    <app-toolbar [title]="title" (onClick)="openSidebar()">
+        <app-add-home-owner-role-button />
+        <app-role-dropdown />
+    </app-toolbar>
     <router-outlet />
 </div>

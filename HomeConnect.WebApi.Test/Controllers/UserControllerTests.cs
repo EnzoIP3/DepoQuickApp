@@ -145,8 +145,7 @@ public class UserControllerTests
         // Arrange
         var parameters = new GetUsersRequest
         {
-            Page = _expectedPagination.Page,
-            PageSize = _expectedPagination.PageSize
+            Page = _expectedPagination.Page, PageSize = _expectedPagination.PageSize
         };
         _adminService.Setup(x => x.GetUsers(parameters.Page, parameters.PageSize, parameters.FullName,
             parameters.Roles)).Returns(_pagedList);
@@ -181,19 +180,25 @@ public class UserControllerTests
         var args = new AddRoleToUserArgs { UserId = _user.Id.ToString(), Role = "HomeOwner" };
         var items = new Dictionary<object, object?> { { Item.UserLogged, _user } };
         _httpContext.Setup(h => h.Items).Returns(items);
-        _userService.Setup(x => x.AddRoleToUser(args)).Verifiable();
+        _userService.Setup(x => x.AddRoleToUser(args)).Returns(_user);
 
         // Act
         var response = _controller.AddHomeOwnerRole();
 
         // Assert
         _userService.VerifyAll();
-        response.Should().BeEquivalentTo(new AddHomeOwnerRoleResponse { Id = args.UserId });
+        response.Should().BeEquivalentTo(new AddHomeOwnerRoleResponse
+        {
+            Id = args.UserId,
+            Roles = _user.GetRolesAndPermissions()
+                .ToDictionary(x => x.Key.Name, x => x.Value.Select(y => y.Value).ToList())
+        });
     }
 
     #endregion
 
     #region GetBusinesses
+
     [TestMethod]
     public void GetBusinesses_WhenCalledWithValidRequest_ReturnsExpectedResponse()
     {
@@ -222,9 +227,7 @@ public class UserControllerTests
             }).ToList(),
             Pagination = new Pagination
             {
-                Page = businesses.Page,
-                PageSize = businesses.PageSize,
-                TotalPages = businesses.TotalPages
+                Page = businesses.Page, PageSize = businesses.PageSize, TotalPages = businesses.TotalPages
             }
         };
         _businessOwnerService.Setup(x => x.GetBusinesses(_user.Id.ToString(), request.CurrentPage, request.PageSize))
@@ -237,5 +240,6 @@ public class UserControllerTests
         _businessOwnerService.VerifyAll();
         response.Should().BeEquivalentTo(expectedResponse);
     }
+
     #endregion
 }

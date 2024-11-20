@@ -9,6 +9,11 @@ export const AuthenticatedRoutes: Route[] = [
                 label: "All devices",
                 icon: "pi pi-lightbulb",
                 routerLink: ["/devices"]
+            },
+            {
+                label: "Notifications",
+                icon: "pi pi-bell",
+                routerLink: ["/notifications"]
             }
         ]
     },

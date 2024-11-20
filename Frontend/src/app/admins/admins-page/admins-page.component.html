@@ -1,17 +1,20 @@
+<app-panel title="Users" icon="pi-user">
 <app-users-table (userSelected)="onUserSelected($event)"></app-users-table>
-<app-businesses-table></app-businesses-table>
-
+</app-panel>
 <div>
+  <app-button 
+    icon="pi pi-minus" 
+    label="Delete Admin" 
+    (click)="deleteAdmin()">
+  </app-button>
   <app-button icon="pi pi-plus" label="Add Admin" routerLink="/admins/add-admin"></app-button>
+
 </div>
+<app-panel title="Businesses" icon="pi-building">
+<app-businesses-table></app-businesses-table>
+</app-panel>
+
 <div>
   <app-button icon="pi pi-plus" label="Add Business Owner" routerLink="/admins/add-businessowner"></app-button>
 </div>
-<div>
-    <app-button 
-      icon="pi pi-minus" 
-      label="Delete Admin" 
-      (click)="deleteAdmin()">
-    </app-button>
-  </div>
   

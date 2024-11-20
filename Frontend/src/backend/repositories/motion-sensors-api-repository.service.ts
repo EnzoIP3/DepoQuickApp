@@ -15,7 +15,7 @@ export class MotionSensorsApiRepositoryService extends ApiRepository {
         super(environment.apiUrl, "motion_sensors", http, router);
     }
 
-    public postDevice(
+    public addDevice(
         request: CreateMotionSensorRequest
     ): Observable<CreateDeviceResponse> {
         return this.post<CreateDeviceResponse>(request);

@@ -15,7 +15,7 @@ export class SensorsApiRepositoryService extends ApiRepository {
         super(environment.apiUrl, "sensors", http, router);
     }
 
-    public postDevice(
+    public addDevice(
         request: CreateSensorRequest
     ): Observable<CreateDeviceResponse> {
         return this.post<CreateDeviceResponse>(request);

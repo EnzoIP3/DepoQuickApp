@@ -15,7 +15,7 @@ export class LampsApiRepositoryService extends ApiRepository {
         super(environment.apiUrl, "lamps", http, router);
     }
 
-    public postDevice(
+    public addDevice(
         request: CreateLampRequest
     ): Observable<CreateDeviceResponse> {
         return this.post<CreateDeviceResponse>(request);

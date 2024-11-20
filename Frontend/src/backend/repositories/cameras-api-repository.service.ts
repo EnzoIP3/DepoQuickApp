@@ -16,7 +16,7 @@ export class CamerasApiRepositoryService extends ApiRepository {
         super(environment.apiUrl, "cameras", http, router);
     }
 
-    public postDevice(
+    public addDevice(
         request: CreateCameraRequest
     ): Observable<CreateDeviceResponse> {
         return this.post<CreateDeviceResponse>(request);

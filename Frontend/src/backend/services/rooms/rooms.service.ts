@@ -2,6 +2,7 @@ import { Injectable } from "@angular/core";
 import { RoomsApiRepositoryService } from "../../repositories/rooms-api-repository.service";
 import AddDeviceToRoomRequest from "./models/add-device-to-room-request";
 import AddDeviceToRoomResponse from "./models/add-device-to-room-response";
+import { Observable } from "rxjs";
 
 @Injectable({
     providedIn: "root"

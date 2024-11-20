@@ -31,9 +31,9 @@ export class NotificationMessagesComponent implements OnInit, OnDestroy {
     private _notificationsSubscription: Subscription | null = null;
 
     notifications: NotificationData[] = [];
-    loading: boolean = true;
+    loading = true;
     loadingArray = Array(5);
-    filters: Partial<GetNotificationsRequest> = {};
+    filters: Partial<GetNotificationsRequest> = { read: false };
     devices: { label: string; value: string }[] = [];
     dates: { label: string; value: string }[] = [];
     readStates = [

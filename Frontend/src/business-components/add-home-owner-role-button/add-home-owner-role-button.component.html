@@ -1,4 +1,11 @@
 <ng-container *ngIf="canAddHomeOwnerRole">
-    <app-button [disabled]="loading" (click)="addHomeOwnerRole()" label="Become Home Owner"
+    <app-button [disabled]="loading" (click)="showConfirmationDialog = true" label="Become Home Owner"
         icon="pi pi-user-plus"></app-button>
+    <app-dialog [(visible)]="showConfirmationDialog" title="Confirmation">
+        <p>Are you sure you want to become a home owner?</p>
+        <div class="flex flex-row gap-2">
+            <app-button (click)="addHomeOwnerRole()" label="Confirm"></app-button>
+            <app-button (click)="showConfirmationDialog = false" label="Cancel" severity="danger"></app-button>
+        </div>
+    </app-dialog>
 </ng-container>

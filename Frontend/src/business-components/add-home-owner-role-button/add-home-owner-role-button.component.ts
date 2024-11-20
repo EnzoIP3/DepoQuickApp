@@ -5,11 +5,12 @@ import { UsersService } from "../../backend/services/users/users.service";
 import UserLogged from "../../backend/services/auth/models/user-logged";
 import { MessageService } from "primeng/api";
 import { CommonModule } from "@angular/common";
+import { DialogComponent } from "../../components/dialog/dialog.component";
 
 @Component({
     selector: "app-add-home-owner-role-button",
     standalone: true,
-    imports: [CommonModule, ButtonComponent],
+    imports: [CommonModule, ButtonComponent, DialogComponent],
     templateUrl: "./add-home-owner-role-button.component.html"
 })
 export class AddHomeOwnerRoleButtonComponent {
@@ -22,6 +23,7 @@ export class AddHomeOwnerRoleButtonComponent {
     user: UserLogged | null = null;
     loading: boolean = false;
     canAddHomeOwnerRole: boolean = false;
+    showConfirmationDialog: boolean = false;
 
     ngOnInit() {
         this._authService.userLogged.subscribe((user) => {

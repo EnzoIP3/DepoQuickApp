@@ -1,4 +1,4 @@
-import { Component } from "@angular/core";
+import { Component, OnInit, OnDestroy } from "@angular/core";
 import TableColumn from "../../components/table/models/table-column";
 import { Subscription } from "rxjs";
 import { MessageService } from "primeng/api";
@@ -15,7 +15,7 @@ import { CommonModule } from "@angular/common";
     imports: [CommonModule, TableComponent],
     templateUrl: "./homes-table.component.html"
 })
-export class HomesTableComponent {
+export class HomesTableComponent implements OnInit, OnDestroy {
     columns: TableColumn[] = [
         {
             field: "address",
@@ -41,7 +41,7 @@ export class HomesTableComponent {
 
     homes: Home[] = [];
     private _homesServiceSubscription: Subscription | null = null;
-    loading: boolean = true;
+    loading = true;
 
     constructor(
         private readonly _homesService: HomesService,

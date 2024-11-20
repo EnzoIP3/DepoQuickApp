@@ -20,7 +20,7 @@ import { CamerasService } from "../../backend/services/cameras/cameras.service";
 })
 export class DeviceDetailsComponent implements OnChanges, OnDestroy {
     @Input() device!: Device;
-    @Input() imageWidth: string = "100%";
+    @Input() imageWidth = "100%";
 
     cameraExtraDetails: {
         motionDetection?: boolean;

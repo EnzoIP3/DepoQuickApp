@@ -10,7 +10,7 @@ import Route from "./models/route";
     templateUrl: "./sidebar.component.html"
 })
 export class SidebarComponent {
-    @Input() visible: boolean = false;
+    @Input() visible = false;
     @Output() visibleChange = new EventEmitter<boolean>();
     @Input() routes: Route[] = [];
 

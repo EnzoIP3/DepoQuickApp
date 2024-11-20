@@ -9,10 +9,10 @@ import { ButtonModule } from "primeng/button";
     templateUrl: "./button.component.html"
 })
 export class ButtonComponent {
-    @Input() label: string = "";
-    @Input() icon: string = "";
+    @Input() label = "";
+    @Input() icon = "";
     @Input() routerLink: string | null = null;
-    @Input() disabled: boolean = false;
+    @Input() disabled = false;
     @Input() severity:
         | "success"
         | "info"

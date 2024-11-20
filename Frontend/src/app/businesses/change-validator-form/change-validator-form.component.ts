@@ -11,7 +11,6 @@ import { DeviceValidatorsService } from "../../../backend/services/device-valida
 import { BusinessesService } from "../../../backend/services/businesses/businesses.service";
 import GetValidatorsResponse from "../../../backend/services/device-validators/models/get-validators-response";
 import UpdateValidatorRequest from "../../../backend/services/businesses/models/update-validator-request";
-import UpdateValidatorResponse from "../../../backend/services/businesses/models/update-validator-request";
 
 @Component({
     selector: "app-change-validator-form",
@@ -89,7 +88,7 @@ export class ChangeValidatorFormComponent implements OnInit, OnDestroy {
             this._updateValidatorSubscription = this._businessesService
                 .updateValidator(this._businessId, request)
                 .subscribe({
-                    next: (response: UpdateValidatorResponse) => {
+                    next: () => {
                         this.status.loading = false;
                         const selectedValidator = this.validatorOptions.find(
                             (option) =>

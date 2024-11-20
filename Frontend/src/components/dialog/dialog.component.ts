@@ -9,13 +9,13 @@ import { DialogModule } from "primeng/dialog";
     styles: ``
 })
 export class DialogComponent {
-    @Input() visible: boolean = false;
-    @Input() header: string = "";
-    @Input() width: string = "25rem";
-    @Input() closable: boolean = true;
-    @Input() draggable: boolean = false;
-    @Input() resizable: boolean = false;
-    @Input() maximizable: boolean = false;
+    @Input() visible = false;
+    @Input() header = "";
+    @Input() width = "25rem";
+    @Input() closable = true;
+    @Input() draggable = false;
+    @Input() resizable = false;
+    @Input() maximizable = false;
     @Output() visibleChange: EventEmitter<boolean> =
         new EventEmitter<boolean>();
 

@@ -1,4 +1,4 @@
-import { Component } from "@angular/core";
+import { Component, OnInit, OnDestroy } from "@angular/core";
 import { TableComponent } from "../../components/table/table.component";
 import PaginationResponse from "../../backend/services/pagination";
 import Device from "../../backend/services/devices/models/device";
@@ -29,7 +29,7 @@ import { BusinessesService } from "../../backend/services/businesses/businesses.
     ],
     templateUrl: "./business-devices-table.component.html"
 })
-export class BusinessDevicesTableComponent {
+export class BusinessDevicesTableComponent implements OnInit, OnDestroy {
     columns: TableColumn[] = [
         { field: "mainPhoto", header: "Photo" },
         { field: "secondaryPhotos", header: "Other Photos" },
@@ -41,8 +41,8 @@ export class BusinessDevicesTableComponent {
 
     devices: Device[] = [];
 
-    loading: boolean = false;
-    dialogVisible: boolean = false;
+    loading = false;
+    dialogVisible = false;
     selectedDevice: Device | null = null;
     pagination: PaginationResponse | null = null;
     private _businessId: string | null = null;

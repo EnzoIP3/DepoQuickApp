@@ -1,4 +1,4 @@
-import { Component } from "@angular/core";
+import { Component, OnInit, OnDestroy } from "@angular/core";
 import { FormBuilder, FormGroup, Validators } from "@angular/forms";
 import { HomesService } from "../../../backend/services/homes/homes.service";
 import { Router } from "@angular/router";
@@ -9,7 +9,7 @@ import { Subscription } from "rxjs";
     selector: "app-add-home-form",
     templateUrl: "./add-home-form.component.html"
 })
-export class AddHomeFormComponent {
+export class AddHomeFormComponent implements OnInit, OnDestroy {
     readonly formFields = {
         address: {
             required: { message: "Address is required" },
@@ -70,7 +70,7 @@ export class AddHomeFormComponent {
         this._addHomeSubscription = this._homesService
             .addHome(this.homeForm.value)
             .subscribe({
-                next: (response) => {
+                next: () => {
                     this.homeStatus.loading = false;
                     this.homeForm.reset();
                     this._messageService.add({

@@ -1,4 +1,3 @@
-// form-button.component.ts
 import { Component, Input } from "@angular/core";
 import { ButtonModule } from "primeng/button";
 

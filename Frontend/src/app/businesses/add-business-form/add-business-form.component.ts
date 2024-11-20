@@ -1,4 +1,4 @@
-import { Component } from "@angular/core";
+import { Component, OnInit, OnDestroy } from "@angular/core";
 import { FormBuilder, FormGroup, Validators } from "@angular/forms";
 import { Router } from "@angular/router";
 import { MessageService } from "primeng/api";
@@ -13,7 +13,7 @@ import GetValidatorsResponse from "../../../backend/services/device-validators/m
     templateUrl: "./add-business-form.component.html",
     styles: []
 })
-export class AddBusinessFormComponent {
+export class AddBusinessFormComponent implements OnInit, OnDestroy {
     readonly formFields = {
         name: {
             required: { message: "Name is required" }
@@ -53,18 +53,18 @@ export class AddBusinessFormComponent {
         this.businessForm = this._formBuilder.group({
             name: ["", [Validators.required, Validators.maxLength(100)]],
             logo: [
-            "",
-            [
-                Validators.required,
-                Validators.pattern(/^(http|https):\/\/[^ "]+$/)
-            ]
+                "",
+                [
+                    Validators.required,
+                    Validators.pattern(/^(http|https):\/\/[^ "]+$/)
+                ]
             ],
             rut: [
-            "",
-            [
-                Validators.required,
-                Validators.pattern(/^\d{1,2}\.\d{3}\.\d{3}-[\dKk]{1}$/)
-            ]
+                "",
+                [
+                    Validators.required,
+                    Validators.pattern(/^\d{1,2}\.\d{3}\.\d{3}-[\dKk]{1}$/)
+                ]
             ],
             validator: ["", [Validators.required]]
         });

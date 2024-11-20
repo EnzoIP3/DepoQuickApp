@@ -1,7 +1,6 @@
-import { Component } from "@angular/core";
+import { Component, OnInit, OnDestroy } from "@angular/core";
 import { MessageService } from "primeng/api";
 import { Subscription } from "rxjs";
-import PaginationResponse from "../../backend/services/pagination";
 import TableColumn from "../../components/table/models/table-column";
 import { DeviceTypesService } from "../../backend/services/device-types/device-types.service";
 import DeviceTypesResponse from "../../backend/services/device-types/models/device-types-response";
@@ -13,7 +12,7 @@ import { TableComponent } from "../../components/table/table.component";
     imports: [TableComponent],
     templateUrl: "./device-types-table.component.html"
 })
-export class DeviceTypesTableComponent {
+export class DeviceTypesTableComponent implements OnInit, OnDestroy {
     columns: TableColumn[] = [
         {
             field: "type",
@@ -24,7 +23,7 @@ export class DeviceTypesTableComponent {
     private _deviceTypesSubscription: Subscription | null = null;
 
     deviceTypes: { type: string }[] = [];
-    loading: boolean = true;
+    loading = true;
 
     constructor(
         private readonly _deviceTypesService: DeviceTypesService,

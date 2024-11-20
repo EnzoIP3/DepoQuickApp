@@ -14,10 +14,10 @@ import { AuthService } from "../../../backend/services/auth/auth.service";
     styles: []
 })
 export class BusinessPageComponent implements OnInit, OnDestroy {
-    title: string = "Unnamed business";
+    title = "Unnamed business";
     businesses: Business[] = [];
     pagination: PaginationResponse | null = {};
-    private _businessId: string = "";
+    private _businessId = "";
     private _userId: string | null = null;
     private _businessesSubscription: Subscription | null = null;
     private _authSubscription: Subscription | null = null;
@@ -54,7 +54,7 @@ export class BusinessPageComponent implements OnInit, OnDestroy {
                     });
                 }
             },
-            error: (error) => {
+            error: () => {
                 this._messageService.add({
                     severity: "error",
                     summary: "Error",

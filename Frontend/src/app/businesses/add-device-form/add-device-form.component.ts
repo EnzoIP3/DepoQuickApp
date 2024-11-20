@@ -1,6 +1,5 @@
 import { Component, OnInit, OnDestroy } from "@angular/core";
 import { FormBuilder, FormGroup, Validators } from "@angular/forms";
-import { Router } from "@angular/router";
 import { MessageService } from "primeng/api";
 import { Subscription } from "rxjs";
 import { DeviceTypesService } from "../../../backend/services/device-types/device-types.service";

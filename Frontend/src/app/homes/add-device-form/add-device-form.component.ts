@@ -1,4 +1,4 @@
-import { Component, Input } from "@angular/core";
+import { Component, Input, OnInit, OnDestroy } from "@angular/core";
 import {
     FormBuilder,
     FormGroup,
@@ -25,7 +25,7 @@ import { Subscription } from "rxjs";
     ],
     templateUrl: "./add-device-form.component.html"
 })
-export class AddDeviceFormComponent {
+export class AddDeviceFormComponent implements OnInit, OnDestroy {
     @Input() homeId!: string;
 
     deviceForm!: FormGroup;

@@ -93,8 +93,8 @@ export default abstract class ApiRepository {
 
     protected handleError(error: HttpErrorResponse) {
         let errorMessage = ApiRepository.DEFAULT_ERROR_MESSAGE;
-        let isServerError = "message" in error.error;
-        let isExpiredTokenError =
+        const isServerError = "message" in error.error;
+        const isExpiredTokenError =
             error.status === 401 && localStorage.getItem("user");
 
         if (isServerError) {

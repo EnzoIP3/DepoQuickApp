@@ -1,4 +1,11 @@
-import { Component, EventEmitter, Input, Output } from "@angular/core";
+import {
+    Component,
+    EventEmitter,
+    Input,
+    Output,
+    OnInit,
+    OnDestroy
+} from "@angular/core";
 import { HomesService } from "../../backend/services/homes/homes.service";
 import { MessageService } from "primeng/api";
 import { Subscription } from "rxjs";
@@ -13,11 +20,11 @@ import { Router } from "@angular/router";
     imports: [ListComponent],
     templateUrl: "./home-list.component.html"
 })
-export class HomeListComponent {
+export class HomeListComponent implements OnInit, OnDestroy {
     @Input() id!: string;
     @Output() onHomeNameChange = new EventEmitter<string>();
 
-    loading: boolean = true;
+    loading = true;
     home: GetHomeResponse | null = null;
     listItems: ListItem[] = [];
 

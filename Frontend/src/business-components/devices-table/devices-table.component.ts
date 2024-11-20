@@ -1,4 +1,4 @@
-import { Component } from "@angular/core";
+import { Component, OnInit, OnDestroy } from "@angular/core";
 import { TableComponent } from "../../components/table/table.component";
 import { DevicesService } from "../../backend/services/devices/devices.service";
 import GetDevicesResponse from "../../backend/services/devices/models/get-devices-response";
@@ -30,7 +30,7 @@ import { CommonModule } from "@angular/common";
     ],
     templateUrl: "./devices-table.component.html"
 })
-export class DevicesTableComponent {
+export class DevicesTableComponent implements OnInit, OnDestroy {
     columns: TableColumn[] = [
         {
             field: "mainPhoto",
@@ -70,9 +70,9 @@ export class DevicesTableComponent {
     devices: Device[] = [];
     pagination: PaginationResponse | null = null;
     filters: FilterValues = {};
-    loading: boolean = true;
+    loading = true;
     selectedDevice: Device | null = null;
-    dialogVisible: boolean = false;
+    dialogVisible = false;
 
     constructor(
         private readonly _devicesService: DevicesService,

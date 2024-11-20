@@ -1,4 +1,4 @@
-import { Component } from "@angular/core";
+import { Component, OnInit, OnDestroy } from "@angular/core";
 import TableColumn from "../../components/table/models/table-column";
 import { Router } from "@angular/router";
 import Business from "../../backend/services/businesses/models/business";
@@ -19,7 +19,7 @@ import { AvatarComponent } from "../../components/avatar/avatar.component";
     imports: [TableComponent, PaginatorComponent, AvatarComponent],
     templateUrl: "./businesses-table.component.html"
 })
-export class BusinessesTableComponent {
+export class BusinessesTableComponent implements OnInit, OnDestroy {
     columns: TableColumn[] = [
         { field: "logo", header: "Logo" },
         { field: "name", header: "Business Name" },
@@ -33,7 +33,7 @@ export class BusinessesTableComponent {
 
     pagination: PaginationResponse | null = {};
 
-    loading: boolean = true;
+    loading = true;
     private _businessesSubscription: Subscription | null = null;
     private _authSubscription: Subscription | null = null;
     private _userId: string | null = null;
@@ -68,7 +68,7 @@ export class BusinessesTableComponent {
                     });
                 }
             },
-            error: (error) => {
+            error: () => {
                 this._messageService.add({
                     severity: "error",
                     summary: "Error",

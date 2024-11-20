@@ -20,7 +20,7 @@ export class SetNotificationsButtonComponent {
         private readonly _messageService: MessageService
     ) {}
 
-    loadingNotifications: boolean = false;
+    loadingNotifications = false;
 
     setNotifications() {
         this.loadingNotifications = true;

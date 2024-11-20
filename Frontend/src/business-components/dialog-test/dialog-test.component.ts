@@ -10,7 +10,7 @@ import { DialogComponent } from "../../components/dialog/dialog.component";
     styles: ``
 })
 export class DialogTestComponent {
-    dialogVisible: boolean = false;
+    dialogVisible = false;
 
     showDialog(): void {
         this.dialogVisible = true;

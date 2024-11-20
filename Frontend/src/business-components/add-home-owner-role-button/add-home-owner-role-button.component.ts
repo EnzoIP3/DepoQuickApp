@@ -36,8 +36,7 @@ export class AddHomeOwnerRoleButtonComponent implements OnInit {
 
     private _checkIfCanAddHomeOwnerRole(user: UserLogged) {
         const isNotHomeOwner = !Object.keys(user.roles).includes("HomeOwner");
-        const isAdmin = Object.keys(user.roles).includes("Admin");
-        this.canAddHomeOwnerRole = isNotHomeOwner && isAdmin;
+        this.canAddHomeOwnerRole = isNotHomeOwner;
     }
 
     addHomeOwnerRole() {

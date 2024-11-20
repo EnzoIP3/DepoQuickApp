@@ -13,7 +13,7 @@ export class NotificationsService {
     ) {}
 
     public getNotifications(
-        request: GetNotificationsRequest
+        request?: GetNotificationsRequest
     ): Observable<GetNotificationsResponse> {
         return this._repository.getNotifications(request);
     }

@@ -15,7 +15,7 @@ export class NotificationsApiRepositoryService extends ApiRepository {
     }
 
     public getNotifications(
-        request: GetNotificationsRequest
+        request?: GetNotificationsRequest
     ): Observable<GetNotificationsResponse> {
         return this.get<GetNotificationsResponse>({ queries: request });
     }

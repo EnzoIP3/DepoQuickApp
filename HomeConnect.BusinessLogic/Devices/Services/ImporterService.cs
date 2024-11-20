@@ -1,6 +1,7 @@
 using BusinessLogic.BusinessOwners.Models;
 using BusinessLogic.BusinessOwners.Services;
 using BusinessLogic.Devices.Entities;
+using BusinessLogic.Devices.Helpers;
 using BusinessLogic.Devices.Importer;
 using BusinessLogic.Helpers;
 using BusinessLogic.Users.Entities;
@@ -40,52 +41,13 @@ public class ImporterService : IImporterService
 
     private void CreateDevicesFromArgs(List<DeviceArgs> deviceArgs, User user)
     {
+        var factoryProvider = new DeviceFactoryProvider(BusinessOwnerService);
         foreach (var deviceArg in deviceArgs)
         {
             var deviceType = Enum.Parse<DeviceType>(deviceArg.Type);
-            switch (deviceType)
-            {
-                case DeviceType.Camera:
-                    CreateCamera(user, deviceArg);
-                    break;
-                default:
-                    CreateDevice(user, deviceArg);
-                    break;
-            }
+            var factory = factoryProvider.GetFactory(deviceType);
+            factory.CreateDevice(user, deviceArg);
         }
-    }
-
-    private void CreateCamera(User user, DeviceArgs deviceArg)
-    {
-        var cameraArgs = new CreateCameraArgs
-        {
-            Owner = user,
-            ModelNumber = deviceArg.ModelNumber,
-            Name = deviceArg.Name,
-            Description = deviceArg.Description,
-            MainPhoto = deviceArg.MainPhoto,
-            SecondaryPhotos = deviceArg.SecondaryPhotos,
-            MotionDetection = deviceArg.MotionDetection,
-            PersonDetection = deviceArg.PersonDetection,
-            Exterior = deviceArg.IsExterior,
-            Interior = deviceArg.IsInterior
-        };
-        BusinessOwnerService.CreateCamera(cameraArgs);
-    }
-
-    private void CreateDevice(User user, DeviceArgs deviceArg)
-    {
-        var newDeviceArgs = new CreateDeviceArgs
-        {
-            Owner = user,
-            ModelNumber = deviceArg.ModelNumber,
-            Name = deviceArg.Name,
-            Description = deviceArg.Description,
-            MainPhoto = deviceArg.MainPhoto,
-            SecondaryPhotos = deviceArg.SecondaryPhotos,
-            Type = deviceArg.Type
-        };
-        BusinessOwnerService.CreateDevice(newDeviceArgs);
     }
 
     public List<string> GetImportFiles()

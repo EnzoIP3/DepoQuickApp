@@ -9,6 +9,8 @@ using BusinessLogic.Notifications.Repositories;
 using BusinessLogic.Notifications.Services;
 using BusinessLogic.Roles.Entities;
 using BusinessLogic.Users.Entities;
+using BusinessLogic.Users.Repositories;
+using BusinessLogic.Users.Services;
 using FluentAssertions;
 using Moq;
 
@@ -23,6 +25,7 @@ public class NotificationServiceTest
     private Mock<INotificationRepository> _mockNotificationRepository = null!;
     private Mock<IOwnedDeviceRepository> _mockOwnedDeviceRepository = null!;
     private Mock<IDeviceService> _mockDeviceService = null!;
+    private Mock<IUserRepository> _mockUserRepository = null!;
     private NotificationService _notificationService = null!;
 
     [TestInitialize]
@@ -31,8 +34,10 @@ public class NotificationServiceTest
         _mockOwnedDeviceRepository = new Mock<IOwnedDeviceRepository>();
         _mockNotificationRepository = new Mock<INotificationRepository>();
         _mockDeviceService = new Mock<IDeviceService>();
+        _mockUserRepository = new Mock<IUserRepository>();
         _notificationService =
-            new NotificationService(_mockNotificationRepository.Object, _mockOwnedDeviceRepository.Object);
+            new NotificationService(_mockNotificationRepository.Object, _mockOwnedDeviceRepository.Object,
+                _mockUserRepository.Object);
     }
 
     #region CreateNotification
@@ -73,12 +78,14 @@ public class NotificationServiceTest
         {
             new(Guid.NewGuid(), DateTime.Now, false, "Test Event", new OwnedDevice(
                     new Home(_user, "Street 3420", 50, 100, 5),
-                    new Device("Device", _modelNumber, "Device description", "https://example.com/image.png", [], "Sensor",
+                    new Device("Device", _modelNumber, "Device description", "https://example.com/image.png", [],
+                        "Sensor",
                         new Business())),
                 new User("name", "surname", "email@email.com", "Password@100", new Role())),
             new(Guid.NewGuid(), DateTime.Now, false, "Test Event", new OwnedDevice(
                     new Home(_user, "Street 3420", 50, 100, 5),
-                    new Device("Device", _modelNumber, "Device description", "https://example.com/image.png", [], "Sensor",
+                    new Device("Device", _modelNumber, "Device description", "https://example.com/image.png", [],
+                        "Sensor",
                         new Business())),
                 new User("name2", "surname2", "email2@email.com", "Password@100", new Role()))
         };
@@ -108,12 +115,14 @@ public class NotificationServiceTest
         {
             new(Guid.NewGuid(), DateTime.Now, false, "Test Event", new OwnedDevice(
                     new Home(_user, "Street 3420", 50, 100, 5),
-                    new Device("Device", _modelNumber, "Device description", "https://example.com/image.png", [], "Sensor",
+                    new Device("Device", _modelNumber, "Device description", "https://example.com/image.png", [],
+                        "Sensor",
                         new Business())),
                 new User("name", "surname", "email@email.com", "Password@100", new Role())),
             new(Guid.NewGuid(), DateTime.Now, false, "Test Event", new OwnedDevice(
                     new Home(_user, "Street 3420", 50, 100, 5),
-                    new Device("Device", _modelNumber, "Device description", "https://example.com/image.png", [], "Sensor",
+                    new Device("Device", _modelNumber, "Device description", "https://example.com/image.png", [],
+                        "Sensor",
                         new Business())),
                 new User("name2", "surname2", "email2@email.com", "Password@100", new Role()))
         };
@@ -151,9 +160,7 @@ public class NotificationServiceTest
         // Arrange
         var args = new NotificationArgs
         {
-            HardwareId = Guid.NewGuid().ToString(),
-            Event = "Test Event",
-            Date = DateTime.Now
+            HardwareId = Guid.NewGuid().ToString(), Event = "Test Event", Date = DateTime.Now
         };
 
         _mockOwnedDeviceRepository.Setup(x => x.Exists(Guid.Parse(args.HardwareId))).Returns(false);
@@ -183,9 +190,7 @@ public class NotificationServiceTest
         var ownedDevice = new OwnedDevice(home, device);
         var args = new NotificationArgs
         {
-            HardwareId = ownedDevice.HardwareId.ToString(),
-            Event = "Test Event",
-            Date = DateTime.Now
+            HardwareId = ownedDevice.HardwareId.ToString(), Event = "Test Event", Date = DateTime.Now
         };
         _mockDeviceService.Setup(x => x.IsConnected(args.HardwareId)).Returns(true);
         _mockOwnedDeviceRepository.Setup(x => x.Exists(Guid.Parse(args.HardwareId))).Returns(true);
@@ -223,5 +228,22 @@ public class NotificationServiceTest
         act.Should().Throw<ArgumentException>().WithMessage("Device is not connected");
         _mockDeviceService.VerifyAll();
     }
+
+    [TestMethod]
+    public void Notify_WhenUserDoesNotExist_ThrowsArgumentException()
+    {
+        // Arrange
+        var userEmail = "email";
+        var args = new NotificationArgs { UserEmail = userEmail, Date = DateTime.Now, Event = "example" };
+        _mockUserRepository.Setup(x => x.ExistsByEmail(userEmail)).Returns(false);
+
+        // Act
+        var act = () => _notificationService.Notify(args, _mockDeviceService.Object);
+
+        // Assert
+        act.Should().Throw<ArgumentException>().WithMessage("User detected by camera was not found.");
+        _mockUserRepository.VerifyAll();
+    }
+
     #endregion
 }

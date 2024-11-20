@@ -84,16 +84,16 @@ public class CameraController(
     [HttpPost("{hardwareId}/person-detected")]
     public NotifyResponse PersonDetected([FromRoute] string hardwareId, [FromBody] PersonDetectedRequest request)
     {
-        NotificationArgs args = CreatePersonDetectedNotificationArgs(hardwareId, request.UserId ?? string.Empty);
+        NotificationArgs args = CreatePersonDetectedNotificationArgs(hardwareId, request.UserEmail ?? string.Empty);
         notificationService.Notify(args, deviceService);
         return new NotifyResponse { HardwareId = hardwareId };
     }
 
-    private static NotificationArgs CreatePersonDetectedNotificationArgs(string hardwareId, string userId)
+    private static NotificationArgs CreatePersonDetectedNotificationArgs(string hardwareId, string userEmail)
     {
         var args = new NotificationArgs
         {
-            HardwareId = hardwareId, Date = DateTime.Now, Event = $"person detected with id: {userId}"
+            HardwareId = hardwareId, Date = DateTime.Now, Event = $"person detected with email: {userEmail}"
         };
         return args;
     }

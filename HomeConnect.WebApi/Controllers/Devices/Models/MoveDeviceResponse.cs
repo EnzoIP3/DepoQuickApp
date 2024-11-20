@@ -1,4 +1,4 @@
-namespace HomeConnect.WebApi.Controllers.Rooms.Models;
+namespace HomeConnect.WebApi.Controllers.Devices.Models;
 
 public class MoveDeviceResponse
 {

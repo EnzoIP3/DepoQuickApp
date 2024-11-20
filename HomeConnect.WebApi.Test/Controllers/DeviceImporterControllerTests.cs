@@ -1,3 +1,4 @@
+using BusinessLogic.Devices.Models;
 using BusinessLogic.Devices.Services;
 using FluentAssertions;
 using HomeConnect.WebApi.Controllers.DeviceImporters;

@@ -1,4 +1,4 @@
-namespace BusinessLogic.Admins.Services;
+namespace BusinessLogic;
 
 public record FilterArgs
 {

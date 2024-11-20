@@ -88,7 +88,10 @@ app.UseCors();
 
 app.Run();
 
-[ExcludeFromCodeCoverage]
-public partial class Program
+namespace HomeConnect.WebApi
 {
+    [ExcludeFromCodeCoverage]
+    public partial class Program
+    {
+    }
 }

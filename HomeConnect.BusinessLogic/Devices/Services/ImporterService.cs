@@ -3,9 +3,9 @@ using BusinessLogic.BusinessOwners.Services;
 using BusinessLogic.Devices.Entities;
 using BusinessLogic.Devices.Helpers;
 using BusinessLogic.Devices.Importer;
+using BusinessLogic.Devices.Models;
 using BusinessLogic.Helpers;
 using BusinessLogic.Users.Entities;
-using HomeConnect.WebApi.Controllers.DeviceImporters.Models;
 
 namespace BusinessLogic.Devices.Services;
 

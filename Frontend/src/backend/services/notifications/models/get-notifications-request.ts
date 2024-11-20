@@ -1,5 +1,5 @@
 export default interface GetNotificationsRequest {
-    device: string;
-    dateCreated: string;
-    read: boolean;
+    device?: string;
+    dateCreated?: string;
+    read?: boolean;
 }

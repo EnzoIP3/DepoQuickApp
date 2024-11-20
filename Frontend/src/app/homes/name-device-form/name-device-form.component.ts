@@ -46,7 +46,7 @@ export class NameDeviceFormComponent {
                     this._messageService.add({
                         severity: "success",
                         summary: "Success",
-                        detail: `Home is now named ${this.deviceForm.value.newName}`
+                        detail: `Device is now named ${this.deviceForm.value.newName}`
                     });
                     this.deviceForm.reset({
                         name: ""

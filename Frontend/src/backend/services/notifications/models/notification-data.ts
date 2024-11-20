@@ -1,6 +1,8 @@
+import Device from "../../devices/models/device";
+
 export default interface NotificationData {
     event: string;
-    deviceId: string;
+    device: Device;
     read: boolean;
     dateCreated: string;
 }

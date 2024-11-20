@@ -2,10 +2,11 @@ using BusinessLogic.BusinessOwners.Models;
 using BusinessLogic.BusinessOwners.Services;
 using BusinessLogic.Devices.Entities;
 using BusinessLogic.Devices.Helpers;
-using BusinessLogic.Devices.Importer;
 using BusinessLogic.Devices.Models;
 using BusinessLogic.Helpers;
 using BusinessLogic.Users.Entities;
+using DeviceImporter;
+using DeviceImporter.Models;
 
 namespace BusinessLogic.Devices.Services;
 

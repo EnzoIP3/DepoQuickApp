@@ -1,7 +1,7 @@
 using BusinessLogic.BusinessOwners.Models;
 using BusinessLogic.BusinessOwners.Services;
-using BusinessLogic.Devices.Importer;
 using BusinessLogic.Users.Entities;
+using DeviceImporter.Models;
 
 namespace BusinessLogic.Devices.Helpers;
 

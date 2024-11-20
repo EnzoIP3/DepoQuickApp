@@ -1,5 +1,6 @@
 using System.Text.Json;
-using BusinessLogic.Devices.Importer;
+using DeviceImporter;
+using DeviceImporter.Models;
 using JsonImporter.Models;
 
 namespace JsonImporter;

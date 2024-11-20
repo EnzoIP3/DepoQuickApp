@@ -1,4 +1,4 @@
-namespace BusinessLogic.Devices.Importer;
+namespace DeviceImporter.Models;
 
 public struct DeviceArgs
 {

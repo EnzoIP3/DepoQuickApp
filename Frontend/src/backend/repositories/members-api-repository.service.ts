@@ -5,13 +5,14 @@ import { HttpClient } from "@angular/common/http";
 import SetNotificationsRequest from "../services/members/models/set-notifications-request";
 import { Observable } from "rxjs";
 import SetNotificationsResponse from "../services/members/models/set-notifications-response";
+import { Router } from "@angular/router";
 
 @Injectable({
     providedIn: "root"
 })
 export class MembersApiRepositoryService extends ApiRepository {
-    constructor(http: HttpClient) {
-        super(environment.apiUrl, "members", http);
+    constructor(http: HttpClient, router: Router) {
+        super(environment.apiUrl, "members", http, router);
     }
 
     public setNotifications(

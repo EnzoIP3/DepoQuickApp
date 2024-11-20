@@ -5,13 +5,14 @@ import { environment } from "../../environments/environment";
 import GetNotificationsRequest from "../services/notifications/models/get-notifications-request";
 import { Observable } from "rxjs";
 import GetNotificationsResponse from "../services/notifications/models/get-notifications-response";
+import { Router } from "@angular/router";
 
 @Injectable({
     providedIn: "root"
 })
 export class NotificationsApiRepositoryService extends ApiRepository {
-    constructor(http: HttpClient) {
-        super(environment.apiUrl, "notifications", http);
+    constructor(http: HttpClient, router: Router) {
+        super(environment.apiUrl, "notifications", http, router);
     }
 
     public getNotifications(

@@ -11,13 +11,14 @@ import MoveDeviceRequest from "../services/devices/models/move-device-request";
 import MoveDeviceResponse from "../services/devices/models/move-device-response";
 import NameDeviceRequest from "../services/devices/models/name-device-request";
 import NameDeviceResponse from "../services/devices/models/name-device-response";
+import { Router } from "@angular/router";
 
 @Injectable({
     providedIn: "root"
 })
 export class DevicesApiRepositoryService extends ApiRepository {
-    constructor(http: HttpClient) {
-        super(environment.apiUrl, "devices", http);
+    constructor(http: HttpClient, router: Router) {
+        super(environment.apiUrl, "devices", http, router);
     }
 
     public getDevices(

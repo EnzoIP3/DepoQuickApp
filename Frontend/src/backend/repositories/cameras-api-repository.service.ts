@@ -6,13 +6,14 @@ import { CreateCameraRequest } from "../services/cameras/models/create-camera-re
 import { CreateDeviceResponse } from "../services/devices/models/create-device-response";
 import ApiRepository from "./api-repository";
 import { GetCameraResponse } from "../services/cameras/models/get-camera-response";
+import { Router } from "@angular/router";
 
 @Injectable({
     providedIn: "root"
 })
 export class CamerasApiRepositoryService extends ApiRepository {
-    constructor(http: HttpClient) {
-        super(environment.apiUrl, "cameras", http);
+    constructor(http: HttpClient, router: Router) {
+        super(environment.apiUrl, "cameras", http, router);
     }
 
     public postDevice(

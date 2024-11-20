@@ -5,13 +5,14 @@ import { environment } from "../../environments/environment";
 import { CreateDeviceResponse } from "../services/devices/models/create-device-response";
 import ApiRepository from "./api-repository";
 import { CreateMotionSensorRequest } from "../services/movement-sensors/models/create-motion-sensor-request";
+import { Router } from "@angular/router";
 
 @Injectable({
     providedIn: "root"
 })
 export class MotionSensorsApiRepositoryService extends ApiRepository {
-    constructor(http: HttpClient) {
-        super(environment.apiUrl, "motion_sensors", http);
+    constructor(http: HttpClient, router: Router) {
+        super(environment.apiUrl, "motion_sensors", http, router);
     }
 
     public postDevice(

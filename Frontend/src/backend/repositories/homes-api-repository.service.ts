@@ -18,13 +18,14 @@ import NameHomeResponse from "../services/homes/models/name-home-response";
 import AddRoomRequest from "../services/homes/models/add-room-request";
 import AddRoomResponse from "../services/homes/models/add-room-response";
 import GetRoomsResponse from "../services/homes/models/get-rooms-response";
+import { Router } from "@angular/router";
 
 @Injectable({
     providedIn: "root"
 })
 export class HomesApiRepositoryService extends ApiRepository {
-    constructor(http: HttpClient) {
-        super(environment.apiUrl, "homes", http);
+    constructor(http: HttpClient, router: Router) {
+        super(environment.apiUrl, "homes", http, router);
     }
 
     public getHomes(): Observable<GetHomesResponse> {

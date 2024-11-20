@@ -3,6 +3,8 @@ import {
     HttpErrorResponse,
     HttpHeaders
 } from "@angular/common/http";
+import { inject } from "@angular/core";
+import { Router } from "@angular/router";
 import { Observable, catchError, retry, throwError } from "rxjs";
 
 export interface RequestConfig {
@@ -32,7 +34,8 @@ export default abstract class ApiRepository {
     constructor(
         protected readonly apiUrl: string,
         protected readonly endpoint: string,
-        protected readonly http: HttpClient
+        protected readonly http: HttpClient,
+        protected readonly router: Router
     ) {
         this.fullEndpoint = this.buildFullEndpoint(apiUrl, endpoint);
     }
@@ -87,7 +90,7 @@ export default abstract class ApiRepository {
     private executeRequest<T>(requestFn: () => Observable<T>): Observable<T> {
         return requestFn().pipe(
             retry(ApiRepository.RETRY_ATTEMPTS),
-            catchError(this.handleError)
+            catchError(this.handleError.bind(this))
         );
     }
 
@@ -103,6 +106,7 @@ export default abstract class ApiRepository {
 
         if (isExpiredTokenError) {
             errorMessage = ApiRepository.DEFAULT_EXPIRED_TOKEN_MESSAGE;
+            this.router.navigate(["/login"]);
             localStorage.clear();
         }
 

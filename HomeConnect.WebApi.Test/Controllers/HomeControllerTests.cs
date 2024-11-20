@@ -89,7 +89,8 @@ public class HomeControllerTests
         // Arrange
         var request = new AddMemberRequest
         {
-            Email = _user.Email, Permissions = [SystemPermission.AddDevice, SystemPermission.GetDevices],
+            Email = _user.Email,
+            Permissions = [SystemPermission.AddDevice, SystemPermission.GetDevices],
         };
         var items = new Dictionary<object, object?> { { Item.UserLogged, _user } };
         _httpContextMock.Setup(h => h.Items).Returns(items);

@@ -1,5 +1,3 @@
-using BusinessLogic.Devices.Entities;
-
 namespace HomeConnect.WebApi.Controllers.Homes.Models;
 
 public record ListDeviceInfo

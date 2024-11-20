@@ -43,7 +43,8 @@ public class HomeController(IHomeOwnerService homeOwnerService) : ControllerBase
         var permissions = homeOwnerService.GetHomePermissions(Guid.Parse(homesId), userLoggedIn!.Id);
         return new GetHomePermissionsResponse
         {
-            HomeId = homesId, HomePermissions = permissions.Select(p => p.Value).ToList()
+            HomeId = homesId,
+            HomePermissions = permissions.Select(p => p.Value).ToList()
         };
     }
 
@@ -115,7 +116,9 @@ public class HomeController(IHomeOwnerService homeOwnerService) : ControllerBase
     {
         var addMemberArgs = new AddMemberArgs
         {
-            HomeId = homesId, UserEmail = request.Email ?? string.Empty, Permissions = request.Permissions
+            HomeId = homesId,
+            UserEmail = request.Email ?? string.Empty,
+            Permissions = request.Permissions
         };
         Guid addedMemberId = homeOwnerService.AddMemberToHome(addMemberArgs);
         return new AddMemberResponse { HomeId = homesId, MemberId = addedMemberId.ToString() };

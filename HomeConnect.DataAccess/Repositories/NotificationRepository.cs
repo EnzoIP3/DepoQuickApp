@@ -27,8 +27,9 @@ public class NotificationRepository : INotificationRepository
         DeviceType? deviceTypeFilter = deviceFilter != null ? Enum.Parse<DeviceType>(deviceFilter) : null;
         return _context.Notifications
             .Include(n => n.User)
-            .Include(n => n.OwnedDevice).ThenInclude(od => od.Device)
             .Include(od => od.OwnedDevice).ThenInclude(od => od.Home).ThenInclude(h => h.Owner)
+            .Include(od => od.OwnedDevice).ThenInclude(od => od.Room)
+            .Include(od => od.OwnedDevice).ThenInclude(od => od.Device).ThenInclude(d => d.Business)
             .Where(n => n.User!.Id == userId)
             .Where(n => deviceTypeFilter == null || n.OwnedDevice.Device.Type == deviceTypeFilter)
             .Where(n => dateFilter == null || n.Date.Date == dateFilter.Value.Date)

@@ -51,7 +51,7 @@ public class SensorController(
 
     private static NotificationArgs CreateOpenNotificationArgs(string hardwareId)
     {
-        var notificationArgs = new NotificationArgs { HardwareId = hardwareId, Date = DateTime.Now, Event = "open" };
+        var notificationArgs = new NotificationArgs { HardwareId = hardwareId, Date = DateTime.Now, Event = "Sensor was opened" };
         return notificationArgs;
     }
 
@@ -65,7 +65,7 @@ public class SensorController(
 
     private static NotificationArgs CreateCloseNotificationArgs(string hardwareId)
     {
-        var notificationArgs = new NotificationArgs { HardwareId = hardwareId, Date = DateTime.Now, Event = "close" };
+        var notificationArgs = new NotificationArgs { HardwareId = hardwareId, Date = DateTime.Now, Event = "Sensor was closed" };
         return notificationArgs;
     }
 }

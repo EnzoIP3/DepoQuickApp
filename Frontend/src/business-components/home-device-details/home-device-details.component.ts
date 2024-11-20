@@ -24,8 +24,8 @@ export class HomeDeviceDetailsComponent {
                 .replace(/^./, (str) => str.toUpperCase());
 
         const formatValue = (value: any): string | null => {
-            if (value === true) return "Yes";
-            if (value === false) return "No";
+            if (value === true) return "✔️";
+            if (value === false) return "❌";
             return value !== null && value !== undefined ? String(value) : null;
         };
 

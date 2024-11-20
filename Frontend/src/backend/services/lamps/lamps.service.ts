@@ -10,9 +10,9 @@ import { CreateLampRequest } from "./models/create-lamp-request";
 export class LampsService {
     constructor(private readonly _repository: LampsApiRepositoryService) {}
 
-    public postDevice(
+    public addDevice(
         request: CreateLampRequest
     ): Observable<CreateDeviceResponse> {
-        return this._repository.postDevice(request);
+        return this._repository.addDevice(request);
     }
 }

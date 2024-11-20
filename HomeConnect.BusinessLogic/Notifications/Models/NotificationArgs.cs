@@ -5,4 +5,5 @@ public record NotificationArgs
     public string HardwareId { get; set; } = null!;
     public DateTime Date { get; set; }
     public string Event { get; set; } = null!;
+    public string? UserEmail { get; set; }
 }

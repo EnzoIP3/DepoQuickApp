@@ -83,7 +83,7 @@ public class SensorControllerTests
     {
         // Arrange
         var hardwareId = "hardwareId";
-        var args = new NotificationArgs { HardwareId = hardwareId, Date = DateTime.Now, Event = "open" };
+        var args = new NotificationArgs { HardwareId = hardwareId, Date = DateTime.Now, Event = "Sensor was opened" };
         _deviceServiceMock.Setup(x => x.UpdateSensorState(hardwareId, true, args));
 
         // Act
@@ -101,7 +101,7 @@ public class SensorControllerTests
     {
         // Arrange
         var hardwareId = "hardwareId";
-        var args = new NotificationArgs { HardwareId = hardwareId, Date = DateTime.Now, Event = "close" };
+        var args = new NotificationArgs { HardwareId = hardwareId, Date = DateTime.Now, Event = "Sensor was closed" };
         _deviceServiceMock.Setup(x => x.UpdateSensorState(hardwareId, false, args));
 
         // Act

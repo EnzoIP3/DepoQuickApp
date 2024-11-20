@@ -6,7 +6,6 @@ using BusinessLogic.Devices.Services;
 using BusinessLogic.Notifications.Models;
 using BusinessLogic.Notifications.Services;
 using BusinessLogic.Users.Entities;
-using BusinessLogic.Users.Services;
 using FluentAssertions;
 using HomeConnect.WebApi.Controllers.Cameras;
 using HomeConnect.WebApi.Controllers.Cameras.Models;
@@ -21,24 +20,20 @@ public class CameraControllerTests
 {
     private Mock<IBusinessOwnerService> _businessOwnerService = null!;
     private CameraController _cameraController = null!;
-    private Mock<IDeviceService> _deviceServiceMock = null!;
-    private Mock<HttpContext> _httpContextMock = null!;
-    private Mock<INotificationService> _notificationServiceMock = null!;
-    private Mock<IUserService> _userService = null!;
+    private Mock<IDeviceService> _deviceService = null!;
+    private Mock<HttpContext> _httpContext = null!;
+    private Mock<INotificationService> _notificationService = null!;
 
     [TestInitialize]
     public void TestInitialize()
     {
-        _httpContextMock = new Mock<HttpContext>();
-        _deviceServiceMock = new Mock<IDeviceService>();
-        _notificationServiceMock = new Mock<INotificationService>();
+        _httpContext = new Mock<HttpContext>();
+        _deviceService = new Mock<IDeviceService>();
+        _notificationService = new Mock<INotificationService>();
         _businessOwnerService = new Mock<IBusinessOwnerService>();
-        _userService = new Mock<IUserService>();
-        _cameraController = new CameraController(_notificationServiceMock.Object, _deviceServiceMock.Object,
-            _businessOwnerService.Object, _userService.Object)
-        {
-            ControllerContext = { HttpContext = _httpContextMock.Object }
-        };
+        _cameraController = new CameraController(_notificationService.Object, _deviceService.Object,
+            _businessOwnerService.Object)
+        { ControllerContext = { HttpContext = _httpContext.Object } };
     }
 
     #region CreateCamera
@@ -79,7 +74,7 @@ public class CameraControllerTests
         };
         _businessOwnerService.Setup(x => x.CreateCamera(cameraArgs)).Returns(camera);
         var items = new Dictionary<object, object?> { { Item.UserLogged, user } };
-        _httpContextMock.Setup(h => h.Items).Returns(items);
+        _httpContext.Setup(h => h.Items).Returns(items);
 
         // Act
         CreateCameraResponse response = _cameraController.CreateCamera(cameraRequest);
@@ -99,9 +94,9 @@ public class CameraControllerTests
     {
         // Arrange
         var hardwareId = "hardwareId";
-        var args = new NotificationArgs { HardwareId = hardwareId, Date = DateTime.Now, Event = "movement-detected" };
-        _deviceServiceMock.Setup(x => x.IsConnected(hardwareId)).Returns(true);
-        _notificationServiceMock.Setup(x => x.Notify(args, _deviceServiceMock.Object));
+        var args = new NotificationArgs { HardwareId = hardwareId, Date = DateTime.Now, Event = "Movement detected" };
+        _deviceService.Setup(x => x.IsConnected(hardwareId)).Returns(true);
+        _notificationService.Setup(x => x.Notify(args, _deviceService.Object));
 
         // Act
         NotifyResponse result = _cameraController.MovementDetected(hardwareId);
@@ -120,16 +115,15 @@ public class CameraControllerTests
     {
         // Arrange
         var hardwareId = "hardwareId";
-        var request = new PersonDetectedRequest { UserId = "userId" };
+        var request = new PersonDetectedRequest { UserEmail = "email@example.com" };
         var args = new NotificationArgs
         {
             HardwareId = hardwareId,
             Date = DateTime.Now,
-            Event = $"person detected with id: {request.UserId}"
+            Event = $"Person detected with email: {request.UserEmail}"
         };
-        _deviceServiceMock.Setup(x => x.IsConnected(hardwareId)).Returns(true);
-        _notificationServiceMock.Setup(x => x.Notify(args, _deviceServiceMock.Object));
-        _userService.Setup(x => x.Exists(request.UserId)).Returns(true);
+        _deviceService.Setup(x => x.IsConnected(hardwareId)).Returns(true);
+        _notificationService.Setup(x => x.Notify(args, _deviceService.Object));
 
         // Act
         NotifyResponse result = _cameraController.PersonDetected(hardwareId, request);
@@ -139,32 +133,10 @@ public class CameraControllerTests
         result.HardwareId.Should().Be(hardwareId);
     }
 
-    [TestMethod]
-    public void PersonDetected_WhenDetectedPersonIsNotRegistered_ThrowsArgumentException()
-    {
-        // Arrange
-        var hardwareId = "hardwareId";
-        var request = new PersonDetectedRequest { UserId = "userId" };
-        var args = new NotificationArgs
-        {
-            HardwareId = hardwareId,
-            Date = DateTime.Now,
-            Event = $"person detected with id: {request.UserId}"
-        };
-        _deviceServiceMock.Setup(x => x.IsConnected(hardwareId)).Returns(true);
-        _notificationServiceMock.Setup(x => x.Notify(args, _deviceServiceMock.Object)).Throws<ArgumentException>();
-        _userService.Setup(x => x.Exists(request.UserId)).Returns(false);
-
-        // Act
-        Func<NotifyResponse> act = () => _cameraController.PersonDetected(hardwareId, request);
-
-        // Assert
-        act.Should().Throw<ArgumentException>().WithMessage("User detected by camera is not found");
-    }
-
     #endregion
 
     #region GetCamera
+
     [TestMethod]
     public void GetCamera_WithCameraId_ReturnsGetCameraResponse()
     {
@@ -174,7 +146,7 @@ public class CameraControllerTests
             new Business(), true, true,
             true,
             true);
-        _deviceServiceMock.Setup(x => x.GetCameraById(cameraId)).Returns(camera);
+        _deviceService.Setup(x => x.GetCameraById(cameraId)).Returns(camera);
 
         // Act
         GetCameraResponse result = _cameraController.GetCamera(cameraId);
@@ -192,5 +164,6 @@ public class CameraControllerTests
         result.PersonDetection.Should().Be(camera.PersonDetection);
         result.SecondaryPhotos.Should().BeEquivalentTo(camera.SecondaryPhotos);
     }
+
     #endregion
 }

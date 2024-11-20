@@ -63,7 +63,7 @@ public class LampController(
         {
             HardwareId = hardwareId,
             Date = DateTime.Now,
-            Event = state ? "lamp-turned-on" : "lamp-turned-off"
+            Event = state ? "Lamp was turned on" : "Lamp was turned off"
         };
     }
 }

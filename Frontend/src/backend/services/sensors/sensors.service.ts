@@ -10,9 +10,9 @@ import { CreateSensorRequest } from "./models/create-sensor-request";
 export class SensorsService {
     constructor(private readonly _repository: SensorsApiRepositoryService) {}
 
-    public postDevice(
+    public addDevice(
         request: CreateSensorRequest
     ): Observable<CreateDeviceResponse> {
-        return this._repository.postDevice(request);
+        return this._repository.addDevice(request);
     }
 }

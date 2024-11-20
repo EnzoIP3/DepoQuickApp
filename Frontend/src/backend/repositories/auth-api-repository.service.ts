@@ -5,13 +5,14 @@ import { environment } from "../../environments/environment";
 import { Observable } from "rxjs";
 import AuthRequest from "../services/auth/models/auth-request";
 import AuthResponse from "../services/auth/models/auth-response";
+import { Router } from "@angular/router";
 
 @Injectable({
     providedIn: "root"
 })
 export class AuthApiRepositoryService extends ApiRepository {
-    constructor(http: HttpClient) {
-        super(environment.apiUrl, "auth", http);
+    constructor(http: HttpClient, router: Router) {
+        super(environment.apiUrl, "auth", http, router);
     }
 
     public login(authRequest: AuthRequest): Observable<AuthResponse> {

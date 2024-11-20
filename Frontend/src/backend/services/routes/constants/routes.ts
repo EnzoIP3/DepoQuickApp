@@ -13,7 +13,8 @@ export const AuthenticatedRoutes: Route[] = [
             {
                 label: "Notifications",
                 icon: "pi pi-bell",
-                routerLink: ["/notifications"]
+                routerLink: ["/notifications"],
+                permission: Permissions.GET_NOTIFICATIONS
             }
         ]
     },

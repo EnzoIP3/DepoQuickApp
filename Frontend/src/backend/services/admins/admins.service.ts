@@ -15,4 +15,8 @@ export class AdminsService {
     ): Observable<AddResponse> {
         return this._repository.add(addRequest);
     }
+
+    public deleteAdmin(id: string): Observable<void> {
+        return this._repository.delete(id);
+    }
 }

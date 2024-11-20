@@ -1,4 +1,4 @@
-import { Component } from "@angular/core";
+import { Component, EventEmitter, Output } from "@angular/core";
 import { TableComponent } from "../../components/table/table.component";
 import PaginationResponse from "../../backend/services/pagination";
 import TableColumn from "../../components/table/models/table-column";
@@ -10,6 +10,7 @@ import FilterValues from "../../components/table/models/filter-values";
 import { UsersService } from "../../backend/services/user/user.service";
 import GetUsersResponse from "../../backend/services/user/models/user-response";
 import User from "../../backend/services/user/models/user";
+import { Router } from "@angular/router";
 
 @Component({
   selector: 'app-users-table',
@@ -40,6 +41,8 @@ export class UsersTableComponent {
   ];
 
   private _usersSubscription: Subscription | null = null;
+  selectedUser: User | null = null;
+  @Output() userSelected = new EventEmitter<User>();
 
   users: any[] = [];
   pagination: PaginationResponse | null = null;
@@ -54,6 +57,13 @@ export class UsersTableComponent {
   ngOnInit() {
       this._subscribeToUsers();
   }
+
+  onRowClick(user: User): void {
+    this.selectedUser = user;
+    console.log('Usuario seleccionado:', user);
+    this.userSelected.emit(user);
+  }
+  
 
   onPageChange(pagination: Pagination): void {
       this.loading = true;

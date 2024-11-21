@@ -1,10 +1,7 @@
-using BusinessLogic.Roles.Entities;
 using BusinessLogic.Users.Entities;
-using BusinessLogic.Users.Models;
 using BusinessLogic.Users.Services;
 using HomeConnect.WebApi.Controllers.HomeOwners.Models;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.Identity.Client;
 
 namespace HomeConnect.WebApi.Controllers.HomeOwners;
 

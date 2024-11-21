@@ -7,4 +7,5 @@ public record FilterArgs
     public string? NameFilter { get; set; } = null;
     public string? FullNameFilter { get; set; } = null;
     public Guid? OwnerIdFilter { get; set; } = null;
+    public string? RoleFilter { get; set; } = null;
 }

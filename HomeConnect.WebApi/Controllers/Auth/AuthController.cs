@@ -1,4 +1,3 @@
-using BusinessLogic.Auth.Models;
 using BusinessLogic.Auth.Services;
 using HomeConnect.WebApi.Controllers.Auth.Models;
 using Microsoft.AspNetCore.Mvc;

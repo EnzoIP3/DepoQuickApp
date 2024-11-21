@@ -2,7 +2,6 @@ using BusinessLogic.Admins.Models;
 using BusinessLogic.BusinessOwners.Entities;
 using BusinessLogic.BusinessOwners.Repositories;
 using BusinessLogic.Roles.Entities;
-using BusinessLogic.Roles.Repositories;
 using BusinessLogic.Users.Entities;
 using BusinessLogic.Users.Repositories;
 
@@ -29,7 +28,8 @@ public class AdminService : IAdminService
 
     private void EnsureOtherAdminExists()
     {
-        if (_userRepository.GetPaged(1, 1, roleFilter: Role.Admin).TotalPages == 1)
+        var filterArgs = new FilterArgs { PageSize = 1, CurrentPage = 1, RoleFilter = Role.Admin };
+        if (_userRepository.GetPaged(filterArgs).TotalPages == 1)
         {
             throw new InvalidOperationException("The last admin cannot be deleted");
         }
@@ -37,8 +37,11 @@ public class AdminService : IAdminService
 
     public PagedData<User> GetUsers(GetUsersArgs args)
     {
+        var filterArgs = new FilterArgs { FullNameFilter = args.FullNameFilter, RoleFilter = args.RoleFilter, };
+        filterArgs.CurrentPage = args.CurrentPage ?? filterArgs.CurrentPage;
+        filterArgs.PageSize = args.PageSize ?? filterArgs.PageSize;
         PagedData<User> users =
-            _userRepository.GetPaged(args.CurrentPage ?? 1, args.PageSize ?? 10, args.FullNameFilter, args.RoleFilter);
+            _userRepository.GetPaged(filterArgs);
         return users;
     }
 

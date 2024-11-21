@@ -928,6 +928,19 @@ public class HomeOwnerServiceTests
         act.Should().Throw<ArgumentException>();
     }
 
+    [TestMethod]
+    public void NameDevice_ThrowsArgumentException_WhenDeviceIdIsNotAGuid()
+    {
+        // Arrange
+        var args = new NameDeviceArgs { OwnerId = Guid.NewGuid(), HardwareId = "invalid-guid", NewName = "NewName" };
+
+        // Act
+        var act = () => _homeOwnerService.NameDevice(args);
+
+        // Assert
+        act.Should().Throw<ArgumentException>();
+    }
+
     #endregion
 
     #endregion

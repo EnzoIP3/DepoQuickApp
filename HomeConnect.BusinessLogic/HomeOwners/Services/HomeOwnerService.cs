@@ -90,7 +90,7 @@ public class HomeOwnerService : IHomeOwnerService
             throw new ArgumentException("Owner ID cannot be empty");
         }
 
-        if (args.HardwareId == Guid.Empty)
+        if (args.HardwareId == string.Empty)
         {
             throw new ArgumentException("Hardware ID cannot be empty");
         }
@@ -105,7 +105,7 @@ public class HomeOwnerService : IHomeOwnerService
     {
         ValidateNameDeviceArgs(args);
 
-        var device = OwnedDeviceRepository.GetByHardwareId(args.HardwareId);
+        var device = OwnedDeviceRepository.GetByHardwareId(Guid.Parse(args.HardwareId));
         if (device == null)
         {
             throw new ArgumentException("Device does not exist");

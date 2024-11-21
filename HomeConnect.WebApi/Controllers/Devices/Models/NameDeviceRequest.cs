@@ -11,7 +11,7 @@ public class NameDeviceRequest
     {
         return new NameDeviceArgs()
         {
-            HardwareId = Guid.Parse(hardwareId), NewName = NewName ?? string.Empty, OwnerId = user.Id
+            HardwareId = hardwareId, NewName = NewName ?? string.Empty, OwnerId = user.Id
         };
     }
 }

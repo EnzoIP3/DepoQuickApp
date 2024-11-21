@@ -40,31 +40,8 @@ public class BusinessController(IAdminService adminService, IBusinessOwnerServic
             Rut = request.Rut ?? string.Empty,
             Validator = request.Validator ?? string.Empty
         };
-        Business business = businessOwnerService.CreateBusiness(args);
+        var business = businessOwnerService.CreateBusiness(args);
         return new CreateBusinessResponse { Rut = business.Rut };
-    }
-
-    private static GetBusinessesResponse ResponseFromBusinesses(
-        PagedData<Business> businesses)
-    {
-        return new GetBusinessesResponse
-        {
-            Businesses = businesses.Data.Select(b => new ListBusinessInfo
-            {
-                Name = b.Name,
-                OwnerEmail = b.Owner.Email,
-                OwnerName = b.Owner.Name,
-                OwnerSurname = b.Owner.Surname,
-                Rut = b.Rut,
-                Logo = b.Logo
-            }).ToList(),
-            Pagination = new Pagination
-            {
-                Page = businesses.Page,
-                PageSize = businesses.PageSize,
-                TotalPages = businesses.TotalPages
-            }
-        };
     }
 
     [HttpPatch("{businessId}/validator")]
@@ -91,6 +68,29 @@ public class BusinessController(IAdminService adminService, IBusinessOwnerServic
         PagedData<Device> devices = businessOwnerService.GetDevices(args);
         GetBusinessDevicesResponse response = ResponseFromDevices(devices);
         return response;
+    }
+
+    private static GetBusinessesResponse ResponseFromBusinesses(
+        PagedData<Business> businesses)
+    {
+        return new GetBusinessesResponse
+        {
+            Businesses = businesses.Data.Select(b => new ListBusinessInfo
+            {
+                Name = b.Name,
+                OwnerEmail = b.Owner.Email,
+                OwnerName = b.Owner.Name,
+                OwnerSurname = b.Owner.Surname,
+                Rut = b.Rut,
+                Logo = b.Logo
+            }).ToList(),
+            Pagination = new Pagination
+            {
+                Page = businesses.Page,
+                PageSize = businesses.PageSize,
+                TotalPages = businesses.TotalPages
+            }
+        };
     }
 
     private static GetBusinessDevicesArgs CreateGetBusinessDevicesArgs(string businessId,

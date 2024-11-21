@@ -9,14 +9,14 @@ namespace BusinessLogic.Auth.Services;
 
 public class AuthService : IAuthService
 {
+    private readonly ITokenRepository _tokenRepository;
+    private readonly IUserRepository _userRepository;
+
     public AuthService(ITokenRepository tokenRepository, IUserRepository userRepository)
     {
         _tokenRepository = tokenRepository;
         _userRepository = userRepository;
     }
-
-    private readonly ITokenRepository _tokenRepository;
-    private readonly IUserRepository _userRepository;
 
     public string CreateToken(CreateTokenArgs args)
     {

@@ -13,7 +13,10 @@ public sealed record GetNotificationsRequest
     {
         return new GetNotificationsArgs
         {
-            UserId = user.Id, DeviceFilter = Device, DateFilter = DateCreated, ReadFilter = Read
+            UserId = user.Id,
+            DeviceFilter = Device,
+            DateFilter = DateCreated,
+            ReadFilter = Read
         };
     }
 }

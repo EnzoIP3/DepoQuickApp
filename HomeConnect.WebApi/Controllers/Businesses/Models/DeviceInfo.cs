@@ -8,6 +8,6 @@ public sealed record DeviceInfo
     public string ModelNumber { get; set; } = null!;
     public string Description { get; set; } = null!;
     public string MainPhoto { get; set; } = null!;
-    public List<string> SecondaryPhotos { get; set; } = new();
+    public List<string> SecondaryPhotos { get; set; } = [];
     public string Type { get; set; } = null!;
 }

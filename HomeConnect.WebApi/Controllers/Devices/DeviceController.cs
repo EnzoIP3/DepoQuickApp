@@ -1,17 +1,11 @@
 using BusinessLogic;
-using BusinessLogic.BusinessOwners.Models;
-using BusinessLogic.BusinessOwners.Services;
 using BusinessLogic.Devices.Entities;
-using BusinessLogic.Devices.Models;
 using BusinessLogic.Devices.Services;
 using BusinessLogic.HomeOwners.Entities;
-using BusinessLogic.HomeOwners.Models;
 using BusinessLogic.HomeOwners.Services;
 using BusinessLogic.Roles.Entities;
 using BusinessLogic.Users.Entities;
 using HomeConnect.WebApi.Controllers.Devices.Models;
-using HomeConnect.WebApi.Controllers.HomeOwners.Models;
-using HomeConnect.WebApi.Controllers.Homes.Models;
 using HomeConnect.WebApi.Filters;
 using Microsoft.AspNetCore.Mvc;
 using GetDevicesResponse = HomeConnect.WebApi.Controllers.Devices.Models.GetDevicesResponse;
@@ -20,12 +14,11 @@ namespace HomeConnect.WebApi.Controllers.Devices;
 
 [Route("devices")]
 [ApiController]
-[AuthenticationFilter]
 public sealed class DeviceController : ControllerBase
 {
     private readonly IDeviceService _deviceService;
-    private readonly IImporterService _importerService;
     private readonly IHomeOwnerService _homeOwnerService;
+    private readonly IImporterService _importerService;
 
     public DeviceController(IDeviceService deviceService,
         IImporterService importerService, IHomeOwnerService homeOwnerService)
@@ -36,6 +29,7 @@ public sealed class DeviceController : ControllerBase
     }
 
     [HttpGet]
+    [AuthenticationFilter]
     public GetDevicesResponse GetDevices([FromQuery] GetDevicesRequest request)
     {
         PagedData<Device> devices = _deviceService.GetDevices(request.ToGetDevicesArgs());
@@ -43,11 +37,12 @@ public sealed class DeviceController : ControllerBase
     }
 
     [HttpPost]
+    [AuthenticationFilter]
     [AuthorizationFilter(SystemPermission.ImportDevices)]
     public ImportDevicesResponse ImportDevices([FromBody] ImportDevicesRequest request)
     {
         var userLoggedIn = HttpContext.Items[Item.UserLogged] as User;
-        var addedDevices = _importerService.ImportDevices(request.ToImportDevicesArgs(userLoggedIn));
+        List<string> addedDevices = _importerService.ImportDevices(request.ToImportDevicesArgs(userLoggedIn));
         return new ImportDevicesResponse { ImportedDevices = addedDevices };
     }
 
@@ -66,6 +61,7 @@ public sealed class DeviceController : ControllerBase
     }
 
     [HttpPatch("{hardwareId}/room")]
+    [AuthenticationFilter]
     [AuthorizationFilter(SystemPermission.MoveDevice)]
     [HomeAuthorizationFilter(HomePermission.MoveDevice)]
     public MoveDeviceResponse MoveDevice([FromRoute] string hardwareId, [FromBody] MoveDeviceRequest request)
@@ -76,6 +72,7 @@ public sealed class DeviceController : ControllerBase
     }
 
     [HttpPatch("{hardwareId}/name")]
+    [AuthenticationFilter]
     [AuthorizationFilter(SystemPermission.NameDevice)]
     [HomeAuthorizationFilter(HomePermission.NameDevice)]
     public NameDeviceResponse NameDevice([FromRoute] string hardwareId, [FromBody] NameDeviceRequest request)

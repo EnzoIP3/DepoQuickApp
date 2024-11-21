@@ -56,8 +56,10 @@ public class NotificationRepositoryTest
         _context.OwnedDevices.AddRange(_ownedDevice, _otherOwnedDevice);
         _context.SaveChanges();
 
-        _notification = new Notification(Guid.NewGuid(), DateTime.Now, true, "Notification message", _ownedDevice, _user);
-        _otherNotification = new Notification(Guid.NewGuid(), DateTime.Now.AddDays(1), false, "Notification message", _otherOwnedDevice, _user);
+        _notification =
+            new Notification(Guid.NewGuid(), DateTime.Now, true, "Notification message", _ownedDevice, _user);
+        _otherNotification = new Notification(Guid.NewGuid(), DateTime.Now.AddDays(1), false, "Notification message",
+            _otherOwnedDevice, _user);
         _context.Notifications.AddRange(_notification, _otherNotification);
         _context.SaveChanges();
     }

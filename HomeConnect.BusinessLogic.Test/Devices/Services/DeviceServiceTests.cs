@@ -21,12 +21,12 @@ public class DeviceServiceTests
     private Mock<IDeviceRepository> _deviceRepository = null!;
     private List<Device> _devices = null!;
     private DeviceService _deviceService = null!;
-    private Mock<IOwnedDeviceRepository> _ownedDeviceRepository = null!;
-    private Mock<INotificationService> _notificationService = null!;
     private Mock<IHomeRepository> _homeRepository = null!;
-    private Mock<IRoomRepository> _roomRepository = null!;
+    private Mock<INotificationService> _notificationService = null!;
+    private Mock<IOwnedDeviceRepository> _ownedDeviceRepository = null!;
     private PagedData<Device> _pagedDeviceList = null!;
     private GetDevicesArgs _parameters = null!;
+    private Mock<IRoomRepository> _roomRepository = null!;
     private Device otherDevice = null!;
     private User user1 = null!;
     private User user2 = null!;
@@ -56,7 +56,10 @@ public class DeviceServiceTests
 
         _pagedDeviceList = new PagedData<Device>
         {
-            Data = _devices, Page = _parameters.Page ?? 1, PageSize = _parameters.PageSize ?? 10, TotalPages = 1
+            Data = _devices,
+            Page = _parameters.Page ?? 1,
+            PageSize = _parameters.PageSize ?? 10,
+            TotalPages = 1
         };
     }
 
@@ -124,7 +127,10 @@ public class DeviceServiceTests
         // Assert
         var expectedPagedDeviceList = new PagedData<Device>
         {
-            Data = _devices, Page = _parameters.Page ?? 1, PageSize = _parameters.PageSize ?? 10, TotalPages = 1
+            Data = _devices,
+            Page = _parameters.Page ?? 1,
+            PageSize = _parameters.PageSize ?? 10,
+            TotalPages = 1
         };
 
         result.Should().BeEquivalentTo(expectedPagedDeviceList,
@@ -146,7 +152,7 @@ public class DeviceServiceTests
         var parameters = new GetDevicesArgs { DeviceTypeFilter = "InvalidType" };
 
         // Act
-        var act = () => _deviceService.GetDevices(parameters);
+        Func<PagedData<Device>> act = () => _deviceService.GetDevices(parameters);
 
         // Assert
         act.Should().Throw<ArgumentException>().WithMessage("That device type does not exist.");
@@ -496,7 +502,7 @@ public class DeviceServiceTests
         _deviceRepository.Setup(x => x.Get(Guid.Parse(cameraId))).Returns(camera);
 
         // Act
-        var result = _deviceService.GetCameraById(cameraId);
+        Camera result = _deviceService.GetCameraById(cameraId);
 
         // Assert
         result.Should().BeOfType<Camera>();

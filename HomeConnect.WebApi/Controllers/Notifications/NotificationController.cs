@@ -1,4 +1,3 @@
-using System.Globalization;
 using BusinessLogic.Notifications.Entities;
 using BusinessLogic.Notifications.Services;
 using BusinessLogic.Roles.Entities;

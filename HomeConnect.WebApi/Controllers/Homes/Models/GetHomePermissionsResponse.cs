@@ -11,7 +11,8 @@ public sealed record GetHomePermissionsResponse
     {
         return new GetHomePermissionsResponse
         {
-            HomeId = homesId, HomePermissions = permissions.Select(p => p.Value).ToList()
+            HomeId = homesId,
+            HomePermissions = permissions.Select(p => p.Value).ToList()
         };
     }
 }

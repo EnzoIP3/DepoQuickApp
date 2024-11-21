@@ -66,6 +66,37 @@ public class NotificationServiceTest
 
     #endregion
 
+    #region SendLampNotification
+
+    [TestMethod]
+    public void SendLampNotification_IfStateDiffersFromLampState_SendsNotification()
+    {
+        // Arrange
+        var hardwareId = Guid.NewGuid().ToString();
+        DateTime date = DateTime.Now;
+        var state = true;
+        var args = new NotificationArgs { HardwareId = hardwareId, Date = date, Event = "sensor is open" };
+        var ownedDevice = new LampOwnedDevice(new Home(_user, "Street 3420", 50, 100, 5),
+            new Device("Device", _modelNumber, "Device description", "https://example.com/image.png", [],
+                "Lamp", new Business()));
+        _mockOwnedDeviceRepository.Setup(x => x.Exists(Guid.Parse(hardwareId))).Returns(true);
+        _mockOwnedDeviceRepository.Setup(x => x.GetByHardwareId(Guid.Parse(hardwareId))).Returns(ownedDevice);
+        _mockNotificationRepository.Setup(x => x.Add(It.IsAny<Notification>())).Verifiable();
+        _mockOwnedDeviceRepository.Setup(x => x.GetLampState(Guid.Parse(hardwareId))).Returns(!state);
+
+        // Act
+        _notificationService.SendLampNotification(args, state);
+
+        // Assert
+        _mockNotificationRepository.Verify(x => x.Add(It.Is<Notification>(
+            n =>
+                n.Event == args.Event &&
+                n.User == _user &&
+                n.OwnedDevice == ownedDevice)), Times.Once);
+    }
+
+    #endregion
+
     #region GetNotifications
 
     [TestMethod]
@@ -98,7 +129,10 @@ public class NotificationServiceTest
         _mockNotificationRepository.Setup(x => x.UpdateRange(notifications)).Verifiable();
         var args = new GetNotificationsArgs
         {
-            UserId = userId, DeviceFilter = deviceFilter, DateFilter = dateFilter, ReadFilter = readFilter
+            UserId = userId,
+            DeviceFilter = deviceFilter,
+            DateFilter = dateFilter,
+            ReadFilter = readFilter
         };
 
         // Act
@@ -148,7 +182,9 @@ public class NotificationServiceTest
         // Arrange
         var args = new NotificationArgs
         {
-            HardwareId = Guid.NewGuid().ToString(), Event = "Test Event", Date = DateTime.Now
+            HardwareId = Guid.NewGuid().ToString(),
+            Event = "Test Event",
+            Date = DateTime.Now
         };
 
         _mockOwnedDeviceRepository.Setup(x => x.Exists(Guid.Parse(args.HardwareId))).Returns(false);
@@ -178,7 +214,9 @@ public class NotificationServiceTest
         var ownedDevice = new OwnedDevice(home, device);
         var args = new NotificationArgs
         {
-            HardwareId = ownedDevice.HardwareId.ToString(), Event = "Test Event", Date = DateTime.Now
+            HardwareId = ownedDevice.HardwareId.ToString(),
+            Event = "Test Event",
+            Date = DateTime.Now
         };
         _mockOwnedDeviceRepository.Setup(x => x.Exists(Guid.Parse(args.HardwareId))).Returns(true);
         _mockOwnedDeviceRepository.Setup(x => x.GetByHardwareId(Guid.Parse(args.HardwareId))).Returns(ownedDevice);
@@ -215,7 +253,7 @@ public class NotificationServiceTest
         _mockOwnedDeviceRepository.Setup(x => x.GetByHardwareId(Guid.Parse(hardwareId))).Returns(ownedDevice);
 
         // Act
-        var act = () => _notificationService.Notify(args);
+        Action act = () => _notificationService.Notify(args);
 
         // Assert
         act.Should().Throw<ArgumentException>().WithMessage("Device is not connected");
@@ -230,7 +268,7 @@ public class NotificationServiceTest
         _mockUserRepository.Setup(x => x.ExistsByEmail(userEmail)).Returns(false);
 
         // Act
-        var act = () => _notificationService.Notify(args);
+        Action act = () => _notificationService.Notify(args);
 
         // Assert
         act.Should().Throw<ArgumentException>().WithMessage("User detected by camera was not found.");
@@ -246,7 +284,7 @@ public class NotificationServiceTest
     {
         // Arrange
         var hardwareId = Guid.NewGuid().ToString();
-        var date = DateTime.Now;
+        DateTime date = DateTime.Now;
         var state = true;
         var args = new NotificationArgs { HardwareId = hardwareId, Date = date, Event = "sensor is open" };
         var ownedDevice = new SensorOwnedDevice(new Home(_user, "Street 3420", 50, 100, 5),
@@ -285,37 +323,6 @@ public class NotificationServiceTest
 
         // Assert
         act.Should().Throw<InvalidOperationException>().WithMessage("Device is not a sensor.");
-    }
-
-    #endregion
-
-    #region SendLampNotification
-
-    [TestMethod]
-    public void SendLampNotification_IfStateDiffersFromLampState_SendsNotification()
-    {
-        // Arrange
-        var hardwareId = Guid.NewGuid().ToString();
-        var date = DateTime.Now;
-        var state = true;
-        var args = new NotificationArgs { HardwareId = hardwareId, Date = date, Event = "sensor is open" };
-        var ownedDevice = new LampOwnedDevice(new Home(_user, "Street 3420", 50, 100, 5),
-            new Device("Device", _modelNumber, "Device description", "https://example.com/image.png", [],
-                "Lamp", new Business()));
-        _mockOwnedDeviceRepository.Setup(x => x.Exists(Guid.Parse(hardwareId))).Returns(true);
-        _mockOwnedDeviceRepository.Setup(x => x.GetByHardwareId(Guid.Parse(hardwareId))).Returns(ownedDevice);
-        _mockNotificationRepository.Setup(x => x.Add(It.IsAny<Notification>())).Verifiable();
-        _mockOwnedDeviceRepository.Setup(x => x.GetLampState(Guid.Parse(hardwareId))).Returns(!state);
-
-        // Act
-        _notificationService.SendLampNotification(args, state);
-
-        // Assert
-        _mockNotificationRepository.Verify(x => x.Add(It.Is<Notification>(
-            n =>
-                n.Event == args.Event &&
-                n.User == _user &&
-                n.OwnedDevice == ownedDevice)), Times.Once);
     }
 
     #endregion

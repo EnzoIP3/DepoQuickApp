@@ -29,7 +29,7 @@ public sealed record CreateCameraRequest
             ModelNumber = ModelNumber,
             MotionDetection = MotionDetection,
             PersonDetection = PersonDetection,
-            SecondaryPhotos = SecondaryPhotos,
+            SecondaryPhotos = SecondaryPhotos
         };
     }
 }

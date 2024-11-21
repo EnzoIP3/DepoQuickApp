@@ -1,3 +1,4 @@
+using BusinessLogic.Devices.Models;
 using BusinessLogic.Devices.Services;
 using BusinessLogic.Roles.Entities;
 using HomeConnect.WebApi.Controllers.DeviceImporters.Models;
@@ -22,7 +23,7 @@ public sealed class DeviceImporterController : ControllerBase
     [AuthorizationFilter(SystemPermission.GetDeviceImporters)]
     public GetImportersResponse GetImporters()
     {
-        var importers = _importerService.GetImporters();
+        List<ImporterData> importers = _importerService.GetImporters();
         return new GetImportersResponse { Importers = importers };
     }
 }

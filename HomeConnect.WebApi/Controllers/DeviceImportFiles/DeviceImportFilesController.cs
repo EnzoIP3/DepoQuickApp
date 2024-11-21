@@ -22,7 +22,7 @@ public sealed class DeviceImportFilesController
     [AuthorizationFilter(SystemPermission.GetDeviceImportFiles)]
     public GetImportFilesResponse GetImportFiles()
     {
-        var files = _importerService.GetImportFiles();
+        List<string> files = _importerService.GetImportFiles();
         return new GetImportFilesResponse { ImportFiles = files };
     }
 }

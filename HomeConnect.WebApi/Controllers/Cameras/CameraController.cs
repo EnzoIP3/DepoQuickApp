@@ -1,4 +1,3 @@
-using BusinessLogic.BusinessOwners.Models;
 using BusinessLogic.BusinessOwners.Services;
 using BusinessLogic.Devices.Entities;
 using BusinessLogic.Devices.Services;
@@ -17,9 +16,9 @@ namespace HomeConnect.WebApi.Controllers.Cameras;
 [Route("cameras")]
 public sealed class CameraController : ControllerBase
 {
+    private readonly IBusinessOwnerService _businessOwnerService;
     private readonly IDeviceService _deviceService;
     private readonly INotificationService _notificationService;
-    private readonly IBusinessOwnerService _businessOwnerService;
 
     public CameraController(INotificationService notificationService, IDeviceService deviceService,
         IBusinessOwnerService businessOwnerService)

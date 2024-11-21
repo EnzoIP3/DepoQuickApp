@@ -18,9 +18,9 @@ namespace HomeConnect.WebApi.Controllers.Users;
 [AuthenticationFilter]
 public sealed class UserController : ControllerBase
 {
-    private readonly IUserService _userService;
     private readonly IAdminService _adminService;
     private readonly IBusinessOwnerService _businessOwnerService;
+    private readonly IUserService _userService;
 
     public UserController(IUserService userService, IAdminService adminService,
         IBusinessOwnerService businessOwnerService)
@@ -44,7 +44,7 @@ public sealed class UserController : ControllerBase
         var userLoggedIn = HttpContext.Items[Item.UserLogged] as User;
         var args = new AddRoleToUserArgs { UserId = userLoggedIn!.Id.ToString(), Role = "HomeOwner" };
         _userService.AddRoleToUser(args);
-        var user = _userService.AddRoleToUser(args);
+        User user = _userService.AddRoleToUser(args);
         return new AddHomeOwnerRoleResponse
         {
             Id = args.UserId,

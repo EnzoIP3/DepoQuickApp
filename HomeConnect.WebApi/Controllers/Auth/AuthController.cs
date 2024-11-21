@@ -1,5 +1,5 @@
-using BusinessLogic.Auth.Models;
 using BusinessLogic.Auth.Services;
+using BusinessLogic.Users.Entities;
 using HomeConnect.WebApi.Controllers.Auth.Models;
 using Microsoft.AspNetCore.Mvc;
 
@@ -20,7 +20,7 @@ public sealed class AuthController : ControllerBase
     public CreateTokenResponse CreateToken([FromBody] CreateTokenRequest request)
     {
         var token = _authService.CreateToken(request.ToCreateTokenArgs());
-        var user = _authService.GetUserFromToken(token);
+        User user = _authService.GetUserFromToken(token);
         return CreateTokenResponse.FromUserAndToken(token, user);
     }
 }

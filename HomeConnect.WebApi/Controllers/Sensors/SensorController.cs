@@ -1,4 +1,3 @@
-using BusinessLogic.BusinessOwners.Models;
 using BusinessLogic.BusinessOwners.Services;
 using BusinessLogic.Devices.Entities;
 using BusinessLogic.Devices.Services;
@@ -44,8 +43,8 @@ public sealed class SensorController
     public NotifyResponse Open([FromRoute] string hardwareId)
     {
         NotificationArgs notificationArgs = CreateOpenNotificationArgs(hardwareId);
-        _deviceService.UpdateSensorState(hardwareId, true);
         _notificationService.SendSensorNotification(notificationArgs, true);
+        _deviceService.UpdateSensorState(hardwareId, true);
         return new NotifyResponse { HardwareId = hardwareId };
     }
 
@@ -60,8 +59,8 @@ public sealed class SensorController
     public NotifyResponse Close([FromRoute] string hardwareId)
     {
         NotificationArgs notificationArgs = CreateCloseNotificationArgs(hardwareId);
-        _deviceService.UpdateSensorState(hardwareId, false);
         _notificationService.SendSensorNotification(notificationArgs, false);
+        _deviceService.UpdateSensorState(hardwareId, false);
         return new NotifyResponse { HardwareId = hardwareId };
     }
 

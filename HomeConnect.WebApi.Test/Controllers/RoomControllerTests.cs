@@ -9,8 +9,8 @@ namespace HomeConnect.WebApi.Test.Controllers;
 [TestClass]
 public class RoomControllerTests
 {
-    private Mock<IHomeOwnerService> _homeOwnerService = null!;
     private RoomController _controller = null!;
+    private Mock<IHomeOwnerService> _homeOwnerService = null!;
 
     [TestInitialize]
     public void Initialize()
@@ -32,7 +32,7 @@ public class RoomControllerTests
         var request = new AddOwnedDeviceToRoomRequest { DeviceId = deviceId };
 
         // Act
-        var response = _controller.AddOwnedDeviceToRoom(roomId, request);
+        AddOwnedDeviceToRoomResponse response = _controller.AddOwnedDeviceToRoom(roomId, request);
 
         // Assert
         _homeOwnerService.VerifyAll();

@@ -5,21 +5,11 @@ namespace BusinessLogic.Helpers;
 public sealed class AssemblyInterfaceLoader<TInterface> : IAssemblyInterfaceLoader<TInterface>
     where TInterface : class
 {
-    private DirectoryInfo CreateDirectoryInfo(string path)
-    {
-        if (!Directory.Exists(path))
-        {
-            Directory.CreateDirectory(path);
-        }
-
-        return new DirectoryInfo(path);
-    }
-
     private List<Type> _implementations = [];
 
     public List<string> GetImplementationsList(string path)
     {
-        var directory = CreateDirectoryInfo(path);
+        DirectoryInfo directory = CreateDirectoryInfo(path);
         var files = directory
             .GetFiles("*.dll")
             .ToList();
@@ -66,13 +56,6 @@ public sealed class AssemblyInterfaceLoader<TInterface> : IAssemblyInterfaceLoad
         return GetImplementationByName(implementationName, path).GetType().GUID;
     }
 
-    private TInterface GetImplementationByIndex(int index, params object[] args)
-    {
-        var type = _implementations.ElementAt(index);
-
-        return Activator.CreateInstance(type, args) as TInterface;
-    }
-
     public TInterface GetImplementationById(Guid? implementationId, string path)
     {
         GetImplementationsList(path);
@@ -85,5 +68,22 @@ public sealed class AssemblyInterfaceLoader<TInterface> : IAssemblyInterfaceLoad
         }
 
         return GetImplementationByIndex(index);
+    }
+
+    private DirectoryInfo CreateDirectoryInfo(string path)
+    {
+        if (!Directory.Exists(path))
+        {
+            Directory.CreateDirectory(path);
+        }
+
+        return new DirectoryInfo(path);
+    }
+
+    private TInterface GetImplementationByIndex(int index, params object[] args)
+    {
+        Type type = _implementations.ElementAt(index);
+
+        return Activator.CreateInstance(type, args) as TInterface;
     }
 }

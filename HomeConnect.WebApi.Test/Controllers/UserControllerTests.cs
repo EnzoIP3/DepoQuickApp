@@ -20,17 +20,17 @@ namespace HomeConnect.WebApi.Test.Controllers;
 [TestClass]
 public class UserControllerTests
 {
-    private Mock<HttpContext> _httpContext = null!;
+    private readonly string _imageUrl = "https://www.image.jpg";
     private Mock<IAdminService> _adminService = null!;
-    private Mock<IUserService> _userService = null!;
     private Mock<IBusinessOwnerService> _businessOwnerService = null!;
     private UserController _controller = null!;
     private Pagination _expectedPagination = null!;
     private List<User> _expectedUsers = null!;
+    private Mock<HttpContext> _httpContext = null!;
     private User _otherUser = null!;
     private PagedData<User> _pagedList = null!;
     private User _user = null!;
-    private readonly string _imageUrl = "https://www.image.jpg";
+    private Mock<IUserService> _userService = null!;
 
     [TestInitialize]
     public void Initialize()
@@ -56,6 +56,80 @@ public class UserControllerTests
             TotalPages = _expectedPagination.TotalPages
         };
     }
+
+    #region AddHomeOwnerRole
+
+    [TestMethod]
+    public void AddHomeOwnerRole_WhenCalledWithValidRequest_ReturnsExpectedResponse()
+    {
+        // Arrange
+        var args = new AddRoleToUserArgs { UserId = _user.Id.ToString(), Role = "HomeOwner" };
+        var items = new Dictionary<object, object?> { { Item.UserLogged, _user } };
+        _httpContext.Setup(h => h.Items).Returns(items);
+        _userService.Setup(x => x.AddRoleToUser(args)).Returns(_user);
+
+        // Act
+        AddHomeOwnerRoleResponse response = _controller.AddHomeOwnerRole();
+
+        // Assert
+        _userService.VerifyAll();
+        response.Should().BeEquivalentTo(new AddHomeOwnerRoleResponse
+        {
+            Id = args.UserId,
+            Roles = _user.GetRolesAndPermissions()
+                .ToDictionary(x => x.Key.Name, x => x.Value.Select(y => y.Value).ToList())
+        });
+    }
+
+    #endregion
+
+    #region GetBusinesses
+
+    [TestMethod]
+    public void GetBusinesses_WhenCalledWithValidRequest_ReturnsExpectedResponse()
+    {
+        // Arrange
+        var businesses = new PagedData<Business>
+        {
+            Data =
+            [
+                new Business(Guid.NewGuid().ToString(), "Name", _imageUrl, _user)
+            ],
+            Page = 1,
+            PageSize = 10,
+            TotalPages = 1
+        };
+        var request = new GetUserBusinessesRequest { CurrentPage = 1, PageSize = 10 };
+        var expectedResponse = new GetBusinessesResponse
+        {
+            Businesses = businesses.Data.Select(b => new ListBusinessInfo
+            {
+                Name = b.Name,
+                OwnerEmail = b.Owner.Email,
+                OwnerName = b.Owner.Name,
+                OwnerSurname = b.Owner.Surname,
+                Rut = b.Rut,
+                Logo = b.Logo
+            }).ToList(),
+            Pagination = new Pagination
+            {
+                Page = businesses.Page,
+                PageSize = businesses.PageSize,
+                TotalPages = businesses.TotalPages
+            }
+        };
+        _businessOwnerService.Setup(x => x.GetBusinesses(_user.Id.ToString(), request.CurrentPage, request.PageSize))
+            .Returns(businesses);
+
+        // Act
+        GetBusinessesResponse response = _controller.GetBusinesses(_user.Id.ToString(), request);
+
+        // Assert
+        _businessOwnerService.VerifyAll();
+        response.Should().BeEquivalentTo(expectedResponse);
+    }
+
+    #endregion
 
     #region GetUsers
 
@@ -146,7 +220,8 @@ public class UserControllerTests
         // Arrange
         var parameters = new GetUsersRequest
         {
-            Page = _expectedPagination.Page, PageSize = _expectedPagination.PageSize
+            Page = _expectedPagination.Page,
+            PageSize = _expectedPagination.PageSize
         };
         var args = new GetUsersArgs { CurrentPage = parameters.Page, PageSize = parameters.PageSize };
         _adminService.Setup(x => x.GetUsers(args)).Returns(_pagedList);
@@ -168,78 +243,6 @@ public class UserControllerTests
             }).ToList(),
             Pagination = _expectedPagination
         });
-    }
-
-    #endregion
-
-    #region AddHomeOwnerRole
-
-    [TestMethod]
-    public void AddHomeOwnerRole_WhenCalledWithValidRequest_ReturnsExpectedResponse()
-    {
-        // Arrange
-        var args = new AddRoleToUserArgs { UserId = _user.Id.ToString(), Role = "HomeOwner" };
-        var items = new Dictionary<object, object?> { { Item.UserLogged, _user } };
-        _httpContext.Setup(h => h.Items).Returns(items);
-        _userService.Setup(x => x.AddRoleToUser(args)).Returns(_user);
-
-        // Act
-        var response = _controller.AddHomeOwnerRole();
-
-        // Assert
-        _userService.VerifyAll();
-        response.Should().BeEquivalentTo(new AddHomeOwnerRoleResponse
-        {
-            Id = args.UserId,
-            Roles = _user.GetRolesAndPermissions()
-                .ToDictionary(x => x.Key.Name, x => x.Value.Select(y => y.Value).ToList())
-        });
-    }
-
-    #endregion
-
-    #region GetBusinesses
-
-    [TestMethod]
-    public void GetBusinesses_WhenCalledWithValidRequest_ReturnsExpectedResponse()
-    {
-        // Arrange
-        var businesses = new PagedData<Business>
-        {
-            Data =
-            [
-                new Business(Guid.NewGuid().ToString(), "Name", _imageUrl, _user)
-            ],
-            Page = 1,
-            PageSize = 10,
-            TotalPages = 1
-        };
-        var request = new GetUserBusinessesRequest { CurrentPage = 1, PageSize = 10 };
-        var expectedResponse = new GetBusinessesResponse
-        {
-            Businesses = businesses.Data.Select(b => new ListBusinessInfo
-            {
-                Name = b.Name,
-                OwnerEmail = b.Owner.Email,
-                OwnerName = b.Owner.Name,
-                OwnerSurname = b.Owner.Surname,
-                Rut = b.Rut,
-                Logo = b.Logo
-            }).ToList(),
-            Pagination = new Pagination
-            {
-                Page = businesses.Page, PageSize = businesses.PageSize, TotalPages = businesses.TotalPages
-            }
-        };
-        _businessOwnerService.Setup(x => x.GetBusinesses(_user.Id.ToString(), request.CurrentPage, request.PageSize))
-            .Returns(businesses);
-
-        // Act
-        GetBusinessesResponse response = _controller.GetBusinesses(_user.Id.ToString(), request);
-
-        // Assert
-        _businessOwnerService.VerifyAll();
-        response.Should().BeEquivalentTo(expectedResponse);
     }
 
     #endregion

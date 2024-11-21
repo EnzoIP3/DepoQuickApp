@@ -1,6 +1,5 @@
 using BusinessLogic.Devices.Entities;
 using BusinessLogic.Devices.Models;
-using BusinessLogic.Notifications.Models;
 
 namespace BusinessLogic.Devices.Services;
 

@@ -23,7 +23,7 @@ public sealed class DeviceValidatorController : ControllerBase
     [AuthorizationFilter(SystemPermission.GetDeviceValidators)]
     public GetValidatorsResponse GetValidators()
     {
-        var validators = _validatorService.GetValidators();
+        List<ValidatorInfo> validators = _validatorService.GetValidators();
         return GetValidatorsResponse.FromValidators(validators);
     }
 }

@@ -6,11 +6,12 @@ using HomeConnect.WebApi.Controllers.DeviceValidators.Models;
 using Moq;
 
 namespace HomeConnect.WebApi.Test.Controllers;
+
 [TestClass]
 public class DeviceValidatorControllerTests
 {
-    private Mock<IValidatorService> _validatorService = null!;
     private DeviceValidatorController _controller = null!;
+    private Mock<IValidatorService> _validatorService = null!;
 
     [TestInitialize]
     public void Initialize()
@@ -20,19 +21,13 @@ public class DeviceValidatorControllerTests
     }
 
     #region GetValidators
+
     [TestMethod]
     public void GetValidators_WhenCalled_ReturnsGetValidatorsResponse()
     {
         // Arrange
-        var validators = new List<ValidatorInfo>
-        {
-            new ValidatorInfo { Name = "Validator1" },
-            new ValidatorInfo { Name = "Validator2" }
-        };
-        var expectedResponse = new GetValidatorsResponse
-        {
-            Validators = validators.Select(v => v.Name).ToList()
-        };
+        var validators = new List<ValidatorInfo> { new() { Name = "Validator1" }, new() { Name = "Validator2" } };
+        var expectedResponse = new GetValidatorsResponse { Validators = validators.Select(v => v.Name).ToList() };
         _validatorService.Setup(x => x.GetValidators()).Returns(validators);
 
         // Act
@@ -43,5 +38,6 @@ public class DeviceValidatorControllerTests
         response.Should().BeEquivalentTo(expectedResponse, options => options
             .ComparingByMembers<GetValidatorsResponse>());
     }
+
     #endregion
 }

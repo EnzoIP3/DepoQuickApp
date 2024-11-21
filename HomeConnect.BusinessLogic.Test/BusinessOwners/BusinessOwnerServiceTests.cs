@@ -22,12 +22,13 @@ public class BusinessOwnerServiceTests
     private const string ModelNumber = "123";
     private const string Description = "Device Description";
     private const string MainPhoto = "https://www.example.com/photo1.jpg";
-    private readonly Guid _validatorId = Guid.NewGuid();
 
     private const string Type = "Device Type";
 
     private readonly List<string> _secondaryPhotos =
         ["https://www.example.com/photo2.jpg", "https://www.example.com/photo3.jpg"];
+
+    private readonly Guid _validatorId = Guid.NewGuid();
 
     private string _businessLogo = null!;
     private string _businessName = null!;
@@ -35,12 +36,12 @@ public class BusinessOwnerServiceTests
     private Mock<IBusinessRepository> _businessRepository = null!;
     private string _businessRut = null!;
     private Mock<IDeviceRepository> _deviceRepository = null!;
-    private Mock<IValidatorService> _validatorService = null!;
     private Business _existingBusiness = null!;
+    private Mock<IModeloValidador> _modeloValidador = null!;
     private User _owner = null!;
     private string _ownerEmail = null!;
     private Mock<IUserRepository> _userRepository = null!;
-    private Mock<IModeloValidador> _modeloValidador = null!;
+    private Mock<IValidatorService> _validatorService = null!;
 
     [TestInitialize]
     public void TestInitialize()
@@ -304,6 +305,7 @@ public class BusinessOwnerServiceTests
     #endregion
 
     #region Error
+
     [TestMethod]
     public void CreateDevice_WhenBusinessDoesNotExist_ThrowsException()
     {
@@ -344,7 +346,7 @@ public class BusinessOwnerServiceTests
             Description = Description,
             MainPhoto = MainPhoto,
             SecondaryPhotos = _secondaryPhotos,
-            Type = Type,
+            Type = Type
         };
         _deviceRepository.Setup(x =>
             x.ExistsByModelNumber(args.ModelNumber)).Returns(false);
@@ -449,6 +451,7 @@ public class BusinessOwnerServiceTests
     #endregion
 
     #region Error
+
     [TestMethod]
     public void CreateCamera_WhenBusinessDoesNotExist_ThrowsException()
     {
@@ -484,7 +487,8 @@ public class BusinessOwnerServiceTests
     public void CreateCamera_WhenHasAValidatorAndModelNumberIsInvalid_ThrowsArgumentException()
     {
         // Arrange
-        var business = new Business("RUTexample", "Business Name", "https://example.com/image.png", _owner, _validatorId);
+        var business = new Business("RUTexample", "Business Name", "https://example.com/image.png", _owner,
+            _validatorId);
         var args = new CreateCameraArgs
         {
             Owner = _owner,
@@ -496,7 +500,7 @@ public class BusinessOwnerServiceTests
             MotionDetection = false,
             PersonDetection = false,
             Exterior = false,
-            Interior = true,
+            Interior = true
         };
         _deviceRepository.Setup(x =>
             x.ExistsByModelNumber(args.ModelNumber)).Returns(false);
@@ -515,12 +519,15 @@ public class BusinessOwnerServiceTests
         act.Should().Throw<ArgumentException>()
             .WithMessage("The model number is not valid according to the specified validator.");
     }
+
     #endregion
 
     #endregion
+
     #region UpdateValidator
 
     #region Error
+
     [TestMethod]
     public void UpdateValidator_WhenBusinessIsNotFromUser_ThrowsInvalidOperationException()
     {
@@ -539,7 +546,8 @@ public class BusinessOwnerServiceTests
         Action act = () => _businessOwnerService.UpdateValidator(args);
 
         // Assert
-        act.Should().Throw<InvalidOperationException>().WithMessage("The business does not belong to the specified owner.");
+        act.Should().Throw<InvalidOperationException>()
+            .WithMessage("The business does not belong to the specified owner.");
         _businessRepository.Verify(x => x.Get(business.Rut), Times.Once);
     }
 
@@ -589,7 +597,9 @@ public class BusinessOwnerServiceTests
     }
 
     #endregion
+
     #region Success
+
     [TestMethod]
     public void UpdateValidator_WhenCalledWithValidRequest_UpdatesValidator()
     {
@@ -623,7 +633,8 @@ public class BusinessOwnerServiceTests
     public void UpdateValidator_WhenCalledWithValidRequestAndNoValidator_UpdatesValidatorToNull()
     {
         // Arrange
-        var business = new Business("RUTexample", "Business Name", "https://example.com/image.png", _owner, _validatorId);
+        var business = new Business("RUTexample", "Business Name", "https://example.com/image.png", _owner,
+            _validatorId);
         var args = new UpdateValidatorArgs
         {
             BusinessRut = business.Rut,
@@ -642,10 +653,13 @@ public class BusinessOwnerServiceTests
         _businessRepository.Verify(x => x.Get(business.Rut), Times.Once);
         _businessRepository.Verify(x => x.UpdateValidator(business.Rut, null), Times.Once);
     }
+
     #endregion
+
     #endregion
 
     #region GetBusinesses
+
     [TestMethod]
     public void GetBusinesses_WhenCalledWithInvalidOwnerId_ThrowsArgumentException()
     {
@@ -681,13 +695,15 @@ public class BusinessOwnerServiceTests
         _businessRepository.Setup(x => x.GetPaged(filterArgs)).Returns(businesses);
 
         // Act
-        PagedData<Business> returnedBusinesses = _businessOwnerService.GetBusinesses(_owner.Id.ToString(), currentPage, pageSize);
+        PagedData<Business> returnedBusinesses =
+            _businessOwnerService.GetBusinesses(_owner.Id.ToString(), currentPage, pageSize);
 
         // Assert
         returnedBusinesses.Should().BeEquivalentTo(businesses);
         _businessRepository.Verify(x => x.GetPaged(
             It.Is<FilterArgs>(a => a.OwnerIdFilter == _owner.Id)), Times.Once);
     }
+
     #endregion
 
     #region GetDevices
@@ -707,18 +723,21 @@ public class BusinessOwnerServiceTests
         Action act = () => _businessOwnerService.GetDevices(args);
 
         // Assert
-        act.Should().Throw<InvalidOperationException>().WithMessage("The business does not belong to the specified owner.");
+        act.Should().Throw<InvalidOperationException>()
+            .WithMessage("The business does not belong to the specified owner.");
         _businessRepository.Verify(x => x.Get(business.Rut), Times.Once);
     }
+
     #endregion
 
     #region Success
+
     [TestMethod]
     public void GetDevices_WhenCalledWithValidRequest_ReturnsDevices()
     {
         // Arrange
         var business = new Business("RUTexample", "Business Name", "https://example.com/image.png", _owner);
-        var user = _owner;
+        User user = _owner;
         var devices = new PagedData<Device>
         {
             Data =
@@ -743,6 +762,8 @@ public class BusinessOwnerServiceTests
         _businessRepository.Verify(x => x.Get(business.Rut), Times.Once);
         _deviceRepository.Verify(x => x.GetPaged(It.Is<GetDevicesArgs>(a => a.RutFilter == business.Rut)), Times.Once);
     }
+
     #endregion
+
     #endregion
 }

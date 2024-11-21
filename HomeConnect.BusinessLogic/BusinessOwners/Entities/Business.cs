@@ -55,7 +55,7 @@ public class Business
         }
     }
 
-    public Guid? Validator { get; set; } = null;
+    public Guid? Validator { get; set; }
 
     public User Owner { get; set; } = null!;
 

@@ -26,7 +26,9 @@ public sealed record GetDevicesResponse
             }).ToList(),
             Pagination = new Pagination
             {
-                Page = devices.Page, PageSize = devices.PageSize, TotalPages = devices.TotalPages
+                Page = devices.Page,
+                PageSize = devices.PageSize,
+                TotalPages = devices.TotalPages
             }
         };
     }

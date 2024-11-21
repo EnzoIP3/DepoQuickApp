@@ -6,9 +6,9 @@ public class Device
 {
     private string _description = string.Empty;
     private string _mainPhoto = string.Empty;
+    private string _modelNumber = string.Empty;
     private string _name = string.Empty;
     private List<string> _secondaryPhotos = [];
-    private string _modelNumber = string.Empty;
 
     public Device(string name, string? modelNumber, string description, string mainPhoto, List<string>? secondaryPhotos,
         string type, Business business)

@@ -9,9 +9,6 @@ public sealed record NameDeviceRequest
 
     public NameDeviceArgs ToNameDeviceArgs(User user, string hardwareId)
     {
-        return new NameDeviceArgs()
-        {
-            HardwareId = hardwareId, NewName = NewName ?? string.Empty, OwnerId = user.Id
-        };
+        return new NameDeviceArgs { HardwareId = hardwareId, NewName = NewName ?? string.Empty, OwnerId = user.Id };
     }
 }

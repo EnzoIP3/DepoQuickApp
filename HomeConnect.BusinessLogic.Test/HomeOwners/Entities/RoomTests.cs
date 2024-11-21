@@ -34,7 +34,7 @@ public class RoomTests
     public void Constructor_WhenNameIsEmpty_ThrowsArgumentException()
     {
         // Act
-        var act = () => new Room { Id = Guid.NewGuid(), Name = string.Empty };
+        Func<Room> act = () => new Room { Id = Guid.NewGuid(), Name = string.Empty };
 
         // Assert
         act.Should().Throw<ArgumentException>().WithMessage("Room name cannot be null or empty.");
@@ -44,7 +44,7 @@ public class RoomTests
     public void Constructor_WhenHomeIsNull_ThrowsArgumentException()
     {
         // Act
-        var act = () => new Room { Id = Guid.NewGuid(), Name = "Living Room", Home = null };
+        Func<Room> act = () => new Room { Id = Guid.NewGuid(), Name = "Living Room", Home = null };
 
         // Assert
         act.Should().Throw<ArgumentException>().WithMessage("Room must have a home assigned.");
@@ -63,7 +63,7 @@ public class RoomTests
     {
         // Arrange
         var room = new Room { Id = Guid.NewGuid(), Name = "Living Room", Home = new Home() };
-        var device = new OwnedDevice() { Home = room.Home };
+        var device = new OwnedDevice { Home = room.Home };
 
         // Act
         room.AddOwnedDevice(device);
@@ -84,7 +84,7 @@ public class RoomTests
         var device = new OwnedDevice { Home = new Home() };
 
         // Act
-        var act = () => room.AddOwnedDevice(device);
+        Action act = () => room.AddOwnedDevice(device);
 
         // Assert
         act.Should().Throw<ArgumentException>().WithMessage("Device must belong to the same home as the room.");
@@ -99,7 +99,7 @@ public class RoomTests
 
         // Act
         room.AddOwnedDevice(device);
-        var act = () => room.AddOwnedDevice(device);
+        Action act = () => room.AddOwnedDevice(device);
 
         // Assert
         act.Should().Throw<ArgumentException>().WithMessage("Device already belongs to the room.");
@@ -140,7 +140,7 @@ public class RoomTests
         var device = new OwnedDevice { Home = room.Home };
 
         // Act
-        var act = () => room.RemoveOwnedDevice(device);
+        Action act = () => room.RemoveOwnedDevice(device);
 
         // Assert
         act.Should().Throw<ArgumentException>().WithMessage("Device does not belong to the room.");
@@ -163,7 +163,7 @@ public class RoomTests
         room.AddOwnedDevice(device);
 
         // Act
-        var result = room.GetOwnedDevice(device.HardwareId);
+        OwnedDevice result = room.GetOwnedDevice(device.HardwareId);
 
         // Assert
         result.Should().Be(device);
@@ -181,7 +181,7 @@ public class RoomTests
         var device = new OwnedDevice { Home = new Home() };
 
         // Act
-        var act = () => room.GetOwnedDevice(device.HardwareId);
+        Func<OwnedDevice> act = () => room.GetOwnedDevice(device.HardwareId);
 
         // Assert
         act.Should().Throw<ArgumentException>().WithMessage("Device does not belong to the room.");

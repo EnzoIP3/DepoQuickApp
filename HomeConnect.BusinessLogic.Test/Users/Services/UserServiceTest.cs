@@ -131,7 +131,7 @@ public class UserServiceTest
         _userRepository.Setup(x => x.Update(user)).Verifiable();
 
         // Act
-        var result = _userService.AddRoleToUser(args);
+        User result = _userService.AddRoleToUser(args);
 
         // Assert
         _userRepository.Verify(x => x.Update(user), Times.Once);

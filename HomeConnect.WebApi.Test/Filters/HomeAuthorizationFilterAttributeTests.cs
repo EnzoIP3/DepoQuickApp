@@ -240,7 +240,7 @@ public class HomeAuthorizationFilterAttributeTests
         _attribute.OnAuthorization(_context);
 
         // Assert
-        var response = _context.Result;
+        IActionResult? response = _context.Result;
         _httpContextMock.VerifyAll();
         response.Should().NotBeNull();
         var concreteResponse = response as ObjectResult;

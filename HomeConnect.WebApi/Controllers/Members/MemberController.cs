@@ -28,7 +28,8 @@ public sealed class MemberController : ControllerBase
         _homeOwnerService.UpdateMemberNotifications(Guid.Parse(membersId), request.ShouldBeNotified);
         return new UpdateMemberNotificationsResponse
         {
-            MemberId = membersId, ShouldBeNotified = request.ShouldBeNotified!.Value
+            MemberId = membersId,
+            ShouldBeNotified = request.ShouldBeNotified!.Value
         };
     }
 }

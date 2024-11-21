@@ -5,6 +5,10 @@ namespace BusinessLogic.HomeOwners.Entities;
 
 public class Room
 {
+    private Home _home = null!;
+
+    private string _name = string.Empty;
+
     public Room()
     {
     }
@@ -15,8 +19,6 @@ public class Room
         Home = home;
     }
 
-    private string _name = string.Empty;
-    private Home _home = null!;
     public Guid Id { get; set; } = Guid.NewGuid();
 
     public string Name
@@ -29,6 +31,14 @@ public class Room
         }
     }
 
+    public Home Home
+    {
+        get => _home;
+        set => _home = value ?? throw new ArgumentException("Room must have a home assigned.");
+    }
+
+    public List<OwnedDevice> OwnedDevices { get; set; } = [];
+
     private static void EnsureNameIsNotNullOrEmpty(string value)
     {
         if (string.IsNullOrEmpty(value))
@@ -36,17 +46,6 @@ public class Room
             throw new ArgumentException("Room name cannot be null or empty.");
         }
     }
-
-    public Home Home
-    {
-        get => _home;
-        set
-        {
-            _home = value ?? throw new ArgumentException("Room must have a home assigned.");
-        }
-    }
-
-    public List<OwnedDevice> OwnedDevices { get; set; } = [];
 
     public void AddOwnedDevice(OwnedDevice device)
     {

@@ -2,7 +2,6 @@ using BusinessLogic.Admins.Models;
 using BusinessLogic.BusinessOwners.Entities;
 using BusinessLogic.BusinessOwners.Repositories;
 using BusinessLogic.Roles.Entities;
-using BusinessLogic.Roles.Repositories;
 using BusinessLogic.Users.Entities;
 using BusinessLogic.Users.Repositories;
 
@@ -10,14 +9,15 @@ namespace BusinessLogic.Admins.Services;
 
 public class AdminService : IAdminService
 {
+    private readonly IBusinessRepository _businessRepository;
+
+    private readonly IUserRepository _userRepository;
+
     public AdminService(IUserRepository userRepository, IBusinessRepository businessRepository)
     {
         _userRepository = userRepository;
         _businessRepository = businessRepository;
     }
-
-    private readonly IUserRepository _userRepository;
-    private readonly IBusinessRepository _businessRepository;
 
     public void DeleteAdmin(string adminIdStr)
     {
@@ -25,14 +25,6 @@ public class AdminService : IAdminService
         EnsureEntityExists(adminId);
         EnsureOtherAdminExists();
         _userRepository.Delete(adminId);
-    }
-
-    private void EnsureOtherAdminExists()
-    {
-        if (_userRepository.GetPaged(1, 1, roleFilter: Role.Admin).TotalPages == 1)
-        {
-            throw new InvalidOperationException("The last admin cannot be deleted");
-        }
     }
 
     public PagedData<User> GetUsers(GetUsersArgs args)
@@ -54,6 +46,14 @@ public class AdminService : IAdminService
         PagedData<Business> businesses =
             _businessRepository.GetPaged(filterArgs);
         return businesses;
+    }
+
+    private void EnsureOtherAdminExists()
+    {
+        if (_userRepository.GetPaged(1, 1, roleFilter: Role.Admin).TotalPages == 1)
+        {
+            throw new InvalidOperationException("The last admin cannot be deleted");
+        }
     }
 
     private void EnsureEntityExists(Guid id)

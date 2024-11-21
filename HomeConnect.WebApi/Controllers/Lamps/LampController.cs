@@ -1,4 +1,3 @@
-using BusinessLogic.BusinessOwners.Models;
 using BusinessLogic.BusinessOwners.Services;
 using BusinessLogic.Devices.Entities;
 using BusinessLogic.Devices.Services;
@@ -44,8 +43,8 @@ public sealed class LampController
     public NotifyResponse TurnOn([FromRoute] string hardwareId)
     {
         NotificationArgs args = CreateTurnNotificationArgs(hardwareId, true);
-        _deviceService.TurnLamp(hardwareId, true);
         _notificationService.SendLampNotification(args, true);
+        _deviceService.TurnLamp(hardwareId, true);
         return new NotifyResponse { HardwareId = hardwareId };
     }
 
@@ -53,8 +52,8 @@ public sealed class LampController
     public NotifyResponse TurnOff([FromRoute] string hardwareId)
     {
         NotificationArgs args = CreateTurnNotificationArgs(hardwareId, false);
-        _deviceService.TurnLamp(hardwareId, false);
         _notificationService.SendLampNotification(args, false);
+        _deviceService.TurnLamp(hardwareId, false);
         return new NotifyResponse { HardwareId = hardwareId };
     }
 

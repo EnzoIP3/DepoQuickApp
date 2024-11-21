@@ -7,7 +7,7 @@
     </PropertyGroup>
 
     <ItemGroup>
-      <ProjectReference Include="..\DeviceImporter\DeviceImporter.csproj" />
+      <ProjectReference Include="..\HomeConnect.DeviceImporter\HomeConnect.DeviceImporter.csproj" />
     </ItemGroup>
 
 </Project>

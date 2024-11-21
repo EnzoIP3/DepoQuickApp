@@ -23,7 +23,7 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SixCharacters3Letters3Numbe
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "JsonImporter", "JsonImporter\JsonImporter.csproj", "{8A3417A6-F108-47D1-8237-0BEE4FB49B66}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DeviceImporter", "DeviceImporter\DeviceImporter.csproj", "{170BCAC8-7F1A-4E17-B37E-7547D8A3AA92}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "HomeConnect.DeviceImporter", "HomeConnect.DeviceImporter\HomeConnect.DeviceImporter.csproj", "{170BCAC8-7F1A-4E17-B37E-7547D8A3AA92}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

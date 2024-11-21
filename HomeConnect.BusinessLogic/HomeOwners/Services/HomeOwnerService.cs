@@ -95,6 +95,11 @@ public class HomeOwnerService : IHomeOwnerService
             throw new ArgumentException("Hardware ID cannot be empty");
         }
 
+        if (!Guid.TryParse(args.HardwareId, out _))
+        {
+            throw new ArgumentException("Hardware ID must be a valid GUID");
+        }
+
         if (string.IsNullOrEmpty(args.NewName))
         {
             throw new ArgumentException("New name cannot be empty");

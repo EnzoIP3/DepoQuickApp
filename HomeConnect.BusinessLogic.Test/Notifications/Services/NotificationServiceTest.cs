@@ -268,6 +268,25 @@ public class NotificationServiceTest
                 n.OwnedDevice == ownedDevice)), Times.Once);
     }
 
+    [TestMethod]
+    public void SendSensorNotification_IfDeviceIsNotASensor_ThrowsInvalidOperationException()
+    {
+        // Arrange
+        var hardwareId = Guid.NewGuid().ToString();
+        var args = new NotificationArgs { HardwareId = hardwareId, Date = DateTime.Now, Event = "sensor is open" };
+        var ownedDevice = new LampOwnedDevice(new Home(_user, "Street 3420", 50, 100, 5),
+            new Device("Device", _modelNumber, "Device description", "https://example.com/image.png", [],
+                "Lamp", new Business()));
+        _mockOwnedDeviceRepository.Setup(x => x.Exists(Guid.Parse(hardwareId))).Returns(true);
+        _mockOwnedDeviceRepository.Setup(x => x.GetByHardwareId(Guid.Parse(hardwareId))).Returns(ownedDevice);
+
+        // Act
+        Action act = () => _notificationService.SendSensorNotification(args, true);
+
+        // Assert
+        act.Should().Throw<InvalidOperationException>().WithMessage("Device is not a sensor.");
+    }
+
     #endregion
 
     #region SendLampNotification

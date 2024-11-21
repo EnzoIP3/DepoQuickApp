@@ -1089,10 +1089,12 @@ public class HomeOwnerServiceTests
         _roomRepositoryMock.Setup(repo => repo.Exists(room.Id)).Returns(true);
         _roomRepositoryMock.Setup(repo => repo.Get(room.Id)).Returns(room);
         _ownedDeviceRepositoryMock.Setup(repo => repo.GetOwnedDeviceById(device.Id)).Returns(ownedDevice);
+        _ownedDeviceRepositoryMock.Setup(repo => repo.Exists(ownedDevice.HardwareId)).Returns(true);
+        _ownedDeviceRepositoryMock.Setup(repo => repo.GetOwnedDeviceById(ownedDevice.HardwareId)).Returns(ownedDevice);
         _roomRepositoryMock.Setup(repo => repo.Update(room)).Verifiable();
 
         // Act
-        var result = _homeOwnerService.AddOwnedDeviceToRoom(room.Id.ToString(), device.Id.ToString());
+        var result = _homeOwnerService.AddOwnedDeviceToRoom(room.Id.ToString(), ownedDevice.HardwareId.ToString());
 
         // Assert
         result.Should().Be(ownedDevice.HardwareId);
@@ -1114,6 +1116,21 @@ public class HomeOwnerServiceTests
 
         // Assert
         act.Should().Throw<ArgumentException>().WithMessage("Invalid room ID.");
+    }
+
+    [TestMethod]
+    public void AddOwnedDeviceToRoom_WhenDeviceDoesNotExist_ThrowsArgumentException()
+    {
+        // Arrange
+        _roomRepositoryMock.Setup(repo => repo.Exists(It.IsAny<Guid>())).Returns(true);
+        _roomRepositoryMock.Setup(repo => repo.Get(It.IsAny<Guid>())).Returns(new Room());
+        _ownedDeviceRepositoryMock.Setup(repo => repo.Exists(It.IsAny<Guid>())).Returns(false);
+
+        // Act
+        var act = () => _homeOwnerService.AddOwnedDeviceToRoom(Guid.NewGuid().ToString(), Guid.NewGuid().ToString());
+
+        // Assert
+        act.Should().Throw<ArgumentException>().WithMessage("That device does not exist.");
     }
 
     #endregion

@@ -147,9 +147,23 @@ public class NotificationService : INotificationService
 
     public void SendSensorNotification(NotificationArgs args, bool state)
     {
-        if (_ownedDeviceRepository.GetSensorState(Guid.Parse(args.HardwareId)) != state)
+        EnsureDeviceIsSensor(args.HardwareId);
+        if (SensorStateChanged(args, state))
         {
             Notify(args);
+        }
+    }
+
+    private bool SensorStateChanged(NotificationArgs args, bool state)
+    {
+        return _ownedDeviceRepository.GetSensorState(Guid.Parse(args.HardwareId)) != state;
+    }
+
+    private void EnsureDeviceIsSensor(string hardwareId)
+    {
+        if (_ownedDeviceRepository.GetByHardwareId(Guid.Parse(hardwareId)).Device.Type != DeviceType.Sensor)
+        {
+            throw new InvalidOperationException("Device is not a sensor.");
         }
     }
 }

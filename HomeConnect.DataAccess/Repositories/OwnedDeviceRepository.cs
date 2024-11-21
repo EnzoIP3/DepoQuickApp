@@ -55,7 +55,6 @@ public class OwnedDeviceRepository : IOwnedDeviceRepository
 
     public void UpdateLampState(Guid hardwareId, bool state)
     {
-        EnsureDeviceIsLamp(hardwareId);
         var lamp = (LampOwnedDevice)GetByHardwareId(hardwareId);
         lamp.State = state;
         Update(lamp);
@@ -63,53 +62,29 @@ public class OwnedDeviceRepository : IOwnedDeviceRepository
 
     public void UpdateSensorState(Guid hardwareId, bool state)
     {
-        EnsureDeviceIsSensor(hardwareId);
+        var sensor = (SensorOwnedDevice)GetByHardwareId(hardwareId);
+        sensor.IsOpen = state;
+        Update(sensor);
     }
 
     public bool GetLampState(Guid hardwareId)
     {
-        EnsureDeviceIsLamp(hardwareId);
         return ((LampOwnedDevice)GetByHardwareId(hardwareId)).State;
     }
 
     public bool GetSensorState(Guid hardwareId)
     {
-        EnsureDeviceIsSensor(hardwareId);
         return ((SensorOwnedDevice)GetByHardwareId(hardwareId)).IsOpen;
     }
 
     public OwnedDevice GetOwnedDeviceById(Guid ownedDeviceId)
     {
-        var ownedDevice = _context.OwnedDevices.FirstOrDefault(d => d.HardwareId == ownedDeviceId);
-        if (ownedDevice == null)
-        {
-            throw new ArgumentException("Owned device does not exist");
-        }
-
-        return ownedDevice;
+        return _context.OwnedDevices.First(d => d.HardwareId == ownedDeviceId);
     }
 
     public void UpdateOwnedDevice(OwnedDevice ownedDevice)
     {
         _context.OwnedDevices.Update(ownedDevice);
         _context.SaveChanges();
-    }
-
-    private void EnsureDeviceIsSensor(Guid hardwareId)
-    {
-        OwnedDevice ownedDevice = GetByHardwareId(hardwareId);
-        if (ownedDevice.Device.Type != DeviceType.Sensor)
-        {
-            throw new InvalidOperationException("The device is not a sensor.");
-        }
-    }
-
-    private void EnsureDeviceIsLamp(Guid hardwareId)
-    {
-        OwnedDevice ownedDevice = GetByHardwareId(hardwareId);
-        if (ownedDevice.Device.Type != DeviceType.Lamp)
-        {
-            throw new InvalidOperationException("The device is not a lamp.");
-        }
     }
 }

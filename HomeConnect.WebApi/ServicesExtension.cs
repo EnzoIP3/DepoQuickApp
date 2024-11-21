@@ -1,3 +1,4 @@
+using System.Diagnostics.CodeAnalysis;
 using BusinessLogic.Admins.Services;
 using BusinessLogic.Auth.Repositories;
 using BusinessLogic.Auth.Services;
@@ -21,6 +22,7 @@ using ModeloValidador.Abstracciones;
 
 namespace HomeConnect.WebApi;
 
+[ExcludeFromCodeCoverage]
 public static class ServicesExtension
 {
     public static IServiceCollection AddDatabase(this IServiceCollection services, IConfiguration configuration)

@@ -64,14 +64,32 @@ public class DeviceService : IDeviceService
     {
         EnsureHardwareIdIsValid(hardwareId);
         EnsureOwnedDeviceExists(hardwareId);
+        EnsureDeviceIsALamp(hardwareId);
         _ownedDeviceRepository.UpdateLampState(Guid.Parse(hardwareId), state);
+    }
+
+    private void EnsureDeviceIsALamp(string hardwareId)
+    {
+        if (_ownedDeviceRepository.GetByHardwareId(Guid.Parse(hardwareId)).Device.Type != DeviceType.Lamp)
+        {
+            throw new InvalidOperationException("Device is not a lamp.");
+        }
     }
 
     public void UpdateSensorState(string hardwareId, bool state)
     {
         EnsureHardwareIdIsValid(hardwareId);
         EnsureOwnedDeviceExists(hardwareId);
+        EnsureDeviceIsASensor(hardwareId);
         _ownedDeviceRepository.UpdateSensorState(Guid.Parse(hardwareId), state);
+    }
+
+    private void EnsureDeviceIsASensor(string hardwareId)
+    {
+        if (_ownedDeviceRepository.GetByHardwareId(Guid.Parse(hardwareId)).Device.Type != DeviceType.Sensor)
+        {
+            throw new InvalidOperationException("Device is not a sensor.");
+        }
     }
 
     public Camera GetCameraById(string cameraId)

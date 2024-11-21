@@ -207,6 +207,12 @@ public class HomeOwnerService : IHomeOwnerService
         }
 
         var room = _roomRepository.Get(roomGuid);
+
+        if (!_ownedDeviceRepository.Exists(ownedDeviceGuid))
+        {
+            throw new ArgumentException("That device does not exist.");
+        }
+
         var ownedDevice = _ownedDeviceRepository.GetOwnedDeviceById(ownedDeviceGuid);
 
         room.AddOwnedDevice(ownedDevice);

@@ -29,6 +29,14 @@ public class Notification : ICloneable
 
     public object Clone()
     {
-        throw new NotImplementedException();
+        return new Notification
+        {
+            Id = Id,
+            Date = Date,
+            Read = Read,
+            Event = Event,
+            OwnedDevice = OwnedDevice,
+            User = User
+        };
     }
 }

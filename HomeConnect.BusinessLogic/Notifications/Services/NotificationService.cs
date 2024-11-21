@@ -105,6 +105,9 @@ public class NotificationService : INotificationService
 
     public void SendLampNotification(NotificationArgs args, bool state)
     {
-        throw new NotImplementedException();
+        if (OwnedDeviceRepository.GetLampState(Guid.Parse(args.HardwareId)) != state)
+        {
+            Notify(args);
+        }
     }
 }

@@ -8,11 +8,11 @@ import AddResponse from "./models/add-response";
     providedIn: "root"
 })
 export class BusinessOwnersService {
-    constructor(private readonly _repository: BusinessOwnersApiRepositoryService) {}
+    constructor(
+        private readonly _repository: BusinessOwnersApiRepositoryService
+    ) {}
 
-    public addBusinessOwner(
-        addRequest: AddRequest
-    ): Observable<AddResponse> {
+    public addBusinessOwner(addRequest: AddRequest): Observable<AddResponse> {
         return this._repository.add(addRequest);
     }
 }

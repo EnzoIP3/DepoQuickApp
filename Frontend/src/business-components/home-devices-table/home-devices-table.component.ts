@@ -1,9 +1,15 @@
-import { Component, ContentChild, Input, TemplateRef } from "@angular/core";
+import {
+    Component,
+    ContentChild,
+    Input,
+    TemplateRef,
+    OnInit,
+    OnDestroy
+} from "@angular/core";
 import TableColumn from "../../components/table/models/table-column";
 import Device from "../../backend/services/devices/models/device";
 import { Subscription } from "rxjs";
 import { HomesService } from "../../backend/services/homes/homes.service";
-import { MessageService } from "primeng/api";
 import GetHomeDevicesResponse from "../../backend/services/homes/models/get-home-devices-response";
 import { RoomsDropdownComponent } from "../rooms-dropdown/rooms-dropdown.component";
 import { BaseDevicesTableComponent } from "../base-devices-table/base-devices-table.component";
@@ -13,6 +19,7 @@ import { DialogComponent } from "../../components/dialog/dialog.component";
 import { CommonModule } from "@angular/common";
 import { ButtonComponent } from "../../components/button/button.component";
 import { HomeDeviceDetailsComponent } from "../home-device-details/home-device-details.component";
+import { MessagesService } from "../../backend/services/messages/messages.service";
 
 @Component({
     selector: "app-home-devices-table",
@@ -27,7 +34,7 @@ import { HomeDeviceDetailsComponent } from "../home-device-details/home-device-d
     ],
     templateUrl: "./home-devices-table.component.html"
 })
-export class HomeDevicesTableComponent {
+export class HomeDevicesTableComponent implements OnInit, OnDestroy {
     @Input() homeId!: string;
     @ContentChild("nameDeviceFormTemplate")
     nameDeviceFormTemplate!: TemplateRef<any>;
@@ -64,15 +71,16 @@ export class HomeDevicesTableComponent {
     private _getRoomsSubscription: Subscription | null = null;
     private _devicesSubscription: Subscription | null = null;
     private _getDevicesSubscription: Subscription | null = null;
-    loading: boolean = true;
-    loadingRooms: boolean = true;
+    loading = true;
+    loadingRooms = true;
+    error: string | null = null;
     rooms: Room[] = [];
-    visibleDialog: boolean = false;
+    visibleDialog = false;
     selectedDevice: Device | null = null;
 
     constructor(
         private readonly _homesService: HomesService,
-        private readonly _messageService: MessageService
+        private readonly _messagesService: MessagesService
     ) {}
 
     ngOnInit() {
@@ -93,7 +101,7 @@ export class HomeDevicesTableComponent {
             },
             error: (error) => {
                 this.loadingRooms = false;
-                this._messageService.add({
+                this._messagesService.add({
                     severity: "error",
                     summary: "Error",
                     detail: error.message
@@ -105,31 +113,40 @@ export class HomeDevicesTableComponent {
     private _getDevices() {
         this._getDevicesSubscription = this._homesService
             .getDevices(this.homeId)
-            .subscribe();
-        this._devicesSubscription = this._homesService.devices.subscribe({
-            next: (response: GetHomeDevicesResponse | null) => {
-                if (response) {
-                    this.devices = response.devices;
-                    this._updateSelectedDevice();
+            .subscribe({
+                error: () => {
+                    this.loading = false;
+                    this.error =
+                        "You do not have permission to view devices in this home.";
                 }
-                this.loading = false;
-            },
-            error: (error) => {
-                this.loading = false;
-                this._messageService.add({
-                    severity: "error",
-                    summary: "Error",
-                    detail: error.message
-                });
-            }
-        });
+            });
+        if (!this.error) {
+            this._devicesSubscription = this._homesService.devices.subscribe({
+                next: (response: GetHomeDevicesResponse | null) => {
+                    if (response) {
+                        this.devices = response.devices;
+                        this._updateSelectedDevice();
+                    }
+                    this.loading = false;
+                },
+                error: (error) => {
+                    this.loading = false;
+                    this._messagesService.add({
+                        severity: "error",
+                        summary: "Error",
+                        detail: error.message
+                    });
+                }
+            });
+        }
     }
 
     private _updateSelectedDevice() {
         if (this.selectedDevice) {
             this.selectedDevice =
                 this.devices.find(
-                    (device) => device.hardwareId === this.selectedDevice?.hardwareId
+                    (device) =>
+                        device.hardwareId === this.selectedDevice?.hardwareId
                 ) || null;
         }
     }

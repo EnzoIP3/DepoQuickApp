@@ -1,15 +1,15 @@
-import { Component, Input } from "@angular/core";
+import { Component, Input, OnInit, OnDestroy } from "@angular/core";
 import { FormBuilder, FormGroup, Validators } from "@angular/forms";
 import { Subscription } from "rxjs";
 import { DevicesService } from "../../../backend/services/devices/devices.service";
-import { MessageService } from "primeng/api";
 import { HomesService } from "../../../backend/services/homes/homes.service";
+import { MessagesService } from "../../../backend/services/messages/messages.service";
 
 @Component({
     selector: "app-name-device-form",
     templateUrl: "./name-device-form.component.html"
 })
-export class NameDeviceFormComponent {
+export class NameDeviceFormComponent implements OnInit, OnDestroy {
     readonly formFields = {
         newName: {
             required: { message: "Name is required" }
@@ -25,7 +25,7 @@ export class NameDeviceFormComponent {
     constructor(
         private _formBuilder: FormBuilder,
         private _devicesService: DevicesService,
-        private _messageService: MessageService,
+        private _messagesService: MessagesService,
         private _homesService: HomesService
     ) {}
 
@@ -43,7 +43,7 @@ export class NameDeviceFormComponent {
             .subscribe({
                 next: () => {
                     this.deviceStatus.loading = false;
-                    this._messageService.add({
+                    this._messagesService.add({
                         severity: "success",
                         summary: "Success",
                         detail: `Device is now named ${this.deviceForm.value.newName}`
@@ -55,7 +55,7 @@ export class NameDeviceFormComponent {
                 },
                 error: (error) => {
                     this.deviceStatus.loading = false;
-                    this._messageService.add({
+                    this._messagesService.add({
                         severity: "error",
                         summary: "Error",
                         detail: error.message

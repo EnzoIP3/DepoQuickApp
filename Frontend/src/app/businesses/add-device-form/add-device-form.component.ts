@@ -1,7 +1,5 @@
 import { Component, OnInit, OnDestroy } from "@angular/core";
 import { FormBuilder, FormGroup, Validators } from "@angular/forms";
-import { Router } from "@angular/router";
-import { MessageService } from "primeng/api";
 import { Subscription } from "rxjs";
 import { DeviceTypesService } from "../../../backend/services/device-types/device-types.service";
 import DeviceTypesResponse from "../../../backend/services/device-types/models/device-types-response";
@@ -9,6 +7,7 @@ import { CamerasService } from "../../../backend/services/cameras/cameras.servic
 import { LampsService } from "../../../backend/services/lamps/lamps.service";
 import { SensorsService } from "../../../backend/services/sensors/sensors.service";
 import { MotionSensorsService } from "../../../backend/services/movement-sensors/motion-sensors.service";
+import { MessagesService } from "../../../backend/services/messages/messages.service";
 
 @Component({
     selector: "app-add-device-form",
@@ -41,7 +40,7 @@ export class AddDeviceFormComponent implements OnInit, OnDestroy {
 
     constructor(
         private _formBuilder: FormBuilder,
-        private _messageService: MessageService,
+        private _messagesService: MessagesService,
         private _cameraService: CamerasService,
         private _sensorService: SensorsService,
         private _lampService: LampsService,
@@ -84,7 +83,7 @@ export class AddDeviceFormComponent implements OnInit, OnDestroy {
                     }));
                 },
                 error: (error) => {
-                    this._messageService.add({
+                    this._messagesService.add({
                         severity: "error",
                         summary: "Error",
                         detail: "Failed to load device types. " + error.message
@@ -141,7 +140,7 @@ export class AddDeviceFormComponent implements OnInit, OnDestroy {
             this._deviceSubscription = service.addDevice(formData).subscribe({
                 next: (response) => {
                     this.status.loading = false;
-                    this._messageService.add({
+                    this._messagesService.add({
                         severity: "success",
                         summary: `${deviceType} Added`,
                         detail: `The ${deviceType.toLowerCase()} with ID: ${response.id} has been added successfully.`
@@ -157,7 +156,7 @@ export class AddDeviceFormComponent implements OnInit, OnDestroy {
                 error: (error) => {
                     this.status.loading = false;
                     this.status.error = error;
-                    this._messageService.add({
+                    this._messagesService.add({
                         severity: "error",
                         summary: "Error",
                         detail: error.message
@@ -166,7 +165,7 @@ export class AddDeviceFormComponent implements OnInit, OnDestroy {
             });
         } else {
             this.status.loading = false;
-            this._messageService.add({
+            this._messagesService.add({
                 severity: "error",
                 summary: "Form Error",
                 detail: "Please correct the form errors and try again."

@@ -1,4 +1,4 @@
-import { Component, Input } from "@angular/core";
+import { Component, Input, OnInit } from "@angular/core";
 import { AvatarModule } from "primeng/avatar";
 
 @Component({
@@ -7,9 +7,9 @@ import { AvatarModule } from "primeng/avatar";
     imports: [AvatarModule],
     templateUrl: "./avatar.component.html"
 })
-export class AvatarComponent {
+export class AvatarComponent implements OnInit {
     @Input() image: string | undefined;
-    @Input() defaultIcon: string = "pi pi-user";
+    @Input() defaultIcon = "pi pi-user";
     @Input() size: "normal" | "large" | "xlarge" | undefined = "large";
     @Input() shape: "square" | "circle" | undefined = "circle";
 

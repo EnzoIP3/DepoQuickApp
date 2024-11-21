@@ -1,13 +1,13 @@
-import { Component } from "@angular/core";
+import { Component, OnInit, OnDestroy } from "@angular/core";
 import TableColumn from "../../components/table/models/table-column";
 import { Subscription } from "rxjs";
-import { MessageService } from "primeng/api";
 import { HomesService } from "../../backend/services/homes/homes.service";
 import Home from "../../backend/services/homes/models/home";
 import { TableComponent } from "../../components/table/table.component";
 import GetHomesResponse from "../../backend/services/homes/models/get-homes-response";
 import { Router } from "@angular/router";
 import { CommonModule } from "@angular/common";
+import { MessagesService } from "../../backend/services/messages/messages.service";
 
 @Component({
     selector: "app-homes-table",
@@ -15,7 +15,7 @@ import { CommonModule } from "@angular/common";
     imports: [CommonModule, TableComponent],
     templateUrl: "./homes-table.component.html"
 })
-export class HomesTableComponent {
+export class HomesTableComponent implements OnInit, OnDestroy {
     columns: TableColumn[] = [
         {
             field: "address",
@@ -41,11 +41,11 @@ export class HomesTableComponent {
 
     homes: Home[] = [];
     private _homesServiceSubscription: Subscription | null = null;
-    loading: boolean = true;
+    loading = true;
 
     constructor(
         private readonly _homesService: HomesService,
-        private readonly _messageService: MessageService,
+        private readonly _messagesService: MessagesService,
         private readonly _router: Router
     ) {}
 
@@ -59,7 +59,7 @@ export class HomesTableComponent {
                 },
                 error: (error) => {
                     this.loading = false;
-                    this._messageService.add({
+                    this._messagesService.add({
                         severity: "error",
                         summary: "Error",
                         detail: error.message

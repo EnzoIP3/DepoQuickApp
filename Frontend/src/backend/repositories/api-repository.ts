@@ -3,7 +3,6 @@ import {
     HttpErrorResponse,
     HttpHeaders
 } from "@angular/common/http";
-import { inject } from "@angular/core";
 import { Router } from "@angular/router";
 import { Observable, catchError, retry, throwError } from "rxjs";
 
@@ -96,8 +95,8 @@ export default abstract class ApiRepository {
 
     protected handleError(error: HttpErrorResponse) {
         let errorMessage = ApiRepository.DEFAULT_ERROR_MESSAGE;
-        let isServerError = "message" in error.error;
-        let isExpiredTokenError =
+        const isServerError = "message" in error.error;
+        const isExpiredTokenError =
             error.status === 401 && localStorage.getItem("user");
 
         if (isServerError) {

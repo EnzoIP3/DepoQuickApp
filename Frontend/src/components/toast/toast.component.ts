@@ -17,5 +17,5 @@ export class ToastComponent {
         | "bottom-right"
         | "center" = "bottom-right";
 
-    @Input() life: number = 10000;
+    @Input() life = 10000;
 }

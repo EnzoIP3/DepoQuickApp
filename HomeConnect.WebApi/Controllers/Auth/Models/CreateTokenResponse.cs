@@ -6,7 +6,7 @@ public record CreateTokenResponse
 {
     public string UserId { get; set; } = null!;
     public string Token { get; set; } = null!;
-    public List<string> Permissions { get; set; } = null!;
+    public Dictionary<string, List<string>> Roles { get; set; } = null!;
 
     public static CreateTokenResponse FromUserAndToken(string token, User user)
     {
@@ -14,7 +14,8 @@ public record CreateTokenResponse
         {
             UserId = user.Id.ToString(),
             Token = token,
-            Permissions = user.GetPermissions().Select(p => p.Value).ToList()
+            Roles = user.GetRolesAndPermissions()
+                .ToDictionary(x => x.Key.Name, x => x.Value.Select(y => y.Value).ToList())
         };
     }
 }

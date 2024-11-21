@@ -21,7 +21,7 @@ public class MemberRepository : IMemberRepository
 
     public Member Get(Guid memberId)
     {
-        return _context.Members.Include(m => m.HomePermissions)
+        return _context.Members.Include(m => m.Home).Include(m => m.HomePermissions)
             .First(m => m.Id == memberId);
     }
 

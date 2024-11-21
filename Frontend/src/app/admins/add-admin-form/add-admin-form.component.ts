@@ -1,14 +1,14 @@
-import { Component } from "@angular/core";
+import { Component, OnInit, OnDestroy } from "@angular/core";
 import { FormBuilder, FormGroup, Validators } from "@angular/forms";
 import { Subscription } from "rxjs";
 import { AdminsService } from "../../../backend/services/admins/admins.service";
-import { MessageService } from "primeng/api";
+import { MessagesService } from "../../../backend/services/messages/messages.service";
 
 @Component({
     selector: "app-add-admin-form",
     templateUrl: "./add-admin-form.component.html"
 })
-export class AddAdminFormComponent {
+export class AddAdminFormComponent implements OnInit, OnDestroy {
     readonly formFields = {
         name: {
             required: { message: "Name is required" }
@@ -40,7 +40,7 @@ export class AddAdminFormComponent {
     constructor(
         private _formBuilder: FormBuilder,
         private _adminsService: AdminsService,
-        private _messageService: MessageService
+        private _messagesService: MessagesService
     ) {}
 
     ngOnInit() {
@@ -64,7 +64,7 @@ export class AddAdminFormComponent {
                     this.adminStatus.loading = false;
                     this.adminStatus.success = true;
                     this.addForm.reset();
-                    this._messageService.add({
+                    this._messagesService.add({
                         severity: "success",
                         summary: "Success",
                         detail: "Admin created successfully"
@@ -73,7 +73,7 @@ export class AddAdminFormComponent {
                 error: (error) => {
                     this.adminStatus.loading = false;
                     this.adminStatus.error = error.message;
-                    this._messageService.add({
+                    this._messagesService.add({
                         severity: "error",
                         summary: "Error",
                         detail: error.message

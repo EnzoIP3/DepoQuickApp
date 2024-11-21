@@ -168,27 +168,10 @@ public class UserTests
 
     #endregion
 
-    #region GetPermissions
-
-    #region Success
+    #region GetRolesAndPermissions
 
     [TestMethod]
-    public void GetPermissions_WhenUserHasNoRoles_ReturnsEmptyList()
-    {
-        // Arrange
-        var role = new Role("Empty Role", []);
-        var user = new User(Name, Surname, Email, Password, role);
-        user.Roles.Clear();
-
-        // Act
-        var permissions = user.GetPermissions();
-
-        // Assert
-        permissions.Should().BeEmpty();
-    }
-
-    [TestMethod]
-    public void GetPermissions_WhenUserHasRoles_ReturnsPermissions()
+    public void GetRolesAndPermissions_WhenUserHasRoles_ReturnsRolesAndPermissions()
     {
         // Arrange
         var permission = new SystemPermission("Permission");
@@ -197,13 +180,14 @@ public class UserTests
         var user = new User(Name, Surname, Email, Password, role);
 
         // Act
-        var permissions = user.GetPermissions();
+        var rolesAndPermissions = user.GetRolesAndPermissions();
 
         // Assert
-        permissions.Should().BeEquivalentTo([permission, otherPermission]);
+        rolesAndPermissions.Should().BeEquivalentTo(new Dictionary<Role, List<SystemPermission>>
+        {
+            { role, new List<SystemPermission> { permission, otherPermission } }
+        });
     }
-
-    #endregion
 
     #endregion
 }

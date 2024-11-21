@@ -181,14 +181,19 @@ public class UserControllerTests
         var args = new AddRoleToUserArgs { UserId = _user.Id.ToString(), Role = "HomeOwner" };
         var items = new Dictionary<object, object?> { { Item.UserLogged, _user } };
         _httpContext.Setup(h => h.Items).Returns(items);
-        _userService.Setup(x => x.AddRoleToUser(args)).Verifiable();
+        _userService.Setup(x => x.AddRoleToUser(args)).Returns(_user);
 
         // Act
         var response = _controller.AddHomeOwnerRole();
 
         // Assert
         _userService.VerifyAll();
-        response.Should().BeEquivalentTo(new AddHomeOwnerRoleResponse { Id = args.UserId });
+        response.Should().BeEquivalentTo(new AddHomeOwnerRoleResponse
+        {
+            Id = args.UserId,
+            Roles = _user.GetRolesAndPermissions()
+                .ToDictionary(x => x.Key.Name, x => x.Value.Select(y => y.Value).ToList())
+        });
     }
 
     #endregion

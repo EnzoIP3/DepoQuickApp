@@ -133,4 +133,11 @@ export class HomesService {
     get rooms(): Observable<GetRoomsResponse | null> {
         return this._rooms$.asObservable();
     }
+
+    public clearState() {
+        this._rooms$.next(null);
+        this._home$.next(null);
+        this._devices$.next(null);
+        this._members$.next(null);
+    }
 }

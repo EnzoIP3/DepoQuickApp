@@ -1,4 +1,10 @@
 <div class="mt-2">
-    <app-base-businesses-table [businesses]="businesses" [columns]="columns" [loading]="loading"
-        [pagination]="pagination" (pageChange)="onPageChange($event)" (rowClick)="onRowClick($event)" />
+    <app-base-businesses-table
+        [businesses]="businesses"
+        [columns]="columns"
+        [loading]="loading"
+        [pagination]="pagination"
+        (pageChange)="onPageChange($event)"
+        (rowClick)="onRowClick($event)"
+    />
 </div>

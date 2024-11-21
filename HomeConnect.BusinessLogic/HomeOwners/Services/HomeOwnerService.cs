@@ -85,39 +85,58 @@ public class HomeOwnerService : IHomeOwnerService
 
     private void ValidateNameDeviceArgs(NameDeviceArgs args)
     {
-        if (args.OwnerId == Guid.Empty)
-        {
-            throw new ArgumentException("Owner ID cannot be empty");
-        }
+        EnsureOwnerIdIsNotEmpty(args);
+        EnsureHardwareIdIsNotEmpty(args);
+        EnsureHardwareIdIsAGuid(args);
+        EnsureNewNameIsNotEmpty(args);
+    }
 
-        if (args.HardwareId == string.Empty)
-        {
-            throw new ArgumentException("Hardware ID cannot be empty");
-        }
-
-        if (!Guid.TryParse(args.HardwareId, out _))
-        {
-            throw new ArgumentException("Hardware ID must be a valid GUID");
-        }
-
+    private static void EnsureNewNameIsNotEmpty(NameDeviceArgs args)
+    {
         if (string.IsNullOrEmpty(args.NewName))
         {
             throw new ArgumentException("New name cannot be empty");
         }
     }
 
+    private static void EnsureHardwareIdIsAGuid(NameDeviceArgs args)
+    {
+        if (!Guid.TryParse(args.HardwareId, out _))
+        {
+            throw new ArgumentException("Hardware ID must be a valid GUID");
+        }
+    }
+
+    private static void EnsureHardwareIdIsNotEmpty(NameDeviceArgs args)
+    {
+        if (args.HardwareId == string.Empty)
+        {
+            throw new ArgumentException("Hardware ID cannot be empty");
+        }
+    }
+
+    private static void EnsureOwnerIdIsNotEmpty(NameDeviceArgs args)
+    {
+        if (args.OwnerId == Guid.Empty)
+        {
+            throw new ArgumentException("Owner ID cannot be empty");
+        }
+    }
+
     public void NameDevice(NameDeviceArgs args)
     {
         ValidateNameDeviceArgs(args);
-
         var device = OwnedDeviceRepository.GetByHardwareId(Guid.Parse(args.HardwareId));
+        EnsureDeviceIsNotNull(device);
+        OwnedDeviceRepository.Rename(device, args.NewName);
+    }
+
+    private static void EnsureDeviceIsNotNull(OwnedDevice device)
+    {
         if (device == null)
         {
             throw new ArgumentException("Device does not exist");
         }
-
-        _ = device.Home;
-        OwnedDeviceRepository.Rename(device, args.NewName);
     }
 
     public OwnedDevice GetOwnedDeviceByHardwareId(string hardwareId)

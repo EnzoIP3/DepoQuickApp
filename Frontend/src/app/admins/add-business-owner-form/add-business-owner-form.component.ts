@@ -1,8 +1,8 @@
 import { Component, OnInit, OnDestroy } from "@angular/core";
 import { FormBuilder, FormGroup, Validators } from "@angular/forms";
 import { Subscription } from "rxjs";
-import { MessageService } from "primeng/api";
 import { BusinessOwnersService } from "../../../backend/services/business-owners/business-owners.service";
+import { MessagesService } from "../../../backend/services/messages/messages.service";
 
 @Component({
     selector: "app-add-businessowner-form",
@@ -38,7 +38,7 @@ export class AddBusinessOwnerFormComponent implements OnInit, OnDestroy {
     constructor(
         private _formBuilder: FormBuilder,
         private _businessOwnersService: BusinessOwnersService,
-        private _messageService: MessageService
+        private _messagesService: MessagesService
     ) {}
 
     ngOnInit() {
@@ -62,7 +62,7 @@ export class AddBusinessOwnerFormComponent implements OnInit, OnDestroy {
                     this.businessOwnerStatus.loading = false;
                     this.businessOwnerStatus.success = true;
                     this.addForm.reset();
-                    this._messageService.add({
+                    this._messagesService.add({
                         severity: "success",
                         summary: "Success",
                         detail: "Business Owner created successfully"
@@ -71,7 +71,7 @@ export class AddBusinessOwnerFormComponent implements OnInit, OnDestroy {
                 error: (error) => {
                     this.businessOwnerStatus.loading = false;
                     this.businessOwnerStatus.error = error.message;
-                    this._messageService.add({
+                    this._messagesService.add({
                         severity: "error",
                         summary: "Error",
                         detail: error.message

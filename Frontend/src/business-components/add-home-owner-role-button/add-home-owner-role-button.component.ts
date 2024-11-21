@@ -3,9 +3,9 @@ import { ButtonComponent } from "../../components/button/button.component";
 import { AuthService } from "../../backend/services/auth/auth.service";
 import { UsersService } from "../../backend/services/users/users.service";
 import UserLogged from "../../backend/services/auth/models/user-logged";
-import { MessageService } from "primeng/api";
 import { CommonModule } from "@angular/common";
 import { DialogComponent } from "../../components/dialog/dialog.component";
+import { MessagesService } from "../../backend/services/messages/messages.service";
 
 @Component({
     selector: "app-add-home-owner-role-button",
@@ -17,7 +17,7 @@ export class AddHomeOwnerRoleButtonComponent implements OnInit {
     constructor(
         private readonly _authService: AuthService,
         private readonly _usersService: UsersService,
-        private readonly _messageService: MessageService
+        private readonly _messagesService: MessagesService
     ) {}
 
     user: UserLogged | null = null;
@@ -47,7 +47,7 @@ export class AddHomeOwnerRoleButtonComponent implements OnInit {
                 this.loading = false;
             },
             error: (error) => {
-                this._messageService.add({
+                this._messagesService.add({
                     severity: "error",
                     summary: "Error",
                     detail: error.message

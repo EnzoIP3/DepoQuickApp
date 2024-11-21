@@ -5,11 +5,11 @@ import PaginationResponse from "../../backend/services/pagination";
 import Device from "../../backend/services/devices/models/device";
 import TableColumn from "../../components/table/models/table-column";
 import { Subscription } from "rxjs";
-import { MessageService } from "primeng/api";
 import Pagination from "../../backend/services/pagination";
 import { FilterValues } from "../../components/table/models/filter-values";
 import { CommonModule } from "@angular/common";
 import { BaseDevicesTableComponent } from "../base-devices-table/base-devices-table.component";
+import { MessagesService } from "../../backend/services/messages/messages.service";
 
 @Component({
     selector: "app-devices-table",
@@ -63,7 +63,7 @@ export class DevicesTableComponent implements OnInit, OnDestroy {
 
     constructor(
         private readonly _devicesService: DevicesService,
-        private readonly _messageService: MessageService
+        private readonly _messagesService: MessagesService
     ) {}
 
     ngOnInit() {
@@ -95,7 +95,7 @@ export class DevicesTableComponent implements OnInit, OnDestroy {
                 },
                 error: (error) => {
                     this.loading = false;
-                    this._messageService.add({
+                    this._messagesService.add({
                         severity: "error",
                         summary: "Error",
                         detail: error.message

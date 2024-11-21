@@ -1,8 +1,8 @@
 import { Component, Input, OnInit, OnDestroy } from "@angular/core";
 import { FormBuilder, FormGroup, Validators } from "@angular/forms";
-import { MessageService } from "primeng/api";
 import { Subscription } from "rxjs";
 import { HomesService } from "../../../backend/services/homes/homes.service";
+import { MessagesService } from "../../../backend/services/messages/messages.service";
 
 @Component({
     selector: "app-name-home-form",
@@ -23,7 +23,7 @@ export class NameHomeFormComponent implements OnInit, OnDestroy {
     constructor(
         private _formBuilder: FormBuilder,
         private _homesService: HomesService,
-        private _messageService: MessageService
+        private _messagesService: MessagesService
     ) {}
 
     ngOnInit() {
@@ -40,7 +40,7 @@ export class NameHomeFormComponent implements OnInit, OnDestroy {
             .subscribe({
                 next: () => {
                     this.homeStatus.loading = false;
-                    this._messageService.add({
+                    this._messagesService.add({
                         severity: "success",
                         summary: "Success",
                         detail: `Home is now named ${this.homeForm.value.newName}`
@@ -51,7 +51,7 @@ export class NameHomeFormComponent implements OnInit, OnDestroy {
                 },
                 error: (error) => {
                     this.homeStatus.loading = false;
-                    this._messageService.add({
+                    this._messagesService.add({
                         severity: "error",
                         summary: "Error",
                         detail: error.message

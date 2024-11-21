@@ -1,11 +1,11 @@
 import { CommonModule } from "@angular/common";
 import { Component, Input, OnDestroy } from "@angular/core";
-import { MessageService } from "primeng/api";
 import { AdminsService } from "../../backend/services/admins/admins.service";
 import User from "../../backend/services/users/models/user";
 import { ButtonComponent } from "../../components/button/button.component";
 import { UsersService } from "../../backend/services/users/users.service";
 import { Subscription } from "rxjs";
+import { MessagesService } from "../../backend/services/messages/messages.service";
 
 @Component({
     selector: "app-delete-admin-button",
@@ -19,7 +19,7 @@ export class DeleteAdminButtonComponent implements OnDestroy {
     constructor(
         private readonly _usersService: UsersService,
         private readonly _adminsService: AdminsService,
-        private readonly _messageService: MessageService
+        private readonly _messagesService: MessagesService
     ) {}
 
     private _deleteAdminSubscription: Subscription | null = null;
@@ -34,7 +34,7 @@ export class DeleteAdminButtonComponent implements OnDestroy {
                 .subscribe({
                     next: () => {
                         this.deleting = false;
-                        this._messageService.add({
+                        this._messagesService.add({
                             severity: "success",
                             summary: "Success",
                             detail: `Admin ${this.user?.name} deleted successfully`
@@ -46,7 +46,7 @@ export class DeleteAdminButtonComponent implements OnDestroy {
                     },
                     error: (error) => {
                         this.deleting = false;
-                        this._messageService.add({
+                        this._messagesService.add({
                             severity: "error",
                             summary: "Error",
                             detail: `Failed to delete admin: ${error.message}`
@@ -54,7 +54,7 @@ export class DeleteAdminButtonComponent implements OnDestroy {
                     }
                 });
         } else {
-            this._messageService.add({
+            this._messagesService.add({
                 severity: "warn",
                 summary: "Warning",
                 detail: "Please select an admin to delete"

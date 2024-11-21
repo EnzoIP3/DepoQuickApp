@@ -1,10 +1,10 @@
 import { Component, OnInit, OnDestroy } from "@angular/core";
-import { MessageService } from "primeng/api";
 import { Subscription } from "rxjs";
 import TableColumn from "../../components/table/models/table-column";
 import { DeviceTypesService } from "../../backend/services/device-types/device-types.service";
 import DeviceTypesResponse from "../../backend/services/device-types/models/device-types-response";
 import { TableComponent } from "../../components/table/table.component";
+import { MessagesService } from "../../backend/services/messages/messages.service";
 
 @Component({
     selector: "app-device-types-table",
@@ -27,7 +27,7 @@ export class DeviceTypesTableComponent implements OnInit, OnDestroy {
 
     constructor(
         private readonly _deviceTypesService: DeviceTypesService,
-        private readonly _messageService: MessageService
+        private readonly _messagesService: MessagesService
     ) {}
 
     ngOnInit() {
@@ -44,7 +44,7 @@ export class DeviceTypesTableComponent implements OnInit, OnDestroy {
                 },
                 error: (error) => {
                     this.loading = false;
-                    this._messageService.add({
+                    this._messagesService.add({
                         severity: "error",
                         summary: "Error",
                         detail: error.message

@@ -4,8 +4,8 @@ import { Subscription } from "rxjs";
 import { DevicesService } from "../../backend/services/devices/devices.service";
 import { RoomsService } from "../../backend/services/rooms/rooms.service";
 import AddDeviceToRoomResponse from "../../backend/services/rooms/models/add-device-to-room-response";
-import { MessageService } from "primeng/api";
 import MoveDeviceResponse from "../../backend/services/devices/models/move-device-response";
+import { MessagesService } from "../../backend/services/messages/messages.service";
 
 @Component({
     selector: "app-rooms-dropdown",
@@ -26,7 +26,7 @@ export class RoomsDropdownComponent implements OnDestroy {
     constructor(
         private readonly _devicesService: DevicesService,
         private readonly _roomsService: RoomsService,
-        private readonly _messageService: MessageService
+        private readonly _messagesService: MessagesService
     ) {}
 
     ngOnDestroy() {
@@ -48,14 +48,14 @@ export class RoomsDropdownComponent implements OnDestroy {
             .subscribe({
                 next: (response: MoveDeviceResponse) => {
                     this.roomId = response.targetRoomId;
-                    this._messageService.add({
+                    this._messagesService.add({
                         severity: "success",
                         summary: "Success",
                         detail: "Moved device to room"
                     });
                 },
                 error: (error) => {
-                    this._messageService.add({
+                    this._messagesService.add({
                         severity: "error",
                         summary: "Error",
                         detail: error.message
@@ -72,14 +72,14 @@ export class RoomsDropdownComponent implements OnDestroy {
             .subscribe({
                 next: (response: AddDeviceToRoomResponse) => {
                     this.roomId = response.roomId;
-                    this._messageService.add({
+                    this._messagesService.add({
                         severity: "success",
                         summary: "Success",
                         detail: "Added device to room"
                     });
                 },
                 error: (error: any) => {
-                    this._messageService.add({
+                    this._messagesService.add({
                         severity: "error",
                         summary: "Error",
                         detail: error.message

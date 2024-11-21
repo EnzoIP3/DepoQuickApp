@@ -2,8 +2,8 @@ import { Component, OnInit, OnDestroy } from "@angular/core";
 import { FormBuilder, FormGroup, Validators } from "@angular/forms";
 import { HomesService } from "../../../backend/services/homes/homes.service";
 import { Router } from "@angular/router";
-import { MessageService } from "primeng/api";
 import { Subscription } from "rxjs";
+import { MessagesService } from "../../../backend/services/messages/messages.service";
 
 @Component({
     selector: "app-add-home-form",
@@ -42,7 +42,7 @@ export class AddHomeFormComponent implements OnInit, OnDestroy {
         private _formBuilder: FormBuilder,
         private _homesService: HomesService,
         private _router: Router,
-        private _messageService: MessageService
+        private _messagesService: MessagesService
     ) {}
 
     ngOnInit() {
@@ -73,7 +73,7 @@ export class AddHomeFormComponent implements OnInit, OnDestroy {
                 next: () => {
                     this.homeStatus.loading = false;
                     this.homeForm.reset();
-                    this._messageService.add({
+                    this._messagesService.add({
                         severity: "success",
                         summary: "Success",
                         detail: "Home registered successfully"
@@ -82,7 +82,7 @@ export class AddHomeFormComponent implements OnInit, OnDestroy {
                 },
                 error: (error) => {
                     this.homeStatus.loading = false;
-                    this._messageService.add({
+                    this._messagesService.add({
                         severity: "error",
                         summary: "Error",
                         detail: error.message

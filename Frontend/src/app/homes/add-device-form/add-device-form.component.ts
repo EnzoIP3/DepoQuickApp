@@ -5,7 +5,6 @@ import {
     ReactiveFormsModule,
     Validators
 } from "@angular/forms";
-import { MessageService } from "primeng/api";
 import { HomesService } from "../../../backend/services/homes/homes.service";
 import { FormComponent } from "../../../components/form/form/form.component";
 import { FormMultiSelectComponent } from "../../../components/form/form-multi-select/form-multi-select.component";
@@ -13,6 +12,7 @@ import { FormButtonComponent } from "../../../components/form/form-button/form-b
 import { DevicesService } from "../../../backend/services/devices/devices.service";
 import Device from "../../../backend/services/devices/models/device";
 import { Subscription } from "rxjs";
+import { MessagesService } from "../../../backend/services/messages/messages.service";
 
 @Component({
     standalone: true,
@@ -39,7 +39,7 @@ export class AddDeviceFormComponent implements OnInit, OnDestroy {
         private _formBuilder: FormBuilder,
         private _homesService: HomesService,
         private _devicesService: DevicesService,
-        private _messageService: MessageService
+        private _messagesService: MessagesService
     ) {}
 
     ngOnInit() {
@@ -55,7 +55,7 @@ export class AddDeviceFormComponent implements OnInit, OnDestroy {
                     this.devicesLoading = false;
                 },
                 error: (error) => {
-                    this._messageService.add({
+                    this._messagesService.add({
                         severity: "error",
                         summary: "Error",
                         detail: error.message
@@ -74,7 +74,7 @@ export class AddDeviceFormComponent implements OnInit, OnDestroy {
                 next: () => {
                     this.devicesFormLoading = false;
                     this.deviceForm.reset();
-                    this._messageService.add({
+                    this._messagesService.add({
                         severity: "success",
                         summary: "Success",
                         detail: "Devices associated successfully with the home"
@@ -82,7 +82,7 @@ export class AddDeviceFormComponent implements OnInit, OnDestroy {
                 },
                 error: (error) => {
                     this.devicesFormLoading = false;
-                    this._messageService.add({
+                    this._messagesService.add({
                         severity: "error",
                         summary: "Error",
                         detail: error.message

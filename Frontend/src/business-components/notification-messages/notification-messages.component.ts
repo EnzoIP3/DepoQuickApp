@@ -1,7 +1,6 @@
 import { Component, OnDestroy, OnInit } from "@angular/core";
 import { NotificationsService } from "../../backend/services/notifications/notifications.service";
 import { DeviceTypesService } from "../../backend/services/device-types/device-types.service"; // Import the service
-import { MessageService } from "primeng/api";
 import NotificationData from "../../backend/services/notifications/models/notification-data";
 import { Subscription } from "rxjs";
 import GetNotificationsRequest from "../../backend/services/notifications/models/get-notifications-request";
@@ -9,6 +8,7 @@ import { CommonModule } from "@angular/common";
 import { DropdownComponent } from "../../components/dropdown/dropdown.component";
 import { MessageComponent } from "../../components/message/message.component";
 import { SkeletonComponent } from "../../components/skeleton/skeleton.component";
+import { MessagesService } from "../../backend/services/messages/messages.service";
 
 @Component({
     selector: "app-notification-messages",
@@ -24,7 +24,7 @@ import { SkeletonComponent } from "../../components/skeleton/skeleton.component"
 export class NotificationMessagesComponent implements OnInit, OnDestroy {
     constructor(
         private readonly _notificationsService: NotificationsService,
-        private readonly _messageService: MessageService,
+        private readonly _messagesService: MessagesService,
         private readonly _deviceTypesService: DeviceTypesService
     ) {}
 
@@ -73,7 +73,7 @@ export class NotificationMessagesComponent implements OnInit, OnDestroy {
                 }));
             },
             error: (error) => {
-                this._messageService.add({
+                this._messagesService.add({
                     severity: "error",
                     summary: "Error",
                     detail: `Failed to load device types: ${error.message}`
@@ -131,7 +131,7 @@ export class NotificationMessagesComponent implements OnInit, OnDestroy {
 
     handleError(error: any) {
         this.loading = false;
-        this._messageService.add({
+        this._messagesService.add({
             severity: "error",
             summary: "Error",
             detail: error.message

@@ -1,8 +1,8 @@
 import { Component, Input, OnInit, OnDestroy } from "@angular/core";
 import { FormBuilder, FormGroup, Validators } from "@angular/forms";
-import { MessageService } from "primeng/api";
 import { Subscription } from "rxjs";
 import { HomesService } from "../../../backend/services/homes/homes.service";
+import { MessagesService } from "../../../backend/services/messages/messages.service";
 
 @Component({
     selector: "app-add-room-form",
@@ -23,7 +23,7 @@ export class AddRoomFormComponent implements OnInit, OnDestroy {
     constructor(
         private _formBuilder: FormBuilder,
         private _homesService: HomesService,
-        private _messageService: MessageService
+        private _messagesService: MessagesService
     ) {}
 
     ngOnInit() {
@@ -40,7 +40,7 @@ export class AddRoomFormComponent implements OnInit, OnDestroy {
             .subscribe({
                 next: () => {
                     this.roomStatus.loading = false;
-                    this._messageService.add({
+                    this._messagesService.add({
                         severity: "success",
                         summary: "Success",
                         detail: `Added '${this.roomForm.value.name}' as a room`
@@ -51,7 +51,7 @@ export class AddRoomFormComponent implements OnInit, OnDestroy {
                 },
                 error: (error) => {
                     this.roomStatus.loading = false;
-                    this._messageService.add({
+                    this._messagesService.add({
                         severity: "error",
                         summary: "Error",
                         detail: error.message

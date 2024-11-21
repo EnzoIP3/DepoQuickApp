@@ -2,13 +2,13 @@ import { Component, OnInit, OnDestroy } from "@angular/core";
 import TableColumn from "../../components/table/models/table-column";
 import { Subscription } from "rxjs";
 import PaginationResponse from "../../backend/services/pagination";
-import { MessageService } from "primeng/api";
 import Pagination from "../../backend/services/pagination";
 import { FilterValues } from "../../components/table/models/filter-values";
 import GetBusinessesResponse from "../../backend/services/businesses/models/business-response";
 import { BusinessesService } from "../../backend/services/businesses/businesses.service";
 import Business from "../../backend/services/businesses/models/business";
 import { BaseBusinessesTableComponent } from "../base-businesses-table/base-businesses-table.component";
+import { MessagesService } from "../../backend/services/messages/messages.service";
 
 @Component({
     selector: "app-admin-businesses-table",
@@ -51,7 +51,7 @@ export class AdminBusinessesTableComponent implements OnInit, OnDestroy {
 
     constructor(
         private readonly _businessesService: BusinessesService,
-        private readonly _messageService: MessageService
+        private readonly _messagesService: MessagesService
     ) {}
 
     ngOnInit() {
@@ -83,7 +83,7 @@ export class AdminBusinessesTableComponent implements OnInit, OnDestroy {
                 },
                 error: (error) => {
                     this.loading = false;
-                    this._messageService.add({
+                    this._messagesService.add({
                         severity: "error",
                         summary: "Error",
                         detail: error.message

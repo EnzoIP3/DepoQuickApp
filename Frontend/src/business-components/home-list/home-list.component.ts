@@ -7,12 +7,12 @@ import {
     OnDestroy
 } from "@angular/core";
 import { HomesService } from "../../backend/services/homes/homes.service";
-import { MessageService } from "primeng/api";
 import { Subscription } from "rxjs";
 import GetHomeResponse from "../../backend/services/homes/models/get-home-response";
 import ListItem from "../../components/list/models/list-item";
 import { ListComponent } from "../../components/list/list.component";
 import { Router } from "@angular/router";
+import { MessagesService } from "../../backend/services/messages/messages.service";
 
 @Component({
     selector: "app-home-list",
@@ -33,7 +33,7 @@ export class HomeListComponent implements OnInit, OnDestroy {
 
     constructor(
         private readonly _homesService: HomesService,
-        private readonly _messageService: MessageService,
+        private readonly _messagesService: MessagesService,
         private readonly _router: Router
     ) {}
 
@@ -78,7 +78,7 @@ export class HomeListComponent implements OnInit, OnDestroy {
             },
             error: (error) => {
                 this.loading = false;
-                this._messageService.add({
+                this._messagesService.add({
                     severity: "error",
                     summary: "Error",
                     detail: error.message

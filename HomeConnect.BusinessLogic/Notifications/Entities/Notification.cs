@@ -3,7 +3,7 @@ using BusinessLogic.Users.Entities;
 
 namespace BusinessLogic.Notifications.Entities;
 
-public class Notification
+public class Notification : ICloneable
 {
     public Notification()
     {
@@ -26,4 +26,9 @@ public class Notification
     public OwnedDevice OwnedDevice { get; set; } = null!;
 
     public User? User { get; set; }
+
+    public object Clone()
+    {
+        throw new NotImplementedException();
+    }
 }

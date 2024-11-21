@@ -21,6 +21,41 @@ using HomeConnect.WebApi.Filters;
 using Microsoft.EntityFrameworkCore;
 using ModeloValidador.Abstracciones;
 
+void AddDbContext(string? s, IServiceCollection services1)
+{
+    if (string.IsNullOrEmpty(s))
+    {
+        throw new InvalidOperationException("Missing DefaultConnection connection string");
+    }
+
+    services1.AddDbContext<Context>(options => options.UseSqlServer(s));
+}
+
+void AddScopedServices(IServiceCollection serviceCollection)
+{
+    serviceCollection.AddScoped<ITokenRepository, TokenRepository>();
+    serviceCollection.AddScoped<IRoleRepository, RoleRepository>();
+    serviceCollection.AddScoped<IUserRepository, UserRepository>();
+    serviceCollection.AddScoped<IHomeRepository, HomeRepository>();
+    serviceCollection.AddScoped<IDeviceRepository, DeviceRepository>();
+    serviceCollection.AddScoped<IBusinessRepository, BusinessRepository>();
+    serviceCollection.AddScoped<IOwnedDeviceRepository, OwnedDeviceRepository>();
+    serviceCollection.AddScoped<INotificationRepository, NotificationRepository>();
+    serviceCollection.AddScoped<IRoomRepository, RoomRepository>();
+    serviceCollection.AddScoped<IMemberRepository, MemberRepository>();
+    serviceCollection.AddScoped<IAuthService, AuthService>();
+    serviceCollection.AddScoped<IUserService, UserService>();
+    serviceCollection.AddScoped<IHomeOwnerService, HomeOwnerService>();
+    serviceCollection.AddScoped<IDeviceService, DeviceService>();
+    serviceCollection.AddScoped<IAdminService, AdminService>();
+    serviceCollection.AddScoped<IBusinessOwnerService, BusinessOwnerService>();
+    serviceCollection.AddScoped<INotificationService, NotificationService>();
+    serviceCollection.AddScoped<IValidatorService, ValidatorService>();
+    serviceCollection.AddScoped<IImporterService, ImporterService>();
+    serviceCollection.AddScoped<IAssemblyInterfaceLoader<IDeviceImporter>, AssemblyInterfaceLoader<IDeviceImporter>>();
+    serviceCollection.AddScoped<IAssemblyInterfaceLoader<IModeloValidador>, AssemblyInterfaceLoader<IModeloValidador>>();
+}
+
 var builder = WebApplication.CreateBuilder(args);
 
 builder.Services
@@ -45,34 +80,9 @@ var services = builder.Services;
 var configuration = builder.Configuration;
 var connectionString = configuration.GetConnectionString("DefaultConnection");
 
-if (string.IsNullOrEmpty(connectionString))
-{
-    throw new InvalidOperationException("Missing DefaultConnection connection string");
-}
+AddDbContext(connectionString, services);
 
-services.AddDbContext<Context>(options => options.UseSqlServer(connectionString));
-
-services.AddScoped<ITokenRepository, TokenRepository>();
-services.AddScoped<IRoleRepository, RoleRepository>();
-services.AddScoped<IUserRepository, UserRepository>();
-services.AddScoped<IHomeRepository, HomeRepository>();
-services.AddScoped<IDeviceRepository, DeviceRepository>();
-services.AddScoped<IBusinessRepository, BusinessRepository>();
-services.AddScoped<IOwnedDeviceRepository, OwnedDeviceRepository>();
-services.AddScoped<INotificationRepository, NotificationRepository>();
-services.AddScoped<IRoomRepository, RoomRepository>();
-services.AddScoped<IMemberRepository, MemberRepository>();
-services.AddScoped<IAuthService, AuthService>();
-services.AddScoped<IUserService, UserService>();
-services.AddScoped<IHomeOwnerService, HomeOwnerService>();
-services.AddScoped<IDeviceService, DeviceService>();
-services.AddScoped<IAdminService, AdminService>();
-services.AddScoped<IBusinessOwnerService, BusinessOwnerService>();
-services.AddScoped<INotificationService, NotificationService>();
-services.AddScoped<IValidatorService, ValidatorService>();
-services.AddScoped<IImporterService, ImporterService>();
-services.AddScoped<IAssemblyInterfaceLoader<IDeviceImporter>, AssemblyInterfaceLoader<IDeviceImporter>>();
-services.AddScoped<IAssemblyInterfaceLoader<IModeloValidador>, AssemblyInterfaceLoader<IModeloValidador>>();
+AddScopedServices(services);
 
 WebApplication app = builder.Build();
 

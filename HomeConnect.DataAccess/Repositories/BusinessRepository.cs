@@ -50,7 +50,6 @@ public class BusinessRepository : PaginatedRepositoryBase<Business>, IBusinessRe
 
     public void Add(Business business)
     {
-        EnsureBusinessDoesNotExist(business);
         Context.Businesses.Add(business);
         Context.SaveChanges();
     }
@@ -106,13 +105,5 @@ public class BusinessRepository : PaginatedRepositoryBase<Business>, IBusinessRe
         }
 
         return query;
-    }
-
-    private void EnsureBusinessDoesNotExist(Business business)
-    {
-        if (Context.Businesses.Any(b => b.Rut == business.Rut))
-        {
-            throw new ArgumentException("Business with this RUT already exists.");
-        }
     }
 }

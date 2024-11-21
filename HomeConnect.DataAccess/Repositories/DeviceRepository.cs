@@ -18,13 +18,7 @@ public class DeviceRepository : PaginatedRepositoryBase<Device>, IDeviceReposito
 
     public Device Get(Guid deviceId)
     {
-        Device? device = _context.Devices.FirstOrDefault(d => d.Id == deviceId);
-        if (device == null)
-        {
-            throw new ArgumentException("Device does not exist");
-        }
-
-        return device;
+        return _context.Devices.First(d => d.Id == deviceId);
     }
 
     public void Add(Device device)

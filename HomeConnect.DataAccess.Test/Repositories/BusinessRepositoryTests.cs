@@ -229,19 +229,6 @@ public class BusinessRepositoryTests
 
     #endregion
 
-    [TestMethod]
-    public void Add_WhenBusinessAlreadyExists_ThrowsException()
-    {
-        // Arrange
-        var business = new Business("1", "Business", "https://example.com/image.png", _validUser);
-
-        // Act
-        Action act = () => _businessRepository.Add(business);
-
-        // Assert
-        act.Should().Throw<ArgumentException>();
-    }
-
     #endregion
 
     #region GestBusinessByOwner

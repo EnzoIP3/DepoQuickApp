@@ -78,23 +78,6 @@ public class HomeRepositoryTests
 
     #endregion
 
-    #region Error
-
-    [TestMethod]
-    public void Add_WhenHomeExists_ThrowsException()
-    {
-        // Arrange
-        var home = new Home(_homeOwner, "Main St 123", 12.5, 12.5, 5);
-
-        // Act
-        Action action = () => _homeRepository.Add(home);
-
-        // Assert
-        action.Should().Throw<ArgumentException>().WithMessage("Home already exists");
-    }
-
-    #endregion
-
     #endregion
 
     #region Get
@@ -109,20 +92,6 @@ public class HomeRepositoryTests
 
         // Assert
         result.Should().BeEquivalentTo(_home);
-    }
-
-    #endregion
-
-    #region Error
-
-    [TestMethod]
-    public void Get_WhenHomeDoesNotExist_ThrowsException()
-    {
-        // Act
-        Func<Home> action = () => _homeRepository.Get(Guid.NewGuid());
-
-        // Assert
-        action.Should().Throw<ArgumentException>().WithMessage("Home does not exist");
     }
 
     #endregion

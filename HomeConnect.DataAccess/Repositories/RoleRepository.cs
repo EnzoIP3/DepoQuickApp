@@ -16,20 +16,11 @@ public class RoleRepository : IRoleRepository
     public Role Get(string name)
     {
         Role? role = _context.Roles.Include(r => r.Permissions).FirstOrDefault(r => r.Name == name);
-        EnsureRoleIsNotNull(role);
         return role!;
     }
 
     public bool Exists(string name)
     {
         return _context.Roles.Any(r => r.Name == name);
-    }
-
-    private static void EnsureRoleIsNotNull(Role? role)
-    {
-        if (role == null)
-        {
-            throw new ArgumentException("Role does not exist");
-        }
     }
 }

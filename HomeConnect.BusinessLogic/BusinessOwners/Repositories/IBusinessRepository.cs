@@ -9,8 +9,6 @@ public interface IBusinessRepository
     Business GetByOwnerId(Guid ownerId);
     bool ExistsByOwnerId(Guid ownerId);
     void Add(Business business);
-
     PagedData<Business> GetPaged(FilterArgs args);
-
     void UpdateValidator(string argsBusinessRut, Guid? validatorId);
 }

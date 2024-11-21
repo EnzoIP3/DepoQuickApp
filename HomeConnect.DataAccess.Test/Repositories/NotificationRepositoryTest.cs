@@ -111,20 +111,6 @@ public class NotificationRepositoryTest
 
     #endregion
 
-    #region Error
-
-    [TestMethod]
-    public void Add_WhenNotificationExists_ThrowsInvalidOperationException()
-    {
-        // Act
-        Action act = () => _notificationRepository.Add(_notification);
-
-        // Assert
-        act.Should().Throw<InvalidOperationException>();
-    }
-
-    #endregion
-
     #endregion
 
     #region Get

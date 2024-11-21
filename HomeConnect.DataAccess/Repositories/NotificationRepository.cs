@@ -16,7 +16,6 @@ public class NotificationRepository : INotificationRepository
 
     public void Add(Notification notification)
     {
-        EnsureNotificationDoesNotExist(notification);
         _context.Notifications.Add(notification);
         _context.SaveChanges();
     }
@@ -41,13 +40,5 @@ public class NotificationRepository : INotificationRepository
     {
         _context.Notifications.UpdateRange(notifications);
         _context.SaveChanges();
-    }
-
-    private void EnsureNotificationDoesNotExist(Notification notification)
-    {
-        if (_context.Notifications.Any(n => n.Id == notification.Id))
-        {
-            throw new InvalidOperationException("Notification already exists.");
-        }
     }
 }

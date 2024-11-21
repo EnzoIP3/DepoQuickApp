@@ -110,23 +110,6 @@ public class DeviceRepositoryTests
 
     #endregion
 
-    #region Error
-
-    [TestMethod]
-    public void Get_WhenDeviceDoesNotExist_ThrowsArgumentException()
-    {
-        // Arrange
-        var nonExistentDeviceId = Guid.NewGuid();
-
-        // Act
-        Action act = () => _deviceRepository.Get(nonExistentDeviceId);
-
-        // Assert
-        act.Should().Throw<ArgumentException>();
-    }
-
-    #endregion
-
     #endregion
 
     #region GetDevices

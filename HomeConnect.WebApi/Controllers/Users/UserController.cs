@@ -16,7 +16,10 @@ namespace HomeConnect.WebApi.Controllers.Users;
 [ApiController]
 [Route("users")]
 [AuthenticationFilter]
-public class UserController(IAdminService adminService, IUserService userService, IBusinessOwnerService businessOwnerService) : ControllerBase
+public class UserController(
+    IAdminService adminService,
+    IUserService userService,
+    IBusinessOwnerService businessOwnerService) : ControllerBase
 {
     [HttpGet]
     [AuthorizationFilter(SystemPermission.GetAllUsers)]
@@ -56,15 +59,21 @@ public class UserController(IAdminService adminService, IUserService userService
     {
         var userLoggedIn = HttpContext.Items[Item.UserLogged] as User;
         var args = new AddRoleToUserArgs { UserId = userLoggedIn!.Id.ToString(), Role = "HomeOwner" };
-        userService.AddRoleToUser(args);
-        return new AddHomeOwnerRoleResponse { Id = args.UserId };
+        var user = userService.AddRoleToUser(args);
+        return new AddHomeOwnerRoleResponse
+        {
+            Id = args.UserId,
+            Roles = user.GetRolesAndPermissions()
+                .ToDictionary(x => x.Key.Name, x => x.Value.Select(y => y.Value).ToList())
+        };
     }
 
     [HttpGet("{userId}/businesses")]
     [AuthorizationFilter(SystemPermission.GetBusinesses)]
     public GetBusinessesResponse GetBusinesses(string userId, [FromQuery] GetUserBusinessesRequest request)
     {
-        PagedData<Business> businesses = businessOwnerService.GetBusinesses(userId, request.CurrentPage, request.PageSize);
+        PagedData<Business> businesses =
+            businessOwnerService.GetBusinesses(userId, request.CurrentPage, request.PageSize);
         GetBusinessesResponse response = ResponseFromBusinesses(businesses);
         return response;
     }

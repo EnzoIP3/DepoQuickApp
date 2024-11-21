@@ -42,7 +42,9 @@ public class AuthControllerTests
         // Assert
         _tokenService.Verify(x => x.CreateToken(args), Times.Once);
         response.Token.Should().Be(token.Id.ToString());
-        response.Permissions.Should().BeEquivalentTo(new List<string> { "Permission" });
+        response.Roles.Should()
+            .BeEquivalentTo(
+                new Dictionary<string, List<string>> { { role.Name, permissions.Select(x => x.Value).ToList() } });
         response.UserId.Should().Be(user.Id.ToString());
     }
 }

@@ -1,15 +1,15 @@
-import { Component } from "@angular/core";
+import { Component, OnInit, OnDestroy } from "@angular/core";
 import TableColumn from "../../components/table/models/table-column";
 import { Router } from "@angular/router";
 import Business from "../../backend/services/businesses/models/business";
 import PaginationResponse from "../../backend/services/pagination";
 import Pagination from "../../backend/services/pagination";
-import { MessageService } from "primeng/api";
 import { Subscription } from "rxjs";
 import { UsersService } from "../../backend/services/users/users.service";
 import { GetBusinessResponse } from "../../backend/services/users/models/get-business-response";
 import { AuthService } from "../../backend/services/auth/auth.service";
 import { BaseBusinessesTableComponent } from "../base-businesses-table/base-businesses-table.component";
+import { MessagesService } from "../../backend/services/messages/messages.service";
 
 @Component({
     selector: "app-businesses-table",
@@ -17,7 +17,7 @@ import { BaseBusinessesTableComponent } from "../base-businesses-table/base-busi
     imports: [BaseBusinessesTableComponent],
     templateUrl: "./businesses-table.component.html"
 })
-export class BusinessesTableComponent {
+export class BusinessesTableComponent implements OnInit, OnDestroy {
     columns: TableColumn[] = [
         { field: "logo", header: "Logo" },
         { field: "name", header: "Business Name" },
@@ -30,7 +30,7 @@ export class BusinessesTableComponent {
 
     pagination: PaginationResponse | null = {};
 
-    loading: boolean = true;
+    loading = true;
     private _businessesSubscription: Subscription | null = null;
     private _authSubscription: Subscription | null = null;
     private _userId: string | null = null;
@@ -38,7 +38,7 @@ export class BusinessesTableComponent {
     constructor(
         private readonly _router: Router,
         private readonly _userService: UsersService,
-        private readonly _messageService: MessageService,
+        private readonly _messagesService: MessagesService,
         private readonly _authService: AuthService
     ) {}
 
@@ -58,7 +58,7 @@ export class BusinessesTableComponent {
                     this._userId = user.userId;
                     this._subscribeToBusinesses();
                 } else {
-                    this._messageService.add({
+                    this._messagesService.add({
                         severity: "error",
                         summary: "Error",
                         detail: "No user is logged in"
@@ -66,7 +66,7 @@ export class BusinessesTableComponent {
                 }
             },
             error: (error) => {
-                this._messageService.add({
+                this._messagesService.add({
                     severity: "error",
                     summary: "Error",
                     detail: error.message
@@ -99,7 +99,7 @@ export class BusinessesTableComponent {
                 },
                 error: (error) => {
                     this.loading = false;
-                    this._messageService.add({
+                    this._messagesService.add({
                         severity: "error",
                         summary: "Error",
                         detail: error.message

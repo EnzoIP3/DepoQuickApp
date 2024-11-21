@@ -3,6 +3,7 @@ import { RouterModule, Routes } from "@angular/router";
 import { BusinessesPageComponent } from "./businesses-page/businesses-page.component";
 import { AddBusinessFormComponent } from "./add-business-form/add-business-form.component";
 import { BusinessPageComponent } from "./business-page/business-page.component";
+import { BusinessDevicesPageComponent } from "./business-devices-page/business-devices-page.component";
 
 const routes: Routes = [
     {
@@ -16,6 +17,10 @@ const routes: Routes = [
     {
         path: ":id",
         component: BusinessPageComponent
+    },
+    {
+        path: ":id/devices",
+        component: BusinessDevicesPageComponent
     }
 ];
 

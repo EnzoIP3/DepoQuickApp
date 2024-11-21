@@ -12,12 +12,14 @@
     <p class="font-bold">Device Images</p>
     <app-divider />
     <div class="flex flex-row gap-2 flex-wrap">
-        <div class="w-12rem h-12rem overflow-hidden bg-cover bg-center surface-ground"
-            [style]="'background-image: url(' + device.mainPhoto + ');'">
-        </div>
-        <div *ngFor="let image of device.secondaryPhotos"
+        <div
+            class="w-12rem h-12rem overflow-hidden bg-cover bg-center surface-ground"
+            [style]="'background-image: url(' + device.mainPhoto + ');'"
+        ></div>
+        <div
+            *ngFor="let image of device.secondaryPhotos"
             class="w-12rem h-12rem surface-ground overflow-hidden bg-cover bg-center"
-            [style]="'background-image: url(' + image + ');'">
-        </div>
+            [style]="'background-image: url(' + image + ');'"
+        ></div>
     </div>
 </div>

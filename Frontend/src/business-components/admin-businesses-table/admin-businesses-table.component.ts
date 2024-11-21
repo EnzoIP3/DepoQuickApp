@@ -1,16 +1,14 @@
-import { Component } from "@angular/core";
-import { PaginatorComponent } from "../../components/paginator/paginator.component";
-import { TableComponent } from "../../components/table/table.component";
+import { Component, OnInit, OnDestroy } from "@angular/core";
 import TableColumn from "../../components/table/models/table-column";
 import { Subscription } from "rxjs";
 import PaginationResponse from "../../backend/services/pagination";
-import { MessageService } from "primeng/api";
 import Pagination from "../../backend/services/pagination";
-import FilterValues from "../../components/table/models/filter-values";
+import { FilterValues } from "../../components/table/models/filter-values";
 import GetBusinessesResponse from "../../backend/services/businesses/models/business-response";
 import { BusinessesService } from "../../backend/services/businesses/businesses.service";
 import Business from "../../backend/services/businesses/models/business";
 import { BaseBusinessesTableComponent } from "../base-businesses-table/base-businesses-table.component";
+import { MessagesService } from "../../backend/services/messages/messages.service";
 
 @Component({
     selector: "app-admin-businesses-table",
@@ -18,7 +16,7 @@ import { BaseBusinessesTableComponent } from "../base-businesses-table/base-busi
     imports: [BaseBusinessesTableComponent],
     templateUrl: "./admin-businesses-table.component.html"
 })
-export class AdminBusinessesTableComponent {
+export class AdminBusinessesTableComponent implements OnInit, OnDestroy {
     columns: TableColumn[] = [
         {
             field: "logo",
@@ -48,12 +46,12 @@ export class AdminBusinessesTableComponent {
 
     pagination: PaginationResponse | null = null;
     filters: FilterValues = {};
-    loading: boolean = true;
+    loading = true;
     businesses: Business[] = [];
 
     constructor(
         private readonly _businessesService: BusinessesService,
-        private readonly _messageService: MessageService
+        private readonly _messagesService: MessagesService
     ) {}
 
     ngOnInit() {
@@ -85,7 +83,7 @@ export class AdminBusinessesTableComponent {
                 },
                 error: (error) => {
                     this.loading = false;
-                    this._messageService.add({
+                    this._messagesService.add({
                         severity: "error",
                         summary: "Error",
                         detail: error.message

@@ -235,7 +235,7 @@ public class HomeAuthorizationFilterAttribute(string? permission = null) : Attri
             return;
         }
 
-        SetResult(context, HttpStatusCode.Forbidden, "Forbidden", $"Missing home permission: {permission}");
+        SetResult(context, HttpStatusCode.Forbidden, "Forbidden", "You are not allowed to do that in this home");
     }
 
     private static void SetResult(AuthorizationFilterContext context, HttpStatusCode statusCode, string innerCode,

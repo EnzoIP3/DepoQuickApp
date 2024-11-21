@@ -1,14 +1,20 @@
-import { Component, Input, TemplateRef, ViewChild } from "@angular/core";
+import {
+    Component,
+    Input,
+    TemplateRef,
+    ViewChild,
+    OnInit,
+    AfterViewInit,
+    OnDestroy
+} from "@angular/core";
 import TableColumn from "../../components/table/models/table-column";
 import Member from "../../backend/services/homes/models/member";
 import { Subscription } from "rxjs";
 import { HomesService } from "../../backend/services/homes/homes.service";
-import { MessageService } from "primeng/api";
 import GetMembersResponse from "../../backend/services/homes/models/get-members-response";
 import { TableComponent } from "../../components/table/table.component";
 import { CommonModule } from "@angular/common";
 import { AvatarComponent } from "../../components/avatar/avatar.component";
-import { ButtonComponent } from "../../components/button/button.component";
 import { SetNotificationsButtonComponent } from "../set-notifications-button/set-notifications-button.component";
 
 @Component({
@@ -22,7 +28,7 @@ import { SetNotificationsButtonComponent } from "../set-notifications-button/set
     ],
     templateUrl: "./members-table.component.html"
 })
-export class MembersTableComponent {
+export class MembersTableComponent implements OnInit, AfterViewInit, OnDestroy {
     @ViewChild("photoTemplate") photoTemplate: TemplateRef<any> | undefined;
     @ViewChild("nameTemplate") nameTemplate: TemplateRef<any> | undefined;
     @ViewChild("boolTemplate") boolTemplate: TemplateRef<any> | undefined;
@@ -61,51 +67,51 @@ export class MembersTableComponent {
     members: any[] = [];
     private _membersSubscription: Subscription | null = null;
     private _getMembersSubscription: Subscription | null = null;
-    loading: boolean = true;
+    error: string | null = null;
+    loading = true;
     customTemplates: any;
 
-    constructor(
-        private readonly _homesService: HomesService,
-        private readonly _messageService: MessageService
-    ) {}
+    constructor(private readonly _homesService: HomesService) {}
 
     ngOnInit() {
         this.customTemplates = {};
         this._getMembersSubscription = this._homesService
             .getMembers(this.homeId)
-            .subscribe();
-        this._membersSubscription = this._homesService.members.subscribe({
-            next: (response: GetMembersResponse | null) => {
-                if (response) {
-                    this.members = response.members.map((member: Member) => {
-                        return {
-                            ...member,
-                            canAddDevices: this.hasPermission(
-                                member,
-                                "add-devices"
-                            ),
-                            canListDevices: this.hasPermission(
-                                member,
-                                "get-devices"
-                            ),
-                            canNameDevices: this.hasPermission(
-                                member,
-                                "name-device"
-                            )
-                        };
-                    });
+            .subscribe({
+                error: () => {
+                    this.error =
+                        "You do not have permission to view members in this home.";
+                    this.loading = false;
                 }
-                this.loading = false;
-            },
-            error: (error) => {
-                this.loading = false;
-                this._messageService.add({
-                    severity: "error",
-                    summary: "Error",
-                    detail: error.message
-                });
-            }
-        });
+            });
+        if (!this.error) {
+            this._membersSubscription = this._homesService.members.subscribe({
+                next: (response: GetMembersResponse | null) => {
+                    if (response) {
+                        this.members = response.members.map(
+                            (member: Member) => {
+                                return {
+                                    ...member,
+                                    canAddDevices: this.hasPermission(
+                                        member,
+                                        "add-devices"
+                                    ),
+                                    canListDevices: this.hasPermission(
+                                        member,
+                                        "get-devices"
+                                    ),
+                                    canNameDevices: this.hasPermission(
+                                        member,
+                                        "name-device"
+                                    )
+                                };
+                            }
+                        );
+                    }
+                    this.loading = false;
+                }
+            });
+        }
     }
 
     ngAfterViewInit() {
@@ -121,6 +127,7 @@ export class MembersTableComponent {
     ngOnDestroy() {
         this._getMembersSubscription?.unsubscribe();
         this._membersSubscription?.unsubscribe();
+        this._homesService.clearState();
     }
 
     hasPermission(member: Member, permission: string): boolean {

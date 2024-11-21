@@ -1,4 +1,4 @@
-import { Component, OnDestroy } from "@angular/core";
+import { Component, OnDestroy, OnInit } from "@angular/core";
 import { FormGroup, FormBuilder, Validators } from "@angular/forms";
 import { HomeOwnersService } from "../../../backend/services/home-owners/home-owners.service";
 import { Subscription } from "rxjs";
@@ -7,7 +7,7 @@ import { Subscription } from "rxjs";
     selector: "app-register-form",
     templateUrl: "./register-form.component.html"
 })
-export class RegisterFormComponent implements OnDestroy {
+export class RegisterFormComponent implements OnDestroy, OnInit {
     readonly formFields = {
         firstName: {
             required: { message: "First name is required" }

@@ -15,10 +15,10 @@ export class BaseBusinessesTableComponent {
     @Input() businesses: any[] = [];
     @Input() filterableColumns: string[] = [];
     @Input() pagination: any = {};
-    @Input() loading: boolean = false;
-    @Output() rowClick: EventEmitter<any> = new EventEmitter();
-    @Output() pageChange: EventEmitter<any> = new EventEmitter();
-    @Output() filterChange: EventEmitter<any> = new EventEmitter();
+    @Input() loading = false;
+    @Output() rowClick = new EventEmitter<any>();
+    @Output() pageChange = new EventEmitter<any>();
+    @Output() filterChange = new EventEmitter<any>();
 
     onRowClick(row: any) {
         this.rowClick.emit(row);

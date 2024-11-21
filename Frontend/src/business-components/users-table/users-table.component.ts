@@ -1,15 +1,21 @@
-import { Component, EventEmitter, Output } from "@angular/core";
+import {
+    Component,
+    EventEmitter,
+    Output,
+    OnInit,
+    OnDestroy
+} from "@angular/core";
 import { TableComponent } from "../../components/table/table.component";
 import PaginationResponse from "../../backend/services/pagination";
 import TableColumn from "../../components/table/models/table-column";
 import { Subscription } from "rxjs";
-import { MessageService } from "primeng/api";
 import Pagination from "../../backend/services/pagination";
 import { PaginatorComponent } from "../../components/paginator/paginator.component";
-import FilterValues from "../../components/table/models/filter-values";
+import { FilterValues } from "../../components/table/models/filter-values";
 import { UsersService } from "../../backend/services/users/users.service";
 import GetUsersResponse from "../../backend/services/users/models/user-response";
 import User from "../../backend/services/users/models/user";
+import { MessagesService } from "../../backend/services/messages/messages.service";
 
 @Component({
     selector: "app-users-table",
@@ -17,7 +23,7 @@ import User from "../../backend/services/users/models/user";
     imports: [TableComponent, PaginatorComponent],
     templateUrl: "./users-table.component.html"
 })
-export class UsersTableComponent {
+export class UsersTableComponent implements OnInit, OnDestroy {
     columns: TableColumn[] = [
         {
             field: "fullName",
@@ -43,11 +49,11 @@ export class UsersTableComponent {
     users: any[] = [];
     pagination: PaginationResponse | null = null;
     filters: FilterValues = {};
-    loading: boolean = true;
+    loading = true;
 
     constructor(
         private readonly _usersService: UsersService,
-        private readonly _messageService: MessageService
+        private readonly _messagesService: MessagesService
     ) {}
 
     ngOnInit() {
@@ -88,7 +94,7 @@ export class UsersTableComponent {
             },
             error: (error) => {
                 this.loading = false;
-                this._messageService.add({
+                this._messagesService.add({
                     severity: "error",
                     summary: "Error",
                     detail: error.message

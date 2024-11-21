@@ -11,12 +11,13 @@ import { DropdownModule } from "primeng/dropdown";
 })
 export class DropdownComponent {
     @Input() placeholder!: string;
-    @Input() showClear: boolean = false;
+    @Input() showClear = false;
     @Input() options: any[] = [];
-    @Input() loading: boolean = false;
-    @Input() optionLabel: string = "label";
-    @Input() optionValue: string = "value";
-    @Input() value: string | null = null;
+    @Input() loading = false;
+    @Input() optionLabel = "label";
+    @Input() optionValue = "value";
+    @Input() value: any | null = null;
+    @Input() appendTo: string | null = "body";
     @Output() change = new EventEmitter<any>();
     @Output() click = new EventEmitter<any>();
 

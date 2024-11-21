@@ -1,14 +1,14 @@
-import { Component, Input } from "@angular/core";
+import { Component, Input, OnInit, OnDestroy } from "@angular/core";
 import { FormBuilder, FormGroup, Validators, FormArray } from "@angular/forms";
 import { HomesService } from "../../../backend/services/homes/homes.service";
-import { MessageService } from "primeng/api";
 import { Subscription } from "rxjs";
+import { MessagesService } from "../../../backend/services/messages/messages.service";
 
 @Component({
     selector: "app-add-member-form",
     templateUrl: "./add-member-form.component.html"
 })
-export class AddMemberFormComponent {
+export class AddMemberFormComponent implements OnInit, OnDestroy {
     readonly availablePermissions = [
         { key: "add-devices", label: "Can Add Devices" },
         { key: "get-devices", label: "Can List Devices" },
@@ -36,7 +36,7 @@ export class AddMemberFormComponent {
                 group[permission.key] = this._formBuilder.control(false);
                 return group;
             },
-            {} as { [key: string]: any }
+            {} as Record<string, any>
         );
     }
 
@@ -52,7 +52,7 @@ export class AddMemberFormComponent {
     constructor(
         private _formBuilder: FormBuilder,
         private _homesService: HomesService,
-        private _messageService: MessageService
+        private _messagesService: MessagesService
     ) {}
 
     get permissions(): FormArray {
@@ -84,7 +84,7 @@ export class AddMemberFormComponent {
                 next: () => {
                     this.memberStatus.loading = false;
                     this.memberForm.reset({ email: "", permissions: {} });
-                    this._messageService.add({
+                    this._messagesService.add({
                         severity: "success",
                         summary: "Success",
                         detail: "Member added successfully"
@@ -92,7 +92,7 @@ export class AddMemberFormComponent {
                 },
                 error: (error) => {
                     this.memberStatus.loading = false;
-                    this._messageService.add({
+                    this._messagesService.add({
                         severity: "error",
                         summary: "Error",
                         detail: error.message

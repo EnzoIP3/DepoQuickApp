@@ -11,7 +11,7 @@ export class RouteService {
         if (user) {
             return this._getAuthenticatedRoutes(
                 AuthenticatedRoutes,
-                user.permissions
+                user.roles[user.currentRole]
             );
         }
         return UnauthenticatedRoutes;

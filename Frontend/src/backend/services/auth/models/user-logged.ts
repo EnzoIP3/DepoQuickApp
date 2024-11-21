@@ -1,5 +1,6 @@
 export default interface UserLogged {
     userId: string;
     token: string;
-    permissions: string[];
+    roles: Record<string, string[]>;
+    currentRole: string;
 }

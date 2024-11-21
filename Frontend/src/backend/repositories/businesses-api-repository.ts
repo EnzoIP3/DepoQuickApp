@@ -14,7 +14,9 @@ export class BusinessesApiRepositoryService extends ApiRepository {
         super(environment.apiUrl, "businesses", http);
     }
 
-    public getBusinesses(request?: GetBusinessesRequest): Observable<GetBusinessesResponse> {
+    public getBusinesses(
+        request?: GetBusinessesRequest
+    ): Observable<GetBusinessesResponse> {
         return this.get<GetBusinessesResponse>({ queries: request });
     }
 }

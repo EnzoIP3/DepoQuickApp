@@ -1,26 +1,23 @@
-import { Component } from "@angular/core";
+import { Component, OnInit, OnDestroy } from "@angular/core";
 import { DevicesService } from "../../backend/services/devices/devices.service";
 import GetDevicesResponse from "../../backend/services/devices/models/get-devices-response";
 import PaginationResponse from "../../backend/services/pagination";
 import Device from "../../backend/services/devices/models/device";
 import TableColumn from "../../components/table/models/table-column";
 import { Subscription } from "rxjs";
-import { MessageService } from "primeng/api";
 import Pagination from "../../backend/services/pagination";
-import FilterValues from "../../components/table/models/filter-values";
+import { FilterValues } from "../../components/table/models/filter-values";
 import { CommonModule } from "@angular/common";
 import { BaseDevicesTableComponent } from "../base-devices-table/base-devices-table.component";
+import { MessagesService } from "../../backend/services/messages/messages.service";
 
 @Component({
     selector: "app-devices-table",
     standalone: true,
-    imports: [
-    CommonModule,
-    BaseDevicesTableComponent
-],
+    imports: [CommonModule, BaseDevicesTableComponent],
     templateUrl: "./devices-table.component.html"
 })
-export class DevicesTableComponent {
+export class DevicesTableComponent implements OnInit, OnDestroy {
     columns: TableColumn[] = [
         {
             field: "mainPhoto",
@@ -60,13 +57,13 @@ export class DevicesTableComponent {
     devices: Device[] = [];
     pagination: PaginationResponse | null = null;
     filters: FilterValues = {};
-    loading: boolean = true;
+    loading = true;
     selectedDevice: Device | null = null;
-    dialogVisible: boolean = false;
+    dialogVisible = false;
 
     constructor(
         private readonly _devicesService: DevicesService,
-        private readonly _messageService: MessageService
+        private readonly _messagesService: MessagesService
     ) {}
 
     ngOnInit() {
@@ -98,7 +95,7 @@ export class DevicesTableComponent {
                 },
                 error: (error) => {
                     this.loading = false;
-                    this._messageService.add({
+                    this._messagesService.add({
                         severity: "error",
                         summary: "Error",
                         detail: error.message

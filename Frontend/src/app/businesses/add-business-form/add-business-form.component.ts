@@ -1,19 +1,19 @@
-import { Component } from "@angular/core";
+import { Component, OnInit, OnDestroy } from "@angular/core";
 import { FormBuilder, FormGroup, Validators } from "@angular/forms";
 import { Router } from "@angular/router";
-import { MessageService } from "primeng/api";
 import { Subscription } from "rxjs";
 import { BusinessesService } from "../../../backend/services/businesses/businesses.service";
 import CreateBusinessResponse from "../../../backend/services/businesses/models/create-business-response";
 import { DeviceValidatorsService } from "../../../backend/services/device-validators/device-validators.service";
 import GetValidatorsResponse from "../../../backend/services/device-validators/models/get-validators-response";
+import { MessagesService } from "../../../backend/services/messages/messages.service";
 
 @Component({
     selector: "app-add-business-form",
     templateUrl: "./add-business-form.component.html",
     styles: []
 })
-export class AddBusinessFormComponent {
+export class AddBusinessFormComponent implements OnInit, OnDestroy {
     readonly formFields = {
         name: {
             required: { message: "Name is required" }
@@ -41,7 +41,7 @@ export class AddBusinessFormComponent {
     constructor(
         private _formBuilder: FormBuilder,
         private _router: Router,
-        private _messageService: MessageService,
+        private _messagesService: MessagesService,
         private _businessesService: BusinessesService,
         private _validatorService: DeviceValidatorsService
     ) {}
@@ -78,7 +78,7 @@ export class AddBusinessFormComponent {
                     );
                 },
                 error: (error) => {
-                    this._messageService.add({
+                    this._messagesService.add({
                         severity: "error",
                         summary: "Error",
                         detail: error.message
@@ -97,7 +97,7 @@ export class AddBusinessFormComponent {
                 .subscribe({
                     next: (response: CreateBusinessResponse) => {
                         this.status.loading = false;
-                        this._messageService.add({
+                        this._messagesService.add({
                             severity: "success",
                             summary: "Business Added",
                             detail: `The business ${response.rut} has been added successfully.`
@@ -107,7 +107,7 @@ export class AddBusinessFormComponent {
                     error: (error: any) => {
                         this.status.loading = false;
                         this.status.error = error;
-                        this._messageService.add({
+                        this._messagesService.add({
                             severity: "error",
                             summary: "Error",
                             detail: error.message

@@ -1,3 +1,1 @@
-export default interface FilterValues {
-    [key: string]: string;
-}
+export type FilterValues = Record<string, string>;

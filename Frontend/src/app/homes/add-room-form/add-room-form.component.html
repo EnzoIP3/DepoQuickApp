@@ -1,7 +1,18 @@
 <app-form [form]="roomForm" (onSubmit)="onSubmit()">
-    <app-form-input type="text" label="Name" placeholder="Room Name" name="name" [form]="roomForm"
-        iconClass="pi pi-th-large" [formField]="formFields.name"></app-form-input>
+    <app-form-input
+        type="text"
+        label="Name"
+        placeholder="Room Name"
+        name="name"
+        [form]="roomForm"
+        iconClass="pi pi-th-large"
+        [formField]="formFields.name"
+    ></app-form-input>
 
-    <app-form-button title="Add Room" color="primary" [loading]="roomStatus.loading"
-        [disabled]="!roomForm.valid"></app-form-button>
+    <app-form-button
+        title="Add Room"
+        color="primary"
+        [loading]="roomStatus.loading"
+        [disabled]="!roomForm.valid"
+    ></app-form-button>
 </app-form>

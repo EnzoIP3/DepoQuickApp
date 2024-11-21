@@ -11,7 +11,7 @@ import { SkeletonModule } from "primeng/skeleton";
     templateUrl: "./list.component.html"
 })
 export class ListComponent {
-    @Input() loading: boolean = false;
+    @Input() loading = false;
     @Input() items: ListItem[] = [];
     loadingArray = new Array(5);
 }

@@ -10,9 +10,7 @@ import { AdminsApiRepositoryService } from "../../repositories/admins-api-reposi
 export class AdminsService {
     constructor(private readonly _repository: AdminsApiRepositoryService) {}
 
-    public addAdmin(
-        addRequest: AddRequest
-    ): Observable<AddResponse> {
+    public addAdmin(addRequest: AddRequest): Observable<AddResponse> {
         return this._repository.add(addRequest);
     }
 

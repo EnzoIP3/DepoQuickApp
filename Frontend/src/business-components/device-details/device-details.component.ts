@@ -6,24 +6,23 @@ import {
     SimpleChanges
 } from "@angular/core";
 import { Subscription } from "rxjs";
-import { MessageService } from "primeng/api";
 import Device from "../../backend/services/devices/models/device";
 import { CommonModule } from "@angular/common";
 import { CamerasService } from "../../backend/services/cameras/cameras.service";
 import ListItem from "../../components/list/models/list-item";
 import { ListComponent } from "../../components/list/list.component";
 import { DividerComponent } from "../../components/divider/divider.component";
+import { MessagesService } from "../../backend/services/messages/messages.service";
 
 @Component({
     selector: "app-device-details",
     standalone: true,
     templateUrl: "./device-details.component.html",
-    imports: [CommonModule, ListComponent, DividerComponent],
-    providers: [MessageService]
+    imports: [CommonModule, ListComponent, DividerComponent]
 })
 export class DeviceDetailsComponent implements OnChanges, OnDestroy {
     @Input() device!: Device;
-    @Input() imageWidth: string = "100%";
+    @Input() imageWidth = "100%";
 
     extraCameraFields: {
         motionDetection?: boolean;
@@ -35,8 +34,8 @@ export class DeviceDetailsComponent implements OnChanges, OnDestroy {
     private _camerasSubscription: Subscription | null = null;
 
     constructor(
-        private camerasService: CamerasService,
-        private messageService: MessageService
+        private readonly _camerasService: CamerasService,
+        private readonly _messagesService: MessagesService
     ) {}
 
     ngOnChanges(changes: SimpleChanges): void {
@@ -52,7 +51,7 @@ export class DeviceDetailsComponent implements OnChanges, OnDestroy {
     }
 
     private loadCameraDetails(deviceId: string): void {
-        this._camerasSubscription = this.camerasService
+        this._camerasSubscription = this._camerasService
             .getCameraDetails(deviceId)
             .subscribe({
                 next: (cameraDetails) => {
@@ -65,7 +64,7 @@ export class DeviceDetailsComponent implements OnChanges, OnDestroy {
                 },
                 error: (err) => {
                     this.extraCameraFields = null;
-                    this.messageService.add({
+                    this._messagesService.add({
                         severity: "error",
                         summary: "Error fetching camera details",
                         detail: err.message || "An unexpected error occurred."

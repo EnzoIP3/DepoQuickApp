@@ -1,12 +1,12 @@
 import { Component, OnDestroy, OnInit } from "@angular/core";
 import { ActivatedRoute } from "@angular/router";
-import { MessageService } from "primeng/api";
 import { Subscription } from "rxjs";
 import Pagination from "../../../backend/services/pagination";
 import { UsersService } from "../../../backend/services/users/users.service";
 import PaginationResponse from "../../../backend/services/pagination";
 import { AuthService } from "../../../backend/services/auth/auth.service";
 import Business from "../../../backend/services/businesses/models/business";
+import { MessagesService } from "../../../backend/services/messages/messages.service";
 
 @Component({
     selector: "app-business-page",
@@ -14,10 +14,10 @@ import Business from "../../../backend/services/businesses/models/business";
     styles: []
 })
 export class BusinessPageComponent implements OnInit, OnDestroy {
-    title: string = "Unnamed business";
+    title = "Unnamed business";
     businesses: Business[] = [];
     pagination: PaginationResponse | null = {};
-    public businessId: string = "";
+    public businessId = "";
     private _userId: string | null = null;
     private _businessesSubscription: Subscription | null = null;
     private _authSubscription: Subscription | null = null;
@@ -26,7 +26,7 @@ export class BusinessPageComponent implements OnInit, OnDestroy {
         private readonly _route: ActivatedRoute,
         private readonly _userService: UsersService,
         private readonly _authService: AuthService,
-        private readonly _messageService: MessageService
+        private readonly _messagesService: MessagesService
     ) {
         this._setBusinessId();
     }
@@ -48,15 +48,15 @@ export class BusinessPageComponent implements OnInit, OnDestroy {
                     this._userId = user.userId;
                     this._fetchBusinesses();
                 } else {
-                    this._messageService.add({
+                    this._messagesService.add({
                         severity: "error",
                         summary: "Error",
                         detail: "No user is logged in"
                     });
                 }
             },
-            error: (error) => {
-                this._messageService.add({
+            error: () => {
+                this._messagesService.add({
                     severity: "error",
                     summary: "Error",
                     detail: "Failed to fetch user information"
@@ -89,7 +89,7 @@ export class BusinessPageComponent implements OnInit, OnDestroy {
                     this.pagination = response.pagination;
                 },
                 error: (error) => {
-                    this._messageService.add({
+                    this._messagesService.add({
                         severity: "error",
                         summary: "Error fetching businesses",
                         detail: error.message

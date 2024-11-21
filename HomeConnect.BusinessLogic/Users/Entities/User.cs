@@ -170,8 +170,8 @@ public class User
         }
     }
 
-    public List<SystemPermission> GetPermissions()
+    public Dictionary<Role, List<SystemPermission>> GetRolesAndPermissions()
     {
-        return Roles.SelectMany(role => role.Permissions).Distinct().ToList();
+        return Roles.ToDictionary(role => role, role => role.Permissions);
     }
 }

@@ -10,8 +10,8 @@ public interface IDeviceService
     bool TurnDevice(string hardwareId, bool state);
     IEnumerable<string> GetAllDeviceTypes();
     bool IsConnected(string hardwareId);
-    void TurnLamp(string hardwareId, bool state, NotificationArgs args);
-    void UpdateSensorState(string hardwareId, bool state, NotificationArgs args);
+    void TurnLamp(string hardwareId, bool state);
+    void UpdateSensorState(string hardwareId, bool state);
     public Camera GetCameraById(string cameraId);
     void MoveDevice(string targetRoomId, string deviceId);
 }

@@ -88,7 +88,7 @@ public class SensorControllerTests
         // Arrange
         var hardwareId = "hardwareId";
         var args = new NotificationArgs { HardwareId = hardwareId, Date = DateTime.Now, Event = "Sensor was opened" };
-        _deviceServiceMock.Setup(x => x.UpdateSensorState(hardwareId, true, It.IsAny<NotificationArgs>()));
+        _deviceServiceMock.Setup(x => x.UpdateSensorState(hardwareId, true));
         _notificationServiceMock.Setup(x => x.SendSensorNotification(It.IsAny<NotificationArgs>(), false));
 
         // Act
@@ -97,8 +97,6 @@ public class SensorControllerTests
         // Assert
         result.Should().NotBeNull();
         result.HardwareId.Should().Be(hardwareId);
-        _deviceServiceMock.Verify(x => x.UpdateSensorState(hardwareId, true, It.Is((NotificationArgs a) =>
-            a.HardwareId == hardwareId && a.Event == args.Event)));
         _notificationServiceMock.Verify(x => x.SendSensorNotification(It.Is((NotificationArgs a) =>
             a.HardwareId == hardwareId && a.Event == args.Event), true));
     }
@@ -109,7 +107,7 @@ public class SensorControllerTests
         // Arrange
         var hardwareId = "hardwareId";
         var args = new NotificationArgs { HardwareId = hardwareId, Date = DateTime.Now, Event = "Sensor was closed" };
-        _deviceServiceMock.Setup(x => x.UpdateSensorState(hardwareId, false, It.IsAny<NotificationArgs>()));
+        _deviceServiceMock.Setup(x => x.UpdateSensorState(hardwareId, false));
         _notificationServiceMock.Setup(x => x.SendSensorNotification(It.IsAny<NotificationArgs>(), false));
 
         // Act
@@ -118,8 +116,7 @@ public class SensorControllerTests
         // Assert
         result.Should().NotBeNull();
         result.HardwareId.Should().Be(hardwareId);
-        _deviceServiceMock.Verify(x => x.UpdateSensorState(hardwareId, false, It.Is((NotificationArgs a) =>
-            a.HardwareId == hardwareId && a.Event == args.Event)));
+        _deviceServiceMock.Verify(x => x.UpdateSensorState(hardwareId, false));
         _notificationServiceMock.Verify(x => x.SendSensorNotification(It.Is((NotificationArgs a) =>
             a.HardwareId == hardwareId && a.Event == args.Event), false));
     }

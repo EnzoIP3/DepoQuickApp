@@ -1,7 +1,6 @@
 using BusinessLogic.BusinessOwners.Entities;
 using BusinessLogic.Devices.Entities;
 using BusinessLogic.Devices.Repositories;
-using BusinessLogic.Devices.Services;
 using BusinessLogic.HomeOwners.Entities;
 using BusinessLogic.Notifications.Entities;
 using BusinessLogic.Notifications.Models;

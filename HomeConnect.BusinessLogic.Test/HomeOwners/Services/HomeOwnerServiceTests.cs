@@ -68,7 +68,6 @@ public class HomeOwnerServiceTests
             Longitude = 2.0,
             MaxMembers = 5
         };
-        var home = new Home(_user, model.Address, model.Latitude, model.Longitude, model.MaxMembers);
         _userRepositoryMock.Setup(x => x.Exists(Guid.Parse(model.HomeOwnerId))).Returns(true);
         _userRepositoryMock.Setup(x => x.Get(Guid.Parse(model.HomeOwnerId))).Returns(_user);
         _userRepositoryMock.Setup(x => x.ExistsByEmail(_user.Email)).Returns(true);
@@ -583,7 +582,6 @@ public class HomeOwnerServiceTests
         Guid memberId = member.Id;
         _memberRepositoryMock.Setup(x => x.Exists(memberId)).Returns(true);
         _memberRepositoryMock.Setup(x => x.Get(memberId)).Returns(member);
-        var permission = new HomePermission(HomePermission.GetNotifications);
 
         _memberRepositoryMock.Setup(e =>
             e.Update(It.Is<Member>(x =>

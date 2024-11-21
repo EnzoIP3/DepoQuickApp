@@ -1,4 +1,3 @@
-using BusinessLogic.Devices.Services;
 using BusinessLogic.Notifications.Entities;
 using BusinessLogic.Notifications.Models;
 

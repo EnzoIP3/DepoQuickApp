@@ -2,7 +2,6 @@ using BusinessLogic.Devices.Entities;
 using BusinessLogic.Devices.Models;
 using BusinessLogic.Devices.Repositories;
 using BusinessLogic.HomeOwners.Repositories;
-using BusinessLogic.Notifications.Models;
 using BusinessLogic.Notifications.Services;
 
 namespace BusinessLogic.Devices.Services;
@@ -10,18 +9,16 @@ namespace BusinessLogic.Devices.Services;
 public class DeviceService : IDeviceService
 {
     public DeviceService(IDeviceRepository deviceRepository, IOwnedDeviceRepository ownedDeviceRepository,
-        INotificationService notificationService, IHomeRepository homeRepository, IRoomRepository roomRepository)
+        IHomeRepository homeRepository, IRoomRepository roomRepository)
     {
         HomeRepository = homeRepository;
         DeviceRepository = deviceRepository;
         OwnedDeviceRepository = ownedDeviceRepository;
-        NotificationService = notificationService;
         RoomRepository = roomRepository;
     }
 
     private IDeviceRepository DeviceRepository { get; }
     private IOwnedDeviceRepository OwnedDeviceRepository { get; }
-    private INotificationService NotificationService { get; }
     private IHomeRepository HomeRepository { get; }
     private IRoomRepository RoomRepository { get; }
 
@@ -65,18 +62,17 @@ public class DeviceService : IDeviceService
         return ownedDevice.Connected;
     }
 
-    public void TurnLamp(string hardwareId, bool state, NotificationArgs args)
+    public void TurnLamp(string hardwareId, bool state)
     {
         EnsureHardwareIdIsValid(hardwareId);
         EnsureOwnedDeviceExists(hardwareId);
         OwnedDeviceRepository.UpdateLampState(Guid.Parse(hardwareId), state);
     }
 
-    public void UpdateSensorState(string hardwareId, bool state, NotificationArgs args)
+    public void UpdateSensorState(string hardwareId, bool state)
     {
         EnsureHardwareIdIsValid(hardwareId);
         EnsureOwnedDeviceExists(hardwareId);
-        SendSensorNotification(hardwareId, state, args);
         OwnedDeviceRepository.UpdateSensorState(Guid.Parse(hardwareId), state);
     }
 
@@ -134,14 +130,6 @@ public class DeviceService : IDeviceService
         else
         {
             throw new ArgumentException("Device is not in a room.");
-        }
-    }
-
-    private void SendSensorNotification(string hardwareId, bool state, NotificationArgs args)
-    {
-        if (OwnedDeviceRepository.GetSensorState(Guid.Parse(hardwareId)) != state)
-        {
-            NotificationService.Notify(args);
         }
     }
 

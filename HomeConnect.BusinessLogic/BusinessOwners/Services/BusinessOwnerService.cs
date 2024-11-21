@@ -1,5 +1,4 @@
-﻿using BusinessLogic.Admins.Services;
-using BusinessLogic.BusinessOwners.Entities;
+﻿using BusinessLogic.BusinessOwners.Entities;
 using BusinessLogic.BusinessOwners.Models;
 using BusinessLogic.BusinessOwners.Repositories;
 using BusinessLogic.Devices.Entities;

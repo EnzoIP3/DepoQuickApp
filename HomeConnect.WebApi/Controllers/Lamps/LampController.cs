@@ -47,7 +47,7 @@ public class LampController(
     public NotifyResponse TurnOn([FromRoute] string hardwareId)
     {
         NotificationArgs args = CreateTurnNotificationArgs(hardwareId, true);
-        deviceService.TurnLamp(hardwareId, true, args);
+        deviceService.TurnLamp(hardwareId, true);
         notificationService.SendLampNotification(args, true);
         return new NotifyResponse { HardwareId = hardwareId };
     }
@@ -56,7 +56,7 @@ public class LampController(
     public NotifyResponse TurnOff([FromRoute] string hardwareId)
     {
         NotificationArgs args = CreateTurnNotificationArgs(hardwareId, false);
-        deviceService.TurnLamp(hardwareId, false, args);
+        deviceService.TurnLamp(hardwareId, false);
         notificationService.SendLampNotification(args, false);
         return new NotifyResponse { HardwareId = hardwareId };
     }

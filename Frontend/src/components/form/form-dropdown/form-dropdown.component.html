@@ -1,0 +1,13 @@
+<div class="field" [formGroup]="form">
+    <label *ngIf="label" [for]="name">{{ label }}</label>
+    <p-dropdown
+        [options]="options"
+        [formControlName]="name"
+        [placeholder]="placeholder"
+        [ngClass]="errorClass"
+        [showClear]="true"
+        class="w-full"
+        [style]="{ width: '100%' }"
+        (onChange)="onChange.emit($event)"
+    ></p-dropdown>
+</div>

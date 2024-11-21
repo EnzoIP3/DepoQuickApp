@@ -14,6 +14,29 @@ public class UserTests
 
     private readonly Role _role = new("Admin", []);
 
+    #region GetRolesAndPermissions
+
+    [TestMethod]
+    public void GetRolesAndPermissions_WhenUserHasRoles_ReturnsRolesAndPermissions()
+    {
+        // Arrange
+        var permission = new SystemPermission("Permission");
+        var otherPermission = new SystemPermission("Other Permission");
+        var role = new Role("Role", [permission, otherPermission]);
+        var user = new User(Name, Surname, Email, Password, role);
+
+        // Act
+        Dictionary<Role, List<SystemPermission>> rolesAndPermissions = user.GetRolesAndPermissions();
+
+        // Assert
+        rolesAndPermissions.Should().BeEquivalentTo(new Dictionary<Role, List<SystemPermission>>
+        {
+            { role, new List<SystemPermission> { permission, otherPermission } }
+        });
+    }
+
+    #endregion
+
     #region Constructor
 
     #region Error
@@ -124,6 +147,44 @@ public class UserTests
 
         // Assert
         user.ProfilePicture.Should().Be(profilePicture);
+    }
+
+    #endregion
+
+    #endregion
+
+    #region AddRole
+
+    #region Success
+
+    [TestMethod]
+    public void AddRole_WhenRoleIsNotAlreadyAdded_AddsRole()
+    {
+        // Arrange
+        var user = new User(Name, Surname, Email, Password, _role);
+
+        // Act
+        user.AddRole(new Role("User", []));
+
+        // Assert
+        user.Roles.Should().HaveCount(2);
+    }
+
+    #endregion
+
+    #region Error
+
+    [TestMethod]
+    public void AddRole_WhenRoleIsAlreadyAdded_ThrowsException()
+    {
+        // Arrange
+        var user = new User(Name, Surname, Email, Password, _role);
+
+        // Act
+        Action act = () => user.AddRole(_role);
+
+        // Assert
+        act.Should().Throw<InvalidOperationException>();
     }
 
     #endregion

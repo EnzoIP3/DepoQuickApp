@@ -1,0 +1,60 @@
+<div class="centered-content">
+    <app-icon-title
+        title="Register a new Business Owner"
+        icon="pi-user"
+        class="mb-4 text-primary-600 text-center"
+    ></app-icon-title>
+    <app-form [form]="addForm" (onSubmit)="onSubmit()">
+        <app-form-input
+            type="text"
+            label="Name"
+            placeholder="Name"
+            name="name"
+            [form]="addForm"
+            iconClass="pi pi-user"
+            [formField]="formFields.name"
+        >
+        </app-form-input>
+
+        <app-form-input
+            type="text"
+            label="Surname"
+            placeholder="Surname"
+            name="surname"
+            [form]="addForm"
+            iconClass="pi pi-user"
+            [formField]="formFields.surname"
+        >
+        </app-form-input>
+
+        <app-form-input
+            type="email"
+            label="Email"
+            placeholder="Email"
+            name="email"
+            [form]="addForm"
+            iconClass="pi pi-envelope"
+            [formField]="formFields.email"
+        >
+        </app-form-input>
+
+        <app-form-input
+            type="password"
+            label="Password"
+            placeholder="Password"
+            name="password"
+            [form]="addForm"
+            iconClass="pi pi-lock"
+            [formField]="formFields.password"
+        >
+        </app-form-input>
+
+        <app-form-button
+            title="Register Business Owner"
+            color="primary"
+            [loading]="businessOwnerStatus.loading"
+            [disabled]="!addForm.valid"
+        >
+        </app-form-button>
+    </app-form>
+</div>

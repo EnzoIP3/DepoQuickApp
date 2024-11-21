@@ -23,6 +23,7 @@ public class Context(DbContextOptions<Context> options) : DbContext(options)
     public DbSet<Token> Tokens { get; set; } = null!;
     public DbSet<Member> Members { get; set; } = null!;
     public DbSet<HomePermission> HomePermissions { get; set; } = null!;
+    public DbSet<Room> Rooms { get; set; } = null!;
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
@@ -31,9 +32,19 @@ public class Context(DbContextOptions<Context> options) : DbContext(options)
         ConfigureRolePermissions(modelBuilder);
         ConfigureUserRole(modelBuilder);
         ConfigureMemberRelations(modelBuilder);
+        ConfigureOwnedDevices(modelBuilder);
         SeedAdminUser(modelBuilder);
 
         base.OnModelCreating(modelBuilder);
+    }
+
+    private static void ConfigureOwnedDevices(ModelBuilder modelBuilder)
+    {
+        modelBuilder.Entity<OwnedDevice>()
+            .HasDiscriminator<string>("DeviceType")
+            .HasValue<OwnedDevice>("OwnedDevice")
+            .HasValue<LampOwnedDevice>("LampOwnedDevice")
+            .HasValue<SensorOwnedDevice>("SensorOwnedDevice");
     }
 
     private void SeedRoles(ModelBuilder modelBuilder)
@@ -61,7 +72,23 @@ public class Context(DbContextOptions<Context> options) : DbContext(options)
             new SystemPermission { Value = SystemPermission.CreateBusiness },
             new SystemPermission { Value = SystemPermission.CreateCamera },
             new SystemPermission { Value = SystemPermission.CreateSensor },
-            new SystemPermission { Value = SystemPermission.UpdateMember });
+            new SystemPermission { Value = SystemPermission.UpdateMember },
+            new SystemPermission { Value = SystemPermission.CreateMotionSensor },
+            new SystemPermission { Value = SystemPermission.CreateLamp },
+            new SystemPermission { Value = SystemPermission.GetHomes },
+            new SystemPermission { Value = SystemPermission.NameHome },
+            new SystemPermission { Value = SystemPermission.UpdateBusinessValidator },
+            new SystemPermission { Value = SystemPermission.GetDeviceValidators },
+            new SystemPermission { Value = SystemPermission.ImportDevices },
+            new SystemPermission { Value = SystemPermission.GetDeviceImportFiles },
+            new SystemPermission { Value = SystemPermission.GetBusinesses },
+            new SystemPermission { Value = SystemPermission.GetBusinessDevices },
+            new SystemPermission { Value = SystemPermission.GetCamera },
+            new SystemPermission { Value = SystemPermission.GetDeviceImporters },
+            new SystemPermission { Value = SystemPermission.NameDevice },
+            new SystemPermission { Value = SystemPermission.AddDeviceToRoom },
+            new SystemPermission { Value = SystemPermission.MoveDevice },
+            new SystemPermission { Value = SystemPermission.CreateRoom });
     }
 
     private void ConfigureRolePermissions(ModelBuilder modelBuilder)
@@ -82,17 +109,34 @@ public class Context(DbContextOptions<Context> options) : DbContext(options)
                 new { RolesName = Role.HomeOwner, PermissionsValue = SystemPermission.GetMembers },
                 new { RolesName = Role.HomeOwner, PermissionsValue = SystemPermission.UpdateMember },
                 new { RolesName = Role.HomeOwner, PermissionsValue = SystemPermission.GetNotifications },
+                new { RolesName = Role.HomeOwner, PermissionsValue = SystemPermission.AddDeviceToRoom },
+                new { RolesName = Role.HomeOwner, PermissionsValue = SystemPermission.CreateRoom },
+                new { RolesName = Role.HomeOwner, PermissionsValue = SystemPermission.MoveDevice },
+                new { RolesName = Role.HomeOwner, PermissionsValue = SystemPermission.GetHomes },
+                new { RolesName = Role.HomeOwner, PermissionsValue = SystemPermission.NameHome },
+                new { RolesName = Role.HomeOwner, PermissionsValue = SystemPermission.NameDevice },
                 new { RolesName = Role.BusinessOwner, PermissionsValue = SystemPermission.CreateBusiness },
                 new { RolesName = Role.BusinessOwner, PermissionsValue = SystemPermission.CreateCamera },
-                new { RolesName = Role.BusinessOwner, PermissionsValue = SystemPermission.CreateSensor }));
+                new { RolesName = Role.BusinessOwner, PermissionsValue = SystemPermission.CreateSensor },
+                new { RolesName = Role.BusinessOwner, PermissionsValue = SystemPermission.CreateMotionSensor },
+                new { RolesName = Role.BusinessOwner, PermissionsValue = SystemPermission.CreateLamp },
+                new { RolesName = Role.BusinessOwner, PermissionsValue = SystemPermission.UpdateBusinessValidator },
+                new { RolesName = Role.BusinessOwner, PermissionsValue = SystemPermission.GetDeviceValidators },
+                new { RolesName = Role.BusinessOwner, PermissionsValue = SystemPermission.ImportDevices },
+                new { RolesName = Role.BusinessOwner, PermissionsValue = SystemPermission.GetDeviceImportFiles },
+                new { RolesName = Role.BusinessOwner, PermissionsValue = SystemPermission.GetBusinesses },
+                new { RolesName = Role.BusinessOwner, PermissionsValue = SystemPermission.GetBusinessDevices },
+                new { RolesName = Role.BusinessOwner, PermissionsValue = SystemPermission.GetCamera },
+                new { RolesName = Role.BusinessOwner, PermissionsValue = SystemPermission.GetDeviceImporters }));
     }
 
     private void ConfigureUserRole(ModelBuilder modelBuilder)
     {
         modelBuilder.Entity<User>()
-            .HasOne(u => u.Role)
-            .WithMany()
-            .HasForeignKey("RoleName");
+            .HasMany(u => u.Roles)
+            .WithMany("Users")
+            .UsingEntity(j => j.ToTable("UserRole").HasData(
+                new { UsersId = Guid.Parse("f1b3b3b3-3b3b-3b3b-3b3b-3b3b3b3b3b3b"), RolesName = Role.Admin }));
     }
 
     private void ConfigureMemberRelations(ModelBuilder modelBuilder)
@@ -122,7 +166,6 @@ public class Context(DbContextOptions<Context> options) : DbContext(options)
             Surname = "Account",
             Email = "admin@admin.com",
             Password = "Admin123@",
-            RoleName = "Admin",
             CreatedAt = new DateOnly(2024, 1, 1)
         });
     }

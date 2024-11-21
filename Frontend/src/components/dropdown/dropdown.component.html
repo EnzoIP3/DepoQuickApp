@@ -1,0 +1,13 @@
+<p-dropdown
+    [options]="options"
+    [placeholder]="placeholder"
+    [showClear]="showClear"
+    [loading]="loading"
+    (onChange)="onChange($event)"
+    [optionLabel]="optionLabel"
+    [optionValue]="optionValue"
+    #dropdown
+    [(ngModel)]="value"
+    (onClick)="onClick($event)"
+    [appendTo]="appendTo"
+/>

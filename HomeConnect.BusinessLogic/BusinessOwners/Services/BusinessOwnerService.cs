@@ -2,35 +2,43 @@
 using BusinessLogic.BusinessOwners.Models;
 using BusinessLogic.BusinessOwners.Repositories;
 using BusinessLogic.Devices.Entities;
+using BusinessLogic.Devices.Models;
 using BusinessLogic.Devices.Repositories;
 using BusinessLogic.Users.Entities;
 using BusinessLogic.Users.Repositories;
+using ModeloValidador.Abstracciones;
 
 namespace BusinessLogic.BusinessOwners.Services;
 
 public class BusinessOwnerService : IBusinessOwnerService
 {
+    private readonly IBusinessRepository _businessRepository;
+    private readonly IDeviceRepository _deviceRepository;
+
+    private readonly IUserRepository _userRepository;
+    private readonly IValidatorService _validatorService;
+
     public BusinessOwnerService(
         IUserRepository userRepository,
         IBusinessRepository businessRepository,
-        IDeviceRepository deviceRepository)
+        IDeviceRepository deviceRepository,
+        IValidatorService validatorService)
     {
-        UserRepository = userRepository;
-        BusinessRepository = businessRepository;
-        DeviceRepository = deviceRepository;
+        _userRepository = userRepository;
+        _businessRepository = businessRepository;
+        _deviceRepository = deviceRepository;
+        _validatorService = validatorService;
     }
-
-    private IUserRepository UserRepository { get; }
-    private IBusinessRepository BusinessRepository { get; }
-    private IDeviceRepository DeviceRepository { get; }
 
     public Business CreateBusiness(CreateBusinessArgs args)
     {
         Guid ownerId = ParseAndValidateOwnerId(args.OwnerId);
         EnsureBusinessPrerequisites(ownerId, args.Rut);
+        EnsureValidatorExists(args.Validator);
+        Guid? validatorId = GetValidatorId(args.Validator);
         User owner = GetUserById(ownerId);
-        var business = new Business(args.Rut, args.Name, args.Logo, owner);
-        BusinessRepository.Add(business);
+        var business = new Business(args.Rut, args.Name, args.Logo, owner, validatorId);
+        _businessRepository.Add(business);
         return business;
     }
 
@@ -38,8 +46,7 @@ public class BusinessOwnerService : IBusinessOwnerService
     {
         Business business = GetValidatedBusiness(args.Owner.Id);
         Device device = CreateDevice(args, business);
-        EnsureDeviceDoesNotExist(args.ModelNumber);
-        DeviceRepository.Add(device);
+        _deviceRepository.Add(device);
         return device;
     }
 
@@ -47,16 +54,72 @@ public class BusinessOwnerService : IBusinessOwnerService
     {
         Business business = GetValidatedBusiness(args.Owner.Id);
         Camera camera = CreateCamera(args, business);
-        EnsureDeviceDoesNotExist(args.ModelNumber);
-        DeviceRepository.Add(camera);
+        _deviceRepository.Add(camera);
         return camera;
     }
 
-    private void EnsureDeviceDoesNotExist(int? modelNumber)
+    public void UpdateValidator(UpdateValidatorArgs args)
     {
-        if (DeviceRepository.ExistsByModelNumber(modelNumber!.Value))
+        EnsureBusinessExistsFromRut(args.BusinessRut);
+        EnsureBusinessIsFromOwner(args.BusinessRut, args.OwnerId);
+        EnsureValidatorExists(args.Validator);
+        Guid? validatorId = GetValidatorId(args.Validator);
+        _businessRepository.UpdateValidator(args.BusinessRut, validatorId);
+    }
+
+    public PagedData<Business> GetBusinesses(string ownerIdFilter, int currentPage, int pageSize)
+    {
+        Guid ownerId = ParseAndValidateOwnerId(ownerIdFilter);
+        var filterArgs = new FilterArgs { OwnerIdFilter = ownerId, CurrentPage = currentPage, PageSize = pageSize };
+        PagedData<Business> businesses =
+            _businessRepository.GetPaged(filterArgs);
+        return businesses;
+    }
+
+    public PagedData<Device> GetDevices(GetBusinessDevicesArgs args)
+    {
+        EnsureBusinessIsFromOwner(args.Rut, args.User.Id.ToString());
+        return _deviceRepository.GetPaged(new GetDevicesArgs
         {
-            throw new InvalidOperationException("Device already exists");
+            RutFilter = args.Rut,
+            PageSize = args.PageSize,
+            Page = args.CurrentPage
+        });
+    }
+
+    private Guid? GetValidatorId(string? argsValidator)
+    {
+        if (!string.IsNullOrWhiteSpace(argsValidator))
+        {
+            return _validatorService.GetValidatorIdByName(argsValidator);
+        }
+
+        return null;
+    }
+
+    private void EnsureValidatorExists(string? argsValidator)
+    {
+        if (!string.IsNullOrWhiteSpace(argsValidator) && !_validatorService.Exists(argsValidator))
+        {
+            throw new ArgumentException("The specified validator does not exist.");
+        }
+    }
+
+    private void EnsureBusinessExistsFromRut(string argsBusinessRut)
+    {
+        if (!_businessRepository.Exists(argsBusinessRut))
+        {
+            throw new ArgumentException("The business does not exist.");
+        }
+    }
+
+    private void EnsureBusinessIsFromOwner(string argsBusinessRut, string argsOwnerId)
+    {
+        Guid ownerId = ParseAndValidateOwnerId(argsOwnerId);
+        Business business = _businessRepository.Get(argsBusinessRut);
+        if (business.Owner.Id != ownerId)
+        {
+            throw new InvalidOperationException("The business does not belong to the specified owner.");
         }
     }
 
@@ -79,17 +142,18 @@ public class BusinessOwnerService : IBusinessOwnerService
 
     private User GetUserById(Guid ownerId)
     {
-        return UserRepository.Get(ownerId);
+        return _userRepository.Get(ownerId);
     }
 
     private Business GetValidatedBusiness(Guid ownerId)
     {
         EnsureBusinessExists(ownerId);
-        return BusinessRepository.GetByOwnerId(ownerId);
+        return _businessRepository.GetByOwnerId(ownerId);
     }
 
-    private static Device CreateDevice(CreateDeviceArgs args, Business business)
+    private Device CreateDevice(CreateDeviceArgs args, Business business)
     {
+        EnsureModelNumberIsValid(args.ModelNumber, business.Validator);
         return new Device(
             args.Name,
             args.ModelNumber,
@@ -100,8 +164,21 @@ public class BusinessOwnerService : IBusinessOwnerService
             business);
     }
 
-    private static Camera CreateCamera(CreateCameraArgs args, Business business)
+    private void EnsureModelNumberIsValid(string? modelNumber, Guid? validatorName)
     {
+        if (validatorName != null && modelNumber != null)
+        {
+            IModeloValidador validator = _validatorService.GetValidator(validatorName);
+            if (!validator.EsValido(new Modelo(modelNumber)))
+            {
+                throw new ArgumentException("The model number is not valid according to the specified validator.");
+            }
+        }
+    }
+
+    private Camera CreateCamera(CreateCameraArgs args, Business business)
+    {
+        EnsureModelNumberIsValid(args.ModelNumber, business.Validator);
         return new Camera(
             args.Name,
             args.ModelNumber,
@@ -117,7 +194,7 @@ public class BusinessOwnerService : IBusinessOwnerService
 
     private void EnsureBusinessExists(Guid ownerId)
     {
-        if (!BusinessRepository.ExistsByOwnerId(ownerId))
+        if (!_businessRepository.ExistsByOwnerId(ownerId))
         {
             throw new ArgumentException("That business does not exist.");
         }
@@ -125,7 +202,7 @@ public class BusinessOwnerService : IBusinessOwnerService
 
     private void EnsureOwnerExists(Guid ownerId)
     {
-        if (!UserRepository.Exists(ownerId))
+        if (!_userRepository.Exists(ownerId))
         {
             throw new ArgumentException("That business owner does not exist.");
         }
@@ -133,7 +210,7 @@ public class BusinessOwnerService : IBusinessOwnerService
 
     private void EnsureOwnerDoesNotHaveBusiness(Guid ownerId)
     {
-        if (BusinessRepository.ExistsByOwnerId(ownerId))
+        if (_businessRepository.ExistsByOwnerId(ownerId))
         {
             throw new InvalidOperationException("Owner already has a business.");
         }
@@ -141,7 +218,7 @@ public class BusinessOwnerService : IBusinessOwnerService
 
     private void EnsureBusinessRutDoesNotExist(string businessRut)
     {
-        if (BusinessRepository.Exists(businessRut))
+        if (_businessRepository.Exists(businessRut))
         {
             throw new InvalidOperationException("There is already a business with this RUT.");
         }

@@ -1,6 +1,5 @@
 using BusinessLogic.Devices.Entities;
 using BusinessLogic.HomeOwners.Entities;
-using BusinessLogic.HomeOwners.Models;
 using BusinessLogic.HomeOwners.Services;
 using BusinessLogic.Roles.Entities;
 using BusinessLogic.Users.Entities;
@@ -13,15 +12,59 @@ namespace HomeConnect.WebApi.Controllers.Homes;
 [ApiController]
 [Route("homes")]
 [AuthenticationFilter]
-public class HomeController(IHomeOwnerService homeOwnerService) : ControllerBase
+public sealed class HomeController : ControllerBase
 {
+    private readonly IHomeOwnerService _homeOwnerService;
+
+    public HomeController(IHomeOwnerService homeOwnerService)
+    {
+        _homeOwnerService = homeOwnerService;
+    }
+
+    [HttpGet]
+    [AuthorizationFilter(SystemPermission.GetHomes)]
+    public GetHomesResponse GetHomes()
+    {
+        var userLoggedIn = HttpContext.Items[Item.UserLogged] as User;
+        List<Home> homes = _homeOwnerService.GetHomesByOwnerId(userLoggedIn!.Id);
+        return GetHomesResponse.FromHomes(homes);
+    }
+
+    [HttpGet("{homesId}/permissions")]
+    [HomeAuthorizationFilter]
+    [AuthorizationFilter(SystemPermission.GetHomes)]
+    public GetHomePermissionsResponse GetHomePermissions([FromRoute] string homesId)
+    {
+        var userLoggedIn = HttpContext.Items[Item.UserLogged] as User;
+        List<HomePermission> permissions = _homeOwnerService.GetHomePermissions(Guid.Parse(homesId), userLoggedIn!.Id);
+        return GetHomePermissionsResponse.FromHomePermissions(homesId, permissions);
+    }
+
+    [HttpPatch("{homesId}/name")]
+    [HomeAuthorizationFilter(HomePermission.NameHome)]
+    [AuthorizationFilter(SystemPermission.NameHome)]
+    public NameHomeResponse NameHome([FromRoute] string homesId, [FromBody] NameHomeRequest request)
+    {
+        var userLoggedIn = HttpContext.Items[Item.UserLogged] as User;
+        _homeOwnerService.NameHome(request.ToArgs(homesId, userLoggedIn!));
+        return new NameHomeResponse { HomeId = homesId };
+    }
+
+    [HttpGet("{homesId}")]
+    [HomeAuthorizationFilter(HomePermission.GetHome)]
+    [AuthorizationFilter(SystemPermission.GetHomes)]
+    public GetHomeResponse GetHome([FromRoute] string homesId)
+    {
+        Home home = _homeOwnerService.GetHome(Guid.Parse(homesId));
+        return GetHomeResponse.FromHome(home);
+    }
+
     [HttpPost]
     [AuthorizationFilter(SystemPermission.CreateHome)]
     public CreateHomeResponse CreateHome([FromBody] CreateHomeRequest request)
     {
-        var userLoggedIn = HttpContext.Items[Item.UserLogged];
-        CreateHomeArgs createHomeArgs = HomeArgsFromRequest(request, (User)userLoggedIn!);
-        Guid homeId = homeOwnerService.CreateHome(createHomeArgs);
+        var userLoggedIn = HttpContext.Items[Item.UserLogged] as User;
+        Guid homeId = _homeOwnerService.CreateHome(request.ToArgs(userLoggedIn!));
         return new CreateHomeResponse { Id = homeId.ToString() };
     }
 
@@ -30,28 +73,8 @@ public class HomeController(IHomeOwnerService homeOwnerService) : ControllerBase
     [HomeAuthorizationFilter(HomePermission.AddMember)]
     public AddMemberResponse AddMember([FromRoute] string homesId, [FromBody] AddMemberRequest request)
     {
-        var addMemberArgs = new AddMemberArgs
-        {
-            HomeId = homesId,
-            UserId = request.MemberId ?? string.Empty,
-            CanAddDevices = request.CanAddDevices,
-            CanListDevices = request.CanListDevices
-        };
-        Guid addedMemberId = homeOwnerService.AddMemberToHome(addMemberArgs);
+        Guid addedMemberId = _homeOwnerService.AddMemberToHome(request.ToArgs(homesId));
         return new AddMemberResponse { HomeId = homesId, MemberId = addedMemberId.ToString() };
-    }
-
-    private CreateHomeArgs HomeArgsFromRequest(CreateHomeRequest request, User user)
-    {
-        var homeArgs = new CreateHomeArgs
-        {
-            HomeOwnerId = user.Id.ToString(),
-            Address = request.Address ?? string.Empty,
-            Latitude = request.Latitude,
-            Longitude = request.Longitude,
-            MaxMembers = request.MaxMembers
-        };
-        return homeArgs;
     }
 
     [HttpGet("{homesId}/members")]
@@ -59,38 +82,17 @@ public class HomeController(IHomeOwnerService homeOwnerService) : ControllerBase
     [HomeAuthorizationFilter(HomePermission.GetMembers)]
     public GetMembersResponse GetMembers([FromRoute] string homesId)
     {
-        List<Member> members = homeOwnerService.GetHomeMembers(homesId);
-        var memberInfos = members.Select(m => new ListMemberInfo
-        {
-            Id = m.User.Id.ToString(),
-            Name = m.User.Name,
-            Surname = m.User.Surname,
-            Photo = m.User.ProfilePicture ?? string.Empty,
-            CanAddDevices = m.HasPermission(new HomePermission(HomePermission.AddDevice)),
-            CanListDevices =
-                m.HasPermission(new HomePermission(HomePermission.GetDevices)),
-            ShouldBeNotified =
-                m.HasPermission(new HomePermission(HomePermission.GetNotifications))
-        }).ToList();
-        return new GetMembersResponse { Members = memberInfos };
+        List<Member> members = _homeOwnerService.GetHomeMembers(homesId);
+        return GetMembersResponse.FromMembers(members);
     }
 
     [HttpGet("{homesId}/devices")]
     [AuthorizationFilter(SystemPermission.GetDevices)]
     [HomeAuthorizationFilter(HomePermission.GetDevices)]
-    public GetDevicesResponse GetDevices([FromRoute] string homesId)
+    public GetHomeDevicesResponse GetDevices([FromRoute] string homesId, [FromQuery] string? roomId = null)
     {
-        IEnumerable<OwnedDevice> devices = homeOwnerService.GetHomeDevices(homesId);
-        var deviceInfos = devices.Select(d => new ListDeviceInfo
-        {
-            HardwareId = d.HardwareId.ToString(),
-            Name = d.Device.Name,
-            BusinessName = d.Device.Business.Name,
-            Type = d.Device.Type.ToString(),
-            ModelNumber = d.Device.ModelNumber,
-            Photo = d.Device.MainPhoto
-        }).ToList();
-        return new GetDevicesResponse { Devices = deviceInfos };
+        IEnumerable<OwnedDevice> devices = _homeOwnerService.GetHomeDevices(homesId, roomId);
+        return GetHomeDevicesResponse.FromDevices(devices);
     }
 
     [HttpPost("{homesId}/devices")]
@@ -98,14 +100,23 @@ public class HomeController(IHomeOwnerService homeOwnerService) : ControllerBase
     [HomeAuthorizationFilter(HomePermission.AddDevice)]
     public AddDevicesResponse AddDevices([FromRoute] string homesId, [FromBody] AddDevicesRequest request)
     {
-        AddDevicesArgs addDevicesArgs = FromRequestToAddDevicesArgs(homesId, request);
-        homeOwnerService.AddDeviceToHome(addDevicesArgs);
+        _homeOwnerService.AddDeviceToHome(request.ToArgs(homesId));
         return new AddDevicesResponse { HomeId = homesId, DeviceIds = request.DeviceIds! };
     }
 
-    private static AddDevicesArgs FromRequestToAddDevicesArgs(string homesId, AddDevicesRequest request)
+    [HttpPost("{homesId}/rooms")]
+    [AuthorizationFilter(SystemPermission.CreateRoom)]
+    [HomeAuthorizationFilter(HomePermission.CreateRoom)]
+    public CreateRoomResponse CreateRoom([FromRoute] string homesId, [FromBody] CreateRoomRequest request)
     {
-        var addDevicesArgs = new AddDevicesArgs { HomeId = homesId, DeviceIds = request.DeviceIds ?? [] };
-        return addDevicesArgs;
+        Room room = _homeOwnerService.CreateRoom(homesId, request.Name ?? string.Empty);
+        return new CreateRoomResponse { RoomId = room.Id.ToString() };
+    }
+
+    [HttpGet("{homesId}/rooms")]
+    public GetRoomsResponse GetRooms([FromRoute] string homesId)
+    {
+        IEnumerable<Room> rooms = _homeOwnerService.GetRoomsByHomeId(homesId);
+        return GetRoomsResponse.FromRooms(rooms);
     }
 }

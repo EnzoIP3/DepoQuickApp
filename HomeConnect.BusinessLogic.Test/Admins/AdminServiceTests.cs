@@ -1,9 +1,9 @@
 using BusinessLogic;
+using BusinessLogic.Admins.Models;
 using BusinessLogic.Admins.Services;
 using BusinessLogic.BusinessOwners.Entities;
 using BusinessLogic.BusinessOwners.Repositories;
 using BusinessLogic.Roles.Entities;
-using BusinessLogic.Roles.Repositories;
 using BusinessLogic.Users.Entities;
 using BusinessLogic.Users.Models;
 using BusinessLogic.Users.Repositories;
@@ -31,7 +31,6 @@ public sealed class AdminServiceTests
     private Mock<IBusinessRepository> _businessRepository = null!;
     private User _otherOwner = null!;
     private User _owner = null!;
-    private Mock<IRoleRepository> _roleRepository = null!;
     private Mock<IUserRepository> _userRepository = null!;
 
     private User _validUser = null!;
@@ -41,8 +40,7 @@ public sealed class AdminServiceTests
     {
         _userRepository = new Mock<IUserRepository>(MockBehavior.Strict);
         _businessRepository = new Mock<IBusinessRepository>(MockBehavior.Strict);
-        _roleRepository = new Mock<IRoleRepository>(MockBehavior.Strict);
-        _adminService = new AdminService(_userRepository.Object, _businessRepository.Object, _roleRepository.Object);
+        _adminService = new AdminService(_userRepository.Object, _businessRepository.Object);
         var adminRole = new Role("Admin", []);
         var businessOwnerRole = new Role("Business Owner", []);
         _validUser = new User(_validCreateUserArgs.Name,
@@ -85,6 +83,30 @@ public sealed class AdminServiceTests
         act.Should().Throw<ArgumentException>().WithMessage("The id is not a valid GUID.");
     }
 
+    [TestMethod]
+    public void Delete_WhenOnlyOneAdminExists_ThrowsException()
+    {
+        // Arrange
+        var id = Guid.NewGuid();
+        var args = new FilterArgs { RoleFilter = "Admin" };
+        _userRepository.Setup(x => x.Exists(id)).Returns(true);
+        _userRepository.Setup(x => x.GetPaged(It.IsAny<FilterArgs>())).Returns(
+            new PagedData<User>
+            {
+                Data = [_validUser],
+                Page = _defaultCurrentPage,
+                PageSize = _defaultPageSize,
+                TotalPages = 1
+            });
+
+        // Act
+        Action act = () => _adminService.DeleteAdmin(id.ToString());
+
+        // Assert
+        act.Should().Throw<InvalidOperationException>().WithMessage("The last admin cannot be deleted");
+        _userRepository.Verify(x => x.GetPaged(It.Is<FilterArgs>(a => a.RoleFilter == "Admin")));
+    }
+
     #endregion
 
     #region Success
@@ -94,14 +116,25 @@ public sealed class AdminServiceTests
     {
         // Arrange
         var id = Guid.NewGuid();
-        _userRepository.Setup(x => x.Exists(It.IsAny<Guid>())).Returns(true);
-        _userRepository.Setup(x => x.Delete(It.IsAny<Guid>()));
+        var args = new FilterArgs { CurrentPage = 1, PageSize = 1, RoleFilter = "Admin" };
+        _userRepository.Setup(x => x.Exists(id)).Returns(true);
+        _userRepository.Setup(x => x.Delete(id));
+        _userRepository.Setup(x => x.GetPaged(It.IsAny<FilterArgs>())).Returns(
+            new PagedData<User>
+            {
+                Data = [_validUser, _otherOwner],
+                Page = _defaultCurrentPage,
+                PageSize = _defaultPageSize,
+                TotalPages = 2
+            });
 
         // Act
         _adminService.DeleteAdmin(id.ToString());
 
         // Assert
         _userRepository.Verify(x => x.Delete(It.Is<Guid>(a => a == id)));
+        _userRepository.Verify(x =>
+            x.GetPaged(It.Is<FilterArgs>(a => a.PageSize == 1 && a.CurrentPage == 1 && a.RoleFilter == "Admin")));
     }
 
     #endregion
@@ -124,18 +157,17 @@ public sealed class AdminServiceTests
             PageSize = _defaultPageSize,
             TotalPages = 1
         };
-        _userRepository.Setup(x => x.GetPaged(_defaultCurrentPage, _defaultPageSize, null, null)).Returns(pagedList);
+        var args = new FilterArgs { CurrentPage = _defaultCurrentPage, PageSize = _defaultPageSize };
+        _userRepository.Setup(x => x.GetPaged(args)).Returns(pagedList);
 
         // Act
-        PagedData<User> result = _adminService.GetUsers(_defaultCurrentPage, _defaultPageSize);
+        PagedData<User> result =
+            _adminService.GetUsers(new GetUsersArgs { CurrentPage = _defaultCurrentPage, PageSize = _defaultPageSize });
 
         // Assert
         result.Should().BeEquivalentTo(pagedList, options => options.ComparingByMembers<PagedData<User>>());
         _userRepository.Verify(x => x.GetPaged(
-            It.Is<int>(a => a == _defaultCurrentPage),
-            It.Is<int>(a => a == _defaultPageSize),
-            It.Is<string>(a => true),
-            It.Is<string>(a => true)));
+            It.Is<FilterArgs>(a => a.FullNameFilter == null && a.RoleFilter == null)));
     }
 
     [TestMethod]
@@ -150,18 +182,16 @@ public sealed class AdminServiceTests
             PageSize = _defaultPageSize,
             TotalPages = 1
         };
-        _userRepository.Setup(x => x.GetPaged(_defaultCurrentPage, _defaultPageSize, null, null)).Returns(pagedList);
+        var args = new FilterArgs();
+        _userRepository.Setup(x => x.GetPaged(args)).Returns(pagedList);
 
         // Act
-        PagedData<User> result = _adminService.GetUsers();
+        PagedData<User> result = _adminService.GetUsers(new GetUsersArgs());
 
         // Assert
         result.Should().BeEquivalentTo(pagedList, options => options.ComparingByMembers<PagedData<User>>());
         _userRepository.Verify(x => x.GetPaged(
-            It.Is<int>(a => a == _defaultCurrentPage),
-            It.Is<int>(a => a == _defaultPageSize),
-            It.Is<string>(a => true),
-            It.Is<string>(a => true)));
+            It.Is<FilterArgs>(a => a.FullNameFilter == null && a.RoleFilter == null)));
     }
 
     [TestMethod]
@@ -177,19 +207,17 @@ public sealed class AdminServiceTests
             PageSize = _defaultPageSize,
             TotalPages = 1
         };
-        _userRepository.Setup(x => x.GetPaged(_defaultCurrentPage, _defaultPageSize, filter, null))
+        var args = new FilterArgs { CurrentPage = _defaultCurrentPage, PageSize = _defaultPageSize, FullNameFilter = filter };
+        _userRepository.Setup(x => x.GetPaged(args))
             .Returns(pagedList);
 
         // Act
-        PagedData<User> result = _adminService.GetUsers(fullNameFilter: filter);
+        PagedData<User> result = _adminService.GetUsers(new GetUsersArgs { FullNameFilter = filter });
 
         // Assert
         result.Should().BeEquivalentTo(pagedList, options => options.ComparingByMembers<PagedData<User>>());
         _userRepository.Verify(x => x.GetPaged(
-            It.Is<int>(a => a == _defaultCurrentPage),
-            It.Is<int>(a => a == _defaultPageSize),
-            It.Is<string>(a => a == filter),
-            It.Is<string>(a => true)));
+            It.Is<FilterArgs>(a => a.FullNameFilter == filter && a.RoleFilter == null)));
     }
 
     [TestMethod]
@@ -205,19 +233,17 @@ public sealed class AdminServiceTests
             PageSize = _defaultPageSize,
             TotalPages = 1
         };
-        _userRepository.Setup(x => x.GetPaged(_defaultCurrentPage, _defaultPageSize, null, filter))
+        var args = new FilterArgs { CurrentPage = _defaultCurrentPage, PageSize = _defaultPageSize, RoleFilter = filter };
+        _userRepository.Setup(x => x.GetPaged(args))
             .Returns(pagedList);
 
         // Act
-        PagedData<User> result = _adminService.GetUsers(roleFilter: filter);
+        PagedData<User> result = _adminService.GetUsers(new GetUsersArgs { RoleFilter = filter });
 
         // Assert
         result.Should().BeEquivalentTo(pagedList, options => options.ComparingByMembers<PagedData<User>>());
         _userRepository.Verify(x => x.GetPaged(
-            It.Is<int>(a => a == _defaultCurrentPage),
-            It.Is<int>(a => a == _defaultPageSize),
-            It.Is<string>(a => true),
-            It.Is<string>(a => a == filter)));
+            It.Is<FilterArgs>(a => a.FullNameFilter == null && a.RoleFilter == filter)));
     }
 
     #endregion
@@ -242,19 +268,22 @@ public sealed class AdminServiceTests
             PageSize = _defaultPageSize,
             TotalPages = 1
         };
-        _businessRepository.Setup(x => x.GetPaged(_defaultCurrentPage, _defaultPageSize, null, null))
+        var filterArgs = new FilterArgs { CurrentPage = _defaultCurrentPage, PageSize = _defaultPageSize };
+        _businessRepository.Setup(x => x.GetPaged(filterArgs))
             .Returns(pagedList);
 
         // Act
-        PagedData<Business> result = _adminService.GetBusinesses(_defaultCurrentPage, _defaultPageSize);
+        PagedData<Business> result =
+            _adminService.GetBusinesses(new GetBusinessesArgs
+            {
+                CurrentPage = _defaultCurrentPage,
+                PageSize = _defaultPageSize
+            });
 
         // Assert
         result.Should().BeEquivalentTo(pagedList, options => options.ComparingByMembers<PagedData<Business>>());
         _businessRepository.Verify(x => x.GetPaged(
-            It.Is<int>(a => a == _defaultCurrentPage),
-            It.Is<int>(a => a == _defaultPageSize),
-            It.Is<string>(a => true),
-            It.Is<string>(a => true)));
+            It.Is<FilterArgs>(a => a.FullNameFilter == null && a.NameFilter == null)));
     }
 
     [TestMethod]
@@ -273,19 +302,17 @@ public sealed class AdminServiceTests
             PageSize = _defaultPageSize,
             TotalPages = 1
         };
-        _businessRepository.Setup(x => x.GetPaged(_defaultCurrentPage, _defaultPageSize, null, null))
+        var filterArgs = new FilterArgs { CurrentPage = _defaultCurrentPage, PageSize = _defaultPageSize };
+        _businessRepository.Setup(x => x.GetPaged(filterArgs))
             .Returns(pagedList);
 
         // Act
-        PagedData<Business> result = _adminService.GetBusinesses();
+        PagedData<Business> result = _adminService.GetBusinesses(new GetBusinessesArgs());
 
         // Assert
         result.Should().BeEquivalentTo(pagedList, options => options.ComparingByMembers<PagedData<Business>>());
         _businessRepository.Verify(x => x.GetPaged(
-            It.Is<int>(a => a == _defaultCurrentPage),
-            It.Is<int>(a => a == _defaultPageSize),
-            It.Is<string>(a => true),
-            It.Is<string>(a => true)));
+            It.Is<FilterArgs>(a => a.FullNameFilter == null && a.NameFilter == null)));
     }
 
     [TestMethod]
@@ -305,19 +332,22 @@ public sealed class AdminServiceTests
             PageSize = _defaultPageSize,
             TotalPages = 1
         };
-        _businessRepository.Setup(x => x.GetPaged(_defaultCurrentPage, _defaultPageSize, filter, null))
+        var filterArgs = new FilterArgs
+        {
+            CurrentPage = _defaultCurrentPage,
+            PageSize = _defaultPageSize,
+            FullNameFilter = filter
+        };
+        _businessRepository.Setup(x => x.GetPaged(filterArgs))
             .Returns(pagedList);
 
         // Act
-        PagedData<Business> result = _adminService.GetBusinesses(fullNameFilter: filter);
+        PagedData<Business> result = _adminService.GetBusinesses(new GetBusinessesArgs { FullNameFilter = filter });
 
         // Assert
         result.Should().BeEquivalentTo(pagedList, options => options.ComparingByMembers<PagedData<Business>>());
         _businessRepository.Verify(x => x.GetPaged(
-            It.Is<int>(a => a == _defaultCurrentPage),
-            It.Is<int>(a => a == _defaultPageSize),
-            It.Is<string>(a => a == filter),
-            It.Is<string>(a => true)));
+            It.Is<FilterArgs>(a => a.FullNameFilter == filter && a.NameFilter == null)));
     }
 
     [TestMethod]
@@ -337,19 +367,22 @@ public sealed class AdminServiceTests
             PageSize = _defaultPageSize,
             TotalPages = 1
         };
-        _businessRepository.Setup(x => x.GetPaged(_defaultCurrentPage, _defaultPageSize, null, filter))
+        var filterArgs = new FilterArgs
+        {
+            CurrentPage = _defaultCurrentPage,
+            PageSize = _defaultPageSize,
+            NameFilter = filter
+        };
+        _businessRepository.Setup(x => x.GetPaged(filterArgs))
             .Returns(pagedList);
 
         // Act
-        PagedData<Business> result = _adminService.GetBusinesses(nameFilter: filter);
+        PagedData<Business> result = _adminService.GetBusinesses(new GetBusinessesArgs { NameFilter = filter });
 
         // Assert
         result.Should().BeEquivalentTo(pagedList, options => options.ComparingByMembers<PagedData<Business>>());
         _businessRepository.Verify(x => x.GetPaged(
-            It.Is<int>(a => a == _defaultCurrentPage),
-            It.Is<int>(a => a == _defaultPageSize),
-            It.Is<string>(a => true),
-            It.Is<string>(a => a == filter)));
+            It.Is<FilterArgs>(a => a.FullNameFilter == null && a.NameFilter == filter)));
     }
 
     #endregion

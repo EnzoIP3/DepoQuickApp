@@ -6,7 +6,6 @@ using BusinessLogic.Devices.Services;
 using BusinessLogic.Notifications.Models;
 using BusinessLogic.Notifications.Services;
 using BusinessLogic.Users.Entities;
-using BusinessLogic.Users.Services;
 using FluentAssertions;
 using HomeConnect.WebApi.Controllers.Cameras;
 using HomeConnect.WebApi.Controllers.Cameras.Models;
@@ -21,24 +20,20 @@ public class CameraControllerTests
 {
     private Mock<IBusinessOwnerService> _businessOwnerService = null!;
     private CameraController _cameraController = null!;
-    private Mock<IDeviceService> _deviceServiceMock = null!;
-    private Mock<HttpContext> _httpContextMock = null!;
-    private Mock<INotificationService> _notificationServiceMock = null!;
-    private Mock<IUserService> _userService = null!;
+    private Mock<IDeviceService> _deviceService = null!;
+    private Mock<HttpContext> _httpContext = null!;
+    private Mock<INotificationService> _notificationService = null!;
 
     [TestInitialize]
     public void TestInitialize()
     {
-        _httpContextMock = new Mock<HttpContext>();
-        _deviceServiceMock = new Mock<IDeviceService>();
-        _notificationServiceMock = new Mock<INotificationService>();
+        _httpContext = new Mock<HttpContext>();
+        _deviceService = new Mock<IDeviceService>();
+        _notificationService = new Mock<INotificationService>();
         _businessOwnerService = new Mock<IBusinessOwnerService>();
-        _userService = new Mock<IUserService>();
-        _cameraController = new CameraController(_notificationServiceMock.Object, _deviceServiceMock.Object,
-            _businessOwnerService.Object, _userService.Object)
-        {
-            ControllerContext = { HttpContext = _httpContextMock.Object }
-        };
+        _cameraController = new CameraController(_notificationService.Object, _deviceService.Object,
+            _businessOwnerService.Object)
+        { ControllerContext = { HttpContext = _httpContext.Object } };
     }
 
     #region CreateCamera
@@ -48,7 +43,7 @@ public class CameraControllerTests
     {
         // Arrange
         var user = new User();
-        var camera = new Camera("Name", 123, "Description", "https://example.com/photo.png", [],
+        var camera = new Camera("Name", "123", "Description", "https://example.com/photo.png", [],
             new Business(), true, true,
             true,
             true);
@@ -60,7 +55,7 @@ public class CameraControllerTests
             Exterior = true,
             Interior = true,
             MainPhoto = "MainPhoto",
-            ModelNumber = 123,
+            ModelNumber = "123",
             MotionDetection = true,
             PersonDetection = true,
             SecondaryPhotos = []
@@ -79,7 +74,7 @@ public class CameraControllerTests
         };
         _businessOwnerService.Setup(x => x.CreateCamera(cameraArgs)).Returns(camera);
         var items = new Dictionary<object, object?> { { Item.UserLogged, user } };
-        _httpContextMock.Setup(h => h.Items).Returns(items);
+        _httpContext.Setup(h => h.Items).Returns(items);
 
         // Act
         CreateCameraResponse response = _cameraController.CreateCamera(cameraRequest);
@@ -99,9 +94,9 @@ public class CameraControllerTests
     {
         // Arrange
         var hardwareId = "hardwareId";
-        var args = new NotificationArgs { HardwareId = hardwareId, Date = DateTime.Now, Event = "movement-detected" };
-        _deviceServiceMock.Setup(x => x.IsConnected(hardwareId)).Returns(true);
-        _notificationServiceMock.Setup(x => x.Notify(args));
+        var args = new NotificationArgs { HardwareId = hardwareId, Date = DateTime.Now, Event = "Movement detected" };
+        _deviceService.Setup(x => x.IsConnected(hardwareId)).Returns(true);
+        _notificationService.Setup(x => x.Notify(args));
 
         // Act
         NotifyResponse result = _cameraController.MovementDetected(hardwareId);
@@ -109,22 +104,6 @@ public class CameraControllerTests
         // Assert
         result.Should().NotBeNull();
         result.HardwareId.Should().Be(hardwareId);
-    }
-
-    [TestMethod]
-    public void MovementDetected_WhenCameraIsDisconnected_ThrowsArgumentException()
-    {
-        // Arrange
-        var hardwareId = "hardwareId";
-        var args = new NotificationArgs { HardwareId = hardwareId, Date = DateTime.Now, Event = "movement-detected" };
-        _deviceServiceMock.Setup(x => x.IsConnected(hardwareId)).Returns(false);
-
-        // Act
-        Func<NotifyResponse> act = () => _cameraController.MovementDetected(hardwareId);
-
-        // Assert
-        act.Should().Throw<ArgumentException>().WithMessage("Device is not connected");
-        _deviceServiceMock.VerifyAll();
     }
 
     #endregion
@@ -136,16 +115,15 @@ public class CameraControllerTests
     {
         // Arrange
         var hardwareId = "hardwareId";
-        var request = new PersonDetectedRequest { UserId = "userId" };
+        var request = new PersonDetectedRequest { UserEmail = "email@example.com" };
         var args = new NotificationArgs
         {
             HardwareId = hardwareId,
             Date = DateTime.Now,
-            Event = $"person detected with id: {request.UserId}"
+            Event = $"Person detected with email: {request.UserEmail}"
         };
-        _deviceServiceMock.Setup(x => x.IsConnected(hardwareId)).Returns(true);
-        _notificationServiceMock.Setup(x => x.Notify(args));
-        _userService.Setup(x => x.Exists(request.UserId)).Returns(true);
+        _deviceService.Setup(x => x.IsConnected(hardwareId)).Returns(true);
+        _notificationService.Setup(x => x.Notify(args));
 
         // Act
         NotifyResponse result = _cameraController.PersonDetected(hardwareId, request);
@@ -155,49 +133,36 @@ public class CameraControllerTests
         result.HardwareId.Should().Be(hardwareId);
     }
 
-    [TestMethod]
-    public void PersonDetected_WhenDetectedPersonIsNotRegistered_ThrowsArgumentException()
-    {
-        // Arrange
-        var hardwareId = "hardwareId";
-        var request = new PersonDetectedRequest { UserId = "userId" };
-        var args = new NotificationArgs
-        {
-            HardwareId = hardwareId,
-            Date = DateTime.Now,
-            Event = $"person detected with id: {request.UserId}"
-        };
-        _deviceServiceMock.Setup(x => x.IsConnected(hardwareId)).Returns(true);
-        _notificationServiceMock.Setup(x => x.Notify(args)).Throws<ArgumentException>();
-        _userService.Setup(x => x.Exists(request.UserId)).Returns(false);
+    #endregion
 
-        // Act
-        Func<NotifyResponse> act = () => _cameraController.PersonDetected(hardwareId, request);
-
-        // Assert
-        act.Should().Throw<ArgumentException>().WithMessage("User detected by camera is not found");
-    }
+    #region GetCamera
 
     [TestMethod]
-    public void PersonDetected_WhenCameraIsDisconnected_ThrowsArgumentException()
+    public void GetCamera_WithCameraId_ReturnsGetCameraResponse()
     {
         // Arrange
-        var hardwareId = "hardwareId";
-        var request = new PersonDetectedRequest { UserId = "userId" };
-        var args = new NotificationArgs
-        {
-            HardwareId = hardwareId,
-            Date = DateTime.Now,
-            Event = $"person detected with id: {request.UserId}"
-        };
-        _deviceServiceMock.Setup(x => x.IsConnected(hardwareId)).Returns(false);
+        var cameraId = "cameraId";
+        var camera = new Camera("Name", "123", "Description", "https://example.com/photo.png", [],
+            new Business(), true, true,
+            true,
+            true);
+        _deviceService.Setup(x => x.GetCameraById(cameraId)).Returns(camera);
 
         // Act
-        Func<NotifyResponse> act = () => _cameraController.PersonDetected(hardwareId, request);
+        GetCameraResponse result = _cameraController.GetCamera(cameraId);
 
         // Assert
-        act.Should().Throw<ArgumentException>().WithMessage("Device is not connected");
-        _deviceServiceMock.VerifyAll();
+        result.Should().NotBeNull();
+        result.Id.Should().Be(camera.Id.ToString());
+        result.Name.Should().Be(camera.Name);
+        result.Description.Should().Be(camera.Description);
+        result.Exterior.Should().Be(camera.IsExterior);
+        result.Interior.Should().Be(camera.IsInterior);
+        result.MainPhoto.Should().Be(camera.MainPhoto);
+        result.ModelNumber.Should().Be(camera.ModelNumber);
+        result.MotionDetection.Should().Be(camera.MotionDetection);
+        result.PersonDetection.Should().Be(camera.PersonDetection);
+        result.SecondaryPhotos.Should().BeEquivalentTo(camera.SecondaryPhotos);
     }
 
     #endregion

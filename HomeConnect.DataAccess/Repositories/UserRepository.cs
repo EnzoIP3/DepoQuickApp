@@ -1,6 +1,7 @@
 using BusinessLogic;
 using BusinessLogic.Users.Entities;
 using BusinessLogic.Users.Repositories;
+using Microsoft.EntityFrameworkCore;
 
 namespace HomeConnect.DataAccess.Repositories;
 
@@ -14,13 +15,12 @@ public class UserRepository : PaginatedRepositoryBase<User>, IUserRepository
         _context = context;
     }
 
-    public PagedData<User> GetPaged(int currentPage, int pageSize, string? fullNameFilter = null,
-        string? roleFilter = null)
+    public PagedData<User> GetPaged(FilterArgs args)
     {
         var filters = new object[2];
-        filters[0] = fullNameFilter ?? string.Empty;
-        filters[1] = roleFilter ?? string.Empty;
-        return GetAllPaged(currentPage, pageSize, filters);
+        filters[0] = args.FullNameFilter ?? string.Empty;
+        filters[1] = args.RoleFilter ?? string.Empty;
+        return GetAllPaged(args.CurrentPage, args.PageSize, filters);
     }
 
     public User GetByEmail(string email)
@@ -53,12 +53,18 @@ public class UserRepository : PaginatedRepositoryBase<User>, IUserRepository
 
     public User Get(Guid id)
     {
-        return _context.Users.First(u => u.Id == id);
+        return _context.Users.Include(u => u.Roles).ThenInclude(u => u.Permissions).First(u => u.Id == id);
+    }
+
+    public void Update(User user)
+    {
+        _context.Users.Update(user);
+        _context.SaveChanges();
     }
 
     protected override IQueryable<User> GetQueryable()
     {
-        return _context.Users;
+        return _context.Users.Include(u => u.Roles);
     }
 
     protected override IQueryable<User> ApplyFilters(IQueryable<User> query, params object[] filters)
@@ -76,7 +82,7 @@ public class UserRepository : PaginatedRepositoryBase<User>, IUserRepository
     {
         if (!string.IsNullOrEmpty(roleFilter))
         {
-            query = query.Where(u => u.Role.Name == roleFilter);
+            query = query.Where(u => u.Roles.Any(r => r.Name.Contains(roleFilter)));
         }
 
         return query;

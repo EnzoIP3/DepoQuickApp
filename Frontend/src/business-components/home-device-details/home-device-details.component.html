@@ -1,0 +1,4 @@
+<ng-container *ngIf="device">
+    <app-list [items]="getExtraFields(device)" />
+    <ng-content></ng-content>
+</ng-container>

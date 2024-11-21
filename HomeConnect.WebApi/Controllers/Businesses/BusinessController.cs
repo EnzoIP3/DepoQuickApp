@@ -1,8 +1,8 @@
 using BusinessLogic;
 using BusinessLogic.Admins.Services;
 using BusinessLogic.BusinessOwners.Entities;
-using BusinessLogic.BusinessOwners.Models;
 using BusinessLogic.BusinessOwners.Services;
+using BusinessLogic.Devices.Entities;
 using BusinessLogic.Roles.Entities;
 using BusinessLogic.Users.Entities;
 using HomeConnect.WebApi.Controllers.Businesses.Models;
@@ -14,16 +14,24 @@ namespace HomeConnect.WebApi.Controllers.Businesses;
 [ApiController]
 [Route("businesses")]
 [AuthenticationFilter]
-public class BusinessController(IAdminService adminService, IBusinessOwnerService businessOwnerService) : ControllerBase
+public sealed class BusinessController : ControllerBase
 {
+    private readonly IAdminService _adminService;
+    private readonly IBusinessOwnerService _businessOwnerService;
+
+    public BusinessController(IAdminService adminService, IBusinessOwnerService businessOwnerService)
+    {
+        _adminService = adminService;
+        _businessOwnerService = businessOwnerService;
+    }
+
     [HttpGet]
     [AuthorizationFilter(SystemPermission.GetAllBusinesses)]
     public GetBusinessesResponse GetBusinesses([FromQuery] GetBusinessesRequest request)
     {
         PagedData<Business> businesses =
-            adminService.GetBusinesses(request.CurrentPage, request.PageSize, request.Name, request.OwnerName);
-        GetBusinessesResponse response = ResponseFromBusinesses(businesses);
-        return response;
+            _adminService.GetBusinesses(request.ToGetBusinessesArgs());
+        return GetBusinessesResponse.FromBusinesses(businesses);
     }
 
     [HttpPost]
@@ -31,36 +39,26 @@ public class BusinessController(IAdminService adminService, IBusinessOwnerServic
     public CreateBusinessResponse CreateBusiness([FromBody] CreateBusinessRequest request)
     {
         var userLoggedIn = HttpContext.Items[Item.UserLogged] as User;
-        var args = new CreateBusinessArgs
-        {
-            Name = request.Name ?? string.Empty,
-            Logo = request.Logo ?? string.Empty,
-            OwnerId = userLoggedIn?.Id.ToString() ?? string.Empty,
-            Rut = request.Rut ?? string.Empty
-        };
-        Business business = businessOwnerService.CreateBusiness(args);
+        Business business = _businessOwnerService.CreateBusiness(request.ToCreateBusinessArgs(userLoggedIn));
         return new CreateBusinessResponse { Rut = business.Rut };
     }
 
-    private static GetBusinessesResponse ResponseFromBusinesses(
-        PagedData<Business> businesses)
+    [HttpPatch("{businessId}/validator")]
+    [AuthorizationFilter(SystemPermission.UpdateBusinessValidator)]
+    public UpdateValidatorResponse UpdateValidator(string businessId, [FromBody] UpdateValidatorRequest request)
     {
-        return new GetBusinessesResponse
-        {
-            Businesses = businesses.Data.Select(b => new ListBusinessInfo
-            {
-                Name = b.Name,
-                OwnerEmail = b.Owner.Email,
-                OwnerName = b.Owner.Name,
-                OwnerSurname = b.Owner.Surname,
-                Rut = b.Rut
-            }).ToList(),
-            Pagination = new Pagination
-            {
-                Page = businesses.Page,
-                PageSize = businesses.PageSize,
-                TotalPages = businesses.TotalPages
-            }
-        };
+        var userLoggedIn = HttpContext.Items[Item.UserLogged] as User;
+        _businessOwnerService.UpdateValidator(request.ToUpdateValidatorArgs(businessId, userLoggedIn));
+        return new UpdateValidatorResponse { BusinessRut = businessId, Validator = request.Validator! };
+    }
+
+    [HttpGet("{businessId}/devices")]
+    [AuthorizationFilter(SystemPermission.GetBusinessDevices)]
+    public GetBusinessDevicesResponse GetDevices(string businessId, [FromQuery] GetBusinessDevicesRequest request)
+    {
+        var userLoggedIn = HttpContext.Items[Item.UserLogged] as User;
+        PagedData<Device> devices =
+            _businessOwnerService.GetDevices(request.ToGetBusinessDevicesArgs(businessId, userLoggedIn));
+        return GetBusinessDevicesResponse.FromDevices(devices);
     }
 }

@@ -1,0 +1,9 @@
+<app-dropdown
+    [loading]="loading"
+    [options]="rooms"
+    placeholder="Select Room"
+    (change)="onRoomChange($event)"
+    optionLabel="name"
+    optionValue="id"
+    [value]="roomId"
+></app-dropdown>

@@ -15,6 +15,16 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "HomeConnect.DataAccess.Test
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "HomeConnect.WebApi.Test", "HomeConnect.WebApi.Test\HomeConnect.WebApi.Test.csproj", "{E4AD541B-3542-4675-8464-49D574409357}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ModelValidator", "ModelValidator\ModelValidator.csproj", "{152C3A29-20AD-4537-8DF7-34EA7FE95690}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SixLettersValidator", "SixLettersValidator\SixLettersValidator.csproj", "{B1F7BD5E-EA46-43B2-B9CC-5B15D8B228C4}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SixCharacters3Letters3NumbersValidator", "SixCharacters3Letters3NumbersValidator\SixCharacters3Letters3NumbersValidator.csproj", "{31C565FF-8761-4297-8C9D-EB74D64D3842}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "JsonImporter", "JsonImporter\JsonImporter.csproj", "{8A3417A6-F108-47D1-8237-0BEE4FB49B66}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "HomeConnect.DeviceImporter", "HomeConnect.DeviceImporter\HomeConnect.DeviceImporter.csproj", "{170BCAC8-7F1A-4E17-B37E-7547D8A3AA92}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -48,5 +58,25 @@ Global
 		{E4AD541B-3542-4675-8464-49D574409357}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{E4AD541B-3542-4675-8464-49D574409357}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{E4AD541B-3542-4675-8464-49D574409357}.Release|Any CPU.Build.0 = Release|Any CPU
+		{152C3A29-20AD-4537-8DF7-34EA7FE95690}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{152C3A29-20AD-4537-8DF7-34EA7FE95690}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{152C3A29-20AD-4537-8DF7-34EA7FE95690}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{152C3A29-20AD-4537-8DF7-34EA7FE95690}.Release|Any CPU.Build.0 = Release|Any CPU
+		{B1F7BD5E-EA46-43B2-B9CC-5B15D8B228C4}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{B1F7BD5E-EA46-43B2-B9CC-5B15D8B228C4}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{B1F7BD5E-EA46-43B2-B9CC-5B15D8B228C4}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{B1F7BD5E-EA46-43B2-B9CC-5B15D8B228C4}.Release|Any CPU.Build.0 = Release|Any CPU
+		{31C565FF-8761-4297-8C9D-EB74D64D3842}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{31C565FF-8761-4297-8C9D-EB74D64D3842}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{31C565FF-8761-4297-8C9D-EB74D64D3842}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{31C565FF-8761-4297-8C9D-EB74D64D3842}.Release|Any CPU.Build.0 = Release|Any CPU
+		{8A3417A6-F108-47D1-8237-0BEE4FB49B66}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{8A3417A6-F108-47D1-8237-0BEE4FB49B66}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{8A3417A6-F108-47D1-8237-0BEE4FB49B66}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{8A3417A6-F108-47D1-8237-0BEE4FB49B66}.Release|Any CPU.Build.0 = Release|Any CPU
+		{170BCAC8-7F1A-4E17-B37E-7547D8A3AA92}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{170BCAC8-7F1A-4E17-B37E-7547D8A3AA92}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{170BCAC8-7F1A-4E17-B37E-7547D8A3AA92}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{170BCAC8-7F1A-4E17-B37E-7547D8A3AA92}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 EndGlobal

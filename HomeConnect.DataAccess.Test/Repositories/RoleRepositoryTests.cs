@@ -60,19 +60,5 @@ public class RoleRepositoryTests
 
     #endregion
 
-    #region Error
-
-    [TestMethod]
-    public void GetRole_WhenRoleDoesNotExist_ThrowsException()
-    {
-        // Act
-        Action action = () => _roleRepository.Get("Role2");
-
-        // Assert
-        action.Should().Throw<ArgumentException>();
-    }
-
-    #endregion
-
     #endregion
 }

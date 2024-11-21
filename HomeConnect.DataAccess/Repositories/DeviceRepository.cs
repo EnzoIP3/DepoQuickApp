@@ -18,13 +18,7 @@ public class DeviceRepository : PaginatedRepositoryBase<Device>, IDeviceReposito
 
     public Device Get(Guid deviceId)
     {
-        Device? device = _context.Devices.FirstOrDefault(d => d.Id == deviceId);
-        if (device == null)
-        {
-            throw new ArgumentException("Device does not exist");
-        }
-
-        return device;
+        return _context.Devices.First(d => d.Id == deviceId);
     }
 
     public void Add(Device device)
@@ -33,18 +27,24 @@ public class DeviceRepository : PaginatedRepositoryBase<Device>, IDeviceReposito
         _context.SaveChanges();
     }
 
-    public bool ExistsByModelNumber(int modelNumber)
+    public bool ExistsByModelNumber(string modelNumber)
     {
         return _context.Devices.Any(d => d.ModelNumber == modelNumber);
     }
 
+    public bool Exists(Guid id)
+    {
+        return _context.Devices.Any(d => d.Id == id);
+    }
+
     public PagedData<Device> GetPaged(GetDevicesArgs args)
     {
-        var filters = new object[4];
+        var filters = new object[5];
         filters[0] = args.DeviceNameFilter ?? string.Empty;
         filters[1] = args.ModelNumberFilter!;
         filters[2] = args.BusinessNameFilter ?? string.Empty;
         filters[3] = args.DeviceTypeFilter ?? string.Empty;
+        filters[4] = args.RutFilter ?? string.Empty;
         return GetAllPaged(args.Page ?? 1, args.PageSize ?? 10, filters);
     }
 
@@ -56,14 +56,26 @@ public class DeviceRepository : PaginatedRepositoryBase<Device>, IDeviceReposito
     protected override IQueryable<Device> ApplyFilters(IQueryable<Device> query, params object[] filters)
     {
         var deviceNameFilter = filters.Length > 0 ? filters[0] as string : null;
-        var modelNumberFilter = filters.Length > 1 ? filters[1] as int? : null;
+        var modelNumberFilter = filters.Length > 1 ? filters[1] as string : null;
         var businessNameFilter = filters.Length > 2 ? filters[2] as string : null;
         var deviceTypeFilter = filters.Length > 3 ? filters[3] as string : null;
+        var rutFilter = filters.Length > 4 ? filters[4] as string : null;
 
         query = FilterByDeviceName(deviceNameFilter, query);
         query = FilterByModelNumber(modelNumberFilter, query);
         query = FilterByBusinessName(businessNameFilter, query);
         query = FilterByDeviceType(deviceTypeFilter, query);
+        query = FilterByRut(rutFilter, query);
+
+        return query;
+    }
+
+    private IQueryable<Device> FilterByRut(string? rutFilter, IQueryable<Device> query)
+    {
+        if (!string.IsNullOrEmpty(rutFilter))
+        {
+            query = query.Where(d => d.Business.Rut == rutFilter);
+        }
 
         return query;
     }
@@ -72,17 +84,17 @@ public class DeviceRepository : PaginatedRepositoryBase<Device>, IDeviceReposito
     {
         if (!string.IsNullOrEmpty(deviceNameFilter))
         {
-            query = query.Where(d => d.Name == deviceNameFilter);
+            query = query.Where(d => d.Name.Contains(deviceNameFilter));
         }
 
         return query;
     }
 
-    private static IQueryable<Device> FilterByModelNumber(int? modelNumberFilter, IQueryable<Device> query)
+    private static IQueryable<Device> FilterByModelNumber(string? modelNumberFilter, IQueryable<Device> query)
     {
-        if (modelNumberFilter.HasValue)
+        if (modelNumberFilter != null)
         {
-            query = query.Where(d => d.ModelNumber == modelNumberFilter.Value);
+            query = query.Where(d => d.ModelNumber.Contains(modelNumberFilter));
         }
 
         return query;

@@ -1,6 +1,6 @@
 namespace HomeConnect.WebApi.Controllers.Cameras.Models;
 
-public record PersonDetectedRequest
+public sealed record PersonDetectedRequest
 {
-    public string? UserId { get; set; } = null!;
+    public string? UserEmail { get; set; } = null!;
 }

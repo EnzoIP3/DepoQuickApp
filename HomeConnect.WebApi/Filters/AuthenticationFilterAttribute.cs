@@ -99,13 +99,18 @@ public sealed class AuthenticationFilterAttribute : Attribute, IAuthorizationFil
 
     private bool IsAuthorizationFormatValid(StringValues authorizationHeader)
     {
-        if (!authorizationHeader.ToString().StartsWith(BearerPrefix))
-        {
-            return false;
-        }
+        return IsBearerToken(authorizationHeader) && IsTokenValidGuid(authorizationHeader);
+    }
 
+    private bool IsTokenValidGuid(StringValues authorizationHeader)
+    {
         var token = ExtractTokenFromAuthorization(authorizationHeader);
         return Guid.TryParse(token, out _);
+    }
+
+    private static bool IsBearerToken(StringValues authorizationHeader)
+    {
+        return authorizationHeader.ToString().StartsWith(BearerPrefix);
     }
 
     private static string ExtractTokenFromAuthorization(StringValues authorizationHeader)

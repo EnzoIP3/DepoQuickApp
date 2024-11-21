@@ -15,40 +15,15 @@ public class HomeRepository : IHomeRepository
 
     public void Add(Home home)
     {
-        EnsureHomeDoesNotExist(home);
         _context.Homes.Add(home);
         _context.SaveChanges();
     }
 
     public Home Get(Guid homeId)
     {
-        Home? home = _context.Homes.Include(h => h.Members).ThenInclude(h => h.User).Include(h => h.Members)
+        return _context.Homes.Include(h => h.Members).ThenInclude(h => h.User).Include(h => h.Members)
             .ThenInclude(h => h.HomePermissions).Include(h => h.Owner)
-            .FirstOrDefault(h => h.Id == homeId);
-        if (home == null)
-        {
-            throw new ArgumentException("Home does not exist");
-        }
-
-        return home;
-    }
-
-    public Member GetMemberById(Guid memberId)
-    {
-        Home home = _context.Homes.Include(home => home.Members).ThenInclude(member => member.User)
-            .Include(home => home.Owner)
-            .First(m => m.Members.Any(h => h.Id == memberId));
-        Member member = home.Members.First(m => m.Id == memberId);
-        return member;
-    }
-
-    public void UpdateMember(Member member)
-    {
-        Home home = _context.Homes.Include(home => home.Members)
-            .First(m => m.Members.Any(h => h.Id == member.Id));
-        Member memberToUpdate = home.Members.First(m => m.Id == member.Id);
-        memberToUpdate.HomePermissions = member.HomePermissions;
-        _context.SaveChanges();
+            .First(h => h.Id == homeId);
     }
 
     public Home? GetByAddress(string argsAddress)
@@ -61,16 +36,22 @@ public class HomeRepository : IHomeRepository
         return _context.Homes.Any(h => h.Id == homeId);
     }
 
-    public bool ExistsMember(Guid memberId)
+    public void Rename(Home home, string newName)
     {
-        return _context.Homes.Include(h => h.Members).Any(h => h.Members.Any(m => m.Id == memberId));
+        home.NickName = newName;
+        _context.Homes.Update(home);
+        _context.SaveChanges();
     }
 
-    private void EnsureHomeDoesNotExist(Home home)
+    public List<Home> GetHomesByUserId(Guid userId)
     {
-        if (_context.Homes.Any(h => h.Address == home.Address))
-        {
-            throw new ArgumentException("Home already exists");
-        }
+        return _context.Homes.Include(h => h.Members).ThenInclude(m => m.User).Include(h => h.Owner)
+            .Where(h => h.Owner.Id == userId || h.Members.Any(m => m.User.Id == userId)).ToList();
+    }
+
+    public void Update(Home home)
+    {
+        _context.Homes.Update(home);
+        _context.SaveChanges();
     }
 }

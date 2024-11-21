@@ -26,10 +26,26 @@ public class Home
         MaxMembers = maxMembers!.Value;
     }
 
+    public Home(User owner, string address, double? latitude, double? longitude, int? maxMembers, string? name)
+    {
+        EnsureLatitudeIsNotNull(latitude);
+        EnsureLongitudeIsNotNull(longitude);
+        EnsureMaxMembersIsNotNull(maxMembers);
+        Owner = owner;
+        Address = address;
+        Latitude = latitude!.Value;
+        Longitude = longitude!.Value;
+        MaxMembers = maxMembers!.Value;
+        NickName = name!;
+    }
+
     public Guid Id { get; set; } = Guid.NewGuid();
     public User Owner { get; set; } = null!;
 
+    public string? NickName { get; set; }
+
     public List<Member> Members { get; set; } = [];
+    public List<Room> Rooms { get; set; } = [];
 
     public string Address
     {
@@ -158,7 +174,7 @@ public class Home
 
     private void EnsureMemberIsNotAlreadyAdded(Member member)
     {
-        if (Members.Any(m => m == member))
+        if (Members.Any(m => m.User.Id == member.User.Id))
         {
             throw new InvalidOperationException("The member is already added to this home.");
         }

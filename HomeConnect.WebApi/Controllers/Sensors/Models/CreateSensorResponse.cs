@@ -1,6 +1,6 @@
 namespace HomeConnect.WebApi.Controllers.Sensors.Models;
 
-public record CreateSensorResponse
+public sealed record CreateSensorResponse
 {
     public Guid Id { get; set; }
 }

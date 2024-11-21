@@ -7,4 +7,5 @@ public record CreateHomeArgs
     public double? Latitude { get; set; }
     public double? Longitude { get; set; }
     public int? MaxMembers { get; set; }
+    public string? Name { get; set; }
 }

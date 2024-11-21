@@ -10,7 +10,6 @@ public interface IUserRepository
     bool Exists(Guid id);
     bool ExistsByEmail(string email);
     void Delete(Guid id);
-
-    PagedData<User> GetPaged(int currentPage, int pageSize, string? fullNameFilter = null,
-        string? roleFilter = null);
+    void Update(User user);
+    PagedData<User> GetPaged(FilterArgs args);
 }

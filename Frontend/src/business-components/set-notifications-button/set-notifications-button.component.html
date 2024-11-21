@@ -1,0 +1,18 @@
+<ng-container *ngIf="shouldBeNotified">
+    <app-button
+        label="Disable"
+        severity="danger"
+        icon="pi pi-bell-slash"
+        (click)="setNotifications()"
+        [disabled]="loadingNotifications"
+    />
+</ng-container>
+<ng-container *ngIf="!shouldBeNotified">
+    <app-button
+        label="Enable"
+        severity="info"
+        icon="pi pi-bell"
+        (click)="setNotifications()"
+        [disabled]="loadingNotifications"
+    />
+</ng-container>

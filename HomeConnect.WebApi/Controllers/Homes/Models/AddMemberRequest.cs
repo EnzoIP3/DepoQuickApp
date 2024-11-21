@@ -1,8 +1,14 @@
+using BusinessLogic.HomeOwners.Models;
+
 namespace HomeConnect.WebApi.Controllers.Homes.Models;
 
-public record AddMemberRequest
+public sealed record AddMemberRequest
 {
-    public string? MemberId { get; set; } = null!;
-    public bool CanAddDevices { get; set; }
-    public bool CanListDevices { get; set; }
+    public string? Email { get; set; } = null!;
+    public List<string> Permissions { get; set; } = [];
+
+    public AddMemberArgs ToArgs(string homeId)
+    {
+        return new AddMemberArgs { HomeId = homeId, UserEmail = Email ?? string.Empty, Permissions = Permissions };
+    }
 }

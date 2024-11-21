@@ -1,0 +1,12 @@
+<app-base-devices-table
+    [clickableRows]="true"
+    [columns]="columns"
+    [devices]="devices"
+    [loading]="loading"
+    [pagination]="pagination"
+    [filterableColumns]="filterableColumns"
+    [selectedDevice]="selectedDevice"
+    (rowClick)="onRowClick($event)"
+    (pageChange)="onPageChange($event)"
+    (filterChange)="onFilterChange($event)"
+/>

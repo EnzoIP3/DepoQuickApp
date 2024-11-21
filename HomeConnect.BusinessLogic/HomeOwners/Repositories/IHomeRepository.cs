@@ -6,9 +6,9 @@ public interface IHomeRepository
 {
     void Add(Home home);
     Home Get(Guid homeId);
-    Member GetMemberById(Guid memberId);
-    void UpdateMember(Member member);
     Home? GetByAddress(string argsAddress);
     bool Exists(Guid homeId);
-    bool ExistsMember(Guid memberId);
+    void Rename(Home home, string newName);
+    void Update(Home home);
+    List<Home> GetHomesByUserId(Guid userId);
 }

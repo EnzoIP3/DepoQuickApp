@@ -28,11 +28,12 @@ public class SensorControllerTests
     public void TestInitialize()
     {
         _httpContextMock = new Mock<HttpContext>();
-        _notificationServiceMock = new Mock<INotificationService>();
         _deviceServiceMock = new Mock<IDeviceService>();
         _businessOwnerServiceMock = new Mock<IBusinessOwnerService>();
-        _sensorController = new SensorController(_notificationServiceMock.Object, _deviceServiceMock.Object,
-            _businessOwnerServiceMock.Object)
+        _notificationServiceMock = new Mock<INotificationService>();
+        _sensorController = new SensorController(_businessOwnerServiceMock.Object,
+            _deviceServiceMock.Object,
+            _notificationServiceMock.Object)
         { ControllerContext = { HttpContext = _httpContextMock.Object } };
     }
 
@@ -43,7 +44,7 @@ public class SensorControllerTests
     {
         // Arrange
         var user = new User();
-        var sensor = new Device("name", 123, "description", "http://example.com/photo.png", [],
+        var sensor = new Device("name", "123", "description", "http://example.com/photo.png", [],
             DeviceType.Sensor.ToString(),
             new Business());
         var sensorArgs = new CreateDeviceArgs
@@ -82,68 +83,42 @@ public class SensorControllerTests
     #region Notify
 
     [TestMethod]
-    public void NotifyOpen_WhenHardwareIdIsValid_ReturnsNotifyResponse()
+    public void Open_WhenHardwareIdIsValid_ReturnsNotifyResponse()
     {
         // Arrange
         var hardwareId = "hardwareId";
-        var args = new NotificationArgs { HardwareId = hardwareId, Date = DateTime.Now, Event = "open" };
-        _deviceServiceMock.Setup(x => x.IsConnected(hardwareId)).Returns(true);
-        _notificationServiceMock.Setup(x => x.Notify(args));
+        var args = new NotificationArgs { HardwareId = hardwareId, Date = DateTime.Now, Event = "Sensor was opened" };
+        _deviceServiceMock.Setup(x => x.UpdateSensorState(hardwareId, true));
+        _notificationServiceMock.Setup(x => x.SendSensorNotification(It.IsAny<NotificationArgs>(), false));
 
         // Act
-        NotifyResponse result = _sensorController.NotifyOpen(hardwareId);
+        NotifyResponse result = _sensorController.Open(hardwareId);
 
         // Assert
         result.Should().NotBeNull();
         result.HardwareId.Should().Be(hardwareId);
+        _notificationServiceMock.Verify(x => x.SendSensorNotification(It.Is((NotificationArgs a) =>
+            a.HardwareId == hardwareId && a.Event == args.Event), true));
     }
 
     [TestMethod]
-    public void NotifyClose_WhenHardwareIdIsValid_ReturnsNotifyResponse()
+    public void Close_WhenHardwareIdIsValid_ReturnsNotifyResponse()
     {
         // Arrange
         var hardwareId = "hardwareId";
-        var args = new NotificationArgs { HardwareId = hardwareId, Date = DateTime.Now, Event = "close" };
-        _deviceServiceMock.Setup(x => x.IsConnected(hardwareId)).Returns(true);
-        _notificationServiceMock.Setup(x => x.Notify(args));
+        var args = new NotificationArgs { HardwareId = hardwareId, Date = DateTime.Now, Event = "Sensor was closed" };
+        _deviceServiceMock.Setup(x => x.UpdateSensorState(hardwareId, false));
+        _notificationServiceMock.Setup(x => x.SendSensorNotification(It.IsAny<NotificationArgs>(), false));
 
         // Act
-        NotifyResponse result = _sensorController.NotifyClose(hardwareId);
+        NotifyResponse result = _sensorController.Close(hardwareId);
 
         // Assert
         result.Should().NotBeNull();
         result.HardwareId.Should().Be(hardwareId);
-    }
-
-    [TestMethod]
-    public void NotifyOpen_WhenDeviceIsDisconnected_ThrowsException()
-    {
-        // Arrange
-        var hardwareId = "hardwareId";
-
-        _deviceServiceMock.Setup(x => x.IsConnected(hardwareId)).Returns(false);
-
-        // Act
-        Func<NotifyResponse> act = () => _sensorController.NotifyOpen(hardwareId);
-
-        // Assert
-        act.Should().Throw<ArgumentException>().WithMessage("Device is not connected");
-        _deviceServiceMock.VerifyAll();
-    }
-
-    [TestMethod]
-    public void NotifyClose_WhenDeviceIsDisconnected_ThrowsException()
-    {
-        // Arrange
-        var hardwareId = "hardwareId";
-        _deviceServiceMock.Setup(x => x.IsConnected(hardwareId)).Returns(false);
-
-        // Act
-        Func<NotifyResponse> act = () => _sensorController.NotifyClose(hardwareId);
-
-        // Assert
-        act.Should().Throw<ArgumentException>().WithMessage("Device is not connected");
-        _deviceServiceMock.VerifyAll();
+        _deviceServiceMock.Verify(x => x.UpdateSensorState(hardwareId, false));
+        _notificationServiceMock.Verify(x => x.SendSensorNotification(It.Is((NotificationArgs a) =>
+            a.HardwareId == hardwareId && a.Event == args.Event), false));
     }
 
     #endregion

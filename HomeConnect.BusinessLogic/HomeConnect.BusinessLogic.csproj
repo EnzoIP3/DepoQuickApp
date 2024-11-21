@@ -7,4 +7,14 @@
         <RootNamespace>BusinessLogic</RootNamespace>
     </PropertyGroup>
 
+    <ItemGroup>
+        <Reference Include="ModeloValidador.Abstracciones">
+            <HintPath>..\ModelValidator\ModeloValidador.Abstracciones.dll</HintPath>
+        </Reference>
+    </ItemGroup>
+
+    <ItemGroup>
+        <ProjectReference Include="..\HomeConnect.DeviceImporter\HomeConnect.DeviceImporter.csproj"/>
+    </ItemGroup>
+
 </Project>

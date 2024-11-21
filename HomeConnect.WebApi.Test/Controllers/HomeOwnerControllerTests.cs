@@ -5,6 +5,8 @@ using BusinessLogic.Users.Services;
 using FluentAssertions;
 using HomeConnect.WebApi.Controllers.HomeOwners;
 using HomeConnect.WebApi.Controllers.HomeOwners.Models;
+using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Mvc;
 using Moq;
 
 namespace HomeConnect.WebApi.Test.Controllers;
@@ -12,14 +14,21 @@ namespace HomeConnect.WebApi.Test.Controllers;
 [TestClass]
 public class HomeOwnerControllerTests
 {
+    private readonly User _user = null!;
     private HomeOwnerController _controller = null!;
+    private Mock<HttpContext> _httpContextMock = null!;
     private Mock<IUserService> _userService = null!;
 
     [TestInitialize]
     public void Initialize()
     {
+        _httpContextMock = new Mock<HttpContext>(MockBehavior.Strict);
         _userService = new Mock<IUserService>(MockBehavior.Strict);
         _controller = new HomeOwnerController(_userService.Object);
+
+        var items = new Dictionary<object, object?> { { Item.UserLogged, _user } };
+        _httpContextMock.Setup(h => h.Items).Returns(items);
+        _controller.ControllerContext = new ControllerContext { HttpContext = _httpContextMock.Object };
     }
 
     [TestMethod]

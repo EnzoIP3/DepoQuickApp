@@ -1,0 +1,17 @@
+<app-form [form]="changeValidatorForm" (onSubmit)="onSubmit()">
+    <app-form-dropdown
+        label="Validator"
+        placeholder="Select Validator"
+        name="validator"
+        [form]="changeValidatorForm"
+        [options]="validatorOptions"
+    >
+    </app-form-dropdown>
+
+    <app-form-button
+        title="Change Validator"
+        color="primary"
+        [loading]="changeValidatorForm.invalid"
+        [disabled]="changeValidatorForm.invalid"
+    ></app-form-button>
+</app-form>

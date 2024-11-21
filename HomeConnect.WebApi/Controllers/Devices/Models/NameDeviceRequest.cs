@@ -3,7 +3,7 @@ using BusinessLogic.Users.Entities;
 
 namespace HomeConnect.WebApi.Controllers.Devices.Models;
 
-public class NameDeviceRequest
+public sealed record NameDeviceRequest
 {
     public string? NewName { get; set; }
 

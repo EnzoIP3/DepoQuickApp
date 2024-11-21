@@ -21,7 +21,7 @@ namespace HomeConnect.WebApi.Controllers.Devices;
 [Route("devices")]
 [ApiController]
 [AuthenticationFilter]
-public class DeviceController : ControllerBase
+public sealed class DeviceController : ControllerBase
 {
     private readonly IDeviceService _deviceService;
     private readonly IImporterService _importerService;
@@ -52,14 +52,14 @@ public class DeviceController : ControllerBase
     }
 
     [HttpPost("{hardwareId}/turn_on")]
-    public virtual ConnectionResponse TurnOn([FromRoute] string hardwareId)
+    public ConnectionResponse TurnOn([FromRoute] string hardwareId)
     {
         var connectionState = _deviceService.TurnDevice(hardwareId, true);
         return new ConnectionResponse { Connected = connectionState, HardwareId = hardwareId };
     }
 
     [HttpPost("{hardwareId}/turn_off")]
-    public virtual ConnectionResponse TurnOff([FromRoute] string hardwareId)
+    public ConnectionResponse TurnOff([FromRoute] string hardwareId)
     {
         var connectionState = _deviceService.TurnDevice(hardwareId, false);
         return new ConnectionResponse { Connected = connectionState, HardwareId = hardwareId };

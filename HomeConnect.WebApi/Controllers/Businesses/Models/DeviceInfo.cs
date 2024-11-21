@@ -1,13 +1,13 @@
 namespace HomeConnect.WebApi.Controllers.Businesses.Models;
 
-public struct DeviceInfo
+public sealed record DeviceInfo
 {
-    public string Id { get; set; }
-    public string Name { get; set; }
-    public string BusinessName { get; set; }
-    public string ModelNumber { get; set; }
-    public string Description { get; set; }
-    public string MainPhoto { get; set; }
-    public List<string> SecondaryPhotos { get; set; }
-    public string Type { get; set; }
+    public string Id { get; set; } = null!;
+    public string Name { get; set; } = null!;
+    public string BusinessName { get; set; } = null!;
+    public string ModelNumber { get; set; } = null!;
+    public string Description { get; set; } = null!;
+    public string MainPhoto { get; set; } = null!;
+    public List<string> SecondaryPhotos { get; set; } = new();
+    public string Type { get; set; } = null!;
 }

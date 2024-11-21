@@ -3,10 +3,10 @@ using BusinessLogic.Devices.Entities;
 
 namespace HomeConnect.WebApi.Controllers.Businesses.Models;
 
-public struct GetBusinessDevicesResponse
+public sealed record GetBusinessDevicesResponse
 {
-    public List<DeviceInfo> Devices { get; set; }
-    public Pagination Pagination { get; set; }
+    public List<DeviceInfo> Devices { get; set; } = [];
+    public Pagination Pagination { get; set; } = new();
 
     public static GetBusinessDevicesResponse FromDevices(PagedData<Device> devices)
     {

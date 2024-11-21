@@ -3,7 +3,7 @@ using BusinessLogic.Users.Entities;
 
 namespace HomeConnect.WebApi.Controllers.Sensors.Models;
 
-public record CreateSensorRequest
+public sealed record CreateSensorRequest
 {
     public string? Description { get; set; }
     public string? MainPhoto { get; set; }

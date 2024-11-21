@@ -2,9 +2,9 @@ using BusinessLogic.BusinessOwners.Models;
 
 namespace HomeConnect.WebApi.Controllers.DeviceValidators.Models;
 
-public struct GetValidatorsResponse
+public sealed record GetValidatorsResponse
 {
-    public List<string> Validators { get; set; }
+    public List<string> Validators { get; set; } = null!;
 
     public static GetValidatorsResponse FromValidators(List<ValidatorInfo> validators)
     {

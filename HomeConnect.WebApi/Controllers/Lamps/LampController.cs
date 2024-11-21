@@ -15,7 +15,7 @@ namespace HomeConnect.WebApi.Controllers.Lamps;
 
 [ApiController]
 [Route("lamps")]
-public class LampController
+public sealed class LampController
     : ControllerBase
 {
     private readonly IBusinessOwnerService _businessOwnerService;

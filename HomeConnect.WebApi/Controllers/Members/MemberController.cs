@@ -10,7 +10,7 @@ namespace HomeConnect.WebApi.Controllers.Members;
 [ApiController]
 [Route("members")]
 [AuthenticationFilter]
-public class MemberController : ControllerBase
+public sealed class MemberController : ControllerBase
 {
     private readonly IHomeOwnerService _homeOwnerService;
 

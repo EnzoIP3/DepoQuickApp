@@ -1,6 +1,6 @@
 namespace HomeConnect.WebApi.Controllers.Homes.Models;
 
-public record CreateRoomResponse
+public sealed record CreateRoomResponse
 {
     public string? RoomId { get; set; }
 }

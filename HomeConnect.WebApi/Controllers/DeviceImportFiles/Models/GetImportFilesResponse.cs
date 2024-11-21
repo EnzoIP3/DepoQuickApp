@@ -1,6 +1,6 @@
 namespace HomeConnect.WebApi.Controllers.DeviceImportFiles.Models;
 
-public struct GetImportFilesResponse
+public sealed record GetImportFilesResponse
 {
-    public List<string> ImportFiles { get; set; }
+    public List<string> ImportFiles { get; set; } = new List<string>();
 }

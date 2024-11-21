@@ -2,7 +2,7 @@ using BusinessLogic.Admins.Models;
 
 namespace HomeConnect.WebApi.Controllers.Businesses.Models;
 
-public record GetBusinessesRequest
+public sealed record GetBusinessesRequest
 {
     public int? CurrentPage { get; init; }
     public int? PageSize { get; init; }

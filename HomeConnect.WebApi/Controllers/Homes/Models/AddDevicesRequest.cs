@@ -2,7 +2,7 @@ using BusinessLogic.HomeOwners.Models;
 
 namespace HomeConnect.WebApi.Controllers.Homes.Models;
 
-public record AddDevicesRequest
+public sealed record AddDevicesRequest
 {
     public List<string>? DeviceIds { get; set; } = null!;
 

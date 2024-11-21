@@ -10,7 +10,7 @@ namespace HomeConnect.WebApi.Controllers.DeviceValidators;
 [Route("device_validators")]
 [ApiController]
 [AuthenticationFilter]
-public class DeviceValidatorController : ControllerBase
+public sealed class DeviceValidatorController : ControllerBase
 {
     private readonly IValidatorService _validatorService;
 

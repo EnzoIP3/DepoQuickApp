@@ -15,7 +15,7 @@ namespace HomeConnect.WebApi.Controllers.Cameras;
 
 [ApiController]
 [Route("cameras")]
-public class CameraController : ControllerBase
+public sealed class CameraController : ControllerBase
 {
     private readonly IDeviceService _deviceService;
     private readonly INotificationService _notificationService;

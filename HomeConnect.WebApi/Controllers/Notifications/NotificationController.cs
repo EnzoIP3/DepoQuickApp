@@ -12,7 +12,7 @@ namespace HomeConnect.WebApi.Controllers.Notifications;
 [ApiController]
 [Route("notifications")]
 [AuthenticationFilter]
-public class NotificationController : ControllerBase
+public sealed class NotificationController : ControllerBase
 {
     private readonly INotificationService _notificationService;
 

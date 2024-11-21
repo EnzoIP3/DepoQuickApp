@@ -3,7 +3,7 @@ using BusinessLogic.Users.Models;
 
 namespace HomeConnect.WebApi.Controllers.Admins.Models;
 
-public record CreateAdminRequest
+public sealed record CreateAdminRequest
 {
     public string? Name { get; set; }
     public string? Surname { get; set; }

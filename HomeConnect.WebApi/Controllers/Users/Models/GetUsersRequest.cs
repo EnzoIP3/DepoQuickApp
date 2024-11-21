@@ -2,7 +2,7 @@ using BusinessLogic.Admins.Models;
 
 namespace HomeConnect.WebApi.Controllers.Users.Models;
 
-public record GetUsersRequest
+public sealed record GetUsersRequest
 {
     public int? Page { get; init; }
     public int? PageSize { get; init; }

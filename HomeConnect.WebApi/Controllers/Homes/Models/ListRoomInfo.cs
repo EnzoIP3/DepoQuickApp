@@ -2,7 +2,7 @@ using BusinessLogic.HomeOwners.Entities;
 
 namespace HomeConnect.WebApi.Controllers.Homes.Models;
 
-public record ListRoomInfo
+public sealed record ListRoomInfo
 {
     public string Id { get; set; } = null!;
     public string Name { get; set; } = null!;

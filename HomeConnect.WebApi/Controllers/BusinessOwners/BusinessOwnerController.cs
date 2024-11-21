@@ -11,7 +11,7 @@ namespace HomeConnect.WebApi.Controllers.BusinessOwners;
 [ApiController]
 [Route("business_owners")]
 [AuthenticationFilter]
-public class BusinessOwnerController
+public sealed class BusinessOwnerController
     : ControllerBase
 {
     private readonly IUserService _userService;

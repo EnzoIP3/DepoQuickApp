@@ -1,6 +1,6 @@
 namespace HomeConnect.WebApi.Controllers.HomeOwners.Models;
 
-public class ListHomeInfo
+public sealed record ListHomeInfo
 {
     public string? Id { get; set; }
     public string? Name { get; set; }

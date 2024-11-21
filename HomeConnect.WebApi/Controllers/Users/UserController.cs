@@ -16,7 +16,7 @@ namespace HomeConnect.WebApi.Controllers.Users;
 [ApiController]
 [Route("users")]
 [AuthenticationFilter]
-public class UserController : ControllerBase
+public sealed class UserController : ControllerBase
 {
     private readonly IUserService _userService;
     private readonly IAdminService _adminService;

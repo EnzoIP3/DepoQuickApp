@@ -1,6 +1,6 @@
 namespace HomeConnect.WebApi.Controllers.Devices.Models;
 
-public class MoveDeviceRequest
+public sealed record MoveDeviceRequest
 {
     public string? TargetRoomId { get; set; }
 }

@@ -10,7 +10,7 @@ namespace HomeConnect.WebApi.Controllers.HomeOwners;
 
 [ApiController]
 [Route("home_owners")]
-public class HomeOwnerController : ControllerBase
+public sealed class HomeOwnerController : ControllerBase
 {
     private readonly IUserService _userService;
 

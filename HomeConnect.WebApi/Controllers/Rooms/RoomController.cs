@@ -9,7 +9,7 @@ namespace HomeConnect.WebApi.Controllers.Rooms;
 
 [ApiController]
 [Route("rooms")]
-public class RoomController : ControllerBase
+public sealed class RoomController : ControllerBase
 {
     private readonly IHomeOwnerService _homeOwnerService;
 

@@ -3,7 +3,7 @@ using BusinessLogic.Users.Entities;
 
 namespace HomeConnect.WebApi.Controllers.Businesses.Models;
 
-public struct UpdateValidatorRequest
+public sealed record UpdateValidatorRequest
 {
     public string? Validator { get; set; }
 

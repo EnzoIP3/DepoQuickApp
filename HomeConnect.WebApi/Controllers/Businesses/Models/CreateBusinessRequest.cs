@@ -3,7 +3,7 @@ using BusinessLogic.Users.Entities;
 
 namespace HomeConnect.WebApi.Controllers.Businesses.Models;
 
-public record CreateBusinessRequest
+public sealed record CreateBusinessRequest
 {
     public string? Name { get; set; }
     public string? Logo { get; set; }

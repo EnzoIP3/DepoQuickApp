@@ -14,7 +14,7 @@ namespace HomeConnect.WebApi.Controllers.MotionSensors;
 
 [ApiController]
 [Route("motion_sensors")]
-public class MotionSensorController
+public sealed class MotionSensorController
     : ControllerBase
 {
     private readonly IBusinessOwnerService _businessOwnerService;

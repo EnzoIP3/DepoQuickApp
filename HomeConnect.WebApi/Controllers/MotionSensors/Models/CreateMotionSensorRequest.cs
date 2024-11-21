@@ -3,7 +3,7 @@ using BusinessLogic.Users.Entities;
 
 namespace HomeConnect.WebApi.Controllers.MotionSensors.Models;
 
-public struct CreateMotionSensorRequest
+public sealed record CreateMotionSensorRequest
 {
     public string? Description { get; set; }
     public string? MainPhoto { get; set; }

@@ -2,7 +2,7 @@ using BusinessLogic.Devices.Models;
 
 namespace HomeConnect.WebApi.Controllers.Devices.Models;
 
-public record GetDevicesRequest
+public sealed record GetDevicesRequest
 {
     public string? Name { get; set; }
     public string? ModelNumber { get; set; }

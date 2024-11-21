@@ -15,7 +15,7 @@ namespace HomeConnect.WebApi.Controllers.Sensors;
 
 [ApiController]
 [Route("sensors")]
-public class SensorController
+public sealed class SensorController
     : ControllerBase
 {
     private readonly IBusinessOwnerService _businessOwnerService;

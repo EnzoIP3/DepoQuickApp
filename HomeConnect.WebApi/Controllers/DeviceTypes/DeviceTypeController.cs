@@ -8,7 +8,7 @@ namespace HomeConnect.WebApi.Controllers.DeviceTypes;
 [ApiController]
 [Route("device_types")]
 [AuthenticationFilter]
-public class DeviceTypeController : ControllerBase
+public sealed class DeviceTypeController : ControllerBase
 {
     private const string DefaultCacheTime = "2592000";
     private readonly IDeviceService _deviceService;

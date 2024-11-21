@@ -14,7 +14,7 @@ namespace HomeConnect.WebApi.Controllers.Homes;
 [ApiController]
 [Route("homes")]
 [AuthenticationFilter]
-public class HomeController : ControllerBase
+public sealed class HomeController : ControllerBase
 {
     private readonly IHomeOwnerService _homeOwnerService;
 

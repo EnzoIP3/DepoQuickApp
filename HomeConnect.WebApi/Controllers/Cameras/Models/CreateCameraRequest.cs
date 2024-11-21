@@ -3,7 +3,7 @@ using BusinessLogic.Users.Entities;
 
 namespace HomeConnect.WebApi.Controllers.Cameras.Models;
 
-public record CreateCameraRequest
+public sealed record CreateCameraRequest
 {
     public string? Description { get; set; } = null!;
     public string? MainPhoto { get; set; } = null!;

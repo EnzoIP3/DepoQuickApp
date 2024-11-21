@@ -7,7 +7,7 @@ namespace HomeConnect.WebApi.Controllers.Auth;
 
 [ApiController]
 [Route("auth")]
-public class AuthController : ControllerBase
+public sealed class AuthController : ControllerBase
 {
     private readonly IAuthService _authService;
 

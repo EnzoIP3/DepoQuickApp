@@ -2,7 +2,7 @@ using BusinessLogic.Devices.Entities;
 
 namespace HomeConnect.WebApi.Controllers.Homes.Models;
 
-public record ListOwnedDeviceInfo
+public sealed record ListOwnedDeviceInfo
 {
     public string HardwareId { get; set; } = null!;
     public string? Name { get; set; } = null!;

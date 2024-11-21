@@ -3,7 +3,7 @@ using BusinessLogic.Users.Entities;
 
 namespace HomeConnect.WebApi.Controllers.Homes.Models;
 
-public class CreateHomeRequest
+public sealed class CreateHomeRequest
 {
     public string? Address { get; set; }
     public double Latitude { get; set; }

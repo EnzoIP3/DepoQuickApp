@@ -9,7 +9,7 @@ namespace HomeConnect.WebApi.Controllers.DeviceImporters;
 [Route("device_importers")]
 [ApiController]
 [AuthenticationFilter]
-public class DeviceImporterController : ControllerBase
+public sealed class DeviceImporterController : ControllerBase
 {
     private readonly IImporterService _importerService;
 

@@ -3,7 +3,7 @@ using BusinessLogic.Users.Entities;
 
 namespace HomeConnect.WebApi.Controllers.Lamps.Models;
 
-public class CreateLampRequest
+public sealed class CreateLampRequest
 {
     public string? Description { get; set; }
     public string? MainPhoto { get; set; }

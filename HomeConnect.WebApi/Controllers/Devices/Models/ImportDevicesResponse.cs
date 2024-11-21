@@ -1,6 +1,6 @@
 namespace HomeConnect.WebApi.Controllers.Devices.Models;
 
-public struct ImportDevicesResponse
+public sealed record ImportDevicesResponse
 {
-    public List<string> ImportedDevices { get; set; }
+    public List<string> ImportedDevices { get; set; } = [];
 }

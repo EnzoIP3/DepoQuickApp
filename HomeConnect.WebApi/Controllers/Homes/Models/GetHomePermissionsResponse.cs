@@ -2,7 +2,7 @@ using BusinessLogic.HomeOwners.Entities;
 
 namespace HomeConnect.WebApi.Controllers.Homes.Models;
 
-public record GetHomePermissionsResponse
+public sealed record GetHomePermissionsResponse
 {
     public string HomeId { get; init; } = null!;
     public List<string> HomePermissions { get; init; } = null!;

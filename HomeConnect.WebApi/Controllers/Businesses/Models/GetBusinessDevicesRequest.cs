@@ -3,7 +3,7 @@ using BusinessLogic.Users.Entities;
 
 namespace HomeConnect.WebApi.Controllers.Businesses.Models;
 
-public record GetBusinessDevicesRequest
+public sealed record GetBusinessDevicesRequest
 {
     public int Page { get; init; } = 1;
     public int PageSize { get; init; } = 10;

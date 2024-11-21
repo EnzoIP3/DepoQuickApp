@@ -21,14 +21,14 @@ using HomeConnect.WebApi.Filters;
 using Microsoft.EntityFrameworkCore;
 using ModeloValidador.Abstracciones;
 
-void AddDbContext(string? s, IServiceCollection services1)
+void AddDbContext(string? connection, IServiceCollection servicesCollection)
 {
-    if (string.IsNullOrEmpty(s))
+    if (string.IsNullOrEmpty(connection))
     {
         throw new InvalidOperationException("Missing DefaultConnection connection string");
     }
 
-    services1.AddDbContext<Context>(options => options.UseSqlServer(s));
+    servicesCollection.AddDbContext<Context>(options => options.UseSqlServer(connection));
 }
 
 void AddScopedServices(IServiceCollection serviceCollection)

@@ -7,11 +7,10 @@ namespace JsonImporter;
 
 public class JsonDeviceImporter : IDeviceImporter
 {
-    private readonly Dictionary<string, string> _params = new()
-    {
-        ["fileName"] = "fileName"
-    };
     private readonly string _directoryRoute = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "ImportFiles");
+
+    private readonly Dictionary<string, string> _params = new() { ["fileName"] = "fileName" };
+
     public List<DeviceArgs> ImportDevices(Dictionary<string, string> parameters)
     {
         var route = parameters[_params["fileName"]];

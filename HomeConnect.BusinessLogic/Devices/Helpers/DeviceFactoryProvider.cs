@@ -5,7 +5,7 @@ namespace BusinessLogic.Devices.Helpers;
 
 public class DeviceFactoryProvider(IBusinessOwnerService businessOwnerService)
 {
-    private IBusinessOwnerService BusinessOwnerService { get; set; } = businessOwnerService;
+    private IBusinessOwnerService BusinessOwnerService { get; } = businessOwnerService;
 
     public IDeviceFactory GetFactory(DeviceType deviceType)
     {

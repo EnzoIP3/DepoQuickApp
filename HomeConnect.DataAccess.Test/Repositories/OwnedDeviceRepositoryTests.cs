@@ -12,9 +12,8 @@ namespace HomeConnect.DataAccess.Test.Repositories;
 [TestClass]
 public class OwnedDeviceRepositoryTests
 {
-    private readonly string _modelNumber = "123";
-
     private readonly Context _context = DbContextBuilder.BuildTestDbContext();
+    private readonly string _modelNumber = "123";
     private Business _business = null!;
     private User _businessOwner = null!;
     private Device _device = null!;
@@ -250,7 +249,7 @@ public class OwnedDeviceRepositoryTests
         _ownedDeviceRepository.Rename(_ownedDevice, "NewName");
 
         // Assert
-        var updatedDevice = _context.OwnedDevices.First(od => od.HardwareId == _ownedDevice.HardwareId);
+        OwnedDevice updatedDevice = _context.OwnedDevices.First(od => od.HardwareId == _ownedDevice.HardwareId);
         Assert.AreEqual("NewName", updatedDevice.Name);
     }
 
@@ -262,7 +261,7 @@ public class OwnedDeviceRepositoryTests
     public void GetOwnedDeviceById_WhenDeviceExists_ReturnsDevice()
     {
         // Act
-        var result = _ownedDeviceRepository.GetOwnedDeviceById(_ownedDevice.HardwareId);
+        OwnedDevice result = _ownedDeviceRepository.GetOwnedDeviceById(_ownedDevice.HardwareId);
 
         // Assert
         result.Should().NotBeNull();
@@ -292,7 +291,7 @@ public class OwnedDeviceRepositoryTests
         _ownedDeviceRepository.UpdateOwnedDevice(ownedDevice);
 
         // Assert
-        var updatedDevice = _context.OwnedDevices.Include(d => d.Room)
+        OwnedDevice? updatedDevice = _context.OwnedDevices.Include(d => d.Room)
             .FirstOrDefault(d => d.HardwareId == ownedDevice.HardwareId);
         updatedDevice.Should().NotBeNull();
         updatedDevice.Room.Should().NotBeNull();

@@ -12,6 +12,10 @@ namespace BusinessLogic.Notifications.Services;
 
 public class NotificationService : INotificationService
 {
+    private readonly INotificationRepository _notificationRepository;
+    private readonly IOwnedDeviceRepository _ownedDeviceRepository;
+    private readonly IUserRepository _userRepository;
+
     public NotificationService(INotificationRepository notificationRepository,
         IOwnedDeviceRepository ownedDeviceRepository, IUserRepository userRepository)
     {
@@ -19,10 +23,6 @@ public class NotificationService : INotificationService
         _ownedDeviceRepository = ownedDeviceRepository;
         _userRepository = userRepository;
     }
-
-    private readonly INotificationRepository _notificationRepository;
-    private readonly IOwnedDeviceRepository _ownedDeviceRepository;
-    private readonly IUserRepository _userRepository;
 
     public void Notify(NotificationArgs args)
     {
@@ -33,6 +33,36 @@ public class NotificationService : INotificationService
         Home home = ownedDevice.Home;
         var shouldReceiveNotification = new HomePermission(HomePermission.GetNotifications);
         NotifyUsersWithPermission(args, home, shouldReceiveNotification, ownedDevice);
+    }
+
+    public List<Notification> GetNotifications(GetNotificationsArgs args)
+    {
+        EnsureDeviceFilterIsValid(args.DeviceFilter);
+        DateTime? dateFilter = GetDateFromRequest(args.DateFilter);
+        List<Notification> notifications =
+            _notificationRepository.GetRange(args.UserId, args.DeviceFilter, dateFilter, args.ReadFilter);
+        List<Notification> notificationsClone = CloneNotifications(notifications);
+        MarkNotificationsAsRead(notifications);
+        return notificationsClone;
+    }
+
+    public void SendLampNotification(NotificationArgs args, bool state)
+    {
+        EnsureDeviceIsConnected(args.HardwareId);
+        if (_ownedDeviceRepository.GetLampState(Guid.Parse(args.HardwareId)) != state)
+        {
+            Notify(args);
+        }
+    }
+
+    public void SendSensorNotification(NotificationArgs args, bool state)
+    {
+        EnsureDeviceIsSensor(args.HardwareId);
+        EnsureDeviceIsConnected(args.HardwareId);
+        if (SensorStateChanged(args, state))
+        {
+            Notify(args);
+        }
     }
 
     private void EnsureUserExists(string? userEmail)
@@ -55,17 +85,6 @@ public class NotificationService : INotificationService
     {
         OwnedDevice ownedDevice = _ownedDeviceRepository.GetByHardwareId(Guid.Parse(hardwareId));
         return ownedDevice.Connected;
-    }
-
-    public List<Notification> GetNotifications(GetNotificationsArgs args)
-    {
-        EnsureDeviceFilterIsValid(args.DeviceFilter);
-        var dateFilter = GetDateFromRequest(args.DateFilter);
-        List<Notification> notifications =
-            _notificationRepository.GetRange(args.UserId, args.DeviceFilter, dateFilter, args.ReadFilter);
-        var notificationsClone = CloneNotifications(notifications);
-        MarkNotificationsAsRead(notifications);
-        return notificationsClone;
     }
 
     private static List<Notification> CloneNotifications(List<Notification> notifications)
@@ -135,23 +154,6 @@ public class NotificationService : INotificationService
             .Where(member => member.HasPermission(shouldReceiveNotification))
             .Select(member => member.User));
         usersToNotify.ForEach(user => CreateNotification(ownedDevice, args.Event, user));
-    }
-
-    public void SendLampNotification(NotificationArgs args, bool state)
-    {
-        if (_ownedDeviceRepository.GetLampState(Guid.Parse(args.HardwareId)) != state)
-        {
-            Notify(args);
-        }
-    }
-
-    public void SendSensorNotification(NotificationArgs args, bool state)
-    {
-        EnsureDeviceIsSensor(args.HardwareId);
-        if (SensorStateChanged(args, state))
-        {
-            Notify(args);
-        }
     }
 
     private bool SensorStateChanged(NotificationArgs args, bool state)

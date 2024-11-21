@@ -12,6 +12,12 @@ namespace BusinessLogic.BusinessOwners.Services;
 
 public class BusinessOwnerService : IBusinessOwnerService
 {
+    private readonly IBusinessRepository _businessRepository;
+    private readonly IDeviceRepository _deviceRepository;
+
+    private readonly IUserRepository _userRepository;
+    private readonly IValidatorService _validatorService;
+
     public BusinessOwnerService(
         IUserRepository userRepository,
         IBusinessRepository businessRepository,
@@ -24,11 +30,6 @@ public class BusinessOwnerService : IBusinessOwnerService
         _validatorService = validatorService;
     }
 
-    private readonly IUserRepository _userRepository;
-    private readonly IBusinessRepository _businessRepository;
-    private readonly IDeviceRepository _deviceRepository;
-    private readonly IValidatorService _validatorService;
-
     public Business CreateBusiness(CreateBusinessArgs args)
     {
         Guid ownerId = ParseAndValidateOwnerId(args.OwnerId);
@@ -39,24 +40,6 @@ public class BusinessOwnerService : IBusinessOwnerService
         var business = new Business(args.Rut, args.Name, args.Logo, owner, validatorId);
         _businessRepository.Add(business);
         return business;
-    }
-
-    private Guid? GetValidatorId(string? argsValidator)
-    {
-        if (!string.IsNullOrWhiteSpace(argsValidator))
-        {
-            return _validatorService.GetValidatorIdByName(argsValidator);
-        }
-
-        return null;
-    }
-
-    private void EnsureValidatorExists(string? argsValidator)
-    {
-        if (!string.IsNullOrWhiteSpace(argsValidator) && !_validatorService.Exists(argsValidator))
-        {
-            throw new ArgumentException("The specified validator does not exist.");
-        }
     }
 
     public Device CreateDevice(CreateDeviceArgs args)
@@ -98,8 +81,28 @@ public class BusinessOwnerService : IBusinessOwnerService
         EnsureBusinessIsFromOwner(args.Rut, args.User.Id.ToString());
         return _deviceRepository.GetPaged(new GetDevicesArgs
         {
-            RutFilter = args.Rut, PageSize = args.PageSize, Page = args.CurrentPage
+            RutFilter = args.Rut,
+            PageSize = args.PageSize,
+            Page = args.CurrentPage
         });
+    }
+
+    private Guid? GetValidatorId(string? argsValidator)
+    {
+        if (!string.IsNullOrWhiteSpace(argsValidator))
+        {
+            return _validatorService.GetValidatorIdByName(argsValidator);
+        }
+
+        return null;
+    }
+
+    private void EnsureValidatorExists(string? argsValidator)
+    {
+        if (!string.IsNullOrWhiteSpace(argsValidator) && !_validatorService.Exists(argsValidator))
+        {
+            throw new ArgumentException("The specified validator does not exist.");
+        }
     }
 
     private void EnsureBusinessExistsFromRut(string argsBusinessRut)

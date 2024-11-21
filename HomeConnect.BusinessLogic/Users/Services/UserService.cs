@@ -8,14 +8,15 @@ namespace BusinessLogic.Users.Services;
 
 public class UserService : IUserService
 {
+    private readonly IRoleRepository _roleRepository;
+
+    private readonly IUserRepository _userRepository;
+
     public UserService(IUserRepository userRepository, IRoleRepository roleRepository)
     {
         _userRepository = userRepository;
         _roleRepository = roleRepository;
     }
-
-    private readonly IUserRepository _userRepository;
-    private readonly IRoleRepository _roleRepository;
 
     public User CreateUser(CreateUserArgs args)
     {
@@ -31,6 +32,15 @@ public class UserService : IUserService
     public bool Exists(string requestUserId)
     {
         return UserIdIsValid(requestUserId) && _userRepository.Exists(Guid.Parse(requestUserId));
+    }
+
+    public User AddRoleToUser(AddRoleToUserArgs args)
+    {
+        User user = _userRepository.Get(Guid.Parse(args.UserId));
+        Role role = _roleRepository.Get(args.Role);
+        user.AddRole(role);
+        _userRepository.Update(user);
+        return user;
     }
 
     private bool UserIdIsValid(string requestUserId)
@@ -60,14 +70,5 @@ public class UserService : IUserService
         {
             throw new ArgumentException("Invalid role.");
         }
-    }
-
-    public User AddRoleToUser(AddRoleToUserArgs args)
-    {
-        var user = _userRepository.Get(Guid.Parse(args.UserId));
-        var role = _roleRepository.Get(args.Role);
-        user.AddRole(role);
-        _userRepository.Update(user);
-        return user;
     }
 }

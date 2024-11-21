@@ -9,14 +9,15 @@ namespace BusinessLogic.Admins.Services;
 
 public class AdminService : IAdminService
 {
+    private readonly IBusinessRepository _businessRepository;
+
+    private readonly IUserRepository _userRepository;
+
     public AdminService(IUserRepository userRepository, IBusinessRepository businessRepository)
     {
         _userRepository = userRepository;
         _businessRepository = businessRepository;
     }
-
-    private readonly IUserRepository _userRepository;
-    private readonly IBusinessRepository _businessRepository;
 
     public void DeleteAdmin(string adminIdStr)
     {

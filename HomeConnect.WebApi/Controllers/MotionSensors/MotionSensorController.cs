@@ -30,7 +30,7 @@ public sealed class MotionSensorController
     public CreateMotionSensorResponse CreateMotionSensor([FromBody] CreateMotionSensorRequest request)
     {
         var userLoggedIn = HttpContext.Items[Item.UserLogged] as User;
-        var createdSensor = _businessOwnerService.CreateDevice(request.ToArgs(userLoggedIn!));
+        Device createdSensor = _businessOwnerService.CreateDevice(request.ToArgs(userLoggedIn!));
         return new CreateMotionSensorResponse { Id = createdSensor.Id };
     }
 

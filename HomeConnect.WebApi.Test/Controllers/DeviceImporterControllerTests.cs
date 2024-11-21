@@ -6,6 +6,7 @@ using HomeConnect.WebApi.Controllers.DeviceImporters.Models;
 using Moq;
 
 namespace HomeConnect.WebApi.Test.Controllers;
+
 [TestClass]
 public class DeviceImporterControllerTests
 {
@@ -18,6 +19,7 @@ public class DeviceImporterControllerTests
         _importerService = new Mock<IImporterService>();
         _controller = new DeviceImporterController(_importerService.Object);
     }
+
     #region GetImporters
 
     [TestMethod]
@@ -26,14 +28,11 @@ public class DeviceImporterControllerTests
         // Arrange
         List<ImporterData> importers =
         [
-            new ImporterData { Name = "Importer1", Parameters = ["route", "password"] },
-            new ImporterData { Name = "Importer2", Parameters = ["route"] }
+            new() { Name = "Importer1", Parameters = ["route", "password"] },
+            new() { Name = "Importer2", Parameters = ["route"] }
         ];
 
-        var expectedResponse = new GetImportersResponse
-        {
-            Importers = importers
-        };
+        var expectedResponse = new GetImportersResponse { Importers = importers };
 
         _importerService.Setup(x => x.GetImporters()).Returns(importers);
 
@@ -45,5 +44,6 @@ public class DeviceImporterControllerTests
         response.Should().BeEquivalentTo(expectedResponse, options => options
             .ComparingByMembers<GetImportersResponse>());
     }
+
     #endregion
 }

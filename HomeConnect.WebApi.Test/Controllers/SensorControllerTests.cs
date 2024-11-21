@@ -20,8 +20,8 @@ public class SensorControllerTests
 {
     private Mock<IBusinessOwnerService> _businessOwnerServiceMock = null!;
     private Mock<IDeviceService> _deviceServiceMock = null!;
-    private Mock<INotificationService> _notificationServiceMock = null!;
     private Mock<HttpContext> _httpContextMock = null!;
+    private Mock<INotificationService> _notificationServiceMock = null!;
     private SensorController _sensorController = null!;
 
     [TestInitialize]
@@ -55,7 +55,7 @@ public class SensorControllerTests
             ModelNumber = sensor.ModelNumber,
             Name = sensor.Name,
             SecondaryPhotos = sensor.SecondaryPhotos,
-            Type = sensor.Type.ToString(),
+            Type = sensor.Type.ToString()
         };
         var sensorRequest = new CreateSensorRequest
         {
@@ -63,7 +63,7 @@ public class SensorControllerTests
             MainPhoto = sensor.MainPhoto,
             ModelNumber = sensor.ModelNumber,
             Name = sensor.Name,
-            SecondaryPhotos = sensor.SecondaryPhotos,
+            SecondaryPhotos = sensor.SecondaryPhotos
         };
         _businessOwnerServiceMock.Setup(x => x.CreateDevice(sensorArgs)).Returns(sensor);
         var items = new Dictionary<object, object?> { { Item.UserLogged, user } };
@@ -120,5 +120,6 @@ public class SensorControllerTests
         _notificationServiceMock.Verify(x => x.SendSensorNotification(It.Is((NotificationArgs a) =>
             a.HardwareId == hardwareId && a.Event == args.Event), false));
     }
+
     #endregion
 }

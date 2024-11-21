@@ -40,7 +40,9 @@ public class NotificationControllerTests
         // Arrange
         var request = new GetNotificationsRequest
         {
-            Device = Guid.NewGuid().ToString(), DateCreated = DateToString(DateTime.Now), Read = false
+            Device = Guid.NewGuid().ToString(),
+            DateCreated = DateToString(DateTime.Now),
+            Read = false
         };
         var user = new User("John", "Doe", "email@email.com", "Password@100",
             new Role { Name = "HomeOwner", Permissions = [] });
@@ -49,7 +51,10 @@ public class NotificationControllerTests
             business);
         var notification = new Notification
         {
-            Event = "Event", OwnedDevice = new OwnedDevice(new Home(), device), Read = false, Date = DateTime.Now
+            Event = "Event",
+            OwnedDevice = new OwnedDevice(new Home(), device),
+            Read = false,
+            Date = DateTime.Now
         };
         var items = new Dictionary<object, object?> { { Item.UserLogged, user } };
         List<Notification> notifications = [notification];

@@ -98,6 +98,55 @@ public class HomeRepositoryTests
 
     #endregion
 
+    #region Rename
+
+    [TestMethod]
+    public void Rename_RenamesHome()
+    {
+        // Arrange
+        Guid homeId = _home.Id;
+        var newName = "New Home Name";
+
+        // Act
+        _homeRepository.Rename(_home, newName);
+
+        // Assert
+        Home? updatedHome = _context.Homes.Find(homeId);
+        Assert.IsNotNull(updatedHome);
+        Assert.AreEqual(newName, updatedHome.NickName);
+    }
+
+    #endregion
+
+    #region UpdateHome
+
+    [TestMethod]
+    public void UpdateHome_WhenRoomsAreUpdated_UpdatesRoomsList()
+    {
+        // Arrange
+        var home = new Home(_homeOwner, "Main St 123", 12.5, 12.5, 5);
+        var room = new Room { Id = Guid.NewGuid(), Name = "Living Room", Home = home };
+
+        _context.Homes.Add(home);
+        _context.Rooms.Add(room);
+        _context.SaveChanges();
+
+        // Act
+        if (!home.Rooms.Any(r => r.Id == room.Id))
+        {
+            home.Rooms.Add(room);
+        }
+
+        _homeRepository.Update(home);
+
+        // Assert
+        Home? updatedHome = _context.Homes.Include(h => h.Rooms).FirstOrDefault(h => h.Id == home.Id);
+        updatedHome.Should().NotBeNull();
+        updatedHome.Rooms.Should().ContainSingle(r => r.Id == room.Id && r.Name == "Living Room");
+    }
+
+    #endregion
+
     #region GetByAddress
 
     #region Success
@@ -126,26 +175,6 @@ public class HomeRepositoryTests
 
     #endregion
 
-    #region Rename
-
-    [TestMethod]
-    public void Rename_RenamesHome()
-    {
-        // Arrange
-        var homeId = _home.Id;
-        var newName = "New Home Name";
-
-        // Act
-        _homeRepository.Rename(_home, newName);
-
-        // Assert
-        var updatedHome = _context.Homes.Find(homeId);
-        Assert.IsNotNull(updatedHome);
-        Assert.AreEqual(newName, updatedHome.NickName);
-    }
-
-    #endregion
-
     #region GetHomesByUserId
 
     #region Success
@@ -159,7 +188,7 @@ public class HomeRepositoryTests
         _context.SaveChanges();
 
         // Act
-        var result = _homeRepository.GetHomesByUserId(_homeOwner.Id);
+        List<Home> result = _homeRepository.GetHomesByUserId(_homeOwner.Id);
 
         // Assert
         result.Should().Contain(_home).And.Contain(home2);
@@ -169,42 +198,13 @@ public class HomeRepositoryTests
     public void GetHomesByUserId_WhenUserIsMember_ReturnsHomes()
     {
         // Act
-        var result = _homeRepository.GetHomesByUserId(_otherOwner.Id);
+        List<Home> result = _homeRepository.GetHomesByUserId(_otherOwner.Id);
 
         // Assert
         result.Should().Contain(_home);
     }
 
     #endregion
-
-    #endregion
-
-    #region UpdateHome
-
-    [TestMethod]
-    public void UpdateHome_WhenRoomsAreUpdated_UpdatesRoomsList()
-    {
-        // Arrange
-        var home = new Home(_homeOwner, "Main St 123", 12.5, 12.5, 5);
-        var room = new Room { Id = Guid.NewGuid(), Name = "Living Room", Home = home };
-
-        _context.Homes.Add(home);
-        _context.Rooms.Add(room);
-        _context.SaveChanges();
-
-        // Act
-        if (!home.Rooms.Any(r => r.Id == room.Id))
-        {
-            home.Rooms.Add(room);
-        }
-
-        _homeRepository.Update(home);
-
-        // Assert
-        var updatedHome = _context.Homes.Include(h => h.Rooms).FirstOrDefault(h => h.Id == home.Id);
-        updatedHome.Should().NotBeNull();
-        updatedHome.Rooms.Should().ContainSingle(r => r.Id == room.Id && r.Name == "Living Room");
-    }
 
     #endregion
 }

@@ -22,7 +22,7 @@ public sealed record CreateSensorRequest
             ModelNumber = ModelNumber,
             Name = Name ?? string.Empty,
             SecondaryPhotos = SecondaryPhotos,
-            Type = "Sensor",
+            Type = "Sensor"
         };
     }
 }

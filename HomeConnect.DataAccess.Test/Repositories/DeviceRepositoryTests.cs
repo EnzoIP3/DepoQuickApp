@@ -28,7 +28,8 @@ public class DeviceRepositoryTests
         _validUser = new User("John", "Doe", "johhnDoe@example.com", "Password#100", _role);
         _validDevice = new Device("DeviceValid", "123456", "Device description", "https://example.com/image.png",
             [], "Camera", new Business("123456", "BusinessValid", "https://example.com/image.png", _validUser));
-        _secondValidDevice = new Device("DeviceValid2", "1234567", "Device description", "https://example2.com/image.png",
+        _secondValidDevice = new Device("DeviceValid2", "1234567", "Device description",
+            "https://example2.com/image.png",
             [], "Sensor", new Business("1234567", "BusinessValid2", "https://example.com/image.png", _validUser));
         _context.Add(_validDevice);
         _context.Add(_secondValidDevice);
@@ -109,6 +110,25 @@ public class DeviceRepositoryTests
     }
 
     #endregion
+
+    #endregion
+
+    #region Exists
+
+    [TestMethod]
+    public void Exists_WhenDeviceExists_ReturnsTrue()
+    {
+        // Arrange
+        var device = new Device("Device", "12345", "Device description", "https://example.com/image.png",
+            [], "Sensor", new Business("12345", "Business", "https://example.com/image.png", _validUser));
+        _deviceRepository.Add(device);
+
+        // Act
+        var result = _deviceRepository.Exists(device.Id);
+
+        // Assert
+        result.Should().BeTrue();
+    }
 
     #endregion
 
@@ -214,22 +234,5 @@ public class DeviceRepositoryTests
 
     #endregion
 
-    #endregion
-
-    #region Exists
-    [TestMethod]
-    public void Exists_WhenDeviceExists_ReturnsTrue()
-    {
-        // Arrange
-        var device = new Device("Device", "12345", "Device description", "https://example.com/image.png",
-            [], "Sensor", new Business("12345", "Business", "https://example.com/image.png", _validUser));
-        _deviceRepository.Add(device);
-
-        // Act
-        var result = _deviceRepository.Exists(device.Id);
-
-        // Assert
-        result.Should().BeTrue();
-    }
     #endregion
 }

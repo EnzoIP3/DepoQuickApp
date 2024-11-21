@@ -10,8 +10,8 @@ namespace HomeConnect.DataAccess.Test.Repositories;
 public class MemberRepositoryTests
 {
     private readonly Context _context = DbContextBuilder.BuildTestDbContext();
-    private MemberRepository _memberRepository = null!;
     private Member _member = null!;
+    private MemberRepository _memberRepository = null!;
 
     [TestInitialize]
     public void Initialize()

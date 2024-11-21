@@ -13,7 +13,10 @@ public sealed record GetBusinessesRequest
     {
         return new GetBusinessesArgs
         {
-            CurrentPage = CurrentPage, PageSize = PageSize, FullNameFilter = OwnerName, NameFilter = Name
+            CurrentPage = CurrentPage,
+            PageSize = PageSize,
+            FullNameFilter = OwnerName,
+            NameFilter = Name
         };
     }
 }

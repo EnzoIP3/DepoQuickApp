@@ -36,7 +36,7 @@ public sealed class HomeController : ControllerBase
     public GetHomePermissionsResponse GetHomePermissions([FromRoute] string homesId)
     {
         var userLoggedIn = HttpContext.Items[Item.UserLogged] as User;
-        var permissions = _homeOwnerService.GetHomePermissions(Guid.Parse(homesId), userLoggedIn!.Id);
+        List<HomePermission> permissions = _homeOwnerService.GetHomePermissions(Guid.Parse(homesId), userLoggedIn!.Id);
         return GetHomePermissionsResponse.FromHomePermissions(homesId, permissions);
     }
 
@@ -55,7 +55,7 @@ public sealed class HomeController : ControllerBase
     [AuthorizationFilter(SystemPermission.GetHomes)]
     public GetHomeResponse GetHome([FromRoute] string homesId)
     {
-        var home = _homeOwnerService.GetHome(Guid.Parse(homesId));
+        Home home = _homeOwnerService.GetHome(Guid.Parse(homesId));
         return GetHomeResponse.FromHome(home);
     }
 
@@ -109,7 +109,7 @@ public sealed class HomeController : ControllerBase
     [HomeAuthorizationFilter(HomePermission.CreateRoom)]
     public CreateRoomResponse CreateRoom([FromRoute] string homesId, [FromBody] CreateRoomRequest request)
     {
-        var room = _homeOwnerService.CreateRoom(homesId, request.Name ?? string.Empty);
+        Room room = _homeOwnerService.CreateRoom(homesId, request.Name ?? string.Empty);
         return new CreateRoomResponse { RoomId = room.Id.ToString() };
     }
 

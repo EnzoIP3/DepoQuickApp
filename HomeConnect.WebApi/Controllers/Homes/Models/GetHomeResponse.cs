@@ -5,7 +5,7 @@ namespace HomeConnect.WebApi.Controllers.Homes.Models;
 public sealed record GetHomeResponse
 {
     public string Id { get; init; } = null!;
-    public string? Name { get; init; } = null!;
+    public string? Name { get; init; }
     public OwnerInfo Owner { get; init; } = null!;
     public string Address { get; init; } = null!;
     public double Latitude { get; init; }

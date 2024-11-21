@@ -21,8 +21,8 @@ public class MotionSensorControllerTests
 
     private Mock<IBusinessOwnerService> _businessOwnerServiceMock = null!;
     private Mock<HttpContext> _httpContextMock = null!;
-    private Mock<INotificationService> _notificationServiceMock = null!;
     private MotionSensorController _motionSensorController = null!;
+    private Mock<INotificationService> _notificationServiceMock = null!;
 
     [TestInitialize]
     public void TestInitialize()
@@ -30,8 +30,11 @@ public class MotionSensorControllerTests
         _httpContextMock = new Mock<HttpContext>();
         _notificationServiceMock = new Mock<INotificationService>();
         _businessOwnerServiceMock = new Mock<IBusinessOwnerService>();
-        _motionSensorController = new MotionSensorController(_businessOwnerServiceMock.Object, _notificationServiceMock.Object)
-        { ControllerContext = { HttpContext = _httpContextMock.Object } };
+        _motionSensorController =
+            new MotionSensorController(_businessOwnerServiceMock.Object, _notificationServiceMock.Object)
+            {
+                ControllerContext = { HttpContext = _httpContextMock.Object }
+            };
     }
 
     #region CreateDevices
@@ -74,6 +77,7 @@ public class MotionSensorControllerTests
         response.Should().NotBeNull();
         response.Id.Should().Be(motionSensor.Id);
     }
+
     #endregion
 
     #region MovementDetected
@@ -93,5 +97,6 @@ public class MotionSensorControllerTests
         result.Should().NotBeNull();
         result.HardwareId.Should().Be(hardwareId);
     }
+
     #endregion
 }

@@ -56,6 +56,12 @@ public class UserRepository : PaginatedRepositoryBase<User>, IUserRepository
         return _context.Users.Include(u => u.Roles).ThenInclude(u => u.Permissions).First(u => u.Id == id);
     }
 
+    public void Update(User user)
+    {
+        _context.Users.Update(user);
+        _context.SaveChanges();
+    }
+
     protected override IQueryable<User> GetQueryable()
     {
         return _context.Users.Include(u => u.Roles);
@@ -90,11 +96,5 @@ public class UserRepository : PaginatedRepositoryBase<User>, IUserRepository
         }
 
         return query;
-    }
-
-    public void Update(User user)
-    {
-        _context.Users.Update(user);
-        _context.SaveChanges();
     }
 }

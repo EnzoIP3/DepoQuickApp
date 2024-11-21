@@ -1,12 +1,17 @@
 using BusinessLogic.Devices.Entities;
 using BusinessLogic.Devices.Models;
 using BusinessLogic.Devices.Repositories;
+using BusinessLogic.HomeOwners.Entities;
 using BusinessLogic.HomeOwners.Repositories;
 
 namespace BusinessLogic.Devices.Services;
 
 public class DeviceService : IDeviceService
 {
+    private readonly IDeviceRepository _deviceRepository;
+    private readonly IOwnedDeviceRepository _ownedDeviceRepository;
+    private readonly IRoomRepository _roomRepository;
+
     public DeviceService(IDeviceRepository deviceRepository, IOwnedDeviceRepository ownedDeviceRepository,
         IRoomRepository roomRepository)
     {
@@ -15,10 +20,6 @@ public class DeviceService : IDeviceService
         _roomRepository = roomRepository;
     }
 
-    private readonly IDeviceRepository _deviceRepository;
-    private readonly IOwnedDeviceRepository _ownedDeviceRepository;
-    private readonly IRoomRepository _roomRepository;
-
     public PagedData<Device> GetDevices(GetDevicesArgs parameters)
     {
         EnsureDeviceTypeExists(parameters);
@@ -26,14 +27,6 @@ public class DeviceService : IDeviceService
         parameters.PageSize ??= 10;
         PagedData<Device> devices = _deviceRepository.GetPaged(parameters);
         return devices;
-    }
-
-    private static void EnsureDeviceTypeExists(GetDevicesArgs parameters)
-    {
-        if (parameters.DeviceTypeFilter != null && !Enum.TryParse(parameters.DeviceTypeFilter, out DeviceType _))
-        {
-            throw new ArgumentException("That device type does not exist.");
-        }
     }
 
     public bool TurnDevice(string hardwareId, bool state)
@@ -67,14 +60,6 @@ public class DeviceService : IDeviceService
         _ownedDeviceRepository.UpdateLampState(Guid.Parse(hardwareId), state);
     }
 
-    private void EnsureDeviceIsALamp(string hardwareId)
-    {
-        if (_ownedDeviceRepository.GetByHardwareId(Guid.Parse(hardwareId)).Device.Type != DeviceType.Lamp)
-        {
-            throw new InvalidOperationException("Device is not a lamp.");
-        }
-    }
-
     public void UpdateSensorState(string hardwareId, bool state)
     {
         EnsureHardwareIdIsValid(hardwareId);
@@ -83,20 +68,61 @@ public class DeviceService : IDeviceService
         _ownedDeviceRepository.UpdateSensorState(Guid.Parse(hardwareId), state);
     }
 
-    private void EnsureDeviceIsASensor(string hardwareId)
-    {
-        if (_ownedDeviceRepository.GetByHardwareId(Guid.Parse(hardwareId)).Device.Type != DeviceType.Sensor)
-        {
-            throw new InvalidOperationException("Device is not a sensor.");
-        }
-    }
-
     public Camera GetCameraById(string cameraId)
     {
         EnsureIdFormatIsValid(cameraId);
         EnsureDeviceExists(cameraId);
         EnsureDeviceIsACamera(cameraId);
         return _deviceRepository.Get(Guid.Parse(cameraId)!) as Camera;
+    }
+
+    public void MoveDevice(string targetRoomId, string ownedDeviceId)
+    {
+        if (!_roomRepository.Exists(Guid.Parse(targetRoomId)))
+        {
+            throw new ArgumentException("The room where the device should be moved does not exist.");
+        }
+
+        Room targetRoom = _roomRepository.Get(Guid.Parse(targetRoomId));
+        OwnedDevice ownedDevice = _ownedDeviceRepository.GetByHardwareId(Guid.Parse(ownedDeviceId));
+
+        if (ownedDevice.Room != null)
+        {
+            targetRoom.AddOwnedDevice(ownedDevice);
+            Room sourceRoom = _roomRepository.Get(ownedDevice.Room.Id);
+            sourceRoom.RemoveOwnedDevice(ownedDevice);
+            _roomRepository.Update(sourceRoom);
+            _roomRepository.Update(targetRoom);
+            _ownedDeviceRepository.Update(ownedDevice);
+        }
+        else
+        {
+            throw new ArgumentException("Device is not in a room.");
+        }
+    }
+
+    private static void EnsureDeviceTypeExists(GetDevicesArgs parameters)
+    {
+        if (parameters.DeviceTypeFilter != null && !Enum.TryParse(parameters.DeviceTypeFilter, out DeviceType _))
+        {
+            throw new ArgumentException("That device type does not exist.");
+        }
+    }
+
+    private void EnsureDeviceIsALamp(string hardwareId)
+    {
+        if (_ownedDeviceRepository.GetByHardwareId(Guid.Parse(hardwareId)).Device.Type != DeviceType.Lamp)
+        {
+            throw new InvalidOperationException("Device is not a lamp.");
+        }
+    }
+
+    private void EnsureDeviceIsASensor(string hardwareId)
+    {
+        if (_ownedDeviceRepository.GetByHardwareId(Guid.Parse(hardwareId)).Device.Type != DeviceType.Sensor)
+        {
+            throw new InvalidOperationException("Device is not a sensor.");
+        }
     }
 
     private void EnsureDeviceIsACamera(string cameraId)
@@ -120,31 +146,6 @@ public class DeviceService : IDeviceService
         if (string.IsNullOrWhiteSpace(cameraId) || !Guid.TryParse(cameraId, out _))
         {
             throw new ArgumentException("Camera ID format is invalid.");
-        }
-    }
-
-    public void MoveDevice(string targetRoomId, string ownedDeviceId)
-    {
-        if (!_roomRepository.Exists(Guid.Parse(targetRoomId)))
-        {
-            throw new ArgumentException("The room where the device should be moved does not exist.");
-        }
-
-        var targetRoom = _roomRepository.Get(Guid.Parse(targetRoomId));
-        var ownedDevice = _ownedDeviceRepository.GetByHardwareId(Guid.Parse(ownedDeviceId));
-
-        if (ownedDevice.Room != null)
-        {
-            targetRoom.AddOwnedDevice(ownedDevice);
-            var sourceRoom = _roomRepository.Get(ownedDevice.Room.Id);
-            sourceRoom.RemoveOwnedDevice(ownedDevice);
-            _roomRepository.Update(sourceRoom);
-            _roomRepository.Update(targetRoom);
-            _ownedDeviceRepository.Update(ownedDevice);
-        }
-        else
-        {
-            throw new ArgumentException("Device is not in a room.");
         }
     }
 

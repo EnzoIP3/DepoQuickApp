@@ -1,5 +1,6 @@
 using BusinessLogic.Admins.Services;
 using BusinessLogic.Roles.Entities;
+using BusinessLogic.Users.Entities;
 using BusinessLogic.Users.Services;
 using HomeConnect.WebApi.Controllers.Admins.Models;
 using HomeConnect.WebApi.Filters;
@@ -12,8 +13,8 @@ namespace HomeConnect.WebApi.Controllers.Admins;
 [AuthenticationFilter]
 public sealed class AdminController : ControllerBase
 {
-    private readonly IUserService _userService;
     private readonly IAdminService _adminService;
+    private readonly IUserService _userService;
 
     public AdminController(IUserService userService, IAdminService adminService)
     {
@@ -25,7 +26,7 @@ public sealed class AdminController : ControllerBase
     [AuthorizationFilter(SystemPermission.CreateAdministrator)]
     public CreateAdminResponse CreateAdmin([FromBody] CreateAdminRequest request)
     {
-        var admin = _userService.CreateUser(request.ToCreateUserArgs());
+        User admin = _userService.CreateUser(request.ToCreateUserArgs());
         return new CreateAdminResponse { Id = admin.Id.ToString() };
     }
 

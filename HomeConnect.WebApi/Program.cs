@@ -2,7 +2,7 @@ using System.Diagnostics.CodeAnalysis;
 using HomeConnect.WebApi;
 using HomeConnect.WebApi.Filters;
 
-var builder = WebApplication.CreateBuilder(args);
+WebApplicationBuilder builder = WebApplication.CreateBuilder(args);
 
 builder.Services
     .AddDatabase(builder.Configuration)
@@ -37,7 +37,7 @@ app.Run();
 namespace HomeConnect.WebApi
 {
     [ExcludeFromCodeCoverage]
-    public partial class Program
+    public class Program
     {
     }
 }

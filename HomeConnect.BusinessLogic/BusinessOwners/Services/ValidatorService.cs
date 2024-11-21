@@ -6,13 +6,14 @@ namespace BusinessLogic.BusinessOwners.Services;
 
 public class ValidatorService : IValidatorService
 {
+    private static readonly string Path = AppDomain.CurrentDomain.BaseDirectory + "Validators";
+
+    private readonly IAssemblyInterfaceLoader<IModeloValidador> _loadAssembly;
+
     public ValidatorService(IAssemblyInterfaceLoader<IModeloValidador> loadAssembly)
     {
         _loadAssembly = loadAssembly;
     }
-
-    private readonly IAssemblyInterfaceLoader<IModeloValidador> _loadAssembly;
-    private static readonly string Path = AppDomain.CurrentDomain.BaseDirectory + "Validators";
 
     public List<ValidatorInfo> GetValidators()
     {

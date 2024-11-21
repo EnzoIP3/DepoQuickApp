@@ -22,9 +22,9 @@ public class LampControllerTests
 
     private Mock<IBusinessOwnerService> _businessOwnerServiceMock = null!;
     private Mock<IDeviceService> _deviceServiceMock = null!;
-    private Mock<INotificationService> _notificationServiceMock = null!;
     private Mock<HttpContext> _httpContextMock = null!;
     private LampController _lampController = null!;
+    private Mock<INotificationService> _notificationServiceMock = null!;
 
     [TestInitialize]
     public void TestInitialize()
@@ -35,7 +35,7 @@ public class LampControllerTests
         _notificationServiceMock = new Mock<INotificationService>(MockBehavior.Strict);
         _lampController =
             new LampController(_businessOwnerServiceMock.Object, _deviceServiceMock.Object,
-                    _notificationServiceMock.Object)
+                _notificationServiceMock.Object)
             { ControllerContext = { HttpContext = _httpContextMock.Object } };
     }
 
@@ -79,15 +79,17 @@ public class LampControllerTests
         response.Should().NotBeNull();
         response.Id.Should().Be(lamp.Id);
     }
+
     #endregion
 
     #region TurningLamps
+
     [TestMethod]
     public void TurnOn_WhenCalledWithValidHardwareId_ReturnsOkResponse()
     {
         // Arrange
         var hardwareId = Guid.NewGuid().ToString();
-        var date = DateTime.Now;
+        DateTime date = DateTime.Now;
         var state = true;
         var args = new NotificationArgs { HardwareId = hardwareId, Date = date, Event = "Lamp was turned on" };
         _deviceServiceMock.Setup(x => x.TurnLamp(hardwareId, state));
@@ -110,7 +112,7 @@ public class LampControllerTests
     {
         // Arrange
         var hardwareId = Guid.NewGuid().ToString();
-        var date = DateTime.Now;
+        DateTime date = DateTime.Now;
         var state = false;
         var args = new NotificationArgs { HardwareId = hardwareId, Date = date, Event = "Lamp was turned off" };
         _deviceServiceMock.Setup(x => x.TurnLamp(hardwareId, state));

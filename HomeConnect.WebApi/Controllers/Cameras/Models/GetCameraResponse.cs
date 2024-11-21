@@ -9,7 +9,7 @@ public sealed record GetCameraResponse
     public string Description { get; set; } = string.Empty;
     public string ModelNumber { get; set; } = string.Empty;
     public string MainPhoto { get; set; } = string.Empty;
-    public List<string> SecondaryPhotos { get; set; } = new List<string>();
+    public List<string> SecondaryPhotos { get; set; } = [];
     public bool MotionDetection { get; set; }
     public bool PersonDetection { get; set; }
     public bool Exterior { get; set; }
@@ -28,7 +28,7 @@ public sealed record GetCameraResponse
             MotionDetection = camera.MotionDetection,
             PersonDetection = camera.PersonDetection,
             Exterior = camera.IsExterior,
-            Interior = camera.IsInterior,
+            Interior = camera.IsInterior
         };
     }
 }

@@ -13,7 +13,10 @@ public sealed record GetUsersRequest
     {
         return new GetUsersArgs
         {
-            CurrentPage = Page, PageSize = PageSize, FullNameFilter = FullName, RoleFilter = Roles
+            CurrentPage = Page,
+            PageSize = PageSize,
+            FullNameFilter = FullName,
+            RoleFilter = Roles
         };
     }
 }

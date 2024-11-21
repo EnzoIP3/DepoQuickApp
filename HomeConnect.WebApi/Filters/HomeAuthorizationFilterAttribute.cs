@@ -1,4 +1,5 @@
 using System.Net;
+using BusinessLogic.Devices.Entities;
 using BusinessLogic.HomeOwners.Entities;
 using BusinessLogic.HomeOwners.Services;
 using BusinessLogic.Users.Entities;
@@ -64,8 +65,8 @@ public class HomeAuthorizationFilterAttribute(string? permission = null) : Attri
         IHomeOwnerService homeOwnerService = GetHomeOwnerService(context);
         try
         {
-            var room = homeOwnerService.GetRoom(roomId);
-            var home = room.Home;
+            Room room = homeOwnerService.GetRoom(roomId);
+            Home home = room.Home;
             EnsureUserHasRequiredPermission(context, user, home);
         }
         catch (KeyNotFoundException)
@@ -93,8 +94,8 @@ public class HomeAuthorizationFilterAttribute(string? permission = null) : Attri
         IHomeOwnerService homeOwnerService = GetHomeOwnerService(context);
         try
         {
-            var device = homeOwnerService.GetOwnedDeviceByHardwareId(hardwareId);
-            var home = device.Home;
+            OwnedDevice device = homeOwnerService.GetOwnedDeviceByHardwareId(hardwareId);
+            Home home = device.Home;
             EnsureUserHasRequiredPermission(context, user, home);
         }
         catch (KeyNotFoundException)

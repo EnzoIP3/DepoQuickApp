@@ -13,9 +13,9 @@ namespace HomeConnect.WebApi.Test.Controllers;
 [TestClass]
 public class AdminControllerTests
 {
-    private Mock<IUserService> _userService = null!;
     private Mock<IAdminService> _adminService = null!;
     private AdminController _controller = null!;
+    private Mock<IUserService> _userService = null!;
 
     [TestInitialize]
     public void Initialize()

@@ -1,3 +1,4 @@
+using System.Globalization;
 using BusinessLogic.BusinessOwners.Entities;
 using BusinessLogic.Devices.Entities;
 using BusinessLogic.Devices.Repositories;
@@ -106,7 +107,8 @@ public class NotificationServiceTest
         // Arrange
         var userId = Guid.NewGuid();
         var deviceFilter = "Sensor";
-        DateTime dateFilter = DateTime.Now;
+        var dateFilter = DateTime.Now.ToString("dd-MM-yyyy");
+        var parsedDate = DateTime.ParseExact(dateFilter, "dd-MM-yyyy", CultureInfo.InvariantCulture);
         var readFilter = true;
         var notifications = new List<Notification>
         {
@@ -123,7 +125,7 @@ public class NotificationServiceTest
                         new Business())),
                 new User("name2", "surname2", "email2@email.com", "Password@100", new Role()))
         };
-        _mockNotificationRepository.Setup(x => x.GetRange(userId, deviceFilter, dateFilter, readFilter))
+        _mockNotificationRepository.Setup(x => x.GetRange(userId, deviceFilter, parsedDate, readFilter))
             .Returns(notifications);
         var args = new GetNotificationsArgs
         {
@@ -136,6 +138,20 @@ public class NotificationServiceTest
         // Assert
         _mockNotificationRepository.VerifyAll();
         result.Should().BeEquivalentTo(notifications);
+    }
+
+    [TestMethod]
+    public void GetNotifications_WhenInvalidFormatDateCreated_ThrowsArgumentException()
+    {
+        // Arrange
+        const string dateFilter = "invalid";
+        var args = new GetNotificationsArgs { UserId = Guid.NewGuid(), DateFilter = dateFilter };
+
+        // Act
+        Func<List<Notification>> act = () => _notificationService.GetNotifications(args);
+
+        // Assert
+        act.Should().Throw<ArgumentException>();
     }
 
     [TestMethod]

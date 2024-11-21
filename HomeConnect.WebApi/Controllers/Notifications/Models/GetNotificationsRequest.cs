@@ -9,11 +9,11 @@ public record GetNotificationsRequest
     public string? DateCreated { get; set; }
     public bool? Read { get; set; }
 
-    public GetNotificationsArgs ToArgs(User user, DateTime? dateCreated)
+    public GetNotificationsArgs ToArgs(User user)
     {
         return new GetNotificationsArgs
         {
-            UserId = user.Id, DeviceFilter = Device, DateFilter = dateCreated, ReadFilter = Read
+            UserId = user.Id, DeviceFilter = Device, DateFilter = DateCreated, ReadFilter = Read
         };
     }
 }

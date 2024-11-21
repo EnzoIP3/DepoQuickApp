@@ -25,37 +25,10 @@ public class NotificationController : ControllerBase
     [AuthorizationFilter(SystemPermission.GetNotifications)]
     public GetNotificationsResponse GetNotifications([FromQuery] GetNotificationsRequest request)
     {
-        DateTime? dateCreated = GetDateFromRequest(request);
         var user = HttpContext.Items[Item.UserLogged] as User;
         List<Notification> notifications =
-            _notificationService.GetNotifications(request.ToArgs(user!, dateCreated));
+            _notificationService.GetNotifications(request.ToArgs(user!));
         _notificationService.MarkNotificationsAsRead(notifications);
         return GetNotificationsResponse.FromNotifications(notifications);
-    }
-
-    private static DateTime? GetDateFromRequest(GetNotificationsRequest request)
-    {
-        DateTime? dateCreated = null;
-        try
-        {
-            dateCreated = ParseDateCreated(request, dateCreated);
-        }
-        catch (FormatException)
-        {
-            throw new ArgumentException("The date created filter is invalid");
-        }
-
-        return dateCreated;
-    }
-
-    private static DateTime? ParseDateCreated(GetNotificationsRequest request, DateTime? dateCreated)
-    {
-        if (request.DateCreated != null)
-        {
-            dateCreated = DateTime.ParseExact(request.DateCreated, "dd-MM-yyyy",
-                CultureInfo.InvariantCulture);
-        }
-
-        return dateCreated;
     }
 }

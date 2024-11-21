@@ -25,15 +25,21 @@ public static class ServicesExtension
 {
     public static IServiceCollection AddDatabase(this IServiceCollection services, IConfiguration configuration)
     {
-        var connectionString = configuration.GetConnectionString("DefaultConnection");
-
-        if (string.IsNullOrEmpty(connectionString))
-        {
-            throw new InvalidOperationException("Missing DefaultConnection connection string");
-        }
-
+        var productionConnectionString = configuration.GetConnectionString("Production");
+        var connectionString = string.IsNullOrEmpty(productionConnectionString)
+            ? configuration.GetConnectionString("Development")
+            : productionConnectionString;
+        EnsureConnectionStringIsNotNull(connectionString);
         services.AddDbContext<Context>(options => options.UseSqlServer(connectionString));
         return services;
+    }
+
+    private static void EnsureConnectionStringIsNotNull(string? connectionString)
+    {
+        if (string.IsNullOrEmpty(connectionString))
+        {
+            throw new InvalidOperationException("Missing connection string");
+        }
     }
 
     public static IServiceCollection AddServices(this IServiceCollection services)

@@ -1,3 +1,4 @@
+using BusinessLogic.BusinessOwners.Models;
 using BusinessLogic.BusinessOwners.Services;
 using BusinessLogic.Roles.Entities;
 using HomeConnect.WebApi.Controllers.DeviceValidators.Models;

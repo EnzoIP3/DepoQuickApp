@@ -41,7 +41,7 @@ public class CameraController(
             SecondaryPhotos = request.SecondaryPhotos,
         };
 
-        Camera createdCamera = businessOwnerService.CreateCamera(args);
+        var createdCamera = businessOwnerService.CreateCamera(args);
 
         return new CreateCameraResponse { Id = createdCamera.Id };
     }
@@ -51,7 +51,7 @@ public class CameraController(
     [AuthorizationFilter(SystemPermission.GetCamera)]
     public GetCameraResponse GetCamera([FromRoute] string cameraId)
     {
-        Camera camera = deviceService.GetCameraById(cameraId);
+        var camera = deviceService.GetCameraById(cameraId);
         return new GetCameraResponse
         {
             Id = camera.Id.ToString(),
@@ -70,7 +70,7 @@ public class CameraController(
     [HttpPost("{hardwareId}/movement-detected")]
     public NotifyResponse MovementDetected([FromRoute] string hardwareId)
     {
-        NotificationArgs args = CreateMovementDetectedNotificationArgs(hardwareId);
+        var args = CreateMovementDetectedNotificationArgs(hardwareId);
         notificationService.Notify(args);
         return new NotifyResponse { HardwareId = hardwareId };
     }
@@ -84,7 +84,7 @@ public class CameraController(
     [HttpPost("{hardwareId}/person-detected")]
     public NotifyResponse PersonDetected([FromRoute] string hardwareId, [FromBody] PersonDetectedRequest request)
     {
-        NotificationArgs args = CreatePersonDetectedNotificationArgs(hardwareId, request.UserEmail ?? string.Empty);
+        var args = CreatePersonDetectedNotificationArgs(hardwareId, request.UserEmail ?? string.Empty);
         notificationService.Notify(args);
         return new NotifyResponse { HardwareId = hardwareId };
     }

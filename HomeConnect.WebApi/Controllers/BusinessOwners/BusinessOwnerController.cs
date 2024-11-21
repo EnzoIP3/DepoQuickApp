@@ -19,7 +19,7 @@ public class BusinessOwnerController(IUserService userService)
     public CreateBusinessOwnerResponse CreateBusinessOwner(CreateBusinessOwnerRequest request)
     {
         CreateUserArgs createUserArgs = UserModelFromRequest(request);
-        User businessOwner = userService.CreateUser(createUserArgs);
+        var businessOwner = userService.CreateUser(createUserArgs);
         return new CreateBusinessOwnerResponse { Id = businessOwner.Id.ToString() };
     }
 

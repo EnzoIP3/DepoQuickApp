@@ -15,7 +15,7 @@ public class DeviceTypeController(IDeviceService deviceService) : ControllerBase
     [HttpGet]
     public GetDeviceTypesResponse GetDeviceTypes()
     {
-        IEnumerable<string> deviceTypes = deviceService.GetAllDeviceTypes();
+        var deviceTypes = deviceService.GetAllDeviceTypes();
         Response.Headers["Cache-Control"] = $"public,max-age={_defaultCacheTime}";
         return new GetDeviceTypesResponse { DeviceTypes = deviceTypes.ToList() };
     }

@@ -21,7 +21,7 @@ public class HomeController(IHomeOwnerService homeOwnerService) : ControllerBase
     public GetHomesResponse GetHomes()
     {
         var userLoggedIn = HttpContext.Items[Item.UserLogged] as User;
-        List<Home> homes = homeOwnerService.GetHomesByOwnerId(userLoggedIn!.Id);
+        var homes = homeOwnerService.GetHomesByOwnerId(userLoggedIn!.Id);
         var homeInfos = homes.Select(h => new ListHomeInfo
         {
             Id = h.Id.ToString(),
@@ -54,7 +54,7 @@ public class HomeController(IHomeOwnerService homeOwnerService) : ControllerBase
     public NameHomeResponse NameHome([FromRoute] string homesId, [FromBody] NameHomeRequest request)
     {
         var userLoggedIn = HttpContext.Items[Item.UserLogged] as User;
-        var nameHomeArgs = NameHomeArgsFromRequest(request, homesId);
+        var nameHomeArgs = NameHomeArgsFromRequest(request, homesId, userLoggedIn.Id);
         nameHomeArgs.OwnerId = userLoggedIn!.Id;
         homeOwnerService.NameHome(nameHomeArgs);
         return new NameHomeResponse { HomeId = homesId };
@@ -84,7 +84,7 @@ public class HomeController(IHomeOwnerService homeOwnerService) : ControllerBase
         };
     }
 
-    private static NameHomeArgs NameHomeArgsFromRequest(NameHomeRequest request, string homesId)
+    private static NameHomeArgs NameHomeArgsFromRequest(NameHomeRequest request, string homesId, Guid userId)
     {
         if (string.IsNullOrEmpty(homesId))
         {
@@ -96,7 +96,7 @@ public class HomeController(IHomeOwnerService homeOwnerService) : ControllerBase
             throw new ArgumentException("NewName cannot be null or empty");
         }
 
-        return new NameHomeArgs { HomeId = Guid.Parse(homesId), NewName = request.NewName };
+        return new NameHomeArgs { HomeId = Guid.Parse(homesId), NewName = request.NewName, OwnerId = userId };
     }
 
     [HttpPost]
@@ -104,8 +104,8 @@ public class HomeController(IHomeOwnerService homeOwnerService) : ControllerBase
     public CreateHomeResponse CreateHome([FromBody] CreateHomeRequest request)
     {
         var userLoggedIn = HttpContext.Items[Item.UserLogged];
-        CreateHomeArgs createHomeArgs = HomeArgsFromRequest(request, (User)userLoggedIn!);
-        Guid homeId = homeOwnerService.CreateHome(createHomeArgs);
+        var createHomeArgs = HomeArgsFromRequest(request, (User)userLoggedIn!);
+        var homeId = homeOwnerService.CreateHome(createHomeArgs);
         return new CreateHomeResponse { Id = homeId.ToString() };
     }
 
@@ -120,7 +120,7 @@ public class HomeController(IHomeOwnerService homeOwnerService) : ControllerBase
             UserEmail = request.Email ?? string.Empty,
             Permissions = request.Permissions
         };
-        Guid addedMemberId = homeOwnerService.AddMemberToHome(addMemberArgs);
+        var addedMemberId = homeOwnerService.AddMemberToHome(addMemberArgs);
         return new AddMemberResponse { HomeId = homesId, MemberId = addedMemberId.ToString() };
     }
 
@@ -143,7 +143,7 @@ public class HomeController(IHomeOwnerService homeOwnerService) : ControllerBase
     [HomeAuthorizationFilter(HomePermission.GetMembers)]
     public GetMembersResponse GetMembers([FromRoute] string homesId)
     {
-        List<Member> members = homeOwnerService.GetHomeMembers(homesId);
+        var members = homeOwnerService.GetHomeMembers(homesId);
         var memberInfos = members.Select(m => new ListMemberInfo
         {
             Id = m.Id.ToString(),
@@ -160,7 +160,7 @@ public class HomeController(IHomeOwnerService homeOwnerService) : ControllerBase
     [HomeAuthorizationFilter(HomePermission.GetDevices)]
     public GetHomeDevicesResponse GetDevices([FromRoute] string homesId, [FromQuery] string? roomId = null)
     {
-        IEnumerable<OwnedDevice> devices = homeOwnerService.GetHomeDevices(homesId, roomId);
+        var devices = homeOwnerService.GetHomeDevices(homesId, roomId);
         var deviceInfos = devices.Select(ListOwnedDeviceInfo.FromOwnedDevice).ToList();
         return new GetHomeDevicesResponse { Devices = deviceInfos };
     }
@@ -170,7 +170,7 @@ public class HomeController(IHomeOwnerService homeOwnerService) : ControllerBase
     [HomeAuthorizationFilter(HomePermission.AddDevice)]
     public AddDevicesResponse AddDevices([FromRoute] string homesId, [FromBody] AddDevicesRequest request)
     {
-        AddDevicesArgs addDevicesArgs = FromRequestToAddDevicesArgs(homesId, request);
+        var addDevicesArgs = FromRequestToAddDevicesArgs(homesId, request);
         homeOwnerService.AddDeviceToHome(addDevicesArgs);
         return new AddDevicesResponse { HomeId = homesId, DeviceIds = request.DeviceIds! };
     }
@@ -193,7 +193,7 @@ public class HomeController(IHomeOwnerService homeOwnerService) : ControllerBase
     [HttpGet("{homesId}/rooms")]
     public GetRoomsResponse GetRooms([FromRoute] string homesId)
     {
-        IEnumerable<Room> rooms = homeOwnerService.GetRoomsByHomeId(homesId);
+        var rooms = homeOwnerService.GetRoomsByHomeId(homesId);
         var roomInfos = rooms.Select(ListRoomInfo.FromRoom).ToList();
         return new GetRoomsResponse { Rooms = roomInfos };
     }

@@ -36,7 +36,7 @@ public class MotionSensorController(
             Type = "MotionSensor"
         };
 
-        Device createdSensor = businessOwnerService.CreateDevice(args);
+        var createdSensor = businessOwnerService.CreateDevice(args);
 
         return new CreateMotionSensorResponse { Id = createdSensor.Id };
     }
@@ -44,7 +44,7 @@ public class MotionSensorController(
     [HttpPost("{hardwareId}/movement-detected")]
     public NotifyResponse MovementDetected([FromRoute] string hardwareId)
     {
-        NotificationArgs args = CreateMovementDetectedNotificationArgs(hardwareId);
+        var args = CreateMovementDetectedNotificationArgs(hardwareId);
         notificationService.Notify(args);
         return new NotifyResponse { HardwareId = hardwareId };
     }

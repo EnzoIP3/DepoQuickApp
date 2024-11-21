@@ -49,7 +49,7 @@ public class DeviceController : ControllerBase
             DeviceNameFilter = parameters.Name,
             ModelNumberFilter = parameters.ModelNumber
         };
-        PagedData<Device> devices = _deviceService.GetDevices(args);
+        var devices = _deviceService.GetDevices(args);
         GetDevicesResponse response = ResponseFromDevices(devices);
         return response;
     }

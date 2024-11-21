@@ -18,9 +18,9 @@ public class NotificationController(INotificationService notificationService) : 
     [AuthorizationFilter(SystemPermission.GetNotifications)]
     public GetNotificationsResponse GetNotifications([FromQuery] GetNotificationsRequest request)
     {
-        DateTime? dateCreated = GetDateFromRequest(request);
+        var dateCreated = GetDateFromRequest(request);
         var user = HttpContext.Items[Item.UserLogged] as User;
-        List<Notification> notifications =
+        var notifications =
             notificationService.GetNotifications(user!.Id, request.Device, dateCreated, request.Read);
         var response = new GetNotificationsResponse
         {

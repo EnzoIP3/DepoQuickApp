@@ -14,7 +14,7 @@ public class HomeOwnerController(IUserService userService) : ControllerBase
     [HttpPost]
     public CreateHomeOwnerResponse CreateHomeOwner([FromBody] CreateHomeOwnerRequest args)
     {
-        User user = userService.CreateUser(new CreateUserArgs
+        var user = userService.CreateUser(new CreateUserArgs
         {
             Name = args.Name,
             Surname = args.Surname,

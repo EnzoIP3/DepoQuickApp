@@ -38,7 +38,7 @@ public class SensorController(
             Type = "Sensor",
         };
 
-        Device createdSensor = businessOwnerService.CreateDevice(args);
+        var createdSensor = businessOwnerService.CreateDevice(args);
 
         return new CreateSensorResponse { Id = createdSensor.Id };
     }
@@ -46,7 +46,7 @@ public class SensorController(
     [HttpPost("{hardwareId}/open")]
     public NotifyResponse Open([FromRoute] string hardwareId)
     {
-        NotificationArgs notificationArgs = CreateOpenNotificationArgs(hardwareId);
+        var notificationArgs = CreateOpenNotificationArgs(hardwareId);
         deviceService.UpdateSensorState(hardwareId, true);
         notificationService.SendSensorNotification(notificationArgs, true);
         return new NotifyResponse { HardwareId = hardwareId };
@@ -61,7 +61,7 @@ public class SensorController(
     [HttpPost("{hardwareId}/close")]
     public NotifyResponse Close([FromRoute] string hardwareId)
     {
-        NotificationArgs notificationArgs = CreateCloseNotificationArgs(hardwareId);
+        var notificationArgs = CreateCloseNotificationArgs(hardwareId);
         deviceService.UpdateSensorState(hardwareId, false);
         notificationService.SendSensorNotification(notificationArgs, false);
         return new NotifyResponse { HardwareId = hardwareId };

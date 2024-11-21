@@ -38,7 +38,7 @@ public class LampController(
             Type = "Lamp"
         };
 
-        Device createdLamp = businessOwnerService.CreateDevice(args);
+        var createdLamp = businessOwnerService.CreateDevice(args);
 
         return new CreateLampResponse { Id = createdLamp.Id };
     }
@@ -46,7 +46,7 @@ public class LampController(
     [HttpPost("{hardwareId}/turn_on")]
     public NotifyResponse TurnOn([FromRoute] string hardwareId)
     {
-        NotificationArgs args = CreateTurnNotificationArgs(hardwareId, true);
+        var args = CreateTurnNotificationArgs(hardwareId, true);
         deviceService.TurnLamp(hardwareId, true);
         notificationService.SendLampNotification(args, true);
         return new NotifyResponse { HardwareId = hardwareId };
@@ -55,7 +55,7 @@ public class LampController(
     [HttpPost("{hardwareId}/turn_off")]
     public NotifyResponse TurnOff([FromRoute] string hardwareId)
     {
-        NotificationArgs args = CreateTurnNotificationArgs(hardwareId, false);
+        var args = CreateTurnNotificationArgs(hardwareId, false);
         deviceService.TurnLamp(hardwareId, false);
         notificationService.SendLampNotification(args, false);
         return new NotifyResponse { HardwareId = hardwareId };

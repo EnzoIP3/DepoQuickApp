@@ -22,10 +22,10 @@ public class UserController(IAdminService adminService, IUserService userService
     [AuthorizationFilter(SystemPermission.GetAllUsers)]
     public GetUsersResponse GetUsers([FromQuery] GetUsersRequest request)
     {
-        PagedData<User> users = adminService.GetUsers(request.Page,
+        var users = adminService.GetUsers(request.Page,
             request.PageSize, request.FullName,
             request.Roles);
-        GetUsersResponse response = ResponseFromUsers(users);
+        var response = ResponseFromUsers(users);
         return response;
     }
 
@@ -64,8 +64,8 @@ public class UserController(IAdminService adminService, IUserService userService
     [AuthorizationFilter(SystemPermission.GetBusinesses)]
     public GetBusinessesResponse GetBusinesses(string userId, [FromQuery] GetUserBusinessesRequest request)
     {
-        PagedData<Business> businesses = businessOwnerService.GetBusinesses(userId, request.CurrentPage, request.PageSize);
-        GetBusinessesResponse response = ResponseFromBusinesses(businesses);
+        var businesses = businessOwnerService.GetBusinesses(userId, request.CurrentPage, request.PageSize);
+        var response = ResponseFromBusinesses(businesses);
         return response;
     }
 

@@ -274,13 +274,13 @@ public class BusinessOwnerServiceTests
         // Arrange
         var args = new CreateDeviceArgs
         {
-            Owner = _owner, // Pass the owner instead of BusinessRut
+            Owner = _owner,
             Name = DeviceName,
             ModelNumber = ModelNumber,
             Description = Description,
             MainPhoto = MainPhoto,
             SecondaryPhotos = _secondaryPhotos,
-            Type = DeviceType.Camera.ToString() // Use a valid DeviceType enum value
+            Type = DeviceType.Camera.ToString()
         };
 
         _deviceRepository.Setup(x => x.ExistsByModelNumber(args.ModelNumber)).Returns(false);

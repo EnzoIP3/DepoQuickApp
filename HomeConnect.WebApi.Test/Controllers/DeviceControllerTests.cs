@@ -175,7 +175,7 @@ public class DeviceControllerTests
         var items = new Dictionary<object, object?> { { Item.UserLogged, _user } };
         var args = new NameDeviceArgs
         {
-            HardwareId = Guid.Parse(hardwareId),
+            HardwareId = hardwareId,
             NewName = request.NewName,
             OwnerId = _user.Id
         };

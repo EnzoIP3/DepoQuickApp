@@ -1,3 +1,4 @@
+using System.Globalization;
 using BusinessLogic.Devices.Entities;
 using BusinessLogic.Devices.Repositories;
 using BusinessLogic.HomeOwners.Entities;
@@ -59,9 +60,36 @@ public class NotificationService : INotificationService
     public List<Notification> GetNotifications(GetNotificationsArgs args)
     {
         EnsureDeviceFilterIsValid(args.DeviceFilter);
+        var dateFilter = GetDateFromRequest(args.DateFilter);
         List<Notification> notifications =
-            NotificationRepository.GetRange(args.UserId, args.DeviceFilter, args.DateFilter, args.ReadFilter);
+            NotificationRepository.GetRange(args.UserId, args.DeviceFilter, dateFilter, args.ReadFilter);
         return notifications;
+    }
+
+    private static DateTime? GetDateFromRequest(string? dateFilter)
+    {
+        DateTime? dateCreated = null;
+        try
+        {
+            dateCreated = ParseDate(dateFilter, dateCreated);
+        }
+        catch (FormatException)
+        {
+            throw new ArgumentException("The date created filter is invalid");
+        }
+
+        return dateCreated;
+    }
+
+    private static DateTime? ParseDate(string? dateFilter, DateTime? dateCreated)
+    {
+        if (dateFilter != null)
+        {
+            dateCreated = DateTime.ParseExact(dateFilter, "dd-MM-yyyy",
+                CultureInfo.InvariantCulture);
+        }
+
+        return dateCreated;
     }
 
     public void MarkNotificationsAsRead(List<Notification> notifications)

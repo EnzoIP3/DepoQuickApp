@@ -43,14 +43,8 @@ public sealed class UserController : ControllerBase
     {
         var userLoggedIn = HttpContext.Items[Item.UserLogged] as User;
         var args = new AddRoleToUserArgs { UserId = userLoggedIn!.Id.ToString(), Role = "HomeOwner" };
-        _userService.AddRoleToUser(args);
         User user = _userService.AddRoleToUser(args);
-        return new AddHomeOwnerRoleResponse
-        {
-            Id = args.UserId,
-            Roles = user.GetRolesAndPermissions()
-                .ToDictionary(x => x.Key.Name, x => x.Value.Select(y => y.Value).ToList())
-        };
+        return AddHomeOwnerRoleResponse.FromUser(user);
     }
 
     [HttpGet("{userId}/businesses")]

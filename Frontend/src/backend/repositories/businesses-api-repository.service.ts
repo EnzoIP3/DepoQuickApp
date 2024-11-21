@@ -1,7 +1,7 @@
 import { Injectable } from "@angular/core";
 import ApiRepository from "./api-repository";
 import { HttpClient } from "@angular/common/http";
-import { environment } from "../../environments/environment";
+import environments from "../../environments";
 import { Observable } from "rxjs";
 import CreateBusinessRequest from "../services/businesses/models/create-business-request";
 import CreateBusinessResponse from "../services/businesses/models/create-business-response";
@@ -18,7 +18,7 @@ import GetBusinessesResponse from "../services/businesses/models/business-respon
 })
 export class BusinessesApiRepositoryService extends ApiRepository {
     constructor(http: HttpClient, router: Router) {
-        super(environment.apiUrl, "businesses", http, router);
+        super(environments.apiUrl, "businesses", http, router);
     }
 
     public getBusinesses(

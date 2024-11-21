@@ -1,6 +1,6 @@
 import { Injectable } from "@angular/core";
 import ApiRepository from "./api-repository";
-import { environment } from "../../environments/environment";
+import environments from "../../environments";
 import { HttpClient } from "@angular/common/http";
 import RegisterRequest from "../services/home-owners/models/register-request";
 import RegisterResponse from "../services/home-owners/models/register-response";
@@ -12,7 +12,7 @@ import { Router } from "@angular/router";
 })
 export class HomeOwnersApiRepositoryService extends ApiRepository {
     constructor(http: HttpClient, router: Router) {
-        super(environment.apiUrl, "home_owners", http, router);
+        super(environments.apiUrl, "home_owners", http, router);
     }
 
     public register(

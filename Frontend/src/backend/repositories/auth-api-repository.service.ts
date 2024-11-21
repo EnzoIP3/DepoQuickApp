@@ -1,7 +1,7 @@
 import { Injectable } from "@angular/core";
 import ApiRepository from "./api-repository";
 import { HttpClient } from "@angular/common/http";
-import { environment } from "../../environments/environment";
+import environments from "../../environments";
 import { Observable } from "rxjs";
 import AuthRequest from "../services/auth/models/auth-request";
 import AuthResponse from "../services/auth/models/auth-response";
@@ -12,7 +12,7 @@ import { Router } from "@angular/router";
 })
 export class AuthApiRepositoryService extends ApiRepository {
     constructor(http: HttpClient, router: Router) {
-        super(environment.apiUrl, "auth", http, router);
+        super(environments.apiUrl, "auth", http, router);
     }
 
     public login(authRequest: AuthRequest): Observable<AuthResponse> {

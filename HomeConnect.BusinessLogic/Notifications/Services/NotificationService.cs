@@ -110,4 +110,9 @@ public class NotificationService : INotificationService
             Notify(args);
         }
     }
+
+    public void SendSensorNotification(NotificationArgs args, bool state)
+    {
+        throw new NotImplementedException();
+    }
 }

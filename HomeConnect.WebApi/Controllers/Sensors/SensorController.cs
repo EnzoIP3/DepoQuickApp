@@ -3,6 +3,8 @@ using BusinessLogic.BusinessOwners.Services;
 using BusinessLogic.Devices.Entities;
 using BusinessLogic.Devices.Services;
 using BusinessLogic.Notifications.Models;
+using BusinessLogic.Notifications.Repositories;
+using BusinessLogic.Notifications.Services;
 using BusinessLogic.Roles.Entities;
 using BusinessLogic.Users.Entities;
 using HomeConnect.WebApi.Controllers.Devices.Models;
@@ -16,7 +18,8 @@ namespace HomeConnect.WebApi.Controllers.Sensors;
 [Route("sensors")]
 public class SensorController(
     IDeviceService deviceService,
-    IBusinessOwnerService businessOwnerService)
+    IBusinessOwnerService businessOwnerService,
+    INotificationService notificationService)
     : ControllerBase
 {
     [HttpPost]
@@ -46,6 +49,7 @@ public class SensorController(
     {
         NotificationArgs notificationArgs = CreateOpenNotificationArgs(hardwareId);
         deviceService.UpdateSensorState(hardwareId, true, notificationArgs);
+        notificationService.SendSensorNotification(notificationArgs, true);
         return new NotifyResponse { HardwareId = hardwareId };
     }
 
@@ -60,6 +64,7 @@ public class SensorController(
     {
         NotificationArgs notificationArgs = CreateCloseNotificationArgs(hardwareId);
         deviceService.UpdateSensorState(hardwareId, false, notificationArgs);
+        notificationService.SendSensorNotification(notificationArgs, false);
         return new NotifyResponse { HardwareId = hardwareId };
     }
 

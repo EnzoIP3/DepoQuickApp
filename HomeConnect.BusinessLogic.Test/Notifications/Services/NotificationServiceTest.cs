@@ -66,39 +66,6 @@ public class NotificationServiceTest
 
     #endregion
 
-    #region MarkNotificationsAsRead
-
-    [TestMethod]
-    public void MarkNotificationsAsRead_WhenCalledWithNotifications_ShouldMarkNotificationsAsRead()
-    {
-        // Arrange
-        var notifications = new List<Notification>
-        {
-            new(Guid.NewGuid(), DateTime.Now, false, "Test Event", new OwnedDevice(
-                    new Home(_user, "Street 3420", 50, 100, 5),
-                    new Device("Device", _modelNumber, "Device description", "https://example.com/image.png", [],
-                        "Sensor",
-                        new Business())),
-                new User("name", "surname", "email@email.com", "Password@100", new Role())),
-            new(Guid.NewGuid(), DateTime.Now, false, "Test Event", new OwnedDevice(
-                    new Home(_user, "Street 3420", 50, 100, 5),
-                    new Device("Device", _modelNumber, "Device description", "https://example.com/image.png", [],
-                        "Sensor",
-                        new Business())),
-                new User("name2", "surname2", "email2@email.com", "Password@100", new Role()))
-        };
-        _mockNotificationRepository.Setup(x => x.UpdateRange(notifications)).Verifiable();
-
-        // Act
-        _notificationService.MarkNotificationsAsRead(notifications);
-
-        // Assert
-        _mockNotificationRepository.VerifyAll();
-        notifications.ForEach(n => n.Read.Should().BeTrue());
-    }
-
-    #endregion
-
     #region GetNotifications
 
     [TestMethod]
@@ -125,8 +92,10 @@ public class NotificationServiceTest
                         new Business())),
                 new User("name2", "surname2", "email2@email.com", "Password@100", new Role()))
         };
+        var clonedNotifications = notifications.Select(n => (Notification)n.Clone()).ToList();
         _mockNotificationRepository.Setup(x => x.GetRange(userId, deviceFilter, parsedDate, readFilter))
             .Returns(notifications);
+        _mockNotificationRepository.Setup(x => x.UpdateRange(notifications)).Verifiable();
         var args = new GetNotificationsArgs
         {
             UserId = userId, DeviceFilter = deviceFilter, DateFilter = dateFilter, ReadFilter = readFilter
@@ -137,7 +106,8 @@ public class NotificationServiceTest
 
         // Assert
         _mockNotificationRepository.VerifyAll();
-        result.Should().BeEquivalentTo(notifications);
+        result.Should().BeEquivalentTo(clonedNotifications);
+        notifications.ForEach(n => n.Read.Should().BeTrue());
     }
 
     [TestMethod]

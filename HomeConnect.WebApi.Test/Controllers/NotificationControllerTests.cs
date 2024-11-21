@@ -57,12 +57,13 @@ public class NotificationControllerTests
         _httpContextMock.SetupGet(h => h.Items).Returns(items);
         var args = new GetNotificationsArgs
         {
-            UserId = user.Id, DeviceFilter = request.Device, DateFilter = dateCreated.ToString("dd-MM-yyyy"), ReadFilter = request.Read
+            UserId = user.Id,
+            DeviceFilter = request.Device,
+            DateFilter = dateCreated.ToString("dd-MM-yyyy"),
+            ReadFilter = request.Read
         };
         _notificationService.Setup(n => n.GetNotifications(args))
             .Returns([notification]);
-        _notificationService.Setup(n => n.MarkNotificationsAsRead(notifications))
-            .Verifiable();
 
         // Act
         GetNotificationsResponse response = _notificationController.GetNotifications(request);

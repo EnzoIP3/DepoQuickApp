@@ -63,7 +63,14 @@ public class NotificationService : INotificationService
         var dateFilter = GetDateFromRequest(args.DateFilter);
         List<Notification> notifications =
             NotificationRepository.GetRange(args.UserId, args.DeviceFilter, dateFilter, args.ReadFilter);
-        return notifications;
+        var notificationsClone = CloneNotifications(notifications);
+        MarkNotificationsAsRead(notifications);
+        return notificationsClone;
+    }
+
+    private static List<Notification> CloneNotifications(List<Notification> notifications)
+    {
+        return notifications.Select(n => (Notification)n.Clone()).ToList();
     }
 
     private static DateTime? GetDateFromRequest(string? dateFilter)
@@ -92,7 +99,7 @@ public class NotificationService : INotificationService
         return dateCreated;
     }
 
-    public void MarkNotificationsAsRead(List<Notification> notifications)
+    private void MarkNotificationsAsRead(List<Notification> notifications)
     {
         notifications.ForEach(notification => notification.Read = true);
         NotificationRepository.UpdateRange(notifications);

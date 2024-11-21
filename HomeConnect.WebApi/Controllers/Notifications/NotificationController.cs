@@ -28,7 +28,6 @@ public sealed class NotificationController : ControllerBase
         var user = HttpContext.Items[Item.UserLogged] as User;
         List<Notification> notifications =
             _notificationService.GetNotifications(request.ToArgs(user!));
-        _notificationService.MarkNotificationsAsRead(notifications);
         return GetNotificationsResponse.FromNotifications(notifications);
     }
 }

@@ -24,15 +24,13 @@ namespace HomeConnect.WebApi.Controllers.Devices;
 public class DeviceController : ControllerBase
 {
     private readonly IDeviceService _deviceService;
-    private readonly IValidatorService _validatorService;
     private readonly IImporterService _importerService;
     private readonly IHomeOwnerService _homeOwnerService;
 
-    public DeviceController(IDeviceService deviceService, IValidatorService validatorService,
+    public DeviceController(IDeviceService deviceService,
         IImporterService importerService, IHomeOwnerService homeOwnerService)
     {
         _deviceService = deviceService;
-        _validatorService = validatorService;
         _importerService = importerService;
         _homeOwnerService = homeOwnerService;
     }

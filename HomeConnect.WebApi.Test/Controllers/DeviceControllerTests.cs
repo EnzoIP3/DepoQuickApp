@@ -27,7 +27,6 @@ public class DeviceControllerTests
     private DeviceController _controller = null!;
     private Device _device = null!;
     private Mock<IDeviceService> _deviceService = null!;
-    private Mock<IValidatorService> _validatorService = null!;
     private Mock<IImporterService> _importerService = null!;
     private Mock<IHomeOwnerService> _homeOwnerService = null!;
     private Mock<HttpContext> _httpContextMock = null!;
@@ -41,12 +40,11 @@ public class DeviceControllerTests
     public void Initialize()
     {
         _deviceService = new Mock<IDeviceService>();
-        _validatorService = new Mock<IValidatorService>();
         _homeOwnerService = new Mock<IHomeOwnerService>();
         _importerService = new Mock<IImporterService>();
         _httpContextMock = new Mock<HttpContext>(MockBehavior.Strict);
         _controller =
-            new DeviceController(_deviceService.Object, _validatorService.Object, _importerService.Object,
+            new DeviceController(_deviceService.Object, _importerService.Object,
                 _homeOwnerService.Object)
             {
                 ControllerContext = new ControllerContext { HttpContext = _httpContextMock.Object }

@@ -1,3 +1,4 @@
+using BusinessLogic.BusinessOwners.Models;
 using BusinessLogic.BusinessOwners.Services;
 using BusinessLogic.Helpers;
 using ModeloValidador.Abstracciones;
@@ -28,7 +29,7 @@ public class ValidatorServiceTests
             .Returns([validatorName]);
 
         // Act
-        var result = _validatorService.GetValidators();
+        List<ValidatorInfo> result = _validatorService.GetValidators();
 
         // Assert
         Assert.AreEqual(1, result.Count);
@@ -46,7 +47,7 @@ public class ValidatorServiceTests
             .Returns(validator.Object);
 
         // Act
-        var result = _validatorService.GetValidatorByName(validatorName);
+        IModeloValidador result = _validatorService.GetValidatorByName(validatorName);
 
         // Assert
         Assert.IsNotNull(result);
@@ -70,6 +71,7 @@ public class ValidatorServiceTests
     }
 
     #region GetValidatorIdByName
+
     [TestMethod]
     public void GetValidatorIdByName_WhenCalled_ShouldReturnValidatorId()
     {
@@ -78,18 +80,20 @@ public class ValidatorServiceTests
         var validatorId = Guid.NewGuid();
         _mockAssemblyInterfaceLoader
             .Setup(x =>
-            x.GetImplementationIdByName(validatorName, It.IsAny<string>())).Returns(validatorId);
+                x.GetImplementationIdByName(validatorName, It.IsAny<string>())).Returns(validatorId);
 
         // Act
-        var result = _validatorService.GetValidatorIdByName(validatorName);
+        Guid? result = _validatorService.GetValidatorIdByName(validatorName);
 
         // Assert
         Assert.IsNotNull(result);
         Assert.AreEqual(validatorId, result);
     }
+
     #endregion
 
     #region GetValidator
+
     [TestMethod]
     public void GetValidator_WhenCalled_ShouldReturnValidator()
     {
@@ -101,11 +105,12 @@ public class ValidatorServiceTests
             .Returns(validator.Object);
 
         // Act
-        var result = _validatorService.GetValidator(validatorId);
+        IModeloValidador result = _validatorService.GetValidator(validatorId);
 
         // Assert
         Assert.IsNotNull(result);
         Assert.AreEqual(validator.Object, result);
     }
+
     #endregion
 }

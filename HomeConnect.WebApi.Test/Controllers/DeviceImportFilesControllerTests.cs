@@ -20,19 +20,13 @@ public class DeviceImportFilesControllerTests
     }
 
     #region GetImportFiles
+
     [TestMethod]
     public void GetImportFiles_WhenCalled_ReturnsGetImportFilesResponse()
     {
         // Arrange
-        var files = new List<string>
-        {
-            "file1.csv",
-            "file2.json"
-        };
-        var expectedResponse = new GetImportFilesResponse
-        {
-            ImportFiles = files
-        };
+        var files = new List<string> { "file1.csv", "file2.json" };
+        var expectedResponse = new GetImportFilesResponse { ImportFiles = files };
         _importerService.Setup(x => x.GetImportFiles()).Returns(files);
 
         // Act
@@ -43,5 +37,6 @@ public class DeviceImportFilesControllerTests
         response.Should().BeEquivalentTo(expectedResponse, options => options
             .ComparingByMembers<GetImportFilesResponse>());
     }
+
     #endregion
 }

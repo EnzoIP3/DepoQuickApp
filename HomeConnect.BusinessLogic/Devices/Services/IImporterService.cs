@@ -1,5 +1,5 @@
 using BusinessLogic.BusinessOwners.Models;
-using HomeConnect.WebApi.Controllers.DeviceImporters.Models;
+using BusinessLogic.Devices.Models;
 
 namespace BusinessLogic.Devices.Services;
 

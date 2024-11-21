@@ -15,22 +15,15 @@ public class HomeRepository : IHomeRepository
 
     public void Add(Home home)
     {
-        EnsureHomeDoesNotExist(home);
         _context.Homes.Add(home);
         _context.SaveChanges();
     }
 
     public Home Get(Guid homeId)
     {
-        Home? home = _context.Homes.Include(h => h.Members).ThenInclude(h => h.User).Include(h => h.Members)
+        return _context.Homes.Include(h => h.Members).ThenInclude(h => h.User).Include(h => h.Members)
             .ThenInclude(h => h.HomePermissions).Include(h => h.Owner)
-            .FirstOrDefault(h => h.Id == homeId);
-        if (home == null)
-        {
-            throw new ArgumentException("Home does not exist");
-        }
-
-        return home;
+            .First(h => h.Id == homeId);
     }
 
     public Home? GetByAddress(string argsAddress)
@@ -60,13 +53,5 @@ public class HomeRepository : IHomeRepository
     {
         _context.Homes.Update(home);
         _context.SaveChanges();
-    }
-
-    private void EnsureHomeDoesNotExist(Home home)
-    {
-        if (_context.Homes.Any(h => h.Address == home.Address))
-        {
-            throw new ArgumentException("Home already exists");
-        }
     }
 }

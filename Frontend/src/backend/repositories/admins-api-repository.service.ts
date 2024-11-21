@@ -1,6 +1,6 @@
 import { Injectable } from "@angular/core";
 import ApiRepository from "./api-repository";
-import { environment } from "../../environments/environment";
+import environments from "../../environments";
 import { HttpClient } from "@angular/common/http";
 import { catchError, Observable } from "rxjs";
 import AddRequest from "../services/admins/models/add-request";
@@ -12,7 +12,7 @@ import { Router } from "@angular/router";
 })
 export class AdminsApiRepositoryService extends ApiRepository {
     constructor(http: HttpClient, router: Router) {
-        super(environment.apiUrl, "admins", http, router);
+        super(environments.apiUrl, "admins", http, router);
     }
 
     public add(registerRequest: AddRequest): Observable<AddResponse> {

@@ -1,5 +1,4 @@
 using BusinessLogic;
-using BusinessLogic.Admins.Services;
 using BusinessLogic.BusinessOwners.Entities;
 using BusinessLogic.BusinessOwners.Repositories;
 using Microsoft.EntityFrameworkCore;
@@ -24,7 +23,7 @@ public class BusinessRepository : PaginatedRepositoryBase<Business>, IBusinessRe
 
     public void UpdateValidator(string argsBusinessRut, Guid? validatorId = null)
     {
-        var business = Get(argsBusinessRut);
+        Business business = Get(argsBusinessRut);
         business.Validator = validatorId;
         Context.SaveChanges();
     }
@@ -51,7 +50,6 @@ public class BusinessRepository : PaginatedRepositoryBase<Business>, IBusinessRe
 
     public void Add(Business business)
     {
-        EnsureBusinessDoesNotExist(business);
         Context.Businesses.Add(business);
         Context.SaveChanges();
     }
@@ -70,7 +68,7 @@ public class BusinessRepository : PaginatedRepositoryBase<Business>, IBusinessRe
     {
         var fullNameFilter = filters.Length > 0 ? filters[0] as string : null;
         var nameFilter = filters.Length > 1 ? filters[1] as string : null;
-        var ownerIdFilter = filters.Length > 2 ? filters[2] as Guid? : null;
+        Guid? ownerIdFilter = filters.Length > 2 ? filters[2] as Guid? : null;
 
         query = FilterByOwnerFullName(fullNameFilter, query);
         query = FilterByBusinessName(nameFilter, query);
@@ -107,13 +105,5 @@ public class BusinessRepository : PaginatedRepositoryBase<Business>, IBusinessRe
         }
 
         return query;
-    }
-
-    private void EnsureBusinessDoesNotExist(Business business)
-    {
-        if (Context.Businesses.Any(b => b.Rut == business.Rut))
-        {
-            throw new ArgumentException("Business with this RUT already exists.");
-        }
     }
 }

@@ -2,10 +2,10 @@ using BusinessLogic.Devices.Entities;
 
 namespace HomeConnect.WebApi.Controllers.Homes.Models;
 
-public record ListOwnedDeviceInfo
+public sealed record ListOwnedDeviceInfo
 {
     public string HardwareId { get; set; } = null!;
-    public string? Name { get; set; } = null!;
+    public string? Name { get; set; }
     public string Description { get; set; } = null!;
     public string BusinessName { get; set; } = null!;
     public string Type { get; set; } = null!;
@@ -14,7 +14,7 @@ public record ListOwnedDeviceInfo
     public List<string> SecondaryPhotos { get; set; } = null!;
     public bool? State { get; set; }
     public bool? IsOpen { get; set; }
-    public string? RoomId { get; set; } = null!;
+    public string? RoomId { get; set; }
 
     public static ListOwnedDeviceInfo FromOwnedDevice(OwnedDevice ownedDevice)
     {

@@ -1,5 +1,5 @@
-using BusinessLogic.Devices.Importer;
 using BusinessLogic.Users.Entities;
+using DeviceImporter.Models;
 
 namespace BusinessLogic.Devices.Helpers;
 

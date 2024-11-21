@@ -1,6 +1,6 @@
 namespace HomeConnect.WebApi.Controllers.Businesses.Models;
 
-public record ListBusinessInfo
+public sealed record ListBusinessInfo
 {
     public string Name { get; init; } = null!;
     public string OwnerName { get; init; } = null!;

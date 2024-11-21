@@ -1,7 +1,7 @@
+using BusinessLogic.Admins.Models;
 using BusinessLogic.BusinessOwners.Entities;
 using BusinessLogic.BusinessOwners.Repositories;
 using BusinessLogic.Roles.Entities;
-using BusinessLogic.Roles.Repositories;
 using BusinessLogic.Users.Entities;
 using BusinessLogic.Users.Repositories;
 
@@ -9,60 +9,60 @@ namespace BusinessLogic.Admins.Services;
 
 public class AdminService : IAdminService
 {
-    public AdminService(IUserRepository userRepository, IBusinessRepository businessRepository,
-        IRoleRepository roleRepository)
-    {
-        UserRepository = userRepository;
-        BusinessRepository = businessRepository;
-        RoleRepository = roleRepository;
-    }
+    private readonly IBusinessRepository _businessRepository;
 
-    private IUserRepository UserRepository { get; }
-    private IBusinessRepository BusinessRepository { get; }
-    private IRoleRepository RoleRepository { get; }
+    private readonly IUserRepository _userRepository;
+
+    public AdminService(IUserRepository userRepository, IBusinessRepository businessRepository)
+    {
+        _userRepository = userRepository;
+        _businessRepository = businessRepository;
+    }
 
     public void DeleteAdmin(string adminIdStr)
     {
         EnsureValidGuid(adminIdStr, out Guid adminId);
         EnsureEntityExists(adminId);
         EnsureOtherAdminExists();
-        UserRepository.Delete(adminId);
+        _userRepository.Delete(adminId);
     }
 
     private void EnsureOtherAdminExists()
     {
-        if (UserRepository.GetPaged(1, 1, roleFilter: Role.Admin).TotalPages == 1)
+        var filterArgs = new FilterArgs { PageSize = 1, CurrentPage = 1, RoleFilter = Role.Admin };
+        if (_userRepository.GetPaged(filterArgs).TotalPages == 1)
         {
             throw new InvalidOperationException("The last admin cannot be deleted");
         }
     }
 
-    public PagedData<User> GetUsers(int? currentPage = null, int? pageSize = null, string? fullNameFilter = null,
-        string? roleFilter = null)
+    public PagedData<User> GetUsers(GetUsersArgs args)
     {
+        var filterArgs = new FilterArgs { FullNameFilter = args.FullNameFilter, RoleFilter = args.RoleFilter, };
+        filterArgs.CurrentPage = args.CurrentPage ?? filterArgs.CurrentPage;
+        filterArgs.PageSize = args.PageSize ?? filterArgs.PageSize;
         PagedData<User> users =
-            UserRepository.GetPaged(currentPage ?? 1, pageSize ?? 10, fullNameFilter, roleFilter);
+            _userRepository.GetPaged(filterArgs);
         return users;
     }
 
-    public PagedData<Business> GetBusinesses(int? currentPage = null, int? pageSize = null, string? nameFilter = null,
-        string? fullNameFilter = null)
+    public PagedData<Business> GetBusinesses(GetBusinessesArgs args)
     {
         var filterArgs = new FilterArgs
         {
-            CurrentPage = currentPage ?? 1,
-            PageSize = pageSize ?? 10,
-            NameFilter = nameFilter,
-            FullNameFilter = fullNameFilter
+            CurrentPage = args.CurrentPage ?? 1,
+            PageSize = args.PageSize ?? 10,
+            NameFilter = args.NameFilter,
+            FullNameFilter = args.FullNameFilter
         };
         PagedData<Business> businesses =
-            BusinessRepository.GetPaged(filterArgs);
+            _businessRepository.GetPaged(filterArgs);
         return businesses;
     }
 
     private void EnsureEntityExists(Guid id)
     {
-        if (!UserRepository.Exists(id))
+        if (!_userRepository.Exists(id))
         {
             throw new KeyNotFoundException("Admin does not exist.");
         }

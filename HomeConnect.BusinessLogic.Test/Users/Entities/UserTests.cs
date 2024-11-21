@@ -14,6 +14,29 @@ public class UserTests
 
     private readonly Role _role = new("Admin", []);
 
+    #region GetRolesAndPermissions
+
+    [TestMethod]
+    public void GetRolesAndPermissions_WhenUserHasRoles_ReturnsRolesAndPermissions()
+    {
+        // Arrange
+        var permission = new SystemPermission("Permission");
+        var otherPermission = new SystemPermission("Other Permission");
+        var role = new Role("Role", [permission, otherPermission]);
+        var user = new User(Name, Surname, Email, Password, role);
+
+        // Act
+        Dictionary<Role, List<SystemPermission>> rolesAndPermissions = user.GetRolesAndPermissions();
+
+        // Assert
+        rolesAndPermissions.Should().BeEquivalentTo(new Dictionary<Role, List<SystemPermission>>
+        {
+            { role, new List<SystemPermission> { permission, otherPermission } }
+        });
+    }
+
+    #endregion
+
     #region Constructor
 
     #region Error
@@ -158,36 +181,13 @@ public class UserTests
         var user = new User(Name, Surname, Email, Password, _role);
 
         // Act
-        var act = () => user.AddRole(_role);
+        Action act = () => user.AddRole(_role);
 
         // Assert
         act.Should().Throw<InvalidOperationException>();
     }
 
     #endregion
-
-    #endregion
-
-    #region GetRolesAndPermissions
-
-    [TestMethod]
-    public void GetRolesAndPermissions_WhenUserHasRoles_ReturnsRolesAndPermissions()
-    {
-        // Arrange
-        var permission = new SystemPermission("Permission");
-        var otherPermission = new SystemPermission("Other Permission");
-        var role = new Role("Role", [permission, otherPermission]);
-        var user = new User(Name, Surname, Email, Password, role);
-
-        // Act
-        var rolesAndPermissions = user.GetRolesAndPermissions();
-
-        // Assert
-        rolesAndPermissions.Should().BeEquivalentTo(new Dictionary<Role, List<SystemPermission>>
-        {
-            { role, new List<SystemPermission> { permission, otherPermission } }
-        });
-    }
 
     #endregion
 }

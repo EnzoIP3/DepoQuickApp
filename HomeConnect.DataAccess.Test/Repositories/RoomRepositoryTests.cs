@@ -9,8 +9,8 @@ namespace HomeConnect.DataAccess.Test.Repositories;
 public class RoomRepositoryTests
 {
     private readonly Context _context = DbContextBuilder.BuildTestDbContext();
-    private RoomRepository _roomRepository = null!;
     private Home _home = null!;
+    private RoomRepository _roomRepository = null!;
 
     [TestInitialize]
     public void Initialize()
@@ -27,6 +27,7 @@ public class RoomRepositoryTests
     }
 
     #region Add
+
     [TestMethod]
     public void Add_WhenArgumentsAreValid_AddsRoom()
     {
@@ -39,9 +40,11 @@ public class RoomRepositoryTests
         // Assert
         _context.Rooms.Should().Contain(room);
     }
+
     #endregion
 
     #region Get
+
     [TestMethod]
     public void Get_WhenRoomExists_ReturnsRoom()
     {
@@ -51,14 +54,16 @@ public class RoomRepositoryTests
         _context.SaveChanges();
 
         // Act
-        var result = _roomRepository.Get(room.Id);
+        Room result = _roomRepository.Get(room.Id);
 
         // Assert
         result.Should().Be(room);
     }
+
     #endregion
 
     #region Exists
+
     [TestMethod]
     public void Exists_WhenRoomExists_ReturnsTrue()
     {
@@ -73,9 +78,11 @@ public class RoomRepositoryTests
         // Assert
         result.Should().BeTrue();
     }
+
     #endregion
 
     #region Update
+
     [TestMethod]
     public void Update_WhenRoomExists_UpdatesRoom()
     {
@@ -91,9 +98,11 @@ public class RoomRepositoryTests
         // Assert
         _context.Rooms.First(r => r.Id == room.Id).Name.Should().Be("Updated Room");
     }
+
     #endregion
 
     #region GetRooms
+
     [TestMethod]
     public void GetRoomsByHomeId_WhenCalled_ReturnsOnlyRoomsAssociatedWithHome()
     {
@@ -107,12 +116,13 @@ public class RoomRepositoryTests
         _context.SaveChanges();
 
         // Act
-        var result = _roomRepository.GetRoomsByHomeId(homeId);
+        List<Room> result = _roomRepository.GetRoomsByHomeId(homeId);
 
         // Assert
         result.Should().HaveCount(1);
         result.Should().Contain(r => r.Name == "Room1");
         result.Should().NotContain(r => r.Name == "Room2");
     }
+
     #endregion
 }

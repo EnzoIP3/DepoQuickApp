@@ -9,8 +9,15 @@ namespace HomeConnect.WebApi.Controllers.Rooms;
 
 [ApiController]
 [Route("rooms")]
-public class RoomController(IHomeOwnerService homeOwnerService) : ControllerBase
+public sealed class RoomController : ControllerBase
 {
+    private readonly IHomeOwnerService _homeOwnerService;
+
+    public RoomController(IHomeOwnerService homeOwnerService)
+    {
+        _homeOwnerService = homeOwnerService;
+    }
+
     [HttpPost("{roomId}/devices")]
     [AuthenticationFilter]
     [AuthorizationFilter(SystemPermission.AddDeviceToRoom)]
@@ -18,7 +25,7 @@ public class RoomController(IHomeOwnerService homeOwnerService) : ControllerBase
     public AddOwnedDeviceToRoomResponse AddOwnedDeviceToRoom([FromRoute] string roomId,
         [FromBody] AddOwnedDeviceToRoomRequest request)
     {
-        Guid hardwareId = homeOwnerService.AddOwnedDeviceToRoom(roomId, request.DeviceId ?? string.Empty);
+        Guid hardwareId = _homeOwnerService.AddOwnedDeviceToRoom(roomId, request.DeviceId ?? string.Empty);
         return new AddOwnedDeviceToRoomResponse { DeviceId = hardwareId.ToString(), RoomId = roomId };
     }
 }

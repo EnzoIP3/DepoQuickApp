@@ -58,7 +58,7 @@
                         "scripts": []
                     },
                     "configurations": {
-                        "production": {
+                        "prod": {
                             "budgets": [
                                 {
                                     "type": "initial",
@@ -71,33 +71,35 @@
                                     "maximumError": "4kB"
                                 }
                             ],
-                            "outputHashing": "all"
+                            "outputHashing": "all",
+                            "fileReplacements": [
+                                {
+                                    "replace": "src/environments/index.ts",
+                                    "with": "src/environments/environment.prod.ts"
+                                }
+                            ]
                         },
-                        "development": {
+                        "local": {
                             "optimization": false,
                             "extractLicenses": false,
                             "sourceMap": true,
                             "fileReplacements": [
                                 {
-                                    "replace": "src/environments/environment.ts",
-                                    "with": "src/environments/environment.development.ts"
+                                    "replace": "src/environments/index.ts",
+                                    "with": "src/environments/environment.local.ts"
                                 }
                             ]
                         }
                     },
-                    "defaultConfiguration": "production"
+                    "defaultConfiguration": "prod"
                 },
                 "serve": {
                     "builder": "@angular-devkit/build-angular:dev-server",
                     "configurations": {
-                        "production": {
-                            "buildTarget": "homeconnect:build:production"
-                        },
-                        "development": {
-                            "buildTarget": "homeconnect:build:development"
-                        }
+                        "prod": { "buildTarget": "homeconnect:build:prod" },
+                        "local": { "buildTarget": "homeconnect:build:local" }
                     },
-                    "defaultConfiguration": "development"
+                    "defaultConfiguration": "local"
                 },
                 "extract-i18n": {
                     "builder": "@angular-devkit/build-angular:extract-i18n"

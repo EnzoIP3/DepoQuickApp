@@ -1,8 +1,8 @@
-using BusinessLogic.BusinessOwners.Models;
 using BusinessLogic.BusinessOwners.Services;
 using BusinessLogic.Devices.Entities;
 using BusinessLogic.Devices.Services;
 using BusinessLogic.Notifications.Models;
+using BusinessLogic.Notifications.Services;
 using BusinessLogic.Roles.Entities;
 using BusinessLogic.Users.Entities;
 using HomeConnect.WebApi.Controllers.Devices.Models;
@@ -14,30 +14,28 @@ namespace HomeConnect.WebApi.Controllers.Lamps;
 
 [ApiController]
 [Route("lamps")]
-public class LampController(
-    IBusinessOwnerService businessOwnerService,
-    IDeviceService deviceService)
+public sealed class LampController
     : ControllerBase
 {
+    private readonly IBusinessOwnerService _businessOwnerService;
+    private readonly IDeviceService _deviceService;
+    private readonly INotificationService _notificationService;
+
+    public LampController(IBusinessOwnerService businessOwnerService, IDeviceService deviceService,
+        INotificationService notificationService)
+    {
+        _businessOwnerService = businessOwnerService;
+        _deviceService = deviceService;
+        _notificationService = notificationService;
+    }
+
     [HttpPost]
     [AuthenticationFilter]
     [AuthorizationFilter(SystemPermission.CreateLamp)]
     public CreateLampResponse CreateLamp([FromBody] CreateLampRequest request)
     {
         var userLoggedIn = HttpContext.Items[Item.UserLogged] as User;
-        var args = new CreateDeviceArgs
-        {
-            Owner = userLoggedIn!,
-            Description = request.Description ?? string.Empty,
-            MainPhoto = request.MainPhoto ?? string.Empty,
-            ModelNumber = request.ModelNumber,
-            Name = request.Name ?? string.Empty,
-            SecondaryPhotos = request.SecondaryPhotos,
-            Type = "Lamp"
-        };
-
-        Device createdLamp = businessOwnerService.CreateDevice(args);
-
+        Device createdLamp = _businessOwnerService.CreateDevice(request.ToArgs(userLoggedIn!));
         return new CreateLampResponse { Id = createdLamp.Id };
     }
 
@@ -45,7 +43,8 @@ public class LampController(
     public NotifyResponse TurnOn([FromRoute] string hardwareId)
     {
         NotificationArgs args = CreateTurnNotificationArgs(hardwareId, true);
-        deviceService.TurnLamp(hardwareId, true, args);
+        _notificationService.SendLampNotification(args, true);
+        _deviceService.TurnLamp(hardwareId, true);
         return new NotifyResponse { HardwareId = hardwareId };
     }
 
@@ -53,7 +52,8 @@ public class LampController(
     public NotifyResponse TurnOff([FromRoute] string hardwareId)
     {
         NotificationArgs args = CreateTurnNotificationArgs(hardwareId, false);
-        deviceService.TurnLamp(hardwareId, false, args);
+        _notificationService.SendLampNotification(args, false);
+        _deviceService.TurnLamp(hardwareId, false);
         return new NotifyResponse { HardwareId = hardwareId };
     }
 

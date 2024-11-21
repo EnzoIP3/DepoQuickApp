@@ -1,7 +1,7 @@
 import { Injectable } from "@angular/core";
 import ApiRepository from "./api-repository";
 import { HttpClient } from "@angular/common/http";
-import { environment } from "../../environments/environment";
+import environments from "../../environments";
 import GetDevicesResponse from "../services/devices/models/get-devices-response";
 import { Observable } from "rxjs";
 import GetDevicesRequest from "../services/devices/models/get-devices-request";
@@ -18,7 +18,7 @@ import { Router } from "@angular/router";
 })
 export class DevicesApiRepositoryService extends ApiRepository {
     constructor(http: HttpClient, router: Router) {
-        super(environment.apiUrl, "devices", http, router);
+        super(environments.apiUrl, "devices", http, router);
     }
 
     public getDevices(

@@ -16,20 +16,20 @@ namespace HomeConnect.BusinessLogic.Test.HomeOwners.Services;
 [TestClass]
 public class HomeOwnerServiceTests
 {
+    private readonly string _modelNumber = "123";
+
     private readonly User _user =
         new("John", "Doe", "test@example.com", "12345678@My",
             new Role());
-
-    private readonly string _modelNumber = "123";
 
     private Mock<IDeviceRepository> _deviceRepositoryMock = null!;
     private HomeOwnerService _homeOwnerService = null!;
     private Mock<IHomeRepository> _homeRepositoryMock = null!;
     private Mock<IMemberRepository> _memberRepositoryMock = null!;
     private Mock<IOwnedDeviceRepository> _ownedDeviceRepositoryMock = null!;
-    private Mock<IUserRepository> _userRepositoryMock = null!;
     private Mock<IRoomRepository> _roomRepositoryMock = null!;
     private List<Member> _testMembers = null!;
+    private Mock<IUserRepository> _userRepositoryMock = null!;
 
     [TestInitialize]
     public void Initialize()
@@ -52,6 +52,49 @@ public class HomeOwnerServiceTests
         ];
     }
 
+    #region GetHomesByOwnerId
+
+    [TestMethod]
+    public void GetHomesByOwnerId_WhenCalled_ReturnsCorrectHomes()
+    {
+        // Arrange
+        _homeRepositoryMock.Setup(repo => repo.GetHomesByUserId(_user.Id))
+            .Returns(_testMembers.Select(m => m.Home).ToList());
+
+        // Act
+        List<Home> homes = _homeOwnerService.GetHomesByOwnerId(_user.Id);
+
+        // Assert
+        _homeRepositoryMock.Verify(repo => repo.GetHomesByUserId(_user.Id), Times.Once);
+        homes.Should().BeEquivalentTo(_testMembers.Select(m => m.Home).ToList());
+    }
+
+    #endregion
+
+    #region GetRoomsByHomeId
+
+    [TestMethod]
+    public void GetRoomsByHomeId_ShouldReturnRooms()
+    {
+        // Arrange
+        var homeId = "123e4567-e89b-12d3-a456-426614174000";
+        var rooms = new List<Room>
+        {
+            new() { Id = Guid.NewGuid(), Name = "Room1" }, new() { Id = Guid.NewGuid(), Name = "Room2" }
+        };
+        _roomRepositoryMock.Setup(repo => repo.GetRoomsByHomeId(It.IsAny<Guid>())).Returns(rooms);
+
+        // Act
+        List<Room> result = _homeOwnerService.GetRoomsByHomeId(homeId);
+
+        // Assert
+        result.Count.Should().Be(rooms.Count);
+        result[0].Name.Should().Be(rooms[0].Name);
+        result[1].Name.Should().Be(rooms[1].Name);
+    }
+
+    #endregion
+
     #region CreateHome
 
     #region Success
@@ -68,7 +111,6 @@ public class HomeOwnerServiceTests
             Longitude = 2.0,
             MaxMembers = 5
         };
-        var home = new Home(_user, model.Address, model.Latitude, model.Longitude, model.MaxMembers);
         _userRepositoryMock.Setup(x => x.Exists(Guid.Parse(model.HomeOwnerId))).Returns(true);
         _userRepositoryMock.Setup(x => x.Get(Guid.Parse(model.HomeOwnerId))).Returns(_user);
         _userRepositoryMock.Setup(x => x.ExistsByEmail(_user.Email)).Returns(true);
@@ -583,7 +625,6 @@ public class HomeOwnerServiceTests
         Guid memberId = member.Id;
         _memberRepositoryMock.Setup(x => x.Exists(memberId)).Returns(true);
         _memberRepositoryMock.Setup(x => x.Get(memberId)).Returns(member);
-        var permission = new HomePermission(HomePermission.GetNotifications);
 
         _memberRepositoryMock.Setup(e =>
             e.Update(It.Is<Member>(x =>
@@ -664,25 +705,6 @@ public class HomeOwnerServiceTests
 
     #endregion
 
-    #region GetHomesByOwnerId
-
-    [TestMethod]
-    public void GetHomesByOwnerId_WhenCalled_ReturnsCorrectHomes()
-    {
-        // Arrange
-        _homeRepositoryMock.Setup(repo => repo.GetHomesByUserId(_user.Id))
-            .Returns(_testMembers.Select(m => m.Home).ToList());
-
-        // Act
-        List<Home> homes = _homeOwnerService.GetHomesByOwnerId(_user.Id);
-
-        // Assert
-        _homeRepositoryMock.Verify(repo => repo.GetHomesByUserId(_user.Id), Times.Once);
-        homes.Should().BeEquivalentTo(_testMembers.Select(m => m.Home).ToList());
-    }
-
-    #endregion
-
     #region NameHome
 
     #region Success
@@ -720,13 +742,13 @@ public class HomeOwnerServiceTests
     public void NameHome_WhenOwnerIdIsEmpty_ThrowsException()
     {
         // Arrange
-        var ownerId = Guid.Empty;
+        Guid ownerId = Guid.Empty;
         var homeId = Guid.NewGuid();
         var newName = "New Home Name";
         var args = new NameHomeArgs { OwnerId = ownerId, HomeId = homeId, NewName = newName };
 
         // Act & Assert
-        var exception =
+        ArgumentException exception =
             Assert.ThrowsException<ArgumentException>(() => _homeOwnerService.NameHome(args));
         Assert.AreEqual("Owner ID cannot be empty", exception.Message);
     }
@@ -736,12 +758,12 @@ public class HomeOwnerServiceTests
     {
         // Arrange
         var ownerId = Guid.NewGuid();
-        var homeId = Guid.Empty;
+        Guid homeId = Guid.Empty;
         var newName = "New Home Name";
         var args = new NameHomeArgs { OwnerId = ownerId, HomeId = homeId, NewName = newName };
 
         // Act & Assert
-        var exception =
+        ArgumentException exception =
             Assert.ThrowsException<ArgumentException>(() => _homeOwnerService.NameHome(args));
         Assert.AreEqual("Home ID cannot be empty", exception.Message);
     }
@@ -756,7 +778,7 @@ public class HomeOwnerServiceTests
         var args = new NameHomeArgs { OwnerId = ownerId, HomeId = homeId, NewName = newName };
 
         // Act & Assert
-        var exception =
+        ArgumentException exception =
             Assert.ThrowsException<ArgumentException>(() => _homeOwnerService.NameHome(args));
         Assert.AreEqual("New name cannot be null or empty", exception.Message);
     }
@@ -825,7 +847,7 @@ public class HomeOwnerServiceTests
             .Returns(home);
 
         // Act
-        var act = () => _homeOwnerService.GetHomePermissions(home.Id, _user.Id);
+        Func<List<HomePermission>> act = () => _homeOwnerService.GetHomePermissions(home.Id, _user.Id);
 
         // Assert
         act.Should().Throw<ArgumentException>().WithMessage("You do not belong to this home.");
@@ -847,7 +869,12 @@ public class HomeOwnerServiceTests
         var member = new Member(_user, [new HomePermission(HomePermission.NameDevice)]);
         home.Members.Add(member);
         var ownedDevice = new OwnedDevice { HardwareId = Guid.NewGuid(), Name = "OldName", Home = home };
-        var args = new NameDeviceArgs { OwnerId = _user.Id, HardwareId = ownedDevice.HardwareId, NewName = "NewName" };
+        var args = new NameDeviceArgs
+        {
+            OwnerId = _user.Id,
+            HardwareId = ownedDevice.HardwareId.ToString(),
+            NewName = "NewName"
+        };
 
         _ownedDeviceRepositoryMock.Setup(repo => repo.GetByHardwareId(ownedDevice.HardwareId)).Returns(ownedDevice);
         _ownedDeviceRepositoryMock.Setup(repo => repo.Rename(It.IsAny<OwnedDevice>(), It.IsAny<string>()))
@@ -870,10 +897,15 @@ public class HomeOwnerServiceTests
     public void NameDevice_ThrowsArgumentException_WhenOwnerIdIsEmpty()
     {
         // Arrange
-        var args = new NameDeviceArgs { OwnerId = Guid.Empty, HardwareId = Guid.NewGuid(), NewName = "NewName" };
+        var args = new NameDeviceArgs
+        {
+            OwnerId = Guid.Empty,
+            HardwareId = Guid.NewGuid().ToString(),
+            NewName = "NewName"
+        };
 
         // Act
-        var act = () => _homeOwnerService.NameDevice(args);
+        Action act = () => _homeOwnerService.NameDevice(args);
 
         // Assert
         act.Should().Throw<ArgumentException>();
@@ -883,10 +915,10 @@ public class HomeOwnerServiceTests
     public void NameDevice_ThrowsArgumentException_WhenDeviceIdIsEmpty()
     {
         // Arrange
-        var args = new NameDeviceArgs { OwnerId = Guid.NewGuid(), HardwareId = Guid.Empty, NewName = "NewName" };
+        var args = new NameDeviceArgs { OwnerId = Guid.NewGuid(), HardwareId = string.Empty, NewName = "NewName" };
 
         // Act
-        var act = () => _homeOwnerService.NameDevice(args);
+        Action act = () => _homeOwnerService.NameDevice(args);
 
         // Assert
         act.Should().Throw<ArgumentException>();
@@ -896,10 +928,15 @@ public class HomeOwnerServiceTests
     public void NameDevice_ThrowsArgumentException_WhenNewNameIsEmpty()
     {
         // Arrange
-        var args = new NameDeviceArgs { OwnerId = Guid.NewGuid(), HardwareId = Guid.NewGuid(), NewName = string.Empty };
+        var args = new NameDeviceArgs
+        {
+            OwnerId = Guid.NewGuid(),
+            HardwareId = Guid.NewGuid().ToString(),
+            NewName = string.Empty
+        };
 
         // Act
-        var act = () => _homeOwnerService.NameDevice(args);
+        Action act = () => _homeOwnerService.NameDevice(args);
 
         // Assert
         act.Should().Throw<ArgumentException>();
@@ -909,11 +946,29 @@ public class HomeOwnerServiceTests
     public void NameDevice_ThrowsArgumentException_WhenDeviceDoesNotExist()
     {
         // Arrange
-        var args = new NameDeviceArgs { OwnerId = Guid.NewGuid(), HardwareId = Guid.NewGuid(), NewName = "NewName" };
+        var args = new NameDeviceArgs
+        {
+            OwnerId = Guid.NewGuid(),
+            HardwareId = Guid.NewGuid().ToString(),
+            NewName = "NewName"
+        };
         _ownedDeviceRepositoryMock.Setup(repo => repo.GetByHardwareId(It.IsAny<Guid>())).Returns((OwnedDevice)null);
 
         // Act
-        var act = () => _homeOwnerService.NameDevice(args);
+        Action act = () => _homeOwnerService.NameDevice(args);
+
+        // Assert
+        act.Should().Throw<ArgumentException>();
+    }
+
+    [TestMethod]
+    public void NameDevice_ThrowsArgumentException_WhenDeviceIdIsNotAGuid()
+    {
+        // Arrange
+        var args = new NameDeviceArgs { OwnerId = Guid.NewGuid(), HardwareId = "invalid-guid", NewName = "NewName" };
+
+        // Act
+        Action act = () => _homeOwnerService.NameDevice(args);
 
         // Assert
         act.Should().Throw<ArgumentException>();
@@ -957,7 +1012,7 @@ public class HomeOwnerServiceTests
         var hardwareId = "invalid-guid";
 
         // Act
-        var act = () => _homeOwnerService.GetOwnedDeviceByHardwareId(hardwareId);
+        Func<OwnedDevice> act = () => _homeOwnerService.GetOwnedDeviceByHardwareId(hardwareId);
 
         // Assert
         act.Should().Throw<ArgumentException>();
@@ -972,7 +1027,7 @@ public class HomeOwnerServiceTests
             .Returns(false);
 
         // Act
-        var act = () => _homeOwnerService.GetOwnedDeviceByHardwareId(hardwareId.ToString());
+        Func<OwnedDevice> act = () => _homeOwnerService.GetOwnedDeviceByHardwareId(hardwareId.ToString());
 
         // Assert
         act.Should().Throw<KeyNotFoundException>();
@@ -998,7 +1053,7 @@ public class HomeOwnerServiceTests
         _roomRepositoryMock.Setup(repo => repo.Add(It.IsAny<Room>()));
 
         // Act
-        var createdRoom = _homeOwnerService.CreateRoom(homeId, roomName);
+        Room createdRoom = _homeOwnerService.CreateRoom(homeId, roomName);
 
         // Assert
         _roomRepositoryMock.Verify(repo => repo.Add(It.Is<Room>(r => r.Name == roomName)), Times.Once);
@@ -1067,10 +1122,12 @@ public class HomeOwnerServiceTests
         _roomRepositoryMock.Setup(repo => repo.Exists(room.Id)).Returns(true);
         _roomRepositoryMock.Setup(repo => repo.Get(room.Id)).Returns(room);
         _ownedDeviceRepositoryMock.Setup(repo => repo.GetOwnedDeviceById(device.Id)).Returns(ownedDevice);
+        _ownedDeviceRepositoryMock.Setup(repo => repo.Exists(ownedDevice.HardwareId)).Returns(true);
+        _ownedDeviceRepositoryMock.Setup(repo => repo.GetOwnedDeviceById(ownedDevice.HardwareId)).Returns(ownedDevice);
         _roomRepositoryMock.Setup(repo => repo.Update(room)).Verifiable();
 
         // Act
-        var result = _homeOwnerService.AddOwnedDeviceToRoom(room.Id.ToString(), device.Id.ToString());
+        Guid result = _homeOwnerService.AddOwnedDeviceToRoom(room.Id.ToString(), ownedDevice.HardwareId.ToString());
 
         // Assert
         result.Should().Be(ownedDevice.HardwareId);
@@ -1092,6 +1149,22 @@ public class HomeOwnerServiceTests
 
         // Assert
         act.Should().Throw<ArgumentException>().WithMessage("Invalid room ID.");
+    }
+
+    [TestMethod]
+    public void AddOwnedDeviceToRoom_WhenDeviceDoesNotExist_ThrowsArgumentException()
+    {
+        // Arrange
+        _roomRepositoryMock.Setup(repo => repo.Exists(It.IsAny<Guid>())).Returns(true);
+        _roomRepositoryMock.Setup(repo => repo.Get(It.IsAny<Guid>())).Returns(new Room());
+        _ownedDeviceRepositoryMock.Setup(repo => repo.Exists(It.IsAny<Guid>())).Returns(false);
+
+        // Act
+        Func<Guid> act = () =>
+            _homeOwnerService.AddOwnedDeviceToRoom(Guid.NewGuid().ToString(), Guid.NewGuid().ToString());
+
+        // Assert
+        act.Should().Throw<ArgumentException>().WithMessage("That device does not exist.");
     }
 
     #endregion
@@ -1133,7 +1206,7 @@ public class HomeOwnerServiceTests
         var roomId = "invalid-guid";
 
         // Act
-        var act = () => _homeOwnerService.GetRoom(roomId);
+        Func<Room> act = () => _homeOwnerService.GetRoom(roomId);
 
         // Assert
         act.Should().Throw<ArgumentException>();
@@ -1147,7 +1220,7 @@ public class HomeOwnerServiceTests
         _roomRepositoryMock.Setup(repo => repo.Exists(roomId)).Returns(false);
 
         // Act
-        var act = () => _homeOwnerService.GetRoom(roomId.ToString());
+        Func<Room> act = () => _homeOwnerService.GetRoom(roomId.ToString());
 
         // Assert
         act.Should().Throw<KeyNotFoundException>();
@@ -1155,27 +1228,5 @@ public class HomeOwnerServiceTests
 
     #endregion
 
-    #endregion
-    #region GetRoomsByHomeId
-    [TestMethod]
-    public void GetRoomsByHomeId_ShouldReturnRooms()
-    {
-        // Arrange
-        var homeId = "123e4567-e89b-12d3-a456-426614174000";
-        var rooms = new List<Room>
-        {
-            new Room { Id = Guid.NewGuid(), Name = "Room1" },
-            new Room { Id = Guid.NewGuid(), Name = "Room2" }
-        };
-        _roomRepositoryMock.Setup(repo => repo.GetRoomsByHomeId(It.IsAny<Guid>())).Returns(rooms);
-
-        // Act
-        var result = _homeOwnerService.GetRoomsByHomeId(homeId);
-
-        // Assert
-        result.Count.Should().Be(rooms.Count);
-        result[0].Name.Should().Be(rooms[0].Name);
-        result[1].Name.Should().Be(rooms[1].Name);
-    }
     #endregion
 }

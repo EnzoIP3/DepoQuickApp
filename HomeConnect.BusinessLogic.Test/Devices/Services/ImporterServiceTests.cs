@@ -1,13 +1,14 @@
 using BusinessLogic.BusinessOwners.Models;
 using BusinessLogic.BusinessOwners.Services;
 using BusinessLogic.Devices.Entities;
-using BusinessLogic.Devices.Importer;
+using BusinessLogic.Devices.Models;
 using BusinessLogic.Devices.Services;
 using BusinessLogic.Helpers;
 using BusinessLogic.Roles.Entities;
 using BusinessLogic.Users.Entities;
+using DeviceImporter;
+using DeviceImporter.Models;
 using FluentAssertions;
-using HomeConnect.WebApi.Controllers.DeviceImporters.Models;
 using Moq;
 
 namespace HomeConnect.BusinessLogic.Test.Devices.Services;
@@ -15,11 +16,11 @@ namespace HomeConnect.BusinessLogic.Test.Devices.Services;
 [TestClass]
 public class ImporterServiceTests
 {
-    private Mock<IAssemblyInterfaceLoader<IDeviceImporter>> _mockAssemblyInterfaceLoader = null!;
-    private Mock<IDeviceImporter> _mockDeviceImporter = null!;
-    private Mock<IBusinessOwnerService> _mockBusinessOwnerService = null!;
-    private ImporterService _importerService = null!;
     private readonly string _importFilesPath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "ImportFiles");
+    private ImporterService _importerService = null!;
+    private Mock<IAssemblyInterfaceLoader<IDeviceImporter>> _mockAssemblyInterfaceLoader = null!;
+    private Mock<IBusinessOwnerService> _mockBusinessOwnerService = null!;
+    private Mock<IDeviceImporter> _mockDeviceImporter = null!;
 
     [TestInitialize]
     public void Initialize()
@@ -32,16 +33,14 @@ public class ImporterServiceTests
     }
 
     #region GetImporters
+
     [TestMethod]
     public void GetImporters_WhenCalled_ShouldReturnListOfImporters()
     {
         // Arrange
         var importerName = "ImporterName";
         var paramsList = new List<string> { "param1", "param2" };
-        var expectedResponse = new List<ImporterData>
-        {
-            new ImporterData { Name = importerName, Parameters = paramsList }
-        };
+        var expectedResponse = new List<ImporterData> { new() { Name = importerName, Parameters = paramsList } };
         _mockAssemblyInterfaceLoader
             .Setup(x => x.GetImplementationsList(It.IsAny<string>()))
             .Returns([importerName]);
@@ -53,12 +52,13 @@ public class ImporterServiceTests
             .Returns(_mockDeviceImporter.Object);
 
         // Act
-        var result = _importerService.GetImporters();
+        List<ImporterData> result = _importerService.GetImporters();
 
         // Assert
         result.Should().HaveCount(1);
         result.Should().BeEquivalentTo(expectedResponse);
     }
+
     #endregion
 
     #region ImportDevices
@@ -69,7 +69,10 @@ public class ImporterServiceTests
         // Arrange
         var importerName = "ImporterName";
         var route = "Route";
-        var importerParams = new Dictionary<string, string> { { "route", Path.Combine(_importFilesPath, route) }, { "param2", "value2" } };
+        var importerParams = new Dictionary<string, string>
+        {
+            { "route", Path.Combine(_importFilesPath, route) }, { "param2", "value2" }
+        };
         var importDevicesArgs = new ImportDevicesArgs
         {
             ImporterName = importerName,
@@ -79,16 +82,16 @@ public class ImporterServiceTests
 
         var deviceArgs = new List<DeviceArgs>
         {
-            new DeviceArgs
+            new()
             {
                 Name = "DeviceName",
                 ModelNumber = "ModelNumber",
                 Description = "Description",
                 MainPhoto = "MainPhoto",
                 SecondaryPhotos = ["SecondaryPhoto"],
-                Type = "Sensor",
+                Type = "Sensor"
             },
-            new DeviceArgs
+            new()
             {
                 Name = "DeviceName2",
                 ModelNumber = "ModelNumber2",
@@ -138,14 +141,15 @@ public class ImporterServiceTests
             .Setup(x => x.CreateCamera(It.IsAny<CreateCameraArgs>())).Returns(It.IsAny<Camera>());
 
         // Act
-        var result = _importerService.ImportDevices(importDevicesArgs);
+        List<string> result = _importerService.ImportDevices(importDevicesArgs);
 
         // Assert
         result.Should().HaveCount(deviceNames.Count);
         result[0].Should().Be(deviceNames[0]);
         result[1].Should().Be(deviceNames[1]);
 
-        _mockAssemblyInterfaceLoader.Verify(x => x.GetImplementationByName(importerName, It.IsAny<string>()), Times.Once);
+        _mockAssemblyInterfaceLoader.Verify(x => x.GetImplementationByName(importerName, It.IsAny<string>()),
+            Times.Once);
         _mockDeviceImporter.Verify(x => x.ImportDevices(importerParams), Times.Once);
         _mockBusinessOwnerService.Verify(x => x.CreateDevice(It.Is<CreateDeviceArgs>(device =>
             device.SecondaryPhotos != null &&
@@ -173,6 +177,7 @@ public class ImporterServiceTests
     #endregion
 
     #region GetImportFiles
+
     [TestMethod]
     public void GetImportFiles_WhenDirectoryExists_ShouldReturnListOfFileNames()
     {
@@ -185,7 +190,7 @@ public class ImporterServiceTests
         }
 
         // Act
-        var result = _importerService.GetImportFiles();
+        List<string> result = _importerService.GetImportFiles();
 
         // Assert
         result.Should().BeEquivalentTo(fileNames);
@@ -204,7 +209,7 @@ public class ImporterServiceTests
         }
 
         // Act
-        var result = _importerService.GetImportFiles();
+        List<string> result = _importerService.GetImportFiles();
 
         // Assert
         Directory.Exists(_importFilesPath).Should().BeTrue();
@@ -213,5 +218,6 @@ public class ImporterServiceTests
         // Cleanup
         Directory.Delete(_importFilesPath, true);
     }
+
     #endregion
 }

@@ -10,7 +10,7 @@ namespace HomeConnect.WebApi.Controllers.DeviceValidators;
 [Route("device_validators")]
 [ApiController]
 [AuthenticationFilter]
-public class DeviceValidatorController : ControllerBase
+public sealed class DeviceValidatorController : ControllerBase
 {
     private readonly IValidatorService _validatorService;
 
@@ -23,12 +23,7 @@ public class DeviceValidatorController : ControllerBase
     [AuthorizationFilter(SystemPermission.GetDeviceValidators)]
     public GetValidatorsResponse GetValidators()
     {
-        var validators = _validatorService.GetValidators();
-        return CreateGetValidatorsResponse(validators);
-    }
-
-    private static GetValidatorsResponse CreateGetValidatorsResponse(List<ValidatorInfo> validators)
-    {
-        return new GetValidatorsResponse { Validators = validators.Select(v => v.Name).ToList() };
+        List<ValidatorInfo> validators = _validatorService.GetValidators();
+        return GetValidatorsResponse.FromValidators(validators);
     }
 }

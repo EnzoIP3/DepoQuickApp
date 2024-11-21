@@ -76,6 +76,28 @@ public class UserRepositoryTest
 
     #endregion
 
+    #region Update
+
+    #region Success
+
+    [TestMethod]
+    public void Update_WhenUserExists_UpdatesUser()
+    {
+        // Arrange
+        _validUser.AddRole(new Role("Added role", []));
+
+        // Act
+        _userRepository.Update(_validUser);
+
+        // Assert
+        User user = _userRepository.Get(_validUser.Id);
+        user.Roles.Should().HaveCount(2);
+    }
+
+    #endregion
+
+    #endregion
+
     #region Exists
 
     #region Success
@@ -111,8 +133,11 @@ public class UserRepositoryTest
     [TestMethod]
     public void GetUsers_WhenCalled_ReturnsPaginatedUsers()
     {
+        // Arrange
+        var filterArgs = new FilterArgs { CurrentPage = 1, PageSize = 2 };
+
         // Act
-        PagedData<User> result = _userRepository.GetPaged(1, 2);
+        PagedData<User> result = _userRepository.GetPaged(filterArgs);
 
         // Assert
         result.Data.Should().HaveCount(2);
@@ -122,8 +147,11 @@ public class UserRepositoryTest
     [TestMethod]
     public void GetUsers_WhenFilteredByFullName_ReturnsFilteredUsers()
     {
+        // Arrange
+        var filterArgs = new FilterArgs { FullNameFilter = "Jane" };
+
         // Act
-        PagedData<User> result = _userRepository.GetPaged(1, 10, "Jane");
+        PagedData<User> result = _userRepository.GetPaged(filterArgs);
 
         // Assert
         result.Data.Should().HaveCount(1);
@@ -133,8 +161,11 @@ public class UserRepositoryTest
     [TestMethod]
     public void GetUsers_WhenFilteredByFullNameAndRole_ReturnsFilteredUsers()
     {
+        // Arrange
+        var filterArgs = new FilterArgs { FullNameFilter = "J", RoleFilter = "Role 1" };
+
         // Act
-        PagedData<User> result = _userRepository.GetPaged(1, 10, "J", "Role 1");
+        PagedData<User> result = _userRepository.GetPaged(filterArgs);
 
         // Assert
         result.Data.Should().HaveCount(1);
@@ -200,28 +231,6 @@ public class UserRepositoryTest
 
         // Assert
         exists.Should().BeFalse();
-    }
-
-    #endregion
-
-    #endregion
-
-    #region Update
-
-    #region Success
-
-    [TestMethod]
-    public void Update_WhenUserExists_UpdatesUser()
-    {
-        // Arrange
-        _validUser.AddRole(new Role("Added role", []));
-
-        // Act
-        _userRepository.Update(_validUser);
-
-        // Assert
-        var user = _userRepository.Get(_validUser.Id);
-        user.Roles.Should().HaveCount(2);
     }
 
     #endregion

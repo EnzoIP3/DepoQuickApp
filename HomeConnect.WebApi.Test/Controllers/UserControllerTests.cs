@@ -1,4 +1,5 @@
 using BusinessLogic;
+using BusinessLogic.Admins.Models;
 using BusinessLogic.Admins.Services;
 using BusinessLogic.BusinessOwners.Entities;
 using BusinessLogic.BusinessOwners.Services;
@@ -19,17 +20,17 @@ namespace HomeConnect.WebApi.Test.Controllers;
 [TestClass]
 public class UserControllerTests
 {
-    private Mock<HttpContext> _httpContext = null!;
+    private readonly string _imageUrl = "https://www.image.jpg";
     private Mock<IAdminService> _adminService = null!;
-    private Mock<IUserService> _userService = null!;
     private Mock<IBusinessOwnerService> _businessOwnerService = null!;
     private UserController _controller = null!;
     private Pagination _expectedPagination = null!;
     private List<User> _expectedUsers = null!;
+    private Mock<HttpContext> _httpContext = null!;
     private User _otherUser = null!;
     private PagedData<User> _pagedList = null!;
     private User _user = null!;
-    private readonly string _imageUrl = "https://www.image.jpg";
+    private Mock<IUserService> _userService = null!;
 
     [TestInitialize]
     public void Initialize()
@@ -38,7 +39,7 @@ public class UserControllerTests
         _adminService = new Mock<IAdminService>(MockBehavior.Strict);
         _userService = new Mock<IUserService>(MockBehavior.Strict);
         _businessOwnerService = new Mock<IBusinessOwnerService>(MockBehavior.Strict);
-        _controller = new UserController(_adminService.Object, _userService.Object, _businessOwnerService.Object)
+        _controller = new UserController(_userService.Object, _adminService.Object, _businessOwnerService.Object)
         {
             ControllerContext = new ControllerContext { HttpContext = _httpContext.Object }
         };
@@ -56,122 +57,6 @@ public class UserControllerTests
         };
     }
 
-    #region GetUsers
-
-    [TestMethod]
-    public void GetUsers_WhenCalledWithValidRequestAndNoFiltersOrPagination_ReturnsExpectedResponse()
-    {
-        // Arrange
-        var parameters = new GetUsersRequest();
-        _adminService.Setup(x => x.GetUsers(parameters.Page, parameters.PageSize, parameters.FullName,
-            parameters.Roles)).Returns(_pagedList);
-
-        // Act
-        GetUsersResponse response = _controller.GetUsers(parameters);
-
-        // Assert
-        _adminService.VerifyAll();
-        response.Should().BeEquivalentTo(new GetUsersResponse
-        {
-            Users = _expectedUsers.Select(user => new ListUserInfo
-            {
-                Id = user.Id.ToString(),
-                Name = user.Name,
-                Surname = user.Surname,
-                Roles = [user.Roles.First().Name],
-                CreatedAt = user.CreatedAt.ToString()
-            }).ToList(),
-            Pagination = _expectedPagination
-        });
-    }
-
-    [TestMethod]
-    public void GetUsers_WhenCalledWithValidRequestAndFullNameFilter_ReturnsFilteredExpectedResponse()
-    {
-        // Arrange
-        var parameters = new GetUsersRequest { FullName = _expectedUsers.First().Name };
-        _adminService.Setup(x => x.GetUsers(parameters.Page, parameters.PageSize, parameters.FullName,
-            parameters.Roles)).Returns(_pagedList);
-
-        // Act
-        GetUsersResponse response = _controller.GetUsers(parameters);
-
-        // Assert
-        _adminService.VerifyAll();
-        response.Should().BeEquivalentTo(new GetUsersResponse
-        {
-            Users = _expectedUsers.Select(user => new ListUserInfo
-            {
-                Id = user.Id.ToString(),
-                Name = user.Name,
-                Surname = user.Surname,
-                Roles = [user.Roles.First().Name],
-                CreatedAt = user.CreatedAt.ToString()
-            }).ToList(),
-            Pagination = _expectedPagination
-        });
-    }
-
-    [TestMethod]
-    public void GetUsers_WhenCalledWithValidRequestAndRoleFilter_ReturnsFilteredExpectedResponse()
-    {
-        // Arrange
-        var parameters = new GetUsersRequest { Roles = _expectedUsers.First().Roles.First().Name };
-        _adminService.Setup(x => x.GetUsers(parameters.Page, parameters.PageSize, parameters.FullName,
-            parameters.Roles)).Returns(_pagedList);
-
-        // Act
-        GetUsersResponse response = _controller.GetUsers(parameters);
-
-        // Assert
-        _adminService.VerifyAll();
-        response.Should().BeEquivalentTo(new GetUsersResponse
-        {
-            Users = _expectedUsers.Select(user => new ListUserInfo
-            {
-                Id = user.Id.ToString(),
-                Name = user.Name,
-                Surname = user.Surname,
-                Roles = [user.Roles.First().Name],
-                CreatedAt = user.CreatedAt.ToString()
-            }).ToList(),
-            Pagination = _expectedPagination
-        });
-    }
-
-    [TestMethod]
-    public void GetUsers_WhenCalledWithPagination_ReturnsPagedExpectedResponse()
-    {
-        // Arrange
-        var parameters = new GetUsersRequest
-        {
-            Page = _expectedPagination.Page,
-            PageSize = _expectedPagination.PageSize
-        };
-        _adminService.Setup(x => x.GetUsers(parameters.Page, parameters.PageSize, parameters.FullName,
-            parameters.Roles)).Returns(_pagedList);
-
-        // Act
-        GetUsersResponse response = _controller.GetUsers(parameters);
-
-        // Assert
-        _adminService.VerifyAll();
-        response.Should().BeEquivalentTo(new GetUsersResponse
-        {
-            Users = _expectedUsers.Select(user => new ListUserInfo
-            {
-                Id = user.Id.ToString(),
-                Name = user.Name,
-                Surname = user.Surname,
-                Roles = [user.Roles.First().Name],
-                CreatedAt = user.CreatedAt.ToString()
-            }).ToList(),
-            Pagination = _expectedPagination
-        });
-    }
-
-    #endregion
-
     #region AddHomeOwnerRole
 
     [TestMethod]
@@ -184,7 +69,7 @@ public class UserControllerTests
         _userService.Setup(x => x.AddRoleToUser(args)).Returns(_user);
 
         // Act
-        var response = _controller.AddHomeOwnerRole();
+        AddHomeOwnerRoleResponse response = _controller.AddHomeOwnerRole();
 
         // Assert
         _userService.VerifyAll();
@@ -242,6 +127,122 @@ public class UserControllerTests
         // Assert
         _businessOwnerService.VerifyAll();
         response.Should().BeEquivalentTo(expectedResponse);
+    }
+
+    #endregion
+
+    #region GetUsers
+
+    [TestMethod]
+    public void GetUsers_WhenCalledWithValidRequestAndNoFiltersOrPagination_ReturnsExpectedResponse()
+    {
+        // Arrange
+        var parameters = new GetUsersRequest();
+        var args = new GetUsersArgs();
+        _adminService.Setup(x => x.GetUsers(args)).Returns(_pagedList);
+
+        // Act
+        GetUsersResponse response = _controller.GetUsers(parameters);
+
+        // Assert
+        _adminService.VerifyAll();
+        response.Should().BeEquivalentTo(new GetUsersResponse
+        {
+            Users = _expectedUsers.Select(user => new ListUserInfo
+            {
+                Id = user.Id.ToString(),
+                Name = user.Name,
+                Surname = user.Surname,
+                Roles = [user.Roles.First().Name],
+                CreatedAt = user.CreatedAt.ToString()
+            }).ToList(),
+            Pagination = _expectedPagination
+        });
+    }
+
+    [TestMethod]
+    public void GetUsers_WhenCalledWithValidRequestAndFullNameFilter_ReturnsFilteredExpectedResponse()
+    {
+        // Arrange
+        var parameters = new GetUsersRequest { FullName = _expectedUsers.First().Name };
+        var args = new GetUsersArgs { FullNameFilter = parameters.FullName };
+        _adminService.Setup(x => x.GetUsers(args)).Returns(_pagedList);
+
+        // Act
+        GetUsersResponse response = _controller.GetUsers(parameters);
+
+        // Assert
+        _adminService.VerifyAll();
+        response.Should().BeEquivalentTo(new GetUsersResponse
+        {
+            Users = _expectedUsers.Select(user => new ListUserInfo
+            {
+                Id = user.Id.ToString(),
+                Name = user.Name,
+                Surname = user.Surname,
+                Roles = [user.Roles.First().Name],
+                CreatedAt = user.CreatedAt.ToString()
+            }).ToList(),
+            Pagination = _expectedPagination
+        });
+    }
+
+    [TestMethod]
+    public void GetUsers_WhenCalledWithValidRequestAndRoleFilter_ReturnsFilteredExpectedResponse()
+    {
+        // Arrange
+        var parameters = new GetUsersRequest { Roles = _expectedUsers.First().Roles.First().Name };
+        var args = new GetUsersArgs { RoleFilter = parameters.Roles };
+        _adminService.Setup(x => x.GetUsers(args)).Returns(_pagedList);
+
+        // Act
+        GetUsersResponse response = _controller.GetUsers(parameters);
+
+        // Assert
+        _adminService.VerifyAll();
+        response.Should().BeEquivalentTo(new GetUsersResponse
+        {
+            Users = _expectedUsers.Select(user => new ListUserInfo
+            {
+                Id = user.Id.ToString(),
+                Name = user.Name,
+                Surname = user.Surname,
+                Roles = [user.Roles.First().Name],
+                CreatedAt = user.CreatedAt.ToString()
+            }).ToList(),
+            Pagination = _expectedPagination
+        });
+    }
+
+    [TestMethod]
+    public void GetUsers_WhenCalledWithPagination_ReturnsPagedExpectedResponse()
+    {
+        // Arrange
+        var parameters = new GetUsersRequest
+        {
+            Page = _expectedPagination.Page,
+            PageSize = _expectedPagination.PageSize
+        };
+        var args = new GetUsersArgs { CurrentPage = parameters.Page, PageSize = parameters.PageSize };
+        _adminService.Setup(x => x.GetUsers(args)).Returns(_pagedList);
+
+        // Act
+        GetUsersResponse response = _controller.GetUsers(parameters);
+
+        // Assert
+        _adminService.VerifyAll();
+        response.Should().BeEquivalentTo(new GetUsersResponse
+        {
+            Users = _expectedUsers.Select(user => new ListUserInfo
+            {
+                Id = user.Id.ToString(),
+                Name = user.Name,
+                Surname = user.Surname,
+                Roles = [user.Roles.First().Name],
+                CreatedAt = user.CreatedAt.ToString()
+            }).ToList(),
+            Pagination = _expectedPagination
+        });
     }
 
     #endregion

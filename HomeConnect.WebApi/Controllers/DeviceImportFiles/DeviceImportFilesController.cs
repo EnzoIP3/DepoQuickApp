@@ -9,7 +9,7 @@ namespace HomeConnect.WebApi.Controllers.DeviceImportFiles;
 [Route("device_import_files")]
 [ApiController]
 [AuthenticationFilter]
-public class DeviceImportFilesController
+public sealed class DeviceImportFilesController
 {
     private readonly IImporterService _importerService;
 
@@ -22,7 +22,7 @@ public class DeviceImportFilesController
     [AuthorizationFilter(SystemPermission.GetDeviceImportFiles)]
     public GetImportFilesResponse GetImportFiles()
     {
-        var files = _importerService.GetImportFiles();
+        List<string> files = _importerService.GetImportFiles();
         return new GetImportFilesResponse { ImportFiles = files };
     }
 }

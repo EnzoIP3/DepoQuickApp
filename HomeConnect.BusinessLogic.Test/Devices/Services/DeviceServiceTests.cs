@@ -21,12 +21,12 @@ public class DeviceServiceTests
     private Mock<IDeviceRepository> _deviceRepository = null!;
     private List<Device> _devices = null!;
     private DeviceService _deviceService = null!;
-    private Mock<IOwnedDeviceRepository> _ownedDeviceRepository = null!;
-    private Mock<INotificationService> _notificationService = null!;
     private Mock<IHomeRepository> _homeRepository = null!;
-    private Mock<IRoomRepository> _roomRepository = null!;
+    private Mock<INotificationService> _notificationService = null!;
+    private Mock<IOwnedDeviceRepository> _ownedDeviceRepository = null!;
     private PagedData<Device> _pagedDeviceList = null!;
     private GetDevicesArgs _parameters = null!;
+    private Mock<IRoomRepository> _roomRepository = null!;
     private Device otherDevice = null!;
     private User user1 = null!;
     private User user2 = null!;
@@ -40,8 +40,8 @@ public class DeviceServiceTests
         _notificationService = new Mock<INotificationService>(MockBehavior.Strict);
         _homeRepository = new Mock<IHomeRepository>(MockBehavior.Strict);
         _roomRepository = new Mock<IRoomRepository>(MockBehavior.Strict);
-        _deviceService = new DeviceService(_deviceRepository.Object, _ownedDeviceRepository.Object,
-            _notificationService.Object, _homeRepository.Object, _roomRepository.Object);
+        _deviceService =
+            new DeviceService(_deviceRepository.Object, _ownedDeviceRepository.Object, _roomRepository.Object);
 
         user1 = new User("name", "surname", "email1@email.com", "Password#100", new Role());
         user2 = new User("name", "surname", "email2@email.com", "Password#100", new Role());
@@ -152,7 +152,7 @@ public class DeviceServiceTests
         var parameters = new GetDevicesArgs { DeviceTypeFilter = "InvalidType" };
 
         // Act
-        var act = () => _deviceService.GetDevices(parameters);
+        Func<PagedData<Device>> act = () => _deviceService.GetDevices(parameters);
 
         // Assert
         act.Should().Throw<ArgumentException>().WithMessage("That device type does not exist.");
@@ -235,10 +235,9 @@ public class DeviceServiceTests
         // Arrange
         var hardwareId = Guid.NewGuid().ToString();
         _ownedDeviceRepository.Setup(x => x.Exists(Guid.Parse(hardwareId))).Returns(false);
-        var args = new NotificationArgs { HardwareId = hardwareId, Date = DateTime.Now, Event = "example" };
 
         // Act
-        Action act = () => _deviceService.TurnLamp(hardwareId, true, args);
+        Action act = () => _deviceService.TurnLamp(hardwareId, true);
 
         // Assert
         act.Should().Throw<KeyNotFoundException>().WithMessage("The device is not registered in this home.");
@@ -249,10 +248,9 @@ public class DeviceServiceTests
     {
         // Arrange
         var hardwareId = "hardwareId";
-        var args = new NotificationArgs { HardwareId = hardwareId, Date = DateTime.Now, Event = "example" };
 
         // Act
-        Action act = () => _deviceService.TurnLamp(hardwareId, true, args);
+        Action act = () => _deviceService.TurnLamp(hardwareId, true);
 
         // Assert
         act.Should().Throw<ArgumentException>().WithMessage("Hardware ID is invalid.");
@@ -266,14 +264,15 @@ public class DeviceServiceTests
     public void TurnLamp_WhenCalledWithValidHardwareId_SetsState()
     {
         // Arrange
+        var lampOwnedDevice = new LampOwnedDevice(new Home(), new Device { Type = DeviceType.Lamp });
         var hardwareId = Guid.NewGuid().ToString();
         _ownedDeviceRepository.Setup(x => x.Exists(Guid.Parse(hardwareId))).Returns(true);
         _ownedDeviceRepository.Setup(x => x.UpdateLampState(Guid.Parse(hardwareId), true)).Verifiable();
-        _ownedDeviceRepository.Setup(x => x.GetLampState(Guid.Parse(hardwareId))).Returns(true);
-        var args = new NotificationArgs { HardwareId = hardwareId, Date = DateTime.Now, Event = "example" };
+        _ownedDeviceRepository.Setup(x => x.GetByHardwareId(Guid.Parse(hardwareId)))
+            .Returns(lampOwnedDevice);
 
         // Act
-        _deviceService.TurnLamp(hardwareId, true, args);
+        _deviceService.TurnLamp(hardwareId, true);
 
         // Assert
         _ownedDeviceRepository.VerifyAll();
@@ -283,14 +282,15 @@ public class DeviceServiceTests
     public void TurnLamp_WhenCalledWithValidHardwareIdAndCurrentStateIsEqualToTheNewState_DoesNotCreateANotification()
     {
         // Arrange
+        var lampOwnedDevice = new LampOwnedDevice(new Home(), new Device { Type = DeviceType.Lamp });
         var hardwareId = Guid.NewGuid().ToString();
         _ownedDeviceRepository.Setup(x => x.Exists(Guid.Parse(hardwareId))).Returns(true);
         _ownedDeviceRepository.Setup(x => x.UpdateLampState(Guid.Parse(hardwareId), true)).Verifiable();
-        _ownedDeviceRepository.Setup(x => x.GetLampState(Guid.Parse(hardwareId))).Returns(true);
-        var args = new NotificationArgs { HardwareId = hardwareId, Date = DateTime.Now, Event = "example" };
+        _ownedDeviceRepository.Setup(x => x.GetByHardwareId(Guid.Parse(hardwareId)))
+            .Returns(lampOwnedDevice);
 
         // Act
-        _deviceService.TurnLamp(hardwareId, true, args);
+        _deviceService.TurnLamp(hardwareId, true);
 
         // Assert
         _ownedDeviceRepository.VerifyAll();
@@ -300,27 +300,38 @@ public class DeviceServiceTests
     public void TurnLamp_WhenCalledWithValidHardwareIdAndCurrentStateIsDifferentThanTheNewState_CreatesANotification()
     {
         // Arrange
+        var lampOwnedDevice = new LampOwnedDevice(new Home(), new Device { Type = DeviceType.Lamp });
         var hardwareId = Guid.NewGuid().ToString();
-        var date = DateTime.Now;
         _ownedDeviceRepository.Setup(x => x.Exists(Guid.Parse(hardwareId))).Returns(true);
         _ownedDeviceRepository.Setup(x => x.UpdateLampState(Guid.Parse(hardwareId), true)).Verifiable();
-        _ownedDeviceRepository.Setup(x => x.GetLampState(Guid.Parse(hardwareId))).Returns(false);
-        var args = new NotificationArgs { HardwareId = hardwareId, Date = DateTime.Now, Event = "example" };
-        _notificationService.Setup(x => x.Notify(args, _deviceService));
+        _ownedDeviceRepository.Setup(x => x.GetByHardwareId(Guid.Parse(hardwareId)))
+            .Returns(lampOwnedDevice);
 
         // Act
-        _deviceService.TurnLamp(hardwareId, true, args);
+        _deviceService.TurnLamp(hardwareId, true);
 
         // Assert
-        _notificationService.Verify(x => x.Notify(It.Is<NotificationArgs>(y =>
-            y.HardwareId == hardwareId &&
-            y.Date.Year == date.Year &&
-            y.Date.Month == date.Month &&
-            y.Date.Day == date.Day &&
-            y.Date.Hour == date.Hour &&
-            y.Date.Minute == date.Minute &&
-            y.Event == args.Event), _deviceService), Times.Once);
         _ownedDeviceRepository.VerifyAll();
+    }
+
+    [TestMethod]
+    public void TurnLamp_WhenDeviceIsNotALamp_ThrowsInvalidOperationException()
+    {
+        // Arrange
+        var hardwareId = Guid.NewGuid().ToString();
+        _ownedDeviceRepository.Setup(x => x.Exists(Guid.Parse(hardwareId))).Returns(true);
+        _ownedDeviceRepository.Setup(x => x.GetByHardwareId(Guid.Parse(hardwareId)))
+            .Returns(new OwnedDevice
+            {
+                Device = new Device("Name", "123", "Description", "https://example.com/photo.png", [], "Sensor",
+                    new Business())
+            });
+
+        // Act
+        Action act = () => _deviceService.TurnLamp(hardwareId, true);
+
+        // Assert
+        act.Should().Throw<InvalidOperationException>().WithMessage("Device is not a lamp.");
     }
 
     #endregion
@@ -337,10 +348,9 @@ public class DeviceServiceTests
         // Arrange
         var hardwareId = Guid.NewGuid().ToString();
         _ownedDeviceRepository.Setup(x => x.Exists(Guid.Parse(hardwareId))).Returns(false);
-        var args = new NotificationArgs { HardwareId = hardwareId, Date = DateTime.Now, Event = "example" };
 
         // Act
-        Action act = () => _deviceService.UpdateSensorState(hardwareId, true, args);
+        Action act = () => _deviceService.UpdateSensorState(hardwareId, true);
 
         // Assert
         act.Should().Throw<KeyNotFoundException>().WithMessage("The device is not registered in this home.");
@@ -351,10 +361,9 @@ public class DeviceServiceTests
     {
         // Arrange
         var hardwareId = "hardwareId";
-        var args = new NotificationArgs { HardwareId = hardwareId, Date = DateTime.Now, Event = "example" };
 
         // Act
-        Action act = () => _deviceService.UpdateSensorState(hardwareId, true, args);
+        Action act = () => _deviceService.UpdateSensorState(hardwareId, true);
 
         // Assert
         act.Should().Throw<ArgumentException>().WithMessage("Hardware ID is invalid.");
@@ -368,15 +377,16 @@ public class DeviceServiceTests
     public void UpdateSensorState_WhenCalledWithValidHardwareId_SetsState()
     {
         // Arrange
+        var sensorOwnedDevice = new SensorOwnedDevice(new Home(), new Device { Type = DeviceType.Sensor });
         var hardwareId = Guid.NewGuid().ToString();
         const bool state = false;
-        var args = new NotificationArgs { HardwareId = hardwareId, Date = DateTime.Now, Event = "example" };
         _ownedDeviceRepository.Setup(x => x.Exists(Guid.Parse(hardwareId))).Returns(true);
         _ownedDeviceRepository.Setup(x => x.UpdateSensorState(Guid.Parse(hardwareId), state)).Verifiable();
-        _ownedDeviceRepository.Setup(x => x.GetSensorState(Guid.Parse(hardwareId))).Returns(state);
+        _ownedDeviceRepository.Setup(x => x.GetByHardwareId(Guid.Parse(hardwareId)))
+            .Returns(sensorOwnedDevice);
 
         // Act
-        _deviceService.UpdateSensorState(hardwareId, state, args);
+        _deviceService.UpdateSensorState(hardwareId, state);
 
         // Assert
         _ownedDeviceRepository.VerifyAll();
@@ -387,15 +397,16 @@ public class DeviceServiceTests
         UpdateSensorState_WhenCalledWithValidHardwareIdAndCurrentStateIsEqualToTheNewState_DoesNotCreateANotification()
     {
         // Arrange
+        var sensorOwnedDevice = new SensorOwnedDevice(new Home(), new Device { Type = DeviceType.Sensor });
         var hardwareId = Guid.NewGuid().ToString();
         const bool state = false;
-        var args = new NotificationArgs { HardwareId = hardwareId, Date = DateTime.Now, Event = "example" };
         _ownedDeviceRepository.Setup(x => x.Exists(Guid.Parse(hardwareId))).Returns(true);
         _ownedDeviceRepository.Setup(x => x.UpdateSensorState(Guid.Parse(hardwareId), state)).Verifiable();
-        _ownedDeviceRepository.Setup(x => x.GetSensorState(Guid.Parse(hardwareId))).Returns(state);
+        _ownedDeviceRepository.Setup(x => x.GetByHardwareId(Guid.Parse(hardwareId)))
+            .Returns(sensorOwnedDevice);
 
         // Act
-        _deviceService.UpdateSensorState(hardwareId, state, args);
+        _deviceService.UpdateSensorState(hardwareId, state);
 
         // Assert
         _ownedDeviceRepository.VerifyAll();
@@ -406,27 +417,20 @@ public class DeviceServiceTests
         UpdateSensorState_WhenCalledWithValidHardwareIdAndCurrentStateIsDifferentThanTheNewState_CreatesANotification()
     {
         // Arrange
+        var sensorOwnedDevice = new SensorOwnedDevice(new Home(), new Device { Type = DeviceType.Sensor });
         var hardwareId = Guid.NewGuid().ToString();
         const bool state = false;
-        var date = DateTime.Now;
         var args = new NotificationArgs { HardwareId = hardwareId, Date = DateTime.Now, Event = "example" };
         _ownedDeviceRepository.Setup(x => x.Exists(Guid.Parse(hardwareId))).Returns(true);
         _ownedDeviceRepository.Setup(x => x.UpdateSensorState(Guid.Parse(hardwareId), state)).Verifiable();
-        _ownedDeviceRepository.Setup(x => x.GetSensorState(Guid.Parse(hardwareId))).Returns(!state);
-        _notificationService.Setup(x => x.Notify(args, _deviceService));
+        _ownedDeviceRepository.Setup(x => x.GetByHardwareId(Guid.Parse(hardwareId)))
+            .Returns(sensorOwnedDevice);
+        _notificationService.Setup(x => x.Notify(args));
 
         // Act
-        _deviceService.UpdateSensorState(hardwareId, state, args);
+        _deviceService.UpdateSensorState(hardwareId, state);
 
         // Assert
-        _notificationService.Verify(x => x.Notify(It.Is<NotificationArgs>(y =>
-            y.HardwareId == hardwareId &&
-            y.Date.Year == date.Year &&
-            y.Date.Month == date.Month &&
-            y.Date.Day == date.Day &&
-            y.Date.Hour == date.Hour &&
-            y.Date.Minute == date.Minute &&
-            y.Event == args.Event), _deviceService), Times.Once);
         _ownedDeviceRepository.VerifyAll();
     }
 
@@ -498,7 +502,7 @@ public class DeviceServiceTests
         _deviceRepository.Setup(x => x.Get(Guid.Parse(cameraId))).Returns(camera);
 
         // Act
-        var result = _deviceService.GetCameraById(cameraId);
+        Camera result = _deviceService.GetCameraById(cameraId);
 
         // Assert
         result.Should().BeOfType<Camera>();

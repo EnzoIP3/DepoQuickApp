@@ -58,7 +58,7 @@ public class CameraControllerTests
             ModelNumber = "123",
             MotionDetection = true,
             PersonDetection = true,
-            SecondaryPhotos = [],
+            SecondaryPhotos = []
         };
         var cameraRequest = new CreateCameraRequest
         {
@@ -70,7 +70,7 @@ public class CameraControllerTests
             ModelNumber = cameraArgs.ModelNumber,
             MotionDetection = cameraArgs.MotionDetection,
             PersonDetection = cameraArgs.PersonDetection,
-            SecondaryPhotos = cameraArgs.SecondaryPhotos,
+            SecondaryPhotos = cameraArgs.SecondaryPhotos
         };
         _businessOwnerService.Setup(x => x.CreateCamera(cameraArgs)).Returns(camera);
         var items = new Dictionary<object, object?> { { Item.UserLogged, user } };
@@ -96,7 +96,7 @@ public class CameraControllerTests
         var hardwareId = "hardwareId";
         var args = new NotificationArgs { HardwareId = hardwareId, Date = DateTime.Now, Event = "Movement detected" };
         _deviceService.Setup(x => x.IsConnected(hardwareId)).Returns(true);
-        _notificationService.Setup(x => x.Notify(args, _deviceService.Object));
+        _notificationService.Setup(x => x.Notify(args));
 
         // Act
         NotifyResponse result = _cameraController.MovementDetected(hardwareId);
@@ -123,7 +123,7 @@ public class CameraControllerTests
             Event = $"Person detected with email: {request.UserEmail}"
         };
         _deviceService.Setup(x => x.IsConnected(hardwareId)).Returns(true);
-        _notificationService.Setup(x => x.Notify(args, _deviceService.Object));
+        _notificationService.Setup(x => x.Notify(args));
 
         // Act
         NotifyResponse result = _cameraController.PersonDetected(hardwareId, request);

@@ -1,6 +1,6 @@
 namespace HomeConnect.WebApi.Controllers.Homes.Models;
 
-public record OwnerInfo
+public sealed record OwnerInfo
 {
     public string Id { get; init; } = null!;
     public string Name { get; init; } = null!;

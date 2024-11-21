@@ -8,15 +8,21 @@ namespace HomeConnect.WebApi.Controllers.DeviceTypes;
 [ApiController]
 [Route("device_types")]
 [AuthenticationFilter]
-public class DeviceTypeController(IDeviceService deviceService) : ControllerBase
+public sealed class DeviceTypeController : ControllerBase
 {
-    private readonly string _defaultCacheTime = "2592000";
+    private const string DefaultCacheTime = "2592000";
+    private readonly IDeviceService _deviceService;
+
+    public DeviceTypeController(IDeviceService deviceService)
+    {
+        _deviceService = deviceService;
+    }
 
     [HttpGet]
     public GetDeviceTypesResponse GetDeviceTypes()
     {
-        IEnumerable<string> deviceTypes = deviceService.GetAllDeviceTypes();
-        Response.Headers["Cache-Control"] = $"public,max-age={_defaultCacheTime}";
+        IEnumerable<string> deviceTypes = _deviceService.GetAllDeviceTypes();
+        Response.Headers.CacheControl = $"public,max-age={DefaultCacheTime}";
         return new GetDeviceTypesResponse { DeviceTypes = deviceTypes.ToList() };
     }
 }

@@ -24,4 +24,20 @@ public class NotificationTest
         // Assert
         act.Should().NotThrow();
     }
+
+    [TestMethod]
+    public void Clone_WhenCalled_ReturnsNewInstance()
+    {
+        // Arrange
+        var ownedDevice = new OwnedDevice(new Home(new User(), "Main St 123", 12.5, 12.5, 5),
+            new Device("Sensor", "12345", "A sensor", "https://sensor.com/image.png", [], "Sensor", new Business()));
+        var notification = new Notification(Guid.NewGuid(), DateTime.Now, false, "Event", ownedDevice, new User());
+
+        // Act
+        var clone = notification.Clone();
+
+        // Assert
+        clone.Should().NotBeSameAs(notification);
+        clone.Should().BeEquivalentTo(notification);
+    }
 }

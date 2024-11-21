@@ -1,6 +1,6 @@
 namespace HomeConnect.WebApi.Controllers.Admins.Models;
 
-public record DeleteAdminResponse
+public sealed record DeleteAdminResponse
 {
     public string Id { get; set; } = null!;
 }

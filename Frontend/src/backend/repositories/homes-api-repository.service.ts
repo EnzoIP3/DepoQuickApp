@@ -1,7 +1,7 @@
 import { HttpClient } from "@angular/common/http";
 import { Injectable } from "@angular/core";
 import { Observable } from "rxjs";
-import { environment } from "../../environments/environment";
+import environments from "../../environments";
 import ApiRepository from "./api-repository";
 import GetHomesResponse from "../services/homes/models/get-homes-response";
 import GetHomeResponse from "../services/homes/models/get-home-response";
@@ -25,7 +25,7 @@ import { Router } from "@angular/router";
 })
 export class HomesApiRepositoryService extends ApiRepository {
     constructor(http: HttpClient, router: Router) {
-        super(environment.apiUrl, "homes", http, router);
+        super(environments.apiUrl, "homes", http, router);
     }
 
     public getHomes(): Observable<GetHomesResponse> {

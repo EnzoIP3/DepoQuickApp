@@ -2,7 +2,6 @@ using BusinessLogic.BusinessOwners.Entities;
 using BusinessLogic.BusinessOwners.Models;
 using BusinessLogic.BusinessOwners.Services;
 using BusinessLogic.Devices.Entities;
-using BusinessLogic.Devices.Services;
 using BusinessLogic.Notifications.Models;
 using BusinessLogic.Notifications.Services;
 using BusinessLogic.Users.Entities;
@@ -21,20 +20,21 @@ public class MotionSensorControllerTests
     private readonly string _modelNumber = "123";
 
     private Mock<IBusinessOwnerService> _businessOwnerServiceMock = null!;
-    private Mock<IDeviceService> _deviceServiceMock = null!;
     private Mock<HttpContext> _httpContextMock = null!;
-    private Mock<INotificationService> _notificationServiceMock = null!;
     private MotionSensorController _motionSensorController = null!;
+    private Mock<INotificationService> _notificationServiceMock = null!;
 
     [TestInitialize]
     public void TestInitialize()
     {
         _httpContextMock = new Mock<HttpContext>();
         _notificationServiceMock = new Mock<INotificationService>();
-        _deviceServiceMock = new Mock<IDeviceService>();
         _businessOwnerServiceMock = new Mock<IBusinessOwnerService>();
-        _motionSensorController = new MotionSensorController(_notificationServiceMock.Object, _deviceServiceMock.Object, _businessOwnerServiceMock.Object)
-        { ControllerContext = { HttpContext = _httpContextMock.Object } };
+        _motionSensorController =
+            new MotionSensorController(_businessOwnerServiceMock.Object, _notificationServiceMock.Object)
+            {
+                ControllerContext = { HttpContext = _httpContextMock.Object }
+            };
     }
 
     #region CreateDevices
@@ -77,6 +77,7 @@ public class MotionSensorControllerTests
         response.Should().NotBeNull();
         response.Id.Should().Be(motionSensor.Id);
     }
+
     #endregion
 
     #region MovementDetected
@@ -87,8 +88,7 @@ public class MotionSensorControllerTests
         // Arrange
         var hardwareId = "hardwareId";
         var args = new NotificationArgs { HardwareId = hardwareId, Date = DateTime.Now, Event = "Movement detected" };
-        _deviceServiceMock.Setup(x => x.IsConnected(hardwareId)).Returns(true);
-        _notificationServiceMock.Setup(x => x.Notify(args, _deviceServiceMock.Object));
+        _notificationServiceMock.Setup(x => x.Notify(args));
 
         // Act
         NotifyResponse result = _motionSensorController.MovementDetected(hardwareId);
@@ -97,5 +97,6 @@ public class MotionSensorControllerTests
         result.Should().NotBeNull();
         result.HardwareId.Should().Be(hardwareId);
     }
+
     #endregion
 }

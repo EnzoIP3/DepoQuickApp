@@ -4,6 +4,7 @@ using BusinessLogic.BusinessOwners.Services;
 using BusinessLogic.Devices.Entities;
 using BusinessLogic.Devices.Services;
 using BusinessLogic.Notifications.Models;
+using BusinessLogic.Notifications.Services;
 using BusinessLogic.Users.Entities;
 using FluentAssertions;
 using HomeConnect.WebApi.Controllers.Devices.Models;
@@ -23,15 +24,18 @@ public class LampControllerTests
     private Mock<IDeviceService> _deviceServiceMock = null!;
     private Mock<HttpContext> _httpContextMock = null!;
     private LampController _lampController = null!;
+    private Mock<INotificationService> _notificationServiceMock = null!;
 
     [TestInitialize]
     public void TestInitialize()
     {
         _httpContextMock = new Mock<HttpContext>();
-        _businessOwnerServiceMock = new Mock<IBusinessOwnerService>();
-        _deviceServiceMock = new Mock<IDeviceService>();
+        _businessOwnerServiceMock = new Mock<IBusinessOwnerService>(MockBehavior.Strict);
+        _deviceServiceMock = new Mock<IDeviceService>(MockBehavior.Strict);
+        _notificationServiceMock = new Mock<INotificationService>(MockBehavior.Strict);
         _lampController =
-            new LampController(_businessOwnerServiceMock.Object, _deviceServiceMock.Object)
+            new LampController(_businessOwnerServiceMock.Object, _deviceServiceMock.Object,
+                _notificationServiceMock.Object)
             { ControllerContext = { HttpContext = _httpContextMock.Object } };
     }
 
@@ -75,31 +79,30 @@ public class LampControllerTests
         response.Should().NotBeNull();
         response.Id.Should().Be(lamp.Id);
     }
+
     #endregion
 
     #region TurningLamps
+
     [TestMethod]
     public void TurnOn_WhenCalledWithValidHardwareId_ReturnsOkResponse()
     {
         // Arrange
         var hardwareId = Guid.NewGuid().ToString();
-        var date = DateTime.Now;
+        DateTime date = DateTime.Now;
         var state = true;
         var args = new NotificationArgs { HardwareId = hardwareId, Date = date, Event = "Lamp was turned on" };
-        _deviceServiceMock.Setup(x => x.TurnLamp(hardwareId, state, args));
+        _deviceServiceMock.Setup(x => x.TurnLamp(hardwareId, state));
+        _notificationServiceMock.Setup(x => x.SendLampNotification(It.IsAny<NotificationArgs>(), state));
 
         // Act
         NotifyResponse result = _lampController.TurnOn(hardwareId);
 
         // Assert
-        _deviceServiceMock.Verify(x => x.TurnLamp(hardwareId, state, It.Is<NotificationArgs>(y =>
-            y.HardwareId == hardwareId &&
-            y.Date.Year == date.Year &&
-            y.Date.Month == date.Month &&
-            y.Date.Day == date.Day &&
-            y.Date.Hour == date.Hour &&
-            y.Date.Minute == date.Minute &&
-            y.Event == args.Event)), Times.Once);
+        _deviceServiceMock.Verify(x => x.TurnLamp(hardwareId, state), Times.Once);
+        _notificationServiceMock.Verify(
+            x => x.SendLampNotification(
+                It.Is<NotificationArgs>(x => x.HardwareId == hardwareId && x.Event == args.Event), state), Times.Once);
         result.Should().NotBeNull();
         result.HardwareId.Should().Be(hardwareId);
     }
@@ -109,23 +112,20 @@ public class LampControllerTests
     {
         // Arrange
         var hardwareId = Guid.NewGuid().ToString();
-        var date = DateTime.Now;
+        DateTime date = DateTime.Now;
         var state = false;
         var args = new NotificationArgs { HardwareId = hardwareId, Date = date, Event = "Lamp was turned off" };
-        _deviceServiceMock.Setup(x => x.TurnLamp(hardwareId, state, args));
+        _deviceServiceMock.Setup(x => x.TurnLamp(hardwareId, state));
+        _notificationServiceMock.Setup(x => x.SendLampNotification(It.IsAny<NotificationArgs>(), state));
 
         // Act
         NotifyResponse result = _lampController.TurnOff(hardwareId);
 
         // Assert
-        _deviceServiceMock.Verify(x => x.TurnLamp(hardwareId, state, It.Is<NotificationArgs>(y =>
-            y.HardwareId == hardwareId &&
-            y.Date.Year == date.Year &&
-            y.Date.Month == date.Month &&
-            y.Date.Day == date.Day &&
-            y.Date.Hour == date.Hour &&
-            y.Date.Minute == date.Minute &&
-            y.Event == args.Event)), Times.Once);
+        _deviceServiceMock.Verify(x => x.TurnLamp(hardwareId, state), Times.Once);
+        _notificationServiceMock.Verify(
+            x => x.SendLampNotification(
+                It.Is<NotificationArgs>(x => x.HardwareId == hardwareId && x.Event == args.Event), state), Times.Once);
         result.Should().NotBeNull();
         result.HardwareId.Should().Be(hardwareId);
     }

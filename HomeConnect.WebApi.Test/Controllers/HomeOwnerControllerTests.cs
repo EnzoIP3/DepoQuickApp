@@ -14,10 +14,10 @@ namespace HomeConnect.WebApi.Test.Controllers;
 [TestClass]
 public class HomeOwnerControllerTests
 {
+    private readonly User _user = null!;
+    private HomeOwnerController _controller = null!;
     private Mock<HttpContext> _httpContextMock = null!;
     private Mock<IUserService> _userService = null!;
-    private HomeOwnerController _controller = null!;
-    private readonly User _user = null!;
 
     [TestInitialize]
     public void Initialize()

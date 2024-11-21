@@ -1,6 +1,6 @@
 namespace HomeConnect.WebApi.Controllers.Users.Models;
 
-public record ListUserInfo
+public sealed record ListUserInfo
 {
     public string Id { get; init; } = null!;
     public string Name { get; init; } = null!;

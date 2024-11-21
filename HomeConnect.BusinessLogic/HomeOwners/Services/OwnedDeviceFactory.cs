@@ -11,7 +11,7 @@ internal sealed class OwnedDeviceFactory
         {
             DeviceType.Lamp => new LampOwnedDevice(home, device),
             DeviceType.Sensor => new SensorOwnedDevice(home, device),
-            _ => new OwnedDevice(home, device),
+            _ => new OwnedDevice(home, device)
         };
     }
 }

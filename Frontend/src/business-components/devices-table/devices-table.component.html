@@ -4,7 +4,9 @@
     [devices]="devices"
     [loading]="loading"
     [pagination]="pagination"
+    [filterableColumns]="filterableColumns"
     [selectedDevice]="selectedDevice"
     (rowClick)="onRowClick($event)"
     (pageChange)="onPageChange($event)"
+    (filterChange)="onFilterChange($event)"
 />

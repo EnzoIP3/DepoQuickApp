@@ -8,29 +8,39 @@ namespace BusinessLogic.Users.Services;
 
 public class UserService : IUserService
 {
+    private readonly IRoleRepository _roleRepository;
+
+    private readonly IUserRepository _userRepository;
+
     public UserService(IUserRepository userRepository, IRoleRepository roleRepository)
     {
-        UserRepository = userRepository;
-        RoleRepository = roleRepository;
+        _userRepository = userRepository;
+        _roleRepository = roleRepository;
     }
-
-    private IUserRepository UserRepository { get; }
-    private IRoleRepository RoleRepository { get; }
 
     public User CreateUser(CreateUserArgs args)
     {
         EnsureRoleExists(args);
         EnsureUserDoesNotExist(args);
-        Role role = RoleRepository.Get(args.Role);
+        Role role = _roleRepository.Get(args.Role);
         ValidateHomeOwner(args, role);
         var user = new User(args.Name, args.Surname, args.Email, args.Password, role, args.ProfilePicture);
-        UserRepository.Add(user);
+        _userRepository.Add(user);
         return user;
     }
 
     public bool Exists(string requestUserId)
     {
-        return UserIdIsValid(requestUserId) && UserRepository.Exists(Guid.Parse(requestUserId));
+        return UserIdIsValid(requestUserId) && _userRepository.Exists(Guid.Parse(requestUserId));
+    }
+
+    public User AddRoleToUser(AddRoleToUserArgs args)
+    {
+        User user = _userRepository.Get(Guid.Parse(args.UserId));
+        Role role = _roleRepository.Get(args.Role);
+        user.AddRole(role);
+        _userRepository.Update(user);
+        return user;
     }
 
     private bool UserIdIsValid(string requestUserId)
@@ -48,7 +58,7 @@ public class UserService : IUserService
 
     private void EnsureUserDoesNotExist(CreateUserArgs args)
     {
-        if (UserRepository.ExistsByEmail(args.Email))
+        if (_userRepository.ExistsByEmail(args.Email))
         {
             throw new InvalidOperationException("User already exists.");
         }
@@ -56,18 +66,9 @@ public class UserService : IUserService
 
     private void EnsureRoleExists(CreateUserArgs args)
     {
-        if (!RoleRepository.Exists(args.Role))
+        if (!_roleRepository.Exists(args.Role))
         {
             throw new ArgumentException("Invalid role.");
         }
-    }
-
-    public User AddRoleToUser(AddRoleToUserArgs args)
-    {
-        var user = UserRepository.Get(Guid.Parse(args.UserId));
-        var role = RoleRepository.Get(args.Role);
-        user.AddRole(role);
-        UserRepository.Update(user);
-        return user;
     }
 }

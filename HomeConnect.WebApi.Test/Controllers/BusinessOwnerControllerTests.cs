@@ -12,11 +12,11 @@ namespace HomeConnect.WebApi.Test.Controllers;
 [TestClass]
 public class BusinessOwnerControllerTests
 {
-    private Mock<IUserService> _userService = null!;
     private CreateBusinessOwnerRequest _businessOwnerRequest = null!;
     private BusinessOwnerController _controller = null!;
     private Guid _guid;
     private CreateUserArgs _userModel = null!;
+    private Mock<IUserService> _userService = null!;
 
     [TestInitialize]
     public void Initialize()
@@ -48,7 +48,7 @@ public class BusinessOwnerControllerTests
     public void CreateBusinessOwner_WhenCalledWithValidRequest_ReturnsCreatedResponse()
     {
         // Arrange
-        _userService.Setup(x => x.CreateUser(_userModel)).Returns(new User() { Id = _guid });
+        _userService.Setup(x => x.CreateUser(_userModel)).Returns(new User { Id = _guid });
 
         // Act
         CreateBusinessOwnerResponse response = _controller.CreateBusinessOwner(_businessOwnerRequest);

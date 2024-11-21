@@ -1,6 +1,6 @@
 namespace HomeConnect.WebApi.Controllers.Homes.Models;
 
-public record ListDeviceInfo
+public sealed record ListDeviceInfo
 {
     public string Id { get; set; } = null!;
     public string Name { get; set; } = null!;

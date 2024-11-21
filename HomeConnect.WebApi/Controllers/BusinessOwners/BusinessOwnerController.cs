@@ -1,6 +1,5 @@
 using BusinessLogic.Roles.Entities;
 using BusinessLogic.Users.Entities;
-using BusinessLogic.Users.Models;
 using BusinessLogic.Users.Services;
 using HomeConnect.WebApi.Controllers.BusinessOwners.Models;
 using HomeConnect.WebApi.Filters;
@@ -11,28 +10,21 @@ namespace HomeConnect.WebApi.Controllers.BusinessOwners;
 [ApiController]
 [Route("business_owners")]
 [AuthenticationFilter]
-public class BusinessOwnerController(IUserService userService)
+public sealed class BusinessOwnerController
     : ControllerBase
 {
+    private readonly IUserService _userService;
+
+    public BusinessOwnerController(IUserService userService)
+    {
+        _userService = userService;
+    }
+
     [HttpPost]
     [AuthorizationFilter(SystemPermission.CreateBusinessOwner)]
     public CreateBusinessOwnerResponse CreateBusinessOwner(CreateBusinessOwnerRequest request)
     {
-        CreateUserArgs createUserArgs = UserModelFromRequest(request);
-        User businessOwner = userService.CreateUser(createUserArgs);
+        User businessOwner = _userService.CreateUser(request.ToCreateUserArgs());
         return new CreateBusinessOwnerResponse { Id = businessOwner.Id.ToString() };
-    }
-
-    private static CreateUserArgs UserModelFromRequest(CreateBusinessOwnerRequest request)
-    {
-        var userModel = new CreateUserArgs
-        {
-            Name = request.Name,
-            Surname = request.Surname,
-            Email = request.Email,
-            Password = request.Password,
-            Role = Role.BusinessOwner
-        };
-        return userModel;
     }
 }

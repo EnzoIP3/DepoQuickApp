@@ -10,6 +10,7 @@ import TableColumn from "../../components/table/models/table-column";
 import Pagination from "../../backend/services/pagination";
 import { AvatarComponent } from "../../components/avatar/avatar.component";
 import { ImageGalleryComponent } from "../../components/image-gallery/image-gallery.component";
+import { FilterValues } from "../../components/table/models/filter-values";
 
 @Component({
     selector: "app-base-devices-table",
@@ -27,6 +28,7 @@ import { ImageGalleryComponent } from "../../components/image-gallery/image-gall
 })
 export class BaseDevicesTableComponent {
     @Input() columns: TableColumn[] = [];
+    @Input() filterableColumns: any[] = [];
     @Input() devices: Device[] = [];
     @Input() paginate = true;
     @Input() pagination: PaginationResponse | null = null;
@@ -37,6 +39,8 @@ export class BaseDevicesTableComponent {
     @Output() rowClick: EventEmitter<Device> = new EventEmitter<Device>();
     @Output() pageChange: EventEmitter<Pagination> =
         new EventEmitter<Pagination>();
+    @Output() filterChange: EventEmitter<FilterValues> =
+        new EventEmitter<FilterValues>();
     @Input() showDialog = true;
     dialogVisible = false;
 
@@ -45,6 +49,10 @@ export class BaseDevicesTableComponent {
             this.dialogVisible = true;
         }
         this.rowClick.emit(device);
+    }
+
+    onFilterChange(filterValues: FilterValues): void {
+        this.filterChange.emit(filterValues);
     }
 
     closeDialog(): void {

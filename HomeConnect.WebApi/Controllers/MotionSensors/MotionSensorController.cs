@@ -1,7 +1,5 @@
-using BusinessLogic.BusinessOwners.Models;
 using BusinessLogic.BusinessOwners.Services;
 using BusinessLogic.Devices.Entities;
-using BusinessLogic.Devices.Services;
 using BusinessLogic.Notifications.Models;
 using BusinessLogic.Notifications.Services;
 using BusinessLogic.Roles.Entities;
@@ -15,31 +13,25 @@ namespace HomeConnect.WebApi.Controllers.MotionSensors;
 
 [ApiController]
 [Route("motion_sensors")]
-public class MotionSensorController(
-    INotificationService notificationService,
-    IDeviceService deviceService,
-    IBusinessOwnerService businessOwnerService)
+public sealed class MotionSensorController
     : ControllerBase
 {
+    private readonly IBusinessOwnerService _businessOwnerService;
+    private readonly INotificationService _notificationService;
+
+    public MotionSensorController(IBusinessOwnerService businessOwnerService, INotificationService notificationService)
+    {
+        _businessOwnerService = businessOwnerService;
+        _notificationService = notificationService;
+    }
+
     [HttpPost]
     [AuthenticationFilter]
     [AuthorizationFilter(SystemPermission.CreateMotionSensor)]
     public CreateMotionSensorResponse CreateMotionSensor([FromBody] CreateMotionSensorRequest request)
     {
         var userLoggedIn = HttpContext.Items[Item.UserLogged] as User;
-        var args = new CreateDeviceArgs
-        {
-            Owner = userLoggedIn!,
-            Description = request.Description ?? string.Empty,
-            MainPhoto = request.MainPhoto ?? string.Empty,
-            ModelNumber = request.ModelNumber,
-            Name = request.Name ?? string.Empty,
-            SecondaryPhotos = request.SecondaryPhotos,
-            Type = "MotionSensor"
-        };
-
-        Device createdSensor = businessOwnerService.CreateDevice(args);
-
+        Device createdSensor = _businessOwnerService.CreateDevice(request.ToArgs(userLoggedIn!));
         return new CreateMotionSensorResponse { Id = createdSensor.Id };
     }
 
@@ -47,7 +39,7 @@ public class MotionSensorController(
     public NotifyResponse MovementDetected([FromRoute] string hardwareId)
     {
         NotificationArgs args = CreateMovementDetectedNotificationArgs(hardwareId);
-        notificationService.Notify(args, deviceService);
+        _notificationService.Notify(args);
         return new NotifyResponse { HardwareId = hardwareId };
     }
 

@@ -1,4 +1,4 @@
-namespace HomeConnect.WebApi.Controllers.DeviceImporters.Models;
+namespace BusinessLogic.Devices.Models;
 
 public struct ImporterData
 {

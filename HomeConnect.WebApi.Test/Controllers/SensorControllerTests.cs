@@ -4,6 +4,7 @@ using BusinessLogic.BusinessOwners.Services;
 using BusinessLogic.Devices.Entities;
 using BusinessLogic.Devices.Services;
 using BusinessLogic.Notifications.Models;
+using BusinessLogic.Notifications.Services;
 using BusinessLogic.Users.Entities;
 using FluentAssertions;
 using HomeConnect.WebApi.Controllers.Devices.Models;
@@ -20,6 +21,7 @@ public class SensorControllerTests
     private Mock<IBusinessOwnerService> _businessOwnerServiceMock = null!;
     private Mock<IDeviceService> _deviceServiceMock = null!;
     private Mock<HttpContext> _httpContextMock = null!;
+    private Mock<INotificationService> _notificationServiceMock = null!;
     private SensorController _sensorController = null!;
 
     [TestInitialize]
@@ -28,8 +30,10 @@ public class SensorControllerTests
         _httpContextMock = new Mock<HttpContext>();
         _deviceServiceMock = new Mock<IDeviceService>();
         _businessOwnerServiceMock = new Mock<IBusinessOwnerService>();
-        _sensorController = new SensorController(_deviceServiceMock.Object,
-            _businessOwnerServiceMock.Object)
+        _notificationServiceMock = new Mock<INotificationService>();
+        _sensorController = new SensorController(_businessOwnerServiceMock.Object,
+            _deviceServiceMock.Object,
+            _notificationServiceMock.Object)
         { ControllerContext = { HttpContext = _httpContextMock.Object } };
     }
 
@@ -51,7 +55,7 @@ public class SensorControllerTests
             ModelNumber = sensor.ModelNumber,
             Name = sensor.Name,
             SecondaryPhotos = sensor.SecondaryPhotos,
-            Type = sensor.Type.ToString(),
+            Type = sensor.Type.ToString()
         };
         var sensorRequest = new CreateSensorRequest
         {
@@ -59,7 +63,7 @@ public class SensorControllerTests
             MainPhoto = sensor.MainPhoto,
             ModelNumber = sensor.ModelNumber,
             Name = sensor.Name,
-            SecondaryPhotos = sensor.SecondaryPhotos,
+            SecondaryPhotos = sensor.SecondaryPhotos
         };
         _businessOwnerServiceMock.Setup(x => x.CreateDevice(sensorArgs)).Returns(sensor);
         var items = new Dictionary<object, object?> { { Item.UserLogged, user } };
@@ -84,7 +88,8 @@ public class SensorControllerTests
         // Arrange
         var hardwareId = "hardwareId";
         var args = new NotificationArgs { HardwareId = hardwareId, Date = DateTime.Now, Event = "Sensor was opened" };
-        _deviceServiceMock.Setup(x => x.UpdateSensorState(hardwareId, true, args));
+        _deviceServiceMock.Setup(x => x.UpdateSensorState(hardwareId, true));
+        _notificationServiceMock.Setup(x => x.SendSensorNotification(It.IsAny<NotificationArgs>(), false));
 
         // Act
         NotifyResponse result = _sensorController.Open(hardwareId);
@@ -92,8 +97,8 @@ public class SensorControllerTests
         // Assert
         result.Should().NotBeNull();
         result.HardwareId.Should().Be(hardwareId);
-        _deviceServiceMock.Verify(x => x.UpdateSensorState(hardwareId, true, It.Is((NotificationArgs a) =>
-            a.HardwareId == hardwareId && a.Event == args.Event)));
+        _notificationServiceMock.Verify(x => x.SendSensorNotification(It.Is((NotificationArgs a) =>
+            a.HardwareId == hardwareId && a.Event == args.Event), true));
     }
 
     [TestMethod]
@@ -102,7 +107,8 @@ public class SensorControllerTests
         // Arrange
         var hardwareId = "hardwareId";
         var args = new NotificationArgs { HardwareId = hardwareId, Date = DateTime.Now, Event = "Sensor was closed" };
-        _deviceServiceMock.Setup(x => x.UpdateSensorState(hardwareId, false, args));
+        _deviceServiceMock.Setup(x => x.UpdateSensorState(hardwareId, false));
+        _notificationServiceMock.Setup(x => x.SendSensorNotification(It.IsAny<NotificationArgs>(), false));
 
         // Act
         NotifyResponse result = _sensorController.Close(hardwareId);
@@ -110,8 +116,10 @@ public class SensorControllerTests
         // Assert
         result.Should().NotBeNull();
         result.HardwareId.Should().Be(hardwareId);
-        _deviceServiceMock.Verify(x => x.UpdateSensorState(hardwareId, false, It.Is((NotificationArgs a) =>
-            a.HardwareId == hardwareId && a.Event == args.Event)));
+        _deviceServiceMock.Verify(x => x.UpdateSensorState(hardwareId, false));
+        _notificationServiceMock.Verify(x => x.SendSensorNotification(It.Is((NotificationArgs a) =>
+            a.HardwareId == hardwareId && a.Event == args.Event), false));
     }
+
     #endregion
 }

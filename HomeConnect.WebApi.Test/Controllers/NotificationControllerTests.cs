@@ -3,6 +3,7 @@ using BusinessLogic.BusinessOwners.Entities;
 using BusinessLogic.Devices.Entities;
 using BusinessLogic.HomeOwners.Entities;
 using BusinessLogic.Notifications.Entities;
+using BusinessLogic.Notifications.Models;
 using BusinessLogic.Notifications.Services;
 using BusinessLogic.Roles.Entities;
 using BusinessLogic.Users.Entities;
@@ -59,10 +60,15 @@ public class NotificationControllerTests
         List<Notification> notifications = [notification];
         DateTime dateCreated = DateFromString(request.DateCreated);
         _httpContextMock.SetupGet(h => h.Items).Returns(items);
-        _notificationService.Setup(n => n.GetNotifications(user.Id, request.Device, dateCreated, request.Read))
+        var args = new GetNotificationsArgs
+        {
+            UserId = user.Id,
+            DeviceFilter = request.Device,
+            DateFilter = dateCreated.ToString("dd-MM-yyyy"),
+            ReadFilter = request.Read
+        };
+        _notificationService.Setup(n => n.GetNotifications(args))
             .Returns([notification]);
-        _notificationService.Setup(n => n.MarkNotificationsAsRead(notifications))
-            .Verifiable();
 
         // Act
         GetNotificationsResponse response = _notificationController.GetNotifications(request);
@@ -76,25 +82,6 @@ public class NotificationControllerTests
         response.Notifications[0].Read.Should().Be(notification.Read);
         response.Notifications[0].DateCreated.Should()
             .Be(notification.Date.ToString("dd MMMM yyyy HH:mm:ss", CultureInfo.InvariantCulture));
-    }
-
-    [TestMethod]
-    public void GetNotifications_WhenInvalidFormatDateCreated_ThrowsArgumentException()
-    {
-        // Arrange
-        var request = new GetNotificationsRequest
-        {
-            Device = Guid.NewGuid().ToString(),
-            DateCreated = "2024/12/2",
-            Read = false
-        };
-
-        // Act
-        Func<GetNotificationsResponse> action = () => _notificationController.GetNotifications(request);
-
-        // Assert
-        _notificationService.VerifyAll();
-        action.Should().Throw<ArgumentException>().WithMessage("The date created filter is invalid");
     }
 
     private static string DateToString(DateTime date)

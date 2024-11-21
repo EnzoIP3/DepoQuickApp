@@ -1,4 +1,5 @@
 using BusinessLogic;
+using BusinessLogic.Admins.Models;
 using BusinessLogic.Admins.Services;
 using BusinessLogic.BusinessOwners.Entities;
 using BusinessLogic.BusinessOwners.Services;
@@ -38,7 +39,7 @@ public class UserControllerTests
         _adminService = new Mock<IAdminService>(MockBehavior.Strict);
         _userService = new Mock<IUserService>(MockBehavior.Strict);
         _businessOwnerService = new Mock<IBusinessOwnerService>(MockBehavior.Strict);
-        _controller = new UserController(_adminService.Object, _userService.Object, _businessOwnerService.Object)
+        _controller = new UserController(_userService.Object, _adminService.Object, _businessOwnerService.Object)
         {
             ControllerContext = new ControllerContext { HttpContext = _httpContext.Object }
         };
@@ -63,8 +64,8 @@ public class UserControllerTests
     {
         // Arrange
         var parameters = new GetUsersRequest();
-        _adminService.Setup(x => x.GetUsers(parameters.Page, parameters.PageSize, parameters.FullName,
-            parameters.Roles)).Returns(_pagedList);
+        var args = new GetUsersArgs();
+        _adminService.Setup(x => x.GetUsers(args)).Returns(_pagedList);
 
         // Act
         GetUsersResponse response = _controller.GetUsers(parameters);
@@ -90,8 +91,8 @@ public class UserControllerTests
     {
         // Arrange
         var parameters = new GetUsersRequest { FullName = _expectedUsers.First().Name };
-        _adminService.Setup(x => x.GetUsers(parameters.Page, parameters.PageSize, parameters.FullName,
-            parameters.Roles)).Returns(_pagedList);
+        var args = new GetUsersArgs { FullNameFilter = parameters.FullName };
+        _adminService.Setup(x => x.GetUsers(args)).Returns(_pagedList);
 
         // Act
         GetUsersResponse response = _controller.GetUsers(parameters);
@@ -117,8 +118,8 @@ public class UserControllerTests
     {
         // Arrange
         var parameters = new GetUsersRequest { Roles = _expectedUsers.First().Roles.First().Name };
-        _adminService.Setup(x => x.GetUsers(parameters.Page, parameters.PageSize, parameters.FullName,
-            parameters.Roles)).Returns(_pagedList);
+        var args = new GetUsersArgs { RoleFilter = parameters.Roles };
+        _adminService.Setup(x => x.GetUsers(args)).Returns(_pagedList);
 
         // Act
         GetUsersResponse response = _controller.GetUsers(parameters);
@@ -145,11 +146,10 @@ public class UserControllerTests
         // Arrange
         var parameters = new GetUsersRequest
         {
-            Page = _expectedPagination.Page,
-            PageSize = _expectedPagination.PageSize
+            Page = _expectedPagination.Page, PageSize = _expectedPagination.PageSize
         };
-        _adminService.Setup(x => x.GetUsers(parameters.Page, parameters.PageSize, parameters.FullName,
-            parameters.Roles)).Returns(_pagedList);
+        var args = new GetUsersArgs { CurrentPage = parameters.Page, PageSize = parameters.PageSize };
+        _adminService.Setup(x => x.GetUsers(args)).Returns(_pagedList);
 
         // Act
         GetUsersResponse response = _controller.GetUsers(parameters);
@@ -194,6 +194,7 @@ public class UserControllerTests
     #endregion
 
     #region GetBusinesses
+
     [TestMethod]
     public void GetBusinesses_WhenCalledWithValidRequest_ReturnsExpectedResponse()
     {
@@ -222,9 +223,7 @@ public class UserControllerTests
             }).ToList(),
             Pagination = new Pagination
             {
-                Page = businesses.Page,
-                PageSize = businesses.PageSize,
-                TotalPages = businesses.TotalPages
+                Page = businesses.Page, PageSize = businesses.PageSize, TotalPages = businesses.TotalPages
             }
         };
         _businessOwnerService.Setup(x => x.GetBusinesses(_user.Id.ToString(), request.CurrentPage, request.PageSize))
@@ -237,5 +236,6 @@ public class UserControllerTests
         _businessOwnerService.VerifyAll();
         response.Should().BeEquivalentTo(expectedResponse);
     }
+
     #endregion
 }

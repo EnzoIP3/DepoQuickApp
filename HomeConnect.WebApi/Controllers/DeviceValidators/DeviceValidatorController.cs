@@ -24,11 +24,6 @@ public class DeviceValidatorController : ControllerBase
     public GetValidatorsResponse GetValidators()
     {
         var validators = _validatorService.GetValidators();
-        return CreateGetValidatorsResponse(validators);
-    }
-
-    private static GetValidatorsResponse CreateGetValidatorsResponse(List<ValidatorInfo> validators)
-    {
-        return new GetValidatorsResponse { Validators = validators.Select(v => v.Name).ToList() };
+        return GetValidatorsResponse.FromValidators(validators);
     }
 }

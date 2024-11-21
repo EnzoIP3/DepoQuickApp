@@ -12,8 +12,15 @@ namespace HomeConnect.WebApi.Controllers.Notifications;
 [ApiController]
 [Route("notifications")]
 [AuthenticationFilter]
-public class NotificationController(INotificationService notificationService) : ControllerBase
+public class NotificationController : ControllerBase
 {
+    private readonly INotificationService _notificationService;
+
+    public NotificationController(INotificationService notificationService)
+    {
+        _notificationService = notificationService;
+    }
+
     [HttpGet]
     [AuthorizationFilter(SystemPermission.GetNotifications)]
     public GetNotificationsResponse GetNotifications([FromQuery] GetNotificationsRequest request)
@@ -21,19 +28,9 @@ public class NotificationController(INotificationService notificationService) : 
         DateTime? dateCreated = GetDateFromRequest(request);
         var user = HttpContext.Items[Item.UserLogged] as User;
         List<Notification> notifications =
-            notificationService.GetNotifications(user!.Id, request.Device, dateCreated, request.Read);
-        var response = new GetNotificationsResponse
-        {
-            Notifications = notifications.Select(n => new NotificationData
-            {
-                Event = n.Event,
-                Device = n.OwnedDevice.ToOwnedDeviceDto(),
-                Read = n.Read,
-                DateCreated = n.Date.ToString("dd MMMM yyyy HH:mm:ss", CultureInfo.InvariantCulture)
-            }).ToList()
-        };
-        notificationService.MarkNotificationsAsRead(notifications);
-        return response;
+            _notificationService.GetNotifications(request.ToArgs(user!, dateCreated));
+        _notificationService.MarkNotificationsAsRead(notifications);
+        return GetNotificationsResponse.FromNotifications(notifications);
     }
 
     private static DateTime? GetDateFromRequest(GetNotificationsRequest request)

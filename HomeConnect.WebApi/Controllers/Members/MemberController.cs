@@ -10,20 +10,25 @@ namespace HomeConnect.WebApi.Controllers.Members;
 [ApiController]
 [Route("members")]
 [AuthenticationFilter]
-public class MemberController(IHomeOwnerService homeOwnerService) : ControllerBase
+public class MemberController : ControllerBase
 {
+    private readonly IHomeOwnerService _homeOwnerService;
+
+    public MemberController(IHomeOwnerService homeOwnerService)
+    {
+        _homeOwnerService = homeOwnerService;
+    }
+
     [HttpPatch("{membersId}/notifications")]
     [AuthorizationFilter(SystemPermission.UpdateMember)]
     [HomeAuthorizationFilter(HomePermission.UpdateNotifications)]
     public UpdateMemberNotificationsResponse UpdateMemberNotifications([FromRoute] string membersId,
         [FromBody] UpdateMemberNotificationsRequest request)
     {
-        homeOwnerService.UpdateMemberNotifications(Guid.Parse(membersId), request.ShouldBeNotified);
-        var response = new UpdateMemberNotificationsResponse
+        _homeOwnerService.UpdateMemberNotifications(Guid.Parse(membersId), request.ShouldBeNotified);
+        return new UpdateMemberNotificationsResponse
         {
-            MemberId = membersId,
-            ShouldBeNotified = request.ShouldBeNotified!.Value
+            MemberId = membersId, ShouldBeNotified = request.ShouldBeNotified!.Value
         };
-        return response;
     }
 }

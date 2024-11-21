@@ -15,34 +15,27 @@ namespace HomeConnect.WebApi.Controllers.Cameras;
 
 [ApiController]
 [Route("cameras")]
-public class CameraController(
-    INotificationService notificationService,
-    IDeviceService deviceService,
-    IBusinessOwnerService businessOwnerService) : ControllerBase
+public class CameraController : ControllerBase
 {
+    private readonly IDeviceService _deviceService;
+    private readonly INotificationService _notificationService;
+    private readonly IBusinessOwnerService _businessOwnerService;
+
+    public CameraController(INotificationService notificationService, IDeviceService deviceService,
+        IBusinessOwnerService businessOwnerService)
+    {
+        _notificationService = notificationService;
+        _deviceService = deviceService;
+        _businessOwnerService = businessOwnerService;
+    }
+
     [HttpPost]
     [AuthenticationFilter]
     [AuthorizationFilter(SystemPermission.CreateCamera)]
     public CreateCameraResponse CreateCamera([FromBody] CreateCameraRequest request)
     {
         var userLoggedIn = HttpContext.Items[Item.UserLogged] as User;
-
-        var args = new CreateCameraArgs
-        {
-            Owner = userLoggedIn!,
-            Name = request.Name ?? string.Empty,
-            Description = request.Description ?? string.Empty,
-            Exterior = request.Exterior,
-            Interior = request.Interior,
-            MainPhoto = request.MainPhoto ?? string.Empty,
-            ModelNumber = request.ModelNumber,
-            MotionDetection = request.MotionDetection,
-            PersonDetection = request.PersonDetection,
-            SecondaryPhotos = request.SecondaryPhotos,
-        };
-
-        Camera createdCamera = businessOwnerService.CreateCamera(args);
-
+        Camera createdCamera = _businessOwnerService.CreateCamera(request.ToCreateCameraArgs(userLoggedIn));
         return new CreateCameraResponse { Id = createdCamera.Id };
     }
 
@@ -51,52 +44,23 @@ public class CameraController(
     [AuthorizationFilter(SystemPermission.GetCamera)]
     public GetCameraResponse GetCamera([FromRoute] string cameraId)
     {
-        Camera camera = deviceService.GetCameraById(cameraId);
-        return new GetCameraResponse
-        {
-            Id = camera.Id.ToString(),
-            Name = camera.Name,
-            Description = camera.Description,
-            Exterior = camera.IsExterior,
-            Interior = camera.IsInterior,
-            MainPhoto = camera.MainPhoto,
-            ModelNumber = camera.ModelNumber,
-            MotionDetection = camera.MotionDetection,
-            PersonDetection = camera.PersonDetection,
-            SecondaryPhotos = camera.SecondaryPhotos,
-        };
+        Camera camera = _deviceService.GetCameraById(cameraId);
+        return GetCameraResponse.FromCamera(camera);
     }
 
     [HttpPost("{hardwareId}/movement-detected")]
     public NotifyResponse MovementDetected([FromRoute] string hardwareId)
     {
-        NotificationArgs args = CreateMovementDetectedNotificationArgs(hardwareId);
-        notificationService.Notify(args);
+        var args = NotificationArgs.CreateMovementDetectedNotificationArgs(hardwareId);
+        _notificationService.Notify(args);
         return new NotifyResponse { HardwareId = hardwareId };
-    }
-
-    private static NotificationArgs CreateMovementDetectedNotificationArgs(string hardwareId)
-    {
-        var args = new NotificationArgs { HardwareId = hardwareId, Date = DateTime.Now, Event = "Movement detected" };
-        return args;
     }
 
     [HttpPost("{hardwareId}/person-detected")]
     public NotifyResponse PersonDetected([FromRoute] string hardwareId, [FromBody] PersonDetectedRequest request)
     {
-        NotificationArgs args = CreatePersonDetectedNotificationArgs(hardwareId, request.UserEmail ?? string.Empty);
-        notificationService.Notify(args);
+        var args = NotificationArgs.CreatePersonDetectedNotificationArgs(hardwareId, request.UserEmail ?? string.Empty);
+        _notificationService.Notify(args);
         return new NotifyResponse { HardwareId = hardwareId };
-    }
-
-    private static NotificationArgs CreatePersonDetectedNotificationArgs(string hardwareId, string userEmail)
-    {
-        var args = new NotificationArgs
-        {
-            HardwareId = hardwareId,
-            Date = DateTime.Now,
-            Event = $"Person detected with email: {userEmail}"
-        };
-        return args;
     }
 }

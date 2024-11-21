@@ -56,12 +56,11 @@ public class NotificationService : INotificationService
         return ownedDevice.Connected;
     }
 
-    public List<Notification> GetNotifications(Guid userId, string? deviceFilter = null, DateTime? dateFilter = null,
-        bool? readFilter = null)
+    public List<Notification> GetNotifications(GetNotificationsArgs args)
     {
-        EnsureDeviceFilterIsValid(deviceFilter);
+        EnsureDeviceFilterIsValid(args.DeviceFilter);
         List<Notification> notifications =
-            NotificationRepository.GetRange(userId, deviceFilter, dateFilter, readFilter);
+            NotificationRepository.GetRange(args.UserId, args.DeviceFilter, args.DateFilter, args.ReadFilter);
         return notifications;
     }
 

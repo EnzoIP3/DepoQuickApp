@@ -1,4 +1,5 @@
 using BusinessLogic;
+using BusinessLogic.Admins.Models;
 using BusinessLogic.Admins.Services;
 using BusinessLogic.BusinessOwners.Entities;
 using BusinessLogic.BusinessOwners.Repositories;
@@ -94,10 +95,7 @@ public sealed class AdminServiceTests
         _userRepository.Setup(x => x.GetPaged(It.IsAny<int>(), It.IsAny<int>(), null, Role.Admin)).Returns(
             new PagedData<User>
             {
-                Data = [_validUser],
-                Page = _defaultCurrentPage,
-                PageSize = _defaultPageSize,
-                TotalPages = 1
+                Data = [_validUser], Page = _defaultCurrentPage, PageSize = _defaultPageSize, TotalPages = 1
             });
 
         // Act
@@ -149,15 +147,13 @@ public sealed class AdminServiceTests
         var users = new List<User> { _validUser, _otherOwner };
         var pagedList = new PagedData<User>
         {
-            Data = users,
-            Page = _defaultCurrentPage,
-            PageSize = _defaultPageSize,
-            TotalPages = 1
+            Data = users, Page = _defaultCurrentPage, PageSize = _defaultPageSize, TotalPages = 1
         };
         _userRepository.Setup(x => x.GetPaged(_defaultCurrentPage, _defaultPageSize, null, null)).Returns(pagedList);
 
         // Act
-        PagedData<User> result = _adminService.GetUsers(_defaultCurrentPage, _defaultPageSize);
+        PagedData<User> result =
+            _adminService.GetUsers(new GetUsersArgs { CurrentPage = _defaultCurrentPage, PageSize = _defaultPageSize });
 
         // Assert
         result.Should().BeEquivalentTo(pagedList, options => options.ComparingByMembers<PagedData<User>>());
@@ -175,15 +171,12 @@ public sealed class AdminServiceTests
         var users = new List<User> { _validUser, _otherOwner };
         var pagedList = new PagedData<User>
         {
-            Data = users,
-            Page = _defaultCurrentPage,
-            PageSize = _defaultPageSize,
-            TotalPages = 1
+            Data = users, Page = _defaultCurrentPage, PageSize = _defaultPageSize, TotalPages = 1
         };
         _userRepository.Setup(x => x.GetPaged(_defaultCurrentPage, _defaultPageSize, null, null)).Returns(pagedList);
 
         // Act
-        PagedData<User> result = _adminService.GetUsers();
+        PagedData<User> result = _adminService.GetUsers(new GetUsersArgs());
 
         // Assert
         result.Should().BeEquivalentTo(pagedList, options => options.ComparingByMembers<PagedData<User>>());
@@ -202,16 +195,13 @@ public sealed class AdminServiceTests
         var filter = "name surname";
         var pagedList = new PagedData<User>
         {
-            Data = [users[0]],
-            Page = _defaultCurrentPage,
-            PageSize = _defaultPageSize,
-            TotalPages = 1
+            Data = [users[0]], Page = _defaultCurrentPage, PageSize = _defaultPageSize, TotalPages = 1
         };
         _userRepository.Setup(x => x.GetPaged(_defaultCurrentPage, _defaultPageSize, filter, null))
             .Returns(pagedList);
 
         // Act
-        PagedData<User> result = _adminService.GetUsers(fullNameFilter: filter);
+        PagedData<User> result = _adminService.GetUsers(new GetUsersArgs { FullNameFilter = filter });
 
         // Assert
         result.Should().BeEquivalentTo(pagedList, options => options.ComparingByMembers<PagedData<User>>());
@@ -230,16 +220,13 @@ public sealed class AdminServiceTests
         var filter = "BusinessOwner";
         var pagedList = new PagedData<User>
         {
-            Data = [users[1]],
-            Page = _defaultCurrentPage,
-            PageSize = _defaultPageSize,
-            TotalPages = 1
+            Data = [users[1]], Page = _defaultCurrentPage, PageSize = _defaultPageSize, TotalPages = 1
         };
         _userRepository.Setup(x => x.GetPaged(_defaultCurrentPage, _defaultPageSize, null, filter))
             .Returns(pagedList);
 
         // Act
-        PagedData<User> result = _adminService.GetUsers(roleFilter: filter);
+        PagedData<User> result = _adminService.GetUsers(new GetUsersArgs { RoleFilter = filter });
 
         // Assert
         result.Should().BeEquivalentTo(pagedList, options => options.ComparingByMembers<PagedData<User>>());
@@ -267,21 +254,18 @@ public sealed class AdminServiceTests
         };
         var pagedList = new PagedData<Business>
         {
-            Data = businesses,
-            Page = _defaultCurrentPage,
-            PageSize = _defaultPageSize,
-            TotalPages = 1
+            Data = businesses, Page = _defaultCurrentPage, PageSize = _defaultPageSize, TotalPages = 1
         };
-        var filterArgs = new FilterArgs
-        {
-            CurrentPage = _defaultCurrentPage,
-            PageSize = _defaultPageSize
-        };
+        var filterArgs = new FilterArgs { CurrentPage = _defaultCurrentPage, PageSize = _defaultPageSize };
         _businessRepository.Setup(x => x.GetPaged(filterArgs))
             .Returns(pagedList);
 
         // Act
-        PagedData<Business> result = _adminService.GetBusinesses(_defaultCurrentPage, _defaultPageSize);
+        PagedData<Business> result =
+            _adminService.GetBusinesses(new GetBusinessesArgs
+            {
+                CurrentPage = _defaultCurrentPage, PageSize = _defaultPageSize
+            });
 
         // Assert
         result.Should().BeEquivalentTo(pagedList, options => options.ComparingByMembers<PagedData<Business>>());
@@ -300,18 +284,14 @@ public sealed class AdminServiceTests
         };
         var pagedList = new PagedData<Business>
         {
-            Data = businesses,
-            Page = _defaultCurrentPage,
-            PageSize = _defaultPageSize,
-            TotalPages = 1
+            Data = businesses, Page = _defaultCurrentPage, PageSize = _defaultPageSize, TotalPages = 1
         };
-        var filterArgs = new FilterArgs
-        { CurrentPage = _defaultCurrentPage, PageSize = _defaultPageSize };
+        var filterArgs = new FilterArgs { CurrentPage = _defaultCurrentPage, PageSize = _defaultPageSize };
         _businessRepository.Setup(x => x.GetPaged(filterArgs))
             .Returns(pagedList);
 
         // Act
-        PagedData<Business> result = _adminService.GetBusinesses();
+        PagedData<Business> result = _adminService.GetBusinesses(new GetBusinessesArgs());
 
         // Assert
         result.Should().BeEquivalentTo(pagedList, options => options.ComparingByMembers<PagedData<Business>>());
@@ -331,18 +311,17 @@ public sealed class AdminServiceTests
         var filter = $"{_owner.Name} {_owner.Surname}";
         var pagedList = new PagedData<Business>
         {
-            Data = [businesses[0]],
-            Page = _defaultCurrentPage,
-            PageSize = _defaultPageSize,
-            TotalPages = 1
+            Data = [businesses[0]], Page = _defaultCurrentPage, PageSize = _defaultPageSize, TotalPages = 1
         };
         var filterArgs = new FilterArgs
-        { CurrentPage = _defaultCurrentPage, PageSize = _defaultPageSize, FullNameFilter = filter };
+        {
+            CurrentPage = _defaultCurrentPage, PageSize = _defaultPageSize, FullNameFilter = filter
+        };
         _businessRepository.Setup(x => x.GetPaged(filterArgs))
             .Returns(pagedList);
 
         // Act
-        PagedData<Business> result = _adminService.GetBusinesses(fullNameFilter: filter);
+        PagedData<Business> result = _adminService.GetBusinesses(new GetBusinessesArgs { FullNameFilter = filter });
 
         // Assert
         result.Should().BeEquivalentTo(pagedList, options => options.ComparingByMembers<PagedData<Business>>());
@@ -362,18 +341,17 @@ public sealed class AdminServiceTests
         var filter = "name2";
         var pagedList = new PagedData<Business>
         {
-            Data = [businesses[1]],
-            Page = _defaultCurrentPage,
-            PageSize = _defaultPageSize,
-            TotalPages = 1
+            Data = [businesses[1]], Page = _defaultCurrentPage, PageSize = _defaultPageSize, TotalPages = 1
         };
         var filterArgs = new FilterArgs
-        { CurrentPage = _defaultCurrentPage, PageSize = _defaultPageSize, NameFilter = filter };
+        {
+            CurrentPage = _defaultCurrentPage, PageSize = _defaultPageSize, NameFilter = filter
+        };
         _businessRepository.Setup(x => x.GetPaged(filterArgs))
             .Returns(pagedList);
 
         // Act
-        PagedData<Business> result = _adminService.GetBusinesses(nameFilter: filter);
+        PagedData<Business> result = _adminService.GetBusinesses(new GetBusinessesArgs { NameFilter = filter });
 
         // Assert
         result.Should().BeEquivalentTo(pagedList, options => options.ComparingByMembers<PagedData<Business>>());

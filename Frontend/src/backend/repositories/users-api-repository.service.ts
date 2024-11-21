@@ -1,7 +1,7 @@
 import { HttpClient } from "@angular/common/http";
 import { Injectable } from "@angular/core";
 import { Observable } from "rxjs";
-import { environment } from "../../environments/environment";
+import environments from "../../environments";
 import GetUsersRequest from "../services/users/models/user-request";
 import GetUsersResponse from "../services/users/models/user-response";
 import ApiRepository from "./api-repository";
@@ -15,7 +15,7 @@ import HomeOwnerRoleResponse from "../services/users/models/home-owner-role-resp
 })
 export class UsersApiRepositoryService extends ApiRepository {
     constructor(http: HttpClient, router: Router) {
-        super(environment.apiUrl, "users", http, router);
+        super(environments.apiUrl, "users", http, router);
     }
 
     public getUsers(request?: GetUsersRequest): Observable<GetUsersResponse> {

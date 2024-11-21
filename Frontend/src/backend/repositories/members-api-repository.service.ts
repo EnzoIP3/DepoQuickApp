@@ -1,6 +1,6 @@
 import { Injectable } from "@angular/core";
 import ApiRepository from "./api-repository";
-import { environment } from "../../environments/environment";
+import environments from "../../environments";
 import { HttpClient } from "@angular/common/http";
 import SetNotificationsRequest from "../services/members/models/set-notifications-request";
 import { Observable } from "rxjs";
@@ -12,7 +12,7 @@ import { Router } from "@angular/router";
 })
 export class MembersApiRepositoryService extends ApiRepository {
     constructor(http: HttpClient, router: Router) {
-        super(environment.apiUrl, "members", http, router);
+        super(environments.apiUrl, "members", http, router);
     }
 
     public setNotifications(

@@ -1,0 +1,216 @@
+{
+	"info": {
+		"_postman_id": "e3600ec7-2705-48a7-a9ba-9e401c51549d",
+		"name": "Devices",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "38878379",
+		"_collection_link": "https://da2555.postman.co/workspace/DA2-Workspace~8cf1485f-f3fd-4817-8f6c-5e6bd112ccea/collection/38878379-e3600ec7-2705-48a7-a9ba-9e401c51549d?action=share&source=collection_link&creator=38878379"
+	},
+	"item": [
+		{
+			"name": "Devices",
+			"item": [
+				{
+					"name": "POST /devices/{hardwareId}/turn_off",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"url": {
+							"raw": "{{url}}/devices/{{hardware_id}}/turn_off",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"devices",
+								"{{hardware_id}}",
+								"turn_off"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "POST /devices/{hardwareId}/turn_on",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"url": {
+							"raw": "{{url}}/devices/{{hardware_id}}/turn_on",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"devices",
+								"{{hardware_id}}",
+								"turn_on"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Sensors",
+			"item": [
+				{
+					"name": "POST /sensors/{hardwareId}/open",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"url": {
+							"raw": "{{url}}/sensors/{{hardware_id}}/open",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"sensors",
+								"{{hardware_id}}",
+								"open"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "POST /sensors/{hardwareId}/close",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"url": {
+							"raw": "{{url}}/sensors/{{hardware_id}}/close",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"sensors",
+								"{{hardware_id}}",
+								"close"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Cameras",
+			"item": [
+				{
+					"name": "POST /cameras/hardwareId}/movement_detected",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"url": {
+							"raw": "{{url}}/cameras/{{hardware_id}}/movement-detected",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"cameras",
+								"{{hardware_id}}",
+								"movement-detected"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "POST /cameras/hardwareId}/person-detected",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"userEmail\": \"admin@admin.com\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{url}}/cameras/{{hardware_id}}/person-detected",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"cameras",
+								"{{hardware_id}}",
+								"person-detected"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Motion Sensors",
+			"item": [
+				{
+					"name": "POST /motion_sensors/{hardwareId}/movement-detected",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"url": {
+							"raw": "{{url}}/motion_sensors/{{hardware_id}}/movement-detected",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"motion_sensors",
+								"{{hardware_id}}",
+								"movement-detected"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Lamps",
+			"item": [
+				{
+					"name": "POST /lamps/{hardwareId}/turn_on",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"url": {
+							"raw": "{{url}}/lamps/{{hardware_id}}/turn_on",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"lamps",
+								"{{hardware_id}}",
+								"turn_on"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "POST /lamps/{hardwareId}/turn_off",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"url": {
+							"raw": "{{url}}/lamps/{{hardware_id}}/turn_off",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"lamps",
+								"{{hardware_id}}",
+								"turn_off"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		}
+	]
+}

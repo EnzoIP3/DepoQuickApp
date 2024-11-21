@@ -1,0 +1,1 @@
+import{r as s,zb as o}from"./chunk-2GDBKQSI.js";var c=t=>{let r=JSON.parse(localStorage.getItem("user"));return t.data.permissions.every(e=>r.roles[r.currentRole].includes(e))?!0:s(o).parseUrl("/")};export{c as a};

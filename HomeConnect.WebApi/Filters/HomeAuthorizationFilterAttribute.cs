@@ -66,15 +66,19 @@ public class HomeAuthorizationFilterAttribute(string? permission = null) : Attri
         {
             var room = homeOwnerService.GetRoom(roomId);
             var home = room.Home;
-
-            if (!UserHasRequiredPermission(user, home, permission))
-            {
-                SetForbiddenResult(context, permission);
-            }
+            EnsureUserHasRequiredPermission(context, user, home);
         }
         catch (KeyNotFoundException)
         {
             SetNotFoundResult(context, "The room does not exist");
+        }
+    }
+
+    private void EnsureUserHasRequiredPermission(AuthorizationFilterContext context, User user, Home home)
+    {
+        if (!UserHasRequiredPermission(user, home, permission))
+        {
+            SetForbiddenResult(context, permission);
         }
     }
 
@@ -91,11 +95,7 @@ public class HomeAuthorizationFilterAttribute(string? permission = null) : Attri
         {
             var device = homeOwnerService.GetOwnedDeviceByHardwareId(hardwareId);
             var home = device.Home;
-
-            if (!UserHasRequiredPermission(user, home, permission))
-            {
-                SetForbiddenResult(context, permission);
-            }
+            EnsureUserHasRequiredPermission(context, user, home);
         }
         catch (KeyNotFoundException)
         {
@@ -112,16 +112,12 @@ public class HomeAuthorizationFilterAttribute(string? permission = null) : Attri
         }
 
         Home? home = GetHomeFromMember(context, memberIdParsed);
-        if (home == null)
+        if (!ValidateHomeExistence(context, home, "The member does not exist"))
         {
-            SetNotFoundResult(context, "The member does not exist");
             return;
         }
 
-        if (!UserHasRequiredPermission(user, home, permission))
-        {
-            SetForbiddenResult(context, permission);
-        }
+        EnsureUserHasRequiredPermission(context, user, home!);
     }
 
     private void HandleHomeId(AuthorizationFilterContext context, string homeId, User user)
@@ -133,18 +129,23 @@ public class HomeAuthorizationFilterAttribute(string? permission = null) : Attri
         }
 
         Home? home = GetHomeById(context, homeIdParsed);
-        if (home == null)
+        if (!ValidateHomeExistence(context, home, "The home does not exist"))
         {
-            SetNotFoundResult(context, "The home does not exist");
             return;
         }
 
-        if (!UserHasRequiredPermission(user, home, permission))
+        EnsureUserHasRequiredPermission(context, user, home!);
+    }
+
+    private static bool ValidateHomeExistence(AuthorizationFilterContext context, Home? home, string notFoundMessage)
+    {
+        if (home != null)
         {
-            SetForbiddenResult(context, permission);
+            return true;
         }
 
-        return;
+        SetNotFoundResult(context, notFoundMessage);
+        return false;
     }
 
     private static User? GetAuthenticatedUser(AuthorizationFilterContext context)

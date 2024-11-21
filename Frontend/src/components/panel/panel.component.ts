@@ -9,8 +9,8 @@ import { PanelModule } from "primeng/panel";
     templateUrl: "./panel.component.html"
 })
 export class PanelComponent {
-    @Input() title: string = "";
+    @Input() title = "";
     @Input() icon?: string;
-    @Input() toggleable: boolean = true;
-    @Input() collapsed: boolean = false;
+    @Input() toggleable = true;
+    @Input() collapsed = false;
 }

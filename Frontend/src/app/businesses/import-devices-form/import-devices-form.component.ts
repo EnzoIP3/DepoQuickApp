@@ -6,21 +6,19 @@ import {
     OnInit
 } from "@angular/core";
 import {
-    Form,
     FormBuilder,
     FormControl,
     FormGroup,
     Validators
 } from "@angular/forms";
-import { MessageService } from "primeng/api";
 import { Subscription } from "rxjs";
 import GetImportFilesResponse from "../../../backend/services/importers/models/get-import-files-response";
 import { DeviceImportFilesService } from "../../../backend/services/importers/device-import-files.service";
 import { DeviceImportersService } from "../../../backend/services/importers/device-importers.service";
 import { DevicesService } from "../../../backend/services/devices/devices.service";
-import ImportDevicesResponse from "../../../backend/services/devices/models/import-devices-response";
 import ImportDevicesRequest from "../../../backend/services/devices/models/import-devices-request";
 import { GetImportersResponse } from "../../../backend/services/importers/models/get-importers-response";
+import { MessagesService } from "../../../backend/services/messages/messages.service";
 
 @Component({
     selector: "app-import-devices-form",
@@ -36,7 +34,7 @@ export class ImportDevicesFormComponent implements OnInit, OnDestroy {
     importerOptions: { label: string; value: string; parameters: string[] }[] =
         [];
     fileOptions: { label: string; value: string }[] = [];
-    showConfirmationDialog: boolean = false;
+    showConfirmationDialog = false;
     status = { loading: false, error: null };
 
     private _importersSubscription: Subscription | null = null;
@@ -45,7 +43,7 @@ export class ImportDevicesFormComponent implements OnInit, OnDestroy {
 
     constructor(
         private fb: FormBuilder,
-        private _messageService: MessageService,
+        private _messagesService: MessagesService,
         private _deviceImportersService: DeviceImportersService,
         private _deviceImportFilesService: DeviceImportFilesService,
         private _deviceService: DevicesService,
@@ -78,7 +76,7 @@ export class ImportDevicesFormComponent implements OnInit, OnDestroy {
                 error: (error) => {
                     this.status.loading = false;
                     this.status.error = error;
-                    this._messageService.add({
+                    this._messagesService.add({
                         severity: "error",
                         summary: "Error loading importers",
                         detail: error.message
@@ -97,7 +95,7 @@ export class ImportDevicesFormComponent implements OnInit, OnDestroy {
                 },
                 error: (error) => {
                     this.status.error = error;
-                    this._messageService.add({
+                    this._messagesService.add({
                         severity: "error",
                         summary: "Error loading files",
                         detail: error.message
@@ -111,7 +109,7 @@ export class ImportDevicesFormComponent implements OnInit, OnDestroy {
         if (this.importDevicesForm.valid) {
             this.showConfirmationDialog = true;
         } else {
-            this._messageService.add({
+            this._messagesService.add({
                 severity: "warn",
                 summary: "Invalid Form",
                 detail: "Please check the form for errors."
@@ -132,9 +130,9 @@ export class ImportDevicesFormComponent implements OnInit, OnDestroy {
             this._devicesSubscription = this._deviceService
                 .importDevices(request)
                 .subscribe({
-                    next: (response: ImportDevicesResponse) => {
+                    next: () => {
                         this.status.loading = false;
-                        this._messageService.add({
+                        this._messagesService.add({
                             severity: "success",
                             summary: "Devices Imported",
                             detail: "The devices have been successfully imported."
@@ -144,7 +142,7 @@ export class ImportDevicesFormComponent implements OnInit, OnDestroy {
                     error: (error) => {
                         this.status.loading = false;
                         this.status.error = error;
-                        this._messageService.add({
+                        this._messagesService.add({
                             severity: "error",
                             summary: "Error importing devices",
                             detail: error.message

@@ -1,4 +1,4 @@
-namespace HomeConnect.WebApi.Controllers.HomeOwners.Models;
+namespace HomeConnect.WebApi.Controllers.Homes.Models;
 
 public class NameHomeResponse
 {

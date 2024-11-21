@@ -1,7 +1,6 @@
 using BusinessLogic;
 using BusinessLogic.BusinessOwners.Entities;
 using BusinessLogic.BusinessOwners.Models;
-using BusinessLogic.BusinessOwners.Services;
 using BusinessLogic.Devices.Entities;
 using BusinessLogic.Devices.Models;
 using BusinessLogic.Devices.Services;
@@ -27,7 +26,6 @@ public class DeviceControllerTests
     private DeviceController _controller = null!;
     private Device _device = null!;
     private Mock<IDeviceService> _deviceService = null!;
-    private Mock<IValidatorService> _validatorService = null!;
     private Mock<IImporterService> _importerService = null!;
     private Mock<IHomeOwnerService> _homeOwnerService = null!;
     private Mock<HttpContext> _httpContextMock = null!;
@@ -41,12 +39,11 @@ public class DeviceControllerTests
     public void Initialize()
     {
         _deviceService = new Mock<IDeviceService>();
-        _validatorService = new Mock<IValidatorService>();
         _homeOwnerService = new Mock<IHomeOwnerService>();
         _importerService = new Mock<IImporterService>();
         _httpContextMock = new Mock<HttpContext>(MockBehavior.Strict);
         _controller =
-            new DeviceController(_deviceService.Object, _validatorService.Object, _importerService.Object,
+            new DeviceController(_deviceService.Object, _importerService.Object,
                 _homeOwnerService.Object)
             {
                 ControllerContext = new ControllerContext { HttpContext = _httpContextMock.Object }
@@ -193,38 +190,6 @@ public class DeviceControllerTests
             Times.Once);
         response.Should().NotBeNull();
         response.DeviceId.Should().Be(hardwareId);
-    }
-
-    #endregion
-
-    #region Error
-
-    [TestMethod]
-    public void NameDevice_WithInvalidNewName_ThrowsArgumentException()
-    {
-        // Arrange
-        var hardwareId = Guid.NewGuid().ToString();
-        var request = new NameDeviceRequest { NewName = string.Empty };
-        var items = new Dictionary<object, object?> { { Item.UserLogged, _user } };
-        _httpContextMock.Setup(h => h.Items).Returns(items);
-
-        // Act & Assert
-        var ex = Assert.ThrowsException<ArgumentException>(() => _controller.NameDevice(hardwareId, request));
-        Assert.AreEqual("NewName cannot be null or empty", ex.Message);
-    }
-
-    [TestMethod]
-    public void NameDevice_WithInvalidDeviceId_ThrowsArgumentException()
-    {
-        // Arrange
-        var hardwareId = string.Empty;
-        var request = new NameDeviceRequest { NewName = "New Device Name" };
-        var items = new Dictionary<object, object?> { { Item.UserLogged, _user } };
-        _httpContextMock.Setup(h => h.Items).Returns(items);
-
-        // Act & Assert
-        var ex = Assert.ThrowsException<ArgumentException>(() => _controller.NameDevice(hardwareId, request));
-        Assert.AreEqual("DeviceId cannot be null or empty", ex.Message);
     }
 
     #endregion

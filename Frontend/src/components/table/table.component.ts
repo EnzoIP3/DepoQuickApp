@@ -12,7 +12,7 @@ import TableColumn from "./models/table-column";
 import { InputTextModule } from "primeng/inputtext";
 import { FormsModule } from "@angular/forms";
 import { PaginatorModule } from "primeng/paginator";
-import FilterValues from "./models/filter-values";
+import { FilterValues } from "./models/filter-values";
 import { ButtonModule } from "primeng/button";
 
 @Component({
@@ -34,10 +34,10 @@ export class TableComponent {
 
     @Input() columns: TableColumn[] = [];
     @Input() data: any[] = [];
-    @Input() loading: boolean = false;
-    @Input() clickableRows: boolean = false;
+    @Input() loading = false;
+    @Input() clickableRows = false;
     @Input() filterableColumns: string[] = [];
-    @Input() customTemplates: { [key: string]: TemplateRef<any> } = {};
+    @Input() customTemplates: Record<string, TemplateRef<any>> = {};
     @Output() rowClick = new EventEmitter<any>();
     @Output() filter = new EventEmitter<FilterValues>();
 

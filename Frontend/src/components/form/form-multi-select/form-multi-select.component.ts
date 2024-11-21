@@ -16,10 +16,10 @@ import { CommonModule } from "@angular/common";
 })
 export class FormMultiSelectComponent {
     @Input() form!: FormGroup;
-    @Input() optionLabel: string = "name";
-    @Input() optionValue: string = "id";
+    @Input() optionLabel = "name";
+    @Input() optionValue = "id";
     @Input() name!: string;
     @Input() values: any[] = [];
-    @Input() placeholder: string = "Select Options";
-    @Input() loading: boolean = false;
+    @Input() placeholder = "Select Options";
+    @Input() loading = false;
 }

@@ -3,6 +3,7 @@ using BusinessLogic.BusinessOwners.Entities;
 using BusinessLogic.Devices.Entities;
 using BusinessLogic.HomeOwners.Entities;
 using BusinessLogic.Notifications.Entities;
+using BusinessLogic.Notifications.Models;
 using BusinessLogic.Notifications.Services;
 using BusinessLogic.Roles.Entities;
 using BusinessLogic.Users.Entities;
@@ -39,9 +40,7 @@ public class NotificationControllerTests
         // Arrange
         var request = new GetNotificationsRequest
         {
-            Device = Guid.NewGuid().ToString(),
-            DateCreated = DateToString(DateTime.Now),
-            Read = false
+            Device = Guid.NewGuid().ToString(), DateCreated = DateToString(DateTime.Now), Read = false
         };
         var user = new User("John", "Doe", "email@email.com", "Password@100",
             new Role { Name = "HomeOwner", Permissions = [] });
@@ -50,16 +49,17 @@ public class NotificationControllerTests
             business);
         var notification = new Notification
         {
-            Event = "Event",
-            OwnedDevice = new OwnedDevice(new Home(), device),
-            Read = false,
-            Date = DateTime.Now
+            Event = "Event", OwnedDevice = new OwnedDevice(new Home(), device), Read = false, Date = DateTime.Now
         };
         var items = new Dictionary<object, object?> { { Item.UserLogged, user } };
         List<Notification> notifications = [notification];
         DateTime dateCreated = DateFromString(request.DateCreated);
         _httpContextMock.SetupGet(h => h.Items).Returns(items);
-        _notificationService.Setup(n => n.GetNotifications(user.Id, request.Device, dateCreated, request.Read))
+        var args = new GetNotificationsArgs
+        {
+            UserId = user.Id, DeviceFilter = request.Device, DateFilter = dateCreated, ReadFilter = request.Read
+        };
+        _notificationService.Setup(n => n.GetNotifications(args))
             .Returns([notification]);
         _notificationService.Setup(n => n.MarkNotificationsAsRead(notifications))
             .Verifiable();
@@ -84,9 +84,7 @@ public class NotificationControllerTests
         // Arrange
         var request = new GetNotificationsRequest
         {
-            Device = Guid.NewGuid().ToString(),
-            DateCreated = "2024/12/2",
-            Read = false
+            Device = Guid.NewGuid().ToString(), DateCreated = "2024/12/2", Read = false
         };
 
         // Act

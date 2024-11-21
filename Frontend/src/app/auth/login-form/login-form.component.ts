@@ -1,4 +1,4 @@
-import { Component } from "@angular/core";
+import { Component, OnInit, OnDestroy } from "@angular/core";
 import { FormGroup, FormBuilder, Validators } from "@angular/forms";
 import { AuthService } from "../../../backend/services/auth/auth.service";
 import { Router } from "@angular/router";
@@ -8,7 +8,7 @@ import { Subscription } from "rxjs";
     selector: "app-login-form",
     templateUrl: "./login-form.component.html"
 })
-export class LoginFormComponent {
+export class LoginFormComponent implements OnInit, OnDestroy {
     readonly formFields = {
         password: {
             required: {

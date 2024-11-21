@@ -28,17 +28,17 @@ import { ImageGalleryComponent } from "../../components/image-gallery/image-gall
 export class BaseDevicesTableComponent {
     @Input() columns: TableColumn[] = [];
     @Input() devices: Device[] = [];
-    @Input() paginate: boolean = true;
+    @Input() paginate = true;
     @Input() pagination: PaginationResponse | null = null;
-    @Input() loading: boolean = false;
-    @Input() clickableRows: boolean = true;
+    @Input() loading = false;
+    @Input() clickableRows = true;
     @Input() customTemplates: Record<string, any> = {};
     @Input() selectedDevice: Device | null = null;
     @Output() rowClick: EventEmitter<Device> = new EventEmitter<Device>();
     @Output() pageChange: EventEmitter<Pagination> =
         new EventEmitter<Pagination>();
-    @Input() showDialog: boolean = true;
-    dialogVisible: boolean = false;
+    @Input() showDialog = true;
+    dialogVisible = false;
 
     onRowClick(device: Device): void {
         if (this.showDialog) {

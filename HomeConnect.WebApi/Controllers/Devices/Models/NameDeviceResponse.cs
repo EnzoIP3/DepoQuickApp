@@ -1,4 +1,4 @@
-namespace HomeConnect.WebApi.Controllers.HomeOwners.Models;
+namespace HomeConnect.WebApi.Controllers.Devices.Models;
 
 public class NameDeviceResponse
 {

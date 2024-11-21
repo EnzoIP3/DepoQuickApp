@@ -1,4 +1,5 @@
 using BusinessLogic;
+using BusinessLogic.Admins.Models;
 using BusinessLogic.Admins.Services;
 using BusinessLogic.BusinessOwners.Entities;
 using BusinessLogic.BusinessOwners.Models;
@@ -104,7 +105,8 @@ public class BusinessControllerTests
     public void GetBusinesses_WhenCalledWithNoFiltersOrPagination_ReturnsExpectedResponse()
     {
         // Arrange
-        _adminService.Setup(x => x.GetBusinesses(null, null, null, null)).Returns(_pagedList);
+        var args = new GetBusinessesArgs();
+        _adminService.Setup(x => x.GetBusinesses(args)).Returns(_pagedList);
 
         var expectedBusinesses = _businesses.Select(b => new ListBusinessInfo
         {
@@ -118,8 +120,7 @@ public class BusinessControllerTests
 
         var expectedResponse = new GetBusinessesResponse
         {
-            Businesses = expectedBusinesses,
-            Pagination = _expectedPagination
+            Businesses = expectedBusinesses, Pagination = _expectedPagination
         };
 
         // Act
@@ -135,7 +136,7 @@ public class BusinessControllerTests
     public void GetBusinesses_WhenCalledWithNameFilter_ReturnsFilteredExpectedResponse()
     {
         // Arrange
-        _adminService.Setup(x => x.GetBusinesses(null, null, _businesses.First().Name, null)).Returns(_pagedList);
+        _adminService.Setup(x => x.GetBusinesses(It.IsAny<GetBusinessesArgs>())).Returns(_pagedList);
 
         var expectedBusinesses = _businesses.Select(b => new ListBusinessInfo
         {
@@ -149,8 +150,7 @@ public class BusinessControllerTests
 
         var expectedResponse = new GetBusinessesResponse
         {
-            Businesses = expectedBusinesses,
-            Pagination = _expectedPagination
+            Businesses = expectedBusinesses, Pagination = _expectedPagination
         };
 
         // Act
@@ -167,7 +167,8 @@ public class BusinessControllerTests
     public void GetBusinesses_WhenCalledWithPagination_ReturnsPagedExpectedResponse()
     {
         // Arrange
-        _adminService.Setup(x => x.GetBusinesses(1, 1, null, null)).Returns(_pagedList);
+        var args = new GetBusinessesArgs { CurrentPage = 1, PageSize = 1 };
+        _adminService.Setup(x => x.GetBusinesses(args)).Returns(_pagedList);
 
         var expectedBusinesses = _businesses.Select(b => new ListBusinessInfo
         {
@@ -181,8 +182,7 @@ public class BusinessControllerTests
 
         var expectedResponse = new GetBusinessesResponse
         {
-            Businesses = expectedBusinesses,
-            Pagination = _expectedPagination
+            Businesses = expectedBusinesses, Pagination = _expectedPagination
         };
 
         // Act
@@ -263,21 +263,11 @@ public class BusinessControllerTests
             Pagination = new Pagination { Page = 1, PageSize = 10, TotalPages = 1 }
         };
         var request = new GetBusinessDevicesRequest { Page = 1, PageSize = 10 };
-        var args = new GetBusinessDevicesArgs
-        {
-            Rut = _businesses[0].Rut,
-            User = _user,
-            CurrentPage = request.Page,
-            PageSize = request.PageSize
-        };
         var user = new User("Name", "Surname", "email@email.com", "Password@1", new Role("BusinessOwner", []));
         _httpContextMock.Setup(x => x.Items).Returns(new Dictionary<object, object?> { { Item.UserLogged, user } });
         _businessOwnerService.Setup(x => x.GetDevices(It.IsAny<GetBusinessDevicesArgs>())).Returns(new PagedData<Device>
         {
-            Data = deviceList,
-            Page = 1,
-            PageSize = 10,
-            TotalPages = 1
+            Data = deviceList, Page = 1, PageSize = 10, TotalPages = 1
         });
 
         // Act

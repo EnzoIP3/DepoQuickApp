@@ -13,7 +13,8 @@ export const AuthenticatedRoutes: Route[] = [
             {
                 label: "Notifications",
                 icon: "pi pi-bell",
-                routerLink: ["/notifications"]
+                routerLink: ["/notifications"],
+                permission: Permissions.GET_NOTIFICATIONS
             }
         ]
     },
@@ -36,7 +37,9 @@ export const AuthenticatedRoutes: Route[] = [
                 label: "Administration",
                 icon: "pi pi-shield",
                 routerLink: ["/admins"]
-            }]},
+            }
+        ]
+    },
     {
         label: "Businesses",
         permission: Permissions.CREATE_BUSINESS,

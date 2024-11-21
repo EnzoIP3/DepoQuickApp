@@ -7,5 +7,5 @@ public interface IUserService
 {
     User CreateUser(CreateUserArgs args);
     bool Exists(string requestUserId);
-    void AddRoleToUser(AddRoleToUserArgs args);
+    User AddRoleToUser(AddRoleToUserArgs args);
 }

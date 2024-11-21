@@ -1,15 +1,15 @@
-import { Component } from "@angular/core";
+import { Component, OnInit, OnDestroy } from "@angular/core";
 import { FormBuilder, FormGroup, Validators } from "@angular/forms";
 import { HomesService } from "../../../backend/services/homes/homes.service";
 import { Router } from "@angular/router";
-import { MessageService } from "primeng/api";
 import { Subscription } from "rxjs";
+import { MessagesService } from "../../../backend/services/messages/messages.service";
 
 @Component({
     selector: "app-add-home-form",
     templateUrl: "./add-home-form.component.html"
 })
-export class AddHomeFormComponent {
+export class AddHomeFormComponent implements OnInit, OnDestroy {
     readonly formFields = {
         address: {
             required: { message: "Address is required" },
@@ -42,7 +42,7 @@ export class AddHomeFormComponent {
         private _formBuilder: FormBuilder,
         private _homesService: HomesService,
         private _router: Router,
-        private _messageService: MessageService
+        private _messagesService: MessagesService
     ) {}
 
     ngOnInit() {
@@ -70,10 +70,10 @@ export class AddHomeFormComponent {
         this._addHomeSubscription = this._homesService
             .addHome(this.homeForm.value)
             .subscribe({
-                next: (response) => {
+                next: () => {
                     this.homeStatus.loading = false;
                     this.homeForm.reset();
-                    this._messageService.add({
+                    this._messagesService.add({
                         severity: "success",
                         summary: "Success",
                         detail: "Home registered successfully"
@@ -82,7 +82,7 @@ export class AddHomeFormComponent {
                 },
                 error: (error) => {
                     this.homeStatus.loading = false;
-                    this._messageService.add({
+                    this._messagesService.add({
                         severity: "error",
                         summary: "Error",
                         detail: error.message

@@ -529,40 +529,6 @@ public class HomeControllerTests
 
     #endregion
 
-    #region Error
-
-    [TestMethod]
-    public void NameHome_WithInvalidNewName_ThrowsArgumentException()
-    {
-        // Arrange
-        var request = new NameHomeRequest { NewName = string.Empty };
-        var items = new Dictionary<object, object?> { { Item.UserLogged, _user } };
-        _httpContextMock.Setup(h => h.Items).Returns(items);
-
-        // Act
-        var act = () => _controller.NameHome(Guid.NewGuid().ToString(), request);
-
-        // Assert
-        act.Should().Throw<ArgumentException>();
-    }
-
-    [TestMethod]
-    public void NameHome_WithInvalidHomeId_ThrowsArgumentException()
-    {
-        // Arrange
-        var request = new NameHomeRequest { NewName = "New Home Name" };
-        var items = new Dictionary<object, object?> { { Item.UserLogged, _user } };
-        _httpContextMock.Setup(h => h.Items).Returns(items);
-
-        // Act
-        var act = () => _controller.NameHome(string.Empty, request);
-
-        // Assert
-        act.Should().Throw<ArgumentException>();
-    }
-
-    #endregion
-
     #endregion
 
     #region GetHome

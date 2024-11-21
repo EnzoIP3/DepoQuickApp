@@ -1,3 +1,4 @@
+using BusinessLogic.Admins.Models;
 using BusinessLogic.BusinessOwners.Entities;
 using BusinessLogic.BusinessOwners.Repositories;
 using BusinessLogic.Roles.Entities;
@@ -37,23 +38,21 @@ public class AdminService : IAdminService
         }
     }
 
-    public PagedData<User> GetUsers(int? currentPage = null, int? pageSize = null, string? fullNameFilter = null,
-        string? roleFilter = null)
+    public PagedData<User> GetUsers(GetUsersArgs args)
     {
         PagedData<User> users =
-            UserRepository.GetPaged(currentPage ?? 1, pageSize ?? 10, fullNameFilter, roleFilter);
+            UserRepository.GetPaged(args.CurrentPage ?? 1, args.PageSize ?? 10, args.FullNameFilter, args.RoleFilter);
         return users;
     }
 
-    public PagedData<Business> GetBusinesses(int? currentPage = null, int? pageSize = null, string? nameFilter = null,
-        string? fullNameFilter = null)
+    public PagedData<Business> GetBusinesses(GetBusinessesArgs args)
     {
         var filterArgs = new FilterArgs
         {
-            CurrentPage = currentPage ?? 1,
-            PageSize = pageSize ?? 10,
-            NameFilter = nameFilter,
-            FullNameFilter = fullNameFilter
+            CurrentPage = args.CurrentPage ?? 1,
+            PageSize = args.PageSize ?? 10,
+            NameFilter = args.NameFilter,
+            FullNameFilter = args.FullNameFilter
         };
         PagedData<Business> businesses =
             BusinessRepository.GetPaged(filterArgs);

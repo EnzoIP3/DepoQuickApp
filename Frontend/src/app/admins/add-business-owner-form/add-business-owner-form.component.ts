@@ -1,19 +1,14 @@
-import { Component } from "@angular/core";
-import {
-    EmailValidator,
-    FormBuilder,
-    FormGroup,
-    Validators
-} from "@angular/forms";
+import { Component, OnInit, OnDestroy } from "@angular/core";
+import { FormBuilder, FormGroup, Validators } from "@angular/forms";
 import { Subscription } from "rxjs";
-import { MessageService } from "primeng/api";
 import { BusinessOwnersService } from "../../../backend/services/business-owners/business-owners.service";
+import { MessagesService } from "../../../backend/services/messages/messages.service";
 
 @Component({
     selector: "app-add-businessowner-form",
     templateUrl: "./add-business-owner-form.component.html"
 })
-export class AddBusinessOwnerFormComponent {
+export class AddBusinessOwnerFormComponent implements OnInit, OnDestroy {
     readonly formFields = {
         name: {
             required: { message: "Name is required" }
@@ -43,7 +38,7 @@ export class AddBusinessOwnerFormComponent {
     constructor(
         private _formBuilder: FormBuilder,
         private _businessOwnersService: BusinessOwnersService,
-        private _messageService: MessageService
+        private _messagesService: MessagesService
     ) {}
 
     ngOnInit() {
@@ -67,7 +62,7 @@ export class AddBusinessOwnerFormComponent {
                     this.businessOwnerStatus.loading = false;
                     this.businessOwnerStatus.success = true;
                     this.addForm.reset();
-                    this._messageService.add({
+                    this._messagesService.add({
                         severity: "success",
                         summary: "Success",
                         detail: "Business Owner created successfully"
@@ -76,7 +71,7 @@ export class AddBusinessOwnerFormComponent {
                 error: (error) => {
                     this.businessOwnerStatus.loading = false;
                     this.businessOwnerStatus.error = error.message;
-                    this._messageService.add({
+                    this._messagesService.add({
                         severity: "error",
                         summary: "Error",
                         detail: error.message

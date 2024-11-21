@@ -125,9 +125,13 @@ public class NotificationServiceTest
         };
         _mockNotificationRepository.Setup(x => x.GetRange(userId, deviceFilter, dateFilter, readFilter))
             .Returns(notifications);
+        var args = new GetNotificationsArgs
+        {
+            UserId = userId, DeviceFilter = deviceFilter, DateFilter = dateFilter, ReadFilter = readFilter
+        };
 
         // Act
-        List<Notification> result = _notificationService.GetNotifications(userId, deviceFilter, dateFilter, readFilter);
+        List<Notification> result = _notificationService.GetNotifications(args);
 
         // Assert
         _mockNotificationRepository.VerifyAll();
@@ -139,9 +143,10 @@ public class NotificationServiceTest
     {
         // Arrange
         var deviceFilter = "Device";
+        var args = new GetNotificationsArgs { UserId = Guid.NewGuid(), DeviceFilter = deviceFilter };
 
         // Act
-        Func<List<Notification>> act = () => _notificationService.GetNotifications(Guid.NewGuid(), deviceFilter);
+        Func<List<Notification>> act = () => _notificationService.GetNotifications(args);
 
         // Assert
         act.Should().Throw<ArgumentException>();
@@ -157,9 +162,7 @@ public class NotificationServiceTest
         // Arrange
         var args = new NotificationArgs
         {
-            HardwareId = Guid.NewGuid().ToString(),
-            Event = "Test Event",
-            Date = DateTime.Now
+            HardwareId = Guid.NewGuid().ToString(), Event = "Test Event", Date = DateTime.Now
         };
 
         _mockOwnedDeviceRepository.Setup(x => x.Exists(Guid.Parse(args.HardwareId))).Returns(false);
@@ -189,9 +192,7 @@ public class NotificationServiceTest
         var ownedDevice = new OwnedDevice(home, device);
         var args = new NotificationArgs
         {
-            HardwareId = ownedDevice.HardwareId.ToString(),
-            Event = "Test Event",
-            Date = DateTime.Now
+            HardwareId = ownedDevice.HardwareId.ToString(), Event = "Test Event", Date = DateTime.Now
         };
         _mockOwnedDeviceRepository.Setup(x => x.Exists(Guid.Parse(args.HardwareId))).Returns(true);
         _mockOwnedDeviceRepository.Setup(x => x.GetByHardwareId(Guid.Parse(args.HardwareId))).Returns(ownedDevice);
@@ -280,6 +281,7 @@ public class NotificationServiceTest
                 n.User == _user &&
                 n.OwnedDevice == ownedDevice)), Times.Once);
     }
+
     #endregion
 
     #region SendLampNotification
@@ -310,5 +312,6 @@ public class NotificationServiceTest
                 n.User == _user &&
                 n.OwnedDevice == ownedDevice)), Times.Once);
     }
+
     #endregion
 }

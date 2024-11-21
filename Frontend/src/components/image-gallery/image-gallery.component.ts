@@ -10,7 +10,7 @@ import { GalleriaModule } from "primeng/galleria";
 export class ImageGalleryComponent implements OnInit {
     @Input() images!: string[];
     @Input() imageTemplate: TemplateRef<any> | null = null;
-    @Input() numVisible: number = 3;
+    @Input() numVisible = 3;
     imagesToDisplay: string[] = [];
 
     ngOnInit() {

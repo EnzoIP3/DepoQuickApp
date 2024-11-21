@@ -7,19 +7,20 @@ namespace HomeConnect.WebApi.Controllers.Auth;
 
 [ApiController]
 [Route("auth")]
-public class AuthController(IAuthService authService)
+public class AuthController : ControllerBase
 {
+    private readonly IAuthService _authService;
+
+    public AuthController(IAuthService authService)
+    {
+        _authService = authService;
+    }
+
     [HttpPost]
     public CreateTokenResponse CreateToken([FromBody] CreateTokenRequest request)
     {
-        var args = new CreateTokenArgs { Email = request.Email!, Password = request.Password! };
-        var token = authService.CreateToken(args);
-        var user = authService.GetUserFromToken(token);
-        return new CreateTokenResponse
-        {
-            UserId = user.Id.ToString(),
-            Token = token,
-            Permissions = user.GetPermissions().Select(p => p.Value).ToList()
-        };
+        var token = _authService.CreateToken(request.ToCreateTokenArgs());
+        var user = _authService.GetUserFromToken(token);
+        return CreateTokenResponse.FromUserAndToken(token, user);
     }
 }

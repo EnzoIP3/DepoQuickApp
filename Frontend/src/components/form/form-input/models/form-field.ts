@@ -1,5 +1,6 @@
-export default interface FormField {
-    [key: string]: {
+export type FormField = Record<
+    string,
+    {
         message: string;
-    };
-}
+    }
+>;

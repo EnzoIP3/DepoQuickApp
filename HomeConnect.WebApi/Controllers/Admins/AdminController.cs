@@ -1,6 +1,5 @@
 using BusinessLogic.Admins.Services;
 using BusinessLogic.Roles.Entities;
-using BusinessLogic.Users.Models;
 using BusinessLogic.Users.Services;
 using HomeConnect.WebApi.Controllers.Admins.Models;
 using HomeConnect.WebApi.Filters;
@@ -11,35 +10,30 @@ namespace HomeConnect.WebApi.Controllers.Admins;
 [ApiController]
 [Route("admins")]
 [AuthenticationFilter]
-public class AdminController(IUserService userService, IAdminService adminService) : ControllerBase
+public class AdminController : ControllerBase
 {
+    private readonly IUserService _userService;
+    private readonly IAdminService _adminService;
+
+    public AdminController(IUserService userService, IAdminService adminService)
+    {
+        _userService = userService;
+        _adminService = adminService;
+    }
+
     [HttpPost]
     [AuthorizationFilter(SystemPermission.CreateAdministrator)]
     public CreateAdminResponse CreateAdmin([FromBody] CreateAdminRequest request)
     {
-        CreateUserArgs createUserArgs = UserModelFromRequest(request);
-        var admin = userService.CreateUser(createUserArgs);
+        var admin = _userService.CreateUser(request.ToCreateUserArgs());
         return new CreateAdminResponse { Id = admin.Id.ToString() };
-    }
-
-    private static CreateUserArgs UserModelFromRequest(CreateAdminRequest request)
-    {
-        var userModel = new CreateUserArgs
-        {
-            Name = request.Name,
-            Surname = request.Surname,
-            Email = request.Email,
-            Password = request.Password,
-            Role = Role.Admin
-        };
-        return userModel;
     }
 
     [HttpDelete("{adminId}")]
     [AuthorizationFilter(SystemPermission.DeleteAdministrator)]
     public DeleteAdminResponse DeleteAdmin([FromRoute] string adminId)
     {
-        adminService.DeleteAdmin(adminId);
+        _adminService.DeleteAdmin(adminId);
         return new DeleteAdminResponse { Id = adminId };
     }
 }

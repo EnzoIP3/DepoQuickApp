@@ -31,8 +31,8 @@ public class SensorControllerTests
         _deviceServiceMock = new Mock<IDeviceService>();
         _businessOwnerServiceMock = new Mock<IBusinessOwnerService>();
         _notificationServiceMock = new Mock<INotificationService>();
-        _sensorController = new SensorController(_deviceServiceMock.Object,
-            _businessOwnerServiceMock.Object,
+        _sensorController = new SensorController(_businessOwnerServiceMock.Object,
+            _deviceServiceMock.Object,
             _notificationServiceMock.Object)
         { ControllerContext = { HttpContext = _httpContextMock.Object } };
     }

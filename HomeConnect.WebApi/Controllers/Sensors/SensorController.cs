@@ -15,31 +15,28 @@ namespace HomeConnect.WebApi.Controllers.Sensors;
 
 [ApiController]
 [Route("sensors")]
-public class SensorController(
-    IDeviceService deviceService,
-    IBusinessOwnerService businessOwnerService,
-    INotificationService notificationService)
+public class SensorController
     : ControllerBase
 {
+    private readonly IBusinessOwnerService _businessOwnerService;
+    private readonly IDeviceService _deviceService;
+    private readonly INotificationService _notificationService;
+
+    public SensorController(IBusinessOwnerService businessOwnerService, IDeviceService deviceService,
+        INotificationService notificationService)
+    {
+        _businessOwnerService = businessOwnerService;
+        _deviceService = deviceService;
+        _notificationService = notificationService;
+    }
+
     [HttpPost]
     [AuthenticationFilter]
     [AuthorizationFilter(SystemPermission.CreateSensor)]
     public CreateSensorResponse CreateSensor([FromBody] CreateSensorRequest request)
     {
         var userLoggedIn = HttpContext.Items[Item.UserLogged] as User;
-        var args = new CreateDeviceArgs
-        {
-            Owner = userLoggedIn!,
-            Description = request.Description ?? string.Empty,
-            MainPhoto = request.MainPhoto ?? string.Empty,
-            ModelNumber = request.ModelNumber,
-            Name = request.Name ?? string.Empty,
-            SecondaryPhotos = request.SecondaryPhotos,
-            Type = "Sensor",
-        };
-
-        Device createdSensor = businessOwnerService.CreateDevice(args);
-
+        Device createdSensor = _businessOwnerService.CreateDevice(request.ToArgs(userLoggedIn!));
         return new CreateSensorResponse { Id = createdSensor.Id };
     }
 
@@ -47,14 +44,15 @@ public class SensorController(
     public NotifyResponse Open([FromRoute] string hardwareId)
     {
         NotificationArgs notificationArgs = CreateOpenNotificationArgs(hardwareId);
-        deviceService.UpdateSensorState(hardwareId, true);
-        notificationService.SendSensorNotification(notificationArgs, true);
+        _deviceService.UpdateSensorState(hardwareId, true);
+        _notificationService.SendSensorNotification(notificationArgs, true);
         return new NotifyResponse { HardwareId = hardwareId };
     }
 
     private static NotificationArgs CreateOpenNotificationArgs(string hardwareId)
     {
-        var notificationArgs = new NotificationArgs { HardwareId = hardwareId, Date = DateTime.Now, Event = "Sensor was opened" };
+        var notificationArgs =
+            new NotificationArgs { HardwareId = hardwareId, Date = DateTime.Now, Event = "Sensor was opened" };
         return notificationArgs;
     }
 
@@ -62,14 +60,15 @@ public class SensorController(
     public NotifyResponse Close([FromRoute] string hardwareId)
     {
         NotificationArgs notificationArgs = CreateCloseNotificationArgs(hardwareId);
-        deviceService.UpdateSensorState(hardwareId, false);
-        notificationService.SendSensorNotification(notificationArgs, false);
+        _deviceService.UpdateSensorState(hardwareId, false);
+        _notificationService.SendSensorNotification(notificationArgs, false);
         return new NotifyResponse { HardwareId = hardwareId };
     }
 
     private static NotificationArgs CreateCloseNotificationArgs(string hardwareId)
     {
-        var notificationArgs = new NotificationArgs { HardwareId = hardwareId, Date = DateTime.Now, Event = "Sensor was closed" };
+        var notificationArgs =
+            new NotificationArgs { HardwareId = hardwareId, Date = DateTime.Now, Event = "Sensor was closed" };
         return notificationArgs;
     }
 }

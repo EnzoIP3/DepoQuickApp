@@ -1,4 +1,4 @@
-import { Component, Input } from "@angular/core";
+import { Component, Input, OnInit } from "@angular/core";
 import { Message } from "primeng/api";
 import { MessagesModule } from "primeng/messages";
 
@@ -8,7 +8,7 @@ import { MessagesModule } from "primeng/messages";
     imports: [MessagesModule],
     templateUrl: "./message.component.html"
 })
-export class MessageComponent {
+export class MessageComponent implements OnInit {
     @Input() text: string | undefined;
     @Input() detail: string | undefined;
     @Input() icon: string | undefined;

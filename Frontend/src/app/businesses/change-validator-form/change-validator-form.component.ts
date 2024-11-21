@@ -5,13 +5,12 @@ import {
     Validators,
     AbstractControl
 } from "@angular/forms";
-import { MessageService } from "primeng/api";
 import { Subscription } from "rxjs";
 import { DeviceValidatorsService } from "../../../backend/services/device-validators/device-validators.service";
 import { BusinessesService } from "../../../backend/services/businesses/businesses.service";
 import GetValidatorsResponse from "../../../backend/services/device-validators/models/get-validators-response";
 import UpdateValidatorRequest from "../../../backend/services/businesses/models/update-validator-request";
-import UpdateValidatorResponse from "../../../backend/services/businesses/models/update-validator-request";
+import { MessagesService } from "../../../backend/services/messages/messages.service";
 
 @Component({
     selector: "app-change-validator-form",
@@ -32,7 +31,7 @@ export class ChangeValidatorFormComponent implements OnInit, OnDestroy {
 
     constructor(
         private fb: FormBuilder,
-        private _messageService: MessageService,
+        private _messagesService: MessagesService,
         private _deviceValidatorsService: DeviceValidatorsService,
         private _businessesService: BusinessesService
     ) {
@@ -61,7 +60,7 @@ export class ChangeValidatorFormComponent implements OnInit, OnDestroy {
                 error: (error) => {
                     this.status.loading = false;
                     this.status.error = error;
-                    this._messageService.add({
+                    this._messagesService.add({
                         severity: "error",
                         summary: "Error loading validators",
                         detail: error.message
@@ -89,14 +88,14 @@ export class ChangeValidatorFormComponent implements OnInit, OnDestroy {
             this._updateValidatorSubscription = this._businessesService
                 .updateValidator(this._businessId, request)
                 .subscribe({
-                    next: (response: UpdateValidatorResponse) => {
+                    next: () => {
                         this.status.loading = false;
                         const selectedValidator = this.validatorOptions.find(
                             (option) =>
                                 option.value ===
                                 this.changeValidatorForm.value.validator
                         );
-                        this._messageService.add({
+                        this._messagesService.add({
                             severity: "success",
                             summary: "Validator Updated",
                             detail:
@@ -110,7 +109,7 @@ export class ChangeValidatorFormComponent implements OnInit, OnDestroy {
                     error: (error) => {
                         this.status.loading = false;
                         this.status.error = error;
-                        this._messageService.add({
+                        this._messagesService.add({
                             severity: "error",
                             summary: "Error updating validator",
                             detail: error.message
@@ -119,7 +118,7 @@ export class ChangeValidatorFormComponent implements OnInit, OnDestroy {
                 });
         } else {
             this.status.loading = false;
-            this._messageService.add({
+            this._messagesService.add({
                 severity: "warn",
                 summary: "Invalid Form",
                 detail: "Please select a valid validator option."

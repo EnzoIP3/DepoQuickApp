@@ -111,7 +111,7 @@ public class HomeAuthorizationFilterAttributeTests
         concreteResponse.Should().NotBeNull();
         concreteResponse.StatusCode.Should().Be((int)HttpStatusCode.Forbidden);
         FilterTestsUtils.GetInnerCode(concreteResponse?.Value).Should().Be("Forbidden");
-        FilterTestsUtils.GetMessage(concreteResponse?.Value).Should().Be("Missing home permission: some-permission");
+        FilterTestsUtils.GetMessage(concreteResponse?.Value).Should().Be("You are not allowed to do that in this home");
     }
 
     [TestMethod]
@@ -216,7 +216,7 @@ public class HomeAuthorizationFilterAttributeTests
         concreteResponse.Should().NotBeNull();
         concreteResponse!.StatusCode.Should().Be((int)HttpStatusCode.Forbidden);
         FilterTestsUtils.GetInnerCode(concreteResponse.Value).Should().Be("Forbidden");
-        FilterTestsUtils.GetMessage(concreteResponse.Value).Should().Be("Missing home permission: some-permission");
+        FilterTestsUtils.GetMessage(concreteResponse.Value).Should().Be("You are not allowed to do that in this home");
     }
 
     [TestMethod]
@@ -329,7 +329,7 @@ public class HomeAuthorizationFilterAttributeTests
         concreteResponse.Should().NotBeNull();
         concreteResponse!.StatusCode.Should().Be((int)HttpStatusCode.Forbidden);
         FilterTestsUtils.GetInnerCode(concreteResponse.Value).Should().Be("Forbidden");
-        FilterTestsUtils.GetMessage(concreteResponse.Value).Should().Be("Missing home permission: some-permission");
+        FilterTestsUtils.GetMessage(concreteResponse.Value).Should().Be("You are not allowed to do that in this home");
     }
 
     [TestMethod]
@@ -409,6 +409,6 @@ public class HomeAuthorizationFilterAttributeTests
         concreteResponse.Should().NotBeNull();
         concreteResponse!.StatusCode.Should().Be((int)HttpStatusCode.Forbidden);
         FilterTestsUtils.GetInnerCode(concreteResponse.Value).Should().Be("Forbidden");
-        FilterTestsUtils.GetMessage(concreteResponse.Value).Should().Be("Missing home permission: some-permission");
+        FilterTestsUtils.GetMessage(concreteResponse.Value).Should().Be("You are not allowed to do that in this home");
     }
 }

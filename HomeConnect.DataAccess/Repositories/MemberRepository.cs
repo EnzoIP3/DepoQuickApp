@@ -33,8 +33,6 @@ public class MemberRepository : IMemberRepository
 
     public bool Exists(Guid memberId)
     {
-        Console.WriteLine(_context.Members.Include(m => m.User).Include(m => m.Home).ToList()
-            .Select(m => $"{m.Id} {m.User.Id} {m.Home.Id}"));
         return _context.Members.Any(m => m.Id == memberId);
     }
 }

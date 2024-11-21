@@ -59,6 +59,26 @@ public class HomeController(IHomeOwnerService homeOwnerService) : ControllerBase
         return new NameHomeResponse { HomeId = homesId };
     }
 
+    private static NameHomeArgs NameHomeArgsFromRequest(NameHomeRequest request, string homesId, Guid userId)
+    {
+        if (string.IsNullOrEmpty(homesId))
+        {
+            throw new ArgumentException("HomeId cannot be null or empty");
+        }
+
+        if (string.IsNullOrEmpty(request.NewName))
+        {
+            throw new ArgumentException("NewName cannot be null or empty");
+        }
+
+        if(userId == Guid.Empty)
+        {
+            throw new ArgumentException("UserId cannot be null or empty");
+        }
+
+        return new NameHomeArgs { HomeId = Guid.Parse(homesId), NewName = request.NewName, OwnerId = userId };
+    }
+
     [HttpGet("{homesId}")]
     [HomeAuthorizationFilter(HomePermission.GetHome)]
     [AuthorizationFilter(SystemPermission.GetHomes)]
@@ -83,26 +103,6 @@ public class HomeController(IHomeOwnerService homeOwnerService) : ControllerBase
         };
     }
 
-    private static NameHomeArgs NameHomeArgsFromRequest(NameHomeRequest request, string homesId, Guid userId)
-    {
-        if (string.IsNullOrEmpty(homesId))
-        {
-            throw new ArgumentException("HomeId cannot be null or empty");
-        }
-
-        if (string.IsNullOrEmpty(request.NewName))
-        {
-            throw new ArgumentException("NewName cannot be null or empty");
-        }
-
-        if(userId == Guid.Empty)
-        {
-            throw new ArgumentException("UserId cannot be null or empty");
-        }
-
-        return new NameHomeArgs { HomeId = Guid.Parse(homesId), NewName = request.NewName, OwnerId = userId };
-    }
-
     [HttpPost]
     [AuthorizationFilter(SystemPermission.CreateHome)]
     public CreateHomeResponse CreateHome([FromBody] CreateHomeRequest request)
@@ -111,6 +111,20 @@ public class HomeController(IHomeOwnerService homeOwnerService) : ControllerBase
         var createHomeArgs = HomeArgsFromRequest(request, (User)userLoggedIn!);
         var homeId = homeOwnerService.CreateHome(createHomeArgs);
         return new CreateHomeResponse { Id = homeId.ToString() };
+    }
+
+    private CreateHomeArgs HomeArgsFromRequest(CreateHomeRequest request, User user)
+    {
+        var homeArgs = new CreateHomeArgs
+        {
+            HomeOwnerId = user.Id.ToString(),
+            Address = request.Address ?? string.Empty,
+            Latitude = request.Latitude,
+            Longitude = request.Longitude,
+            MaxMembers = request.MaxMembers,
+            Name = request.Name
+        };
+        return homeArgs;
     }
 
     [HttpPost("{homesId}/members")]
@@ -126,20 +140,6 @@ public class HomeController(IHomeOwnerService homeOwnerService) : ControllerBase
         };
         var addedMemberId = homeOwnerService.AddMemberToHome(addMemberArgs);
         return new AddMemberResponse { HomeId = homesId, MemberId = addedMemberId.ToString() };
-    }
-
-    private CreateHomeArgs HomeArgsFromRequest(CreateHomeRequest request, User user)
-    {
-        var homeArgs = new CreateHomeArgs
-        {
-            HomeOwnerId = user.Id.ToString(),
-            Address = request.Address ?? string.Empty,
-            Latitude = request.Latitude,
-            Longitude = request.Longitude,
-            MaxMembers = request.MaxMembers,
-            Name = request.Name
-        };
-        return homeArgs;
     }
 
     [HttpGet("{homesId}/members")]

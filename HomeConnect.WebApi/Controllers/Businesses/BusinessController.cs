@@ -21,10 +21,33 @@ public class BusinessController(IAdminService adminService, IBusinessOwnerServic
     [AuthorizationFilter(SystemPermission.GetAllBusinesses)]
     public GetBusinessesResponse GetBusinesses([FromQuery] GetBusinessesRequest request)
     {
-        PagedData<Business> businesses =
+        var businesses =
             adminService.GetBusinesses(request.CurrentPage, request.PageSize, request.Name, request.OwnerName);
-        GetBusinessesResponse response = ResponseFromBusinesses(businesses);
+        var response = ResponseFromBusinesses(businesses);
         return response;
+    }
+
+    private static GetBusinessesResponse ResponseFromBusinesses(
+        PagedData<Business> businesses)
+    {
+        return new GetBusinessesResponse
+        {
+            Businesses = businesses.Data.Select(b => new ListBusinessInfo
+            {
+                Name = b.Name,
+                OwnerEmail = b.Owner.Email,
+                OwnerName = b.Owner.Name,
+                OwnerSurname = b.Owner.Surname,
+                Rut = b.Rut,
+                Logo = b.Logo
+            }).ToList(),
+            Pagination = new Pagination
+            {
+                Page = businesses.Page,
+                PageSize = businesses.PageSize,
+                TotalPages = businesses.TotalPages
+            }
+        };
     }
 
     [HttpPost]
@@ -65,32 +88,9 @@ public class BusinessController(IAdminService adminService, IBusinessOwnerServic
     {
         var userLoggedIn = HttpContext.Items[Item.UserLogged] as User;
         var args = CreateGetBusinessDevicesArgs(businessId, request, userLoggedIn);
-        PagedData<Device> devices = businessOwnerService.GetDevices(args);
+        var devices = businessOwnerService.GetDevices(args);
         GetBusinessDevicesResponse response = ResponseFromDevices(devices);
         return response;
-    }
-
-    private static GetBusinessesResponse ResponseFromBusinesses(
-        PagedData<Business> businesses)
-    {
-        return new GetBusinessesResponse
-        {
-            Businesses = businesses.Data.Select(b => new ListBusinessInfo
-            {
-                Name = b.Name,
-                OwnerEmail = b.Owner.Email,
-                OwnerName = b.Owner.Name,
-                OwnerSurname = b.Owner.Surname,
-                Rut = b.Rut,
-                Logo = b.Logo
-            }).ToList(),
-            Pagination = new Pagination
-            {
-                Page = businesses.Page,
-                PageSize = businesses.PageSize,
-                TotalPages = businesses.TotalPages
-            }
-        };
     }
 
     private static GetBusinessDevicesArgs CreateGetBusinessDevicesArgs(string businessId,

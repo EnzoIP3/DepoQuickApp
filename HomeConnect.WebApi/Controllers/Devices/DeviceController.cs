@@ -48,7 +48,7 @@ public class DeviceController : ControllerBase
             ModelNumberFilter = parameters.ModelNumber
         };
         var devices = _deviceService.GetDevices(args);
-        GetDevicesResponse response = ResponseFromDevices(devices);
+        var response = ResponseFromDevices(devices);
         return response;
     }
 

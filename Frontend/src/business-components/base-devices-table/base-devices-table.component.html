@@ -1,5 +1,6 @@
 <app-table
     [columns]="columns"
+    [filterableColumns]="filterableColumns"
     [data]="devices"
     [loading]="loading"
     [clickableRows]="clickableRows"
@@ -13,6 +14,7 @@
         )
     "
     (rowClick)="onRowClick($event)"
+    (filter)="onFilterChange($event)"
 ></app-table>
 
 <ng-container *ngIf="paginate">

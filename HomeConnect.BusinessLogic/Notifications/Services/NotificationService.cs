@@ -113,6 +113,9 @@ public class NotificationService : INotificationService
 
     public void SendSensorNotification(NotificationArgs args, bool state)
     {
-        throw new NotImplementedException();
+        if (OwnedDeviceRepository.GetSensorState(Guid.Parse(args.HardwareId)) != state)
+        {
+            Notify(args);
+        }
     }
 }

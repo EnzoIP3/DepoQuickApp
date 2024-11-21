@@ -252,6 +252,36 @@ public class NotificationServiceTest
 
     #endregion
 
+    #region SendSensorNotification
+
+    [TestMethod]
+    public void SendSensorNotification_IfStateDiffersFromSensorState_SendsNotification()
+    {
+        // Arrange
+        var hardwareId = Guid.NewGuid().ToString();
+        var date = DateTime.Now;
+        var state = true;
+        var args = new NotificationArgs { HardwareId = hardwareId, Date = date, Event = "sensor is open" };
+        var ownedDevice = new SensorOwnedDevice(new Home(_user, "Street 3420", 50, 100, 5),
+            new Device("Device", _modelNumber, "Device description", "https://example.com/image.png", [],
+                "Sensor", new Business()));
+        _mockOwnedDeviceRepository.Setup(x => x.Exists(Guid.Parse(hardwareId))).Returns(true);
+        _mockOwnedDeviceRepository.Setup(x => x.GetByHardwareId(Guid.Parse(hardwareId))).Returns(ownedDevice);
+        _mockNotificationRepository.Setup(x => x.Add(It.IsAny<Notification>())).Verifiable();
+        _mockOwnedDeviceRepository.Setup(x => x.GetSensorState(Guid.Parse(hardwareId))).Returns(!state);
+
+        // Act
+        _notificationService.SendSensorNotification(args, state);
+
+        // Assert
+        _mockNotificationRepository.Verify(x => x.Add(It.Is<Notification>(
+            n =>
+                n.Event == args.Event &&
+                n.User == _user &&
+                n.OwnedDevice == ownedDevice)), Times.Once);
+    }
+    #endregion
+
     #region SendLampNotification
 
     [TestMethod]
@@ -261,10 +291,10 @@ public class NotificationServiceTest
         var hardwareId = Guid.NewGuid().ToString();
         var date = DateTime.Now;
         var state = true;
-        var args = new NotificationArgs { HardwareId = hardwareId, Date = date, Event = "Lamp was turned on" };
-        var ownedDevice = new OwnedDevice(new Home(_user, "Street 3420", 50, 100, 5),
+        var args = new NotificationArgs { HardwareId = hardwareId, Date = date, Event = "sensor is open" };
+        var ownedDevice = new LampOwnedDevice(new Home(_user, "Street 3420", 50, 100, 5),
             new Device("Device", _modelNumber, "Device description", "https://example.com/image.png", [],
-                "Sensor", new Business()));
+                "Lamp", new Business()));
         _mockOwnedDeviceRepository.Setup(x => x.Exists(Guid.Parse(hardwareId))).Returns(true);
         _mockOwnedDeviceRepository.Setup(x => x.GetByHardwareId(Guid.Parse(hardwareId))).Returns(ownedDevice);
         _mockNotificationRepository.Setup(x => x.Add(It.IsAny<Notification>())).Verifiable();

@@ -55,7 +55,6 @@ public class HomeController(IHomeOwnerService homeOwnerService) : ControllerBase
     {
         var userLoggedIn = HttpContext.Items[Item.UserLogged] as User;
         var nameHomeArgs = NameHomeArgsFromRequest(request, homesId, userLoggedIn.Id);
-        nameHomeArgs.OwnerId = userLoggedIn!.Id;
         homeOwnerService.NameHome(nameHomeArgs);
         return new NameHomeResponse { HomeId = homesId };
     }
@@ -94,6 +93,11 @@ public class HomeController(IHomeOwnerService homeOwnerService) : ControllerBase
         if (string.IsNullOrEmpty(request.NewName))
         {
             throw new ArgumentException("NewName cannot be null or empty");
+        }
+
+        if(userId == Guid.Empty)
+        {
+            throw new ArgumentException("UserId cannot be null or empty");
         }
 
         return new NameHomeArgs { HomeId = Guid.Parse(homesId), NewName = request.NewName, OwnerId = userId };

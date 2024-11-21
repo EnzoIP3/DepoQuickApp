@@ -10,29 +10,26 @@ namespace BusinessLogic.Admins.Services;
 
 public class AdminService : IAdminService
 {
-    public AdminService(IUserRepository userRepository, IBusinessRepository businessRepository,
-        IRoleRepository roleRepository)
+    public AdminService(IUserRepository userRepository, IBusinessRepository businessRepository)
     {
-        UserRepository = userRepository;
-        BusinessRepository = businessRepository;
-        RoleRepository = roleRepository;
+        _userRepository = userRepository;
+        _businessRepository = businessRepository;
     }
 
-    private IUserRepository UserRepository { get; }
-    private IBusinessRepository BusinessRepository { get; }
-    private IRoleRepository RoleRepository { get; }
+    private readonly IUserRepository _userRepository;
+    private readonly IBusinessRepository _businessRepository;
 
     public void DeleteAdmin(string adminIdStr)
     {
         EnsureValidGuid(adminIdStr, out Guid adminId);
         EnsureEntityExists(adminId);
         EnsureOtherAdminExists();
-        UserRepository.Delete(adminId);
+        _userRepository.Delete(adminId);
     }
 
     private void EnsureOtherAdminExists()
     {
-        if (UserRepository.GetPaged(1, 1, roleFilter: Role.Admin).TotalPages == 1)
+        if (_userRepository.GetPaged(1, 1, roleFilter: Role.Admin).TotalPages == 1)
         {
             throw new InvalidOperationException("The last admin cannot be deleted");
         }
@@ -41,7 +38,7 @@ public class AdminService : IAdminService
     public PagedData<User> GetUsers(GetUsersArgs args)
     {
         PagedData<User> users =
-            UserRepository.GetPaged(args.CurrentPage ?? 1, args.PageSize ?? 10, args.FullNameFilter, args.RoleFilter);
+            _userRepository.GetPaged(args.CurrentPage ?? 1, args.PageSize ?? 10, args.FullNameFilter, args.RoleFilter);
         return users;
     }
 
@@ -55,13 +52,13 @@ public class AdminService : IAdminService
             FullNameFilter = args.FullNameFilter
         };
         PagedData<Business> businesses =
-            BusinessRepository.GetPaged(filterArgs);
+            _businessRepository.GetPaged(filterArgs);
         return businesses;
     }
 
     private void EnsureEntityExists(Guid id)
     {
-        if (!UserRepository.Exists(id))
+        if (!_userRepository.Exists(id))
         {
             throw new KeyNotFoundException("Admin does not exist.");
         }

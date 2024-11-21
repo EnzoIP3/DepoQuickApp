@@ -32,7 +32,6 @@ public sealed class AdminServiceTests
     private Mock<IBusinessRepository> _businessRepository = null!;
     private User _otherOwner = null!;
     private User _owner = null!;
-    private Mock<IRoleRepository> _roleRepository = null!;
     private Mock<IUserRepository> _userRepository = null!;
 
     private User _validUser = null!;
@@ -42,8 +41,7 @@ public sealed class AdminServiceTests
     {
         _userRepository = new Mock<IUserRepository>(MockBehavior.Strict);
         _businessRepository = new Mock<IBusinessRepository>(MockBehavior.Strict);
-        _roleRepository = new Mock<IRoleRepository>(MockBehavior.Strict);
-        _adminService = new AdminService(_userRepository.Object, _businessRepository.Object, _roleRepository.Object);
+        _adminService = new AdminService(_userRepository.Object, _businessRepository.Object);
         var adminRole = new Role("Admin", []);
         var businessOwnerRole = new Role("Business Owner", []);
         _validUser = new User(_validCreateUserArgs.Name,

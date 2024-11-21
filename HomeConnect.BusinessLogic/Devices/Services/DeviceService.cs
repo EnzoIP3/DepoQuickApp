@@ -9,25 +9,23 @@ namespace BusinessLogic.Devices.Services;
 public class DeviceService : IDeviceService
 {
     public DeviceService(IDeviceRepository deviceRepository, IOwnedDeviceRepository ownedDeviceRepository,
-        IHomeRepository homeRepository, IRoomRepository roomRepository)
+        IRoomRepository roomRepository)
     {
-        HomeRepository = homeRepository;
-        DeviceRepository = deviceRepository;
-        OwnedDeviceRepository = ownedDeviceRepository;
-        RoomRepository = roomRepository;
+        _deviceRepository = deviceRepository;
+        _ownedDeviceRepository = ownedDeviceRepository;
+        _roomRepository = roomRepository;
     }
 
-    private IDeviceRepository DeviceRepository { get; }
-    private IOwnedDeviceRepository OwnedDeviceRepository { get; }
-    private IHomeRepository HomeRepository { get; }
-    private IRoomRepository RoomRepository { get; }
+    private readonly IDeviceRepository _deviceRepository;
+    private readonly IOwnedDeviceRepository _ownedDeviceRepository;
+    private readonly IRoomRepository _roomRepository;
 
     public PagedData<Device> GetDevices(GetDevicesArgs parameters)
     {
         EnsureDeviceTypeExists(parameters);
         parameters.Page ??= 1;
         parameters.PageSize ??= 10;
-        PagedData<Device> devices = DeviceRepository.GetPaged(parameters);
+        PagedData<Device> devices = _deviceRepository.GetPaged(parameters);
         return devices;
     }
 
@@ -43,9 +41,9 @@ public class DeviceService : IDeviceService
     {
         EnsureHardwareIdIsValid(hardwareId);
         EnsureOwnedDeviceExists(hardwareId);
-        OwnedDevice ownedDevice = OwnedDeviceRepository.GetByHardwareId(Guid.Parse(hardwareId));
+        OwnedDevice ownedDevice = _ownedDeviceRepository.GetByHardwareId(Guid.Parse(hardwareId));
         ownedDevice.Connected = state;
-        OwnedDeviceRepository.Update(ownedDevice);
+        _ownedDeviceRepository.Update(ownedDevice);
         return ownedDevice.Connected;
     }
 
@@ -58,7 +56,7 @@ public class DeviceService : IDeviceService
     {
         EnsureHardwareIdIsValid(hardwareId);
         EnsureOwnedDeviceExists(hardwareId);
-        OwnedDevice ownedDevice = OwnedDeviceRepository.GetByHardwareId(Guid.Parse(hardwareId));
+        OwnedDevice ownedDevice = _ownedDeviceRepository.GetByHardwareId(Guid.Parse(hardwareId));
         return ownedDevice.Connected;
     }
 
@@ -66,14 +64,14 @@ public class DeviceService : IDeviceService
     {
         EnsureHardwareIdIsValid(hardwareId);
         EnsureOwnedDeviceExists(hardwareId);
-        OwnedDeviceRepository.UpdateLampState(Guid.Parse(hardwareId), state);
+        _ownedDeviceRepository.UpdateLampState(Guid.Parse(hardwareId), state);
     }
 
     public void UpdateSensorState(string hardwareId, bool state)
     {
         EnsureHardwareIdIsValid(hardwareId);
         EnsureOwnedDeviceExists(hardwareId);
-        OwnedDeviceRepository.UpdateSensorState(Guid.Parse(hardwareId), state);
+        _ownedDeviceRepository.UpdateSensorState(Guid.Parse(hardwareId), state);
     }
 
     public Camera GetCameraById(string cameraId)
@@ -81,12 +79,12 @@ public class DeviceService : IDeviceService
         EnsureIdFormatIsValid(cameraId);
         EnsureDeviceExists(cameraId);
         EnsureDeviceIsACamera(cameraId);
-        return DeviceRepository.Get(Guid.Parse(cameraId)!) as Camera;
+        return _deviceRepository.Get(Guid.Parse(cameraId)!) as Camera;
     }
 
     private void EnsureDeviceIsACamera(string cameraId)
     {
-        if (DeviceRepository.Get(Guid.Parse(cameraId)).Type != DeviceType.Camera)
+        if (_deviceRepository.Get(Guid.Parse(cameraId)).Type != DeviceType.Camera)
         {
             throw new InvalidOperationException("Device is not a camera.");
         }
@@ -94,7 +92,7 @@ public class DeviceService : IDeviceService
 
     private void EnsureDeviceExists(string cameraId)
     {
-        if (!DeviceRepository.Exists(Guid.Parse(cameraId)))
+        if (!_deviceRepository.Exists(Guid.Parse(cameraId)))
         {
             throw new InvalidOperationException("Device not found.");
         }
@@ -110,22 +108,22 @@ public class DeviceService : IDeviceService
 
     public void MoveDevice(string targetRoomId, string ownedDeviceId)
     {
-        if (!RoomRepository.Exists(Guid.Parse(targetRoomId)))
+        if (!_roomRepository.Exists(Guid.Parse(targetRoomId)))
         {
             throw new ArgumentException("The room where the device should be moved does not exist.");
         }
 
-        var targetRoom = RoomRepository.Get(Guid.Parse(targetRoomId));
-        var ownedDevice = OwnedDeviceRepository.GetByHardwareId(Guid.Parse(ownedDeviceId));
+        var targetRoom = _roomRepository.Get(Guid.Parse(targetRoomId));
+        var ownedDevice = _ownedDeviceRepository.GetByHardwareId(Guid.Parse(ownedDeviceId));
 
         if (ownedDevice.Room != null)
         {
             targetRoom.AddOwnedDevice(ownedDevice);
-            var sourceRoom = RoomRepository.Get(ownedDevice.Room.Id);
+            var sourceRoom = _roomRepository.Get(ownedDevice.Room.Id);
             sourceRoom.RemoveOwnedDevice(ownedDevice);
-            RoomRepository.Update(sourceRoom);
-            RoomRepository.Update(targetRoom);
-            OwnedDeviceRepository.Update(ownedDevice);
+            _roomRepository.Update(sourceRoom);
+            _roomRepository.Update(targetRoom);
+            _ownedDeviceRepository.Update(ownedDevice);
         }
         else
         {
@@ -135,7 +133,7 @@ public class DeviceService : IDeviceService
 
     private void EnsureOwnedDeviceExists(string hardwareId)
     {
-        if (!OwnedDeviceRepository.Exists(Guid.Parse(hardwareId)))
+        if (!_ownedDeviceRepository.Exists(Guid.Parse(hardwareId)))
         {
             throw new KeyNotFoundException("The device is not registered in this home.");
         }

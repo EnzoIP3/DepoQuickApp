@@ -40,7 +40,7 @@ public class DeviceServiceTests
         _notificationService = new Mock<INotificationService>(MockBehavior.Strict);
         _homeRepository = new Mock<IHomeRepository>(MockBehavior.Strict);
         _roomRepository = new Mock<IRoomRepository>(MockBehavior.Strict);
-        _deviceService = new DeviceService(_deviceRepository.Object, _ownedDeviceRepository.Object, _homeRepository.Object, _roomRepository.Object);
+        _deviceService = new DeviceService(_deviceRepository.Object, _ownedDeviceRepository.Object, _roomRepository.Object);
 
         user1 = new User("name", "surname", "email1@email.com", "Password#100", new Role());
         user2 = new User("name", "surname", "email2@email.com", "Password#100", new Role());

@@ -18,20 +18,20 @@ public class HomeOwnerService : IHomeOwnerService
         IMemberRepository memberRepository,
         IRoomRepository roomRepository)
     {
-        HomeRepository = homeRepository;
-        UserRepository = userRepository;
-        DeviceRepository = deviceRepository;
-        OwnedDeviceRepository = ownedDeviceRepository;
-        MemberRepository = memberRepository;
-        RoomRepository = roomRepository;
+        _homeRepository = homeRepository;
+        _userRepository = userRepository;
+        _deviceRepository = deviceRepository;
+        _ownedDeviceRepository = ownedDeviceRepository;
+        _memberRepository = memberRepository;
+        _roomRepository = roomRepository;
     }
 
-    private IHomeRepository HomeRepository { get; }
-    private IUserRepository UserRepository { get; }
-    private IDeviceRepository DeviceRepository { get; }
-    private IOwnedDeviceRepository OwnedDeviceRepository { get; }
-    private IMemberRepository MemberRepository { get; }
-    private IRoomRepository RoomRepository { get; }
+    private readonly IHomeRepository _homeRepository;
+    private readonly IUserRepository _userRepository;
+    private readonly IDeviceRepository _deviceRepository;
+    private readonly IOwnedDeviceRepository _ownedDeviceRepository;
+    private readonly IMemberRepository _memberRepository;
+    private readonly IRoomRepository _roomRepository;
 
     public Guid CreateHome(CreateHomeArgs args)
     {
@@ -39,7 +39,7 @@ public class HomeOwnerService : IHomeOwnerService
         EnsureAddressIsUnique(args.Address);
         User user = GetUserById(args.HomeOwnerId);
         var home = new Home(user, args.Address, args.Latitude, args.Longitude, args.MaxMembers);
-        HomeRepository.Add(home);
+        _homeRepository.Add(home);
         return home.Id;
     }
 
@@ -51,7 +51,7 @@ public class HomeOwnerService : IHomeOwnerService
         Member member = CreateMember(user, args);
         home.AddMember(member);
         member.AddPermission(new HomePermission(HomePermission.GetHome));
-        MemberRepository.Add(member);
+        _memberRepository.Add(member);
         return member.Id;
     }
 
@@ -67,12 +67,12 @@ public class HomeOwnerService : IHomeOwnerService
     public Home GetHome(Guid homeId)
     {
         EnsureHomeExists(homeId);
-        return HomeRepository.Get(homeId);
+        return _homeRepository.Get(homeId);
     }
 
     public List<Home> GetHomesByOwnerId(Guid userId)
     {
-        var homes = HomeRepository.GetHomesByUserId(userId);
+        var homes = _homeRepository.GetHomesByUserId(userId);
         return homes;
     }
 
@@ -80,7 +80,7 @@ public class HomeOwnerService : IHomeOwnerService
     {
         ValidateNameHomeParameters(args.OwnerId, args.HomeId, args.NewName);
         Home home = GetHome(args.HomeId);
-        HomeRepository.Rename(home, args.NewName);
+        _homeRepository.Rename(home, args.NewName);
     }
 
     private void ValidateNameDeviceArgs(NameDeviceArgs args)
@@ -126,9 +126,9 @@ public class HomeOwnerService : IHomeOwnerService
     public void NameDevice(NameDeviceArgs args)
     {
         ValidateNameDeviceArgs(args);
-        var device = OwnedDeviceRepository.GetByHardwareId(Guid.Parse(args.HardwareId));
+        var device = _ownedDeviceRepository.GetByHardwareId(Guid.Parse(args.HardwareId));
         EnsureDeviceIsNotNull(device);
-        OwnedDeviceRepository.Rename(device, args.NewName);
+        _ownedDeviceRepository.Rename(device, args.NewName);
     }
 
     private static void EnsureDeviceIsNotNull(OwnedDevice device)
@@ -143,12 +143,12 @@ public class HomeOwnerService : IHomeOwnerService
     {
         var guid = ValidateAndParseGuid(hardwareId);
         EnsureOwnedDeviceExists(guid);
-        return OwnedDeviceRepository.GetByHardwareId(guid);
+        return _ownedDeviceRepository.GetByHardwareId(guid);
     }
 
     private void EnsureOwnedDeviceExists(Guid hardwareId)
     {
-        if (!OwnedDeviceRepository.Exists(hardwareId))
+        if (!_ownedDeviceRepository.Exists(hardwareId))
         {
             throw new KeyNotFoundException("Device does not exist in this home.");
         }
@@ -157,14 +157,14 @@ public class HomeOwnerService : IHomeOwnerService
     public Room CreateRoom(string homeId, string name)
     {
         ValidateRoomParameters(homeId, name);
-        if (!HomeRepository.Exists(Guid.Parse(homeId)))
+        if (!_homeRepository.Exists(Guid.Parse(homeId)))
         {
             throw new KeyNotFoundException("Home does not exist.");
         }
 
-        var home = HomeRepository.Get(Guid.Parse(homeId));
+        var home = _homeRepository.Get(Guid.Parse(homeId));
         var room = new Room(name, home);
-        RoomRepository.Add(room);
+        _roomRepository.Add(room);
         return room;
     }
 
@@ -172,12 +172,12 @@ public class HomeOwnerService : IHomeOwnerService
     {
         var guid = ValidateAndParseGuid(roomId);
         EnsureRoomExists(guid);
-        return RoomRepository.Get(guid);
+        return _roomRepository.Get(guid);
     }
 
     private void EnsureRoomExists(Guid guid)
     {
-        if (!RoomRepository.Exists(guid))
+        if (!_roomRepository.Exists(guid))
         {
             throw new KeyNotFoundException("Room does not exist.");
         }
@@ -201,22 +201,22 @@ public class HomeOwnerService : IHomeOwnerService
         var roomGuid = Guid.Parse(roomId);
         var ownedDeviceGuid = Guid.Parse(ownedDeviceId);
 
-        if (!RoomRepository.Exists(roomGuid))
+        if (!_roomRepository.Exists(roomGuid))
         {
             throw new ArgumentException("Invalid room ID.");
         }
 
-        var room = RoomRepository.Get(roomGuid);
-        var ownedDevice = OwnedDeviceRepository.GetOwnedDeviceById(ownedDeviceGuid);
+        var room = _roomRepository.Get(roomGuid);
+        var ownedDevice = _ownedDeviceRepository.GetOwnedDeviceById(ownedDeviceGuid);
 
         room.AddOwnedDevice(ownedDevice);
-        RoomRepository.Update(room);
+        _roomRepository.Update(room);
         return ownedDevice.HardwareId;
     }
 
     public List<Room> GetRoomsByHomeId(string homesId)
     {
-        var rooms = RoomRepository.GetRoomsByHomeId(Guid.Parse(homesId));
+        var rooms = _roomRepository.GetRoomsByHomeId(Guid.Parse(homesId));
         return rooms;
     }
 
@@ -247,7 +247,7 @@ public class HomeOwnerService : IHomeOwnerService
     public IEnumerable<OwnedDevice> GetHomeDevices(string homeId, string? roomId = null)
     {
         var home = GetHome(ValidateAndParseGuid(homeId));
-        var devicesQuery = OwnedDeviceRepository.GetOwnedDevicesByHome(home);
+        var devicesQuery = _ownedDeviceRepository.GetOwnedDevicesByHome(home);
 
         if (!string.IsNullOrEmpty(roomId))
         {
@@ -266,12 +266,12 @@ public class HomeOwnerService : IHomeOwnerService
 
     public Member GetMemberById(Guid memberId)
     {
-        if (!MemberRepository.Exists(memberId))
+        if (!_memberRepository.Exists(memberId))
         {
             throw new ArgumentException("Member does not exist.");
         }
 
-        return MemberRepository.Get(memberId);
+        return _memberRepository.Get(memberId);
     }
 
     private static void EnsureDevicesAreNotEmpty(AddDevicesArgs addDevicesArgs)
@@ -323,7 +323,7 @@ public class HomeOwnerService : IHomeOwnerService
 
     private void EnsureAddressIsUnique(string address)
     {
-        if (HomeRepository.GetByAddress(address) != null)
+        if (_homeRepository.GetByAddress(address) != null)
         {
             throw new InvalidOperationException("Address is already in use.");
         }
@@ -332,13 +332,13 @@ public class HomeOwnerService : IHomeOwnerService
     private User GetUserByEmail(string userEmail)
     {
         EnsureUserExistsByEmail(userEmail);
-        return UserRepository.GetByEmail(userEmail);
+        return _userRepository.GetByEmail(userEmail);
     }
 
     private User GetUserById(string userId)
     {
         var guid = ValidateAndParseGuid(userId);
-        return UserRepository.Get(guid);
+        return _userRepository.Get(guid);
     }
 
     private Member CreateMember(User user, AddMemberArgs args)
@@ -367,20 +367,20 @@ public class HomeOwnerService : IHomeOwnerService
 
     private List<Device> GetDevices(IEnumerable<string> deviceIds)
     {
-        return deviceIds.Select(id => DeviceRepository.Get(Guid.Parse(id))).ToList();
+        return deviceIds.Select(id => _deviceRepository.Get(Guid.Parse(id))).ToList();
     }
 
     private void AddDevicesToHome(Home home, List<Device> devices)
     {
         devices.ForEach(device =>
         {
-            OwnedDeviceRepository.Add(OwnedDeviceFactory.CreateOwnedDevice(home, device));
+            _ownedDeviceRepository.Add(OwnedDeviceFactory.CreateOwnedDevice(home, device));
         });
     }
 
     private void EnsureHomeExists(Guid homeId)
     {
-        if (!HomeRepository.Exists(homeId))
+        if (!_homeRepository.Exists(homeId))
         {
             throw new KeyNotFoundException("Home does not exist.");
         }
@@ -388,7 +388,7 @@ public class HomeOwnerService : IHomeOwnerService
 
     private void EnsureUserExistsByEmail(string userEmail)
     {
-        if (!UserRepository.ExistsByEmail(userEmail))
+        if (!_userRepository.ExistsByEmail(userEmail))
         {
             throw new ArgumentException("User does not exist.");
         }
@@ -397,7 +397,7 @@ public class HomeOwnerService : IHomeOwnerService
     private void EnsureUserExistsById(string userId)
     {
         var guid = ValidateAndParseGuid(userId);
-        if (!UserRepository.Exists(guid))
+        if (!_userRepository.Exists(guid))
         {
             throw new ArgumentException("User does not exist.");
         }
@@ -419,12 +419,12 @@ public class HomeOwnerService : IHomeOwnerService
         if (requestShouldBeNotified && !hasPermission)
         {
             member.AddPermission(permission);
-            MemberRepository.Update(member);
+            _memberRepository.Update(member);
         }
         else if (!requestShouldBeNotified && hasPermission)
         {
             member.DeletePermission(permission);
-            MemberRepository.Update(member);
+            _memberRepository.Update(member);
         }
     }
 

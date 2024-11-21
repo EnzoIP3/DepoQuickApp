@@ -15,21 +15,21 @@ public class NotificationService : INotificationService
     public NotificationService(INotificationRepository notificationRepository,
         IOwnedDeviceRepository ownedDeviceRepository, IUserRepository userRepository)
     {
-        NotificationRepository = notificationRepository;
-        OwnedDeviceRepository = ownedDeviceRepository;
-        UserRepository = userRepository;
+        _notificationRepository = notificationRepository;
+        _ownedDeviceRepository = ownedDeviceRepository;
+        _userRepository = userRepository;
     }
 
-    private INotificationRepository NotificationRepository { get; }
-    private IOwnedDeviceRepository OwnedDeviceRepository { get; }
-    private IUserRepository UserRepository { get; }
+    private readonly INotificationRepository _notificationRepository;
+    private readonly IOwnedDeviceRepository _ownedDeviceRepository;
+    private readonly IUserRepository _userRepository;
 
     public void Notify(NotificationArgs args)
     {
         EnsureUserExists(args.UserEmail);
         EnsureOwnedDeviceExists(args.HardwareId);
         EnsureDeviceIsConnected(args.HardwareId);
-        OwnedDevice ownedDevice = OwnedDeviceRepository.GetByHardwareId(Guid.Parse(args.HardwareId));
+        OwnedDevice ownedDevice = _ownedDeviceRepository.GetByHardwareId(Guid.Parse(args.HardwareId));
         Home home = ownedDevice.Home;
         var shouldReceiveNotification = new HomePermission(HomePermission.GetNotifications);
         NotifyUsersWithPermission(args, home, shouldReceiveNotification, ownedDevice);
@@ -37,7 +37,7 @@ public class NotificationService : INotificationService
 
     private void EnsureUserExists(string? userEmail)
     {
-        if (userEmail != null && !UserRepository.ExistsByEmail(userEmail))
+        if (userEmail != null && !_userRepository.ExistsByEmail(userEmail))
         {
             throw new ArgumentException("User detected by camera was not found.");
         }
@@ -53,7 +53,7 @@ public class NotificationService : INotificationService
 
     private bool IsConnected(string hardwareId)
     {
-        OwnedDevice ownedDevice = OwnedDeviceRepository.GetByHardwareId(Guid.Parse(hardwareId));
+        OwnedDevice ownedDevice = _ownedDeviceRepository.GetByHardwareId(Guid.Parse(hardwareId));
         return ownedDevice.Connected;
     }
 
@@ -62,7 +62,7 @@ public class NotificationService : INotificationService
         EnsureDeviceFilterIsValid(args.DeviceFilter);
         var dateFilter = GetDateFromRequest(args.DateFilter);
         List<Notification> notifications =
-            NotificationRepository.GetRange(args.UserId, args.DeviceFilter, dateFilter, args.ReadFilter);
+            _notificationRepository.GetRange(args.UserId, args.DeviceFilter, dateFilter, args.ReadFilter);
         var notificationsClone = CloneNotifications(notifications);
         MarkNotificationsAsRead(notifications);
         return notificationsClone;
@@ -102,7 +102,7 @@ public class NotificationService : INotificationService
     private void MarkNotificationsAsRead(List<Notification> notifications)
     {
         notifications.ForEach(notification => notification.Read = true);
-        NotificationRepository.UpdateRange(notifications);
+        _notificationRepository.UpdateRange(notifications);
     }
 
     private void EnsureDeviceFilterIsValid(string? deviceFilter)
@@ -116,12 +116,12 @@ public class NotificationService : INotificationService
     public void CreateNotification(OwnedDevice ownedDevice, string @event, User user)
     {
         var notification = new Notification(Guid.NewGuid(), DateTime.Now, false, @event, ownedDevice, user);
-        NotificationRepository.Add(notification);
+        _notificationRepository.Add(notification);
     }
 
     private void EnsureOwnedDeviceExists(string argsHardwareId)
     {
-        if (!OwnedDeviceRepository.Exists(Guid.Parse(argsHardwareId)))
+        if (!_ownedDeviceRepository.Exists(Guid.Parse(argsHardwareId)))
         {
             throw new KeyNotFoundException("The device is not registered in this home.");
         }
@@ -139,7 +139,7 @@ public class NotificationService : INotificationService
 
     public void SendLampNotification(NotificationArgs args, bool state)
     {
-        if (OwnedDeviceRepository.GetLampState(Guid.Parse(args.HardwareId)) != state)
+        if (_ownedDeviceRepository.GetLampState(Guid.Parse(args.HardwareId)) != state)
         {
             Notify(args);
         }
@@ -147,7 +147,7 @@ public class NotificationService : INotificationService
 
     public void SendSensorNotification(NotificationArgs args, bool state)
     {
-        if (OwnedDeviceRepository.GetSensorState(Guid.Parse(args.HardwareId)) != state)
+        if (_ownedDeviceRepository.GetSensorState(Guid.Parse(args.HardwareId)) != state)
         {
             Notify(args);
         }

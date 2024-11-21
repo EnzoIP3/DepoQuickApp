@@ -14,27 +14,27 @@ public class ImporterService : IImporterService
 {
     public ImporterService(IAssemblyInterfaceLoader<IDeviceImporter> loadAssembly, IBusinessOwnerService businessOwnerService)
     {
-        LoadAssembly = loadAssembly;
-        BusinessOwnerService = businessOwnerService;
+        _loadAssembly = loadAssembly;
+        _businessOwnerService = businessOwnerService;
     }
 
-    private IBusinessOwnerService BusinessOwnerService { get; }
-    private IAssemblyInterfaceLoader<IDeviceImporter> LoadAssembly { get; }
+    private readonly IBusinessOwnerService _businessOwnerService;
+    private readonly IAssemblyInterfaceLoader<IDeviceImporter> _loadAssembly;
     private static readonly string ImportersPath = AppDomain.CurrentDomain.BaseDirectory + "Importers";
     private static readonly string ImporterFilesPath = AppDomain.CurrentDomain.BaseDirectory + "ImportFiles";
     public List<ImporterData> GetImporters()
     {
-        var importers = LoadAssembly.GetImplementationsList(ImportersPath);
+        var importers = _loadAssembly.GetImplementationsList(ImportersPath);
         return importers.Select(importer => new ImporterData
         {
             Name = importer,
-            Parameters = LoadAssembly.GetImplementationByName(importer, ImportersPath).GetParams()
+            Parameters = _loadAssembly.GetImplementationByName(importer, ImportersPath).GetParams()
         }).ToList();
     }
 
     public List<string> ImportDevices(ImportDevicesArgs args)
     {
-        IDeviceImporter importer = LoadAssembly.GetImplementationByName(args.ImporterName, ImportersPath);
+        IDeviceImporter importer = _loadAssembly.GetImplementationByName(args.ImporterName, ImportersPath);
         var deviceArgs = importer.ImportDevices(args.Parameters);
         CreateDevicesFromArgs(deviceArgs, args.User);
         return deviceArgs.Select(deviceArg => deviceArg.Name).ToList();
@@ -42,7 +42,7 @@ public class ImporterService : IImporterService
 
     private void CreateDevicesFromArgs(List<DeviceArgs> deviceArgs, User user)
     {
-        var factoryProvider = new DeviceFactoryProvider(BusinessOwnerService);
+        var factoryProvider = new DeviceFactoryProvider(_businessOwnerService);
         foreach (var deviceArg in deviceArgs)
         {
             var deviceType = Enum.Parse<DeviceType>(deviceArg.Type);

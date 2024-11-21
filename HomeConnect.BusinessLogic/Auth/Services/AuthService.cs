@@ -11,12 +11,12 @@ public class AuthService : IAuthService
 {
     public AuthService(ITokenRepository tokenRepository, IUserRepository userRepository)
     {
-        TokenRepository = tokenRepository;
-        UserRepository = userRepository;
+        _tokenRepository = tokenRepository;
+        _userRepository = userRepository;
     }
 
-    private ITokenRepository TokenRepository { get; }
-    private IUserRepository UserRepository { get; }
+    private readonly ITokenRepository _tokenRepository;
+    private readonly IUserRepository _userRepository;
 
     public string CreateToken(CreateTokenArgs args)
     {
@@ -24,7 +24,7 @@ public class AuthService : IAuthService
         User user = GetUserByEmail(args.Email);
         EnsurePasswordIsValid(args.Password, user);
         Token session = CreateSessionToken(user);
-        TokenRepository.Add(session);
+        _tokenRepository.Add(session);
         return session.Id.ToString();
     }
 
@@ -43,7 +43,7 @@ public class AuthService : IAuthService
     public bool Exists(string token)
     {
         EnsureIsValidGuid(token);
-        return TokenRepository.Exists(Guid.Parse(token));
+        return _tokenRepository.Exists(Guid.Parse(token));
     }
 
     private void ValidateCreateTokenArgs(CreateTokenArgs args)
@@ -71,7 +71,7 @@ public class AuthService : IAuthService
 
     private User GetUserByEmail(string email)
     {
-        return UserRepository.GetByEmail(email);
+        return _userRepository.GetByEmail(email);
     }
 
     private static void EnsurePasswordIsValid(string password, User user)
@@ -90,12 +90,12 @@ public class AuthService : IAuthService
     private Token GetValidatedSession(string token)
     {
         EnsureIsValidGuid(token);
-        return TokenRepository.Get(Guid.Parse(token));
+        return _tokenRepository.Get(Guid.Parse(token));
     }
 
     private void EnsureUserExists(string email)
     {
-        if (!UserRepository.ExistsByEmail(email))
+        if (!_userRepository.ExistsByEmail(email))
         {
             throw new AuthException("Invalid email or password.");
         }

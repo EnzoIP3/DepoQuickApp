@@ -1,11 +1,11 @@
-# DepoQuickApp
+# HomeConnect
 
 ![Build and Test - Develop](https://github.com/IngSoft-DA2/283145_294238_285727/actions/workflows/build-and-test.yml/badge.svg?branch=develop&event=push)
 ![Build and Test - Main](https://github.com/IngSoft-DA2/283145_294238_285727/actions/workflows/build-and-test.yml/badge.svg?branch=main&event=push)
 ![Clean Code - Develop](https://github.com/IngSoft-DA2/283145_294238_285727/actions/workflows/build-and-test.yml/badge.svg?branch=develop&event=push)
 ![Clean Code - Main](https://github.com/IngSoft-DA2/283145_294238_285727/actions/workflows/build-and-test.yml/badge.svg?branch=main&event=push)
 
-A smart home platform developed as part of a university project, **DepoQuickApp** allows users with different roles to manage homes, rooms, smart devices, notifications, and permissions. Designed with clean architecture principles, this system is modular, extensible, and highly testable.
+A smart home platform developed as part of a university project, **HomeConnect** allows users with different roles to manage homes, rooms, smart devices, notifications, and permissions. Designed with clean architecture principles, this system is modular, extensible, and highly testable.
 
 👉 [Versión en Español](#versión-en-español)
 
@@ -100,7 +100,7 @@ Project developed for **Diseño de Aplicaciones 2** — Universidad ORT Uruguay
 
 ## 📘 Descripción
 
-**DepoQuickApp** es una plataforma web para gestionar hogares, dispositivos inteligentes, miembros y notificaciones. Permite la administración centralizada de dispositivos mediante una arquitectura limpia, modular y altamente extensible.
+**HomeConnect** es una plataforma web para gestionar hogares, dispositivos inteligentes, miembros y notificaciones. Permite la administración centralizada de dispositivos mediante una arquitectura limpia, modular y altamente extensible.
 
 ---
 
